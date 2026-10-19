@@ -1,0 +1,469 @@
+:: Start
+<div class="pics n1">[img[s001_image2]]</div>
+<div class="story-text">
+
+Part 2: Finding Milk
+
+''The Search''
+
+Dad is alive, we must find him.
+
+
+
+Made by jack-bros
+
+E-10 rated
+
+</div>
+<div class="choices">
+[[Begin|Press Start]]
+<<if Object.keys(setup.endings).every(function (k) { return k === "Secret Ending" || (recall("endings") || []).includes(k); })>>[[try for the SECRET ending?|Secret Ending]]<</if>>
+</div>
+
+:: Press Start
+<div class="pics n1">[img[s002_image5]]</div>
+<div class="story-text">
+
+Press Start
+
+Are you ready?
+
+</div>
+<div class="choices">
+[[START|Mysterious Man]]
+</div>
+
+:: Bike or Car
+<div class="story-text">
+
+He walks away. You are faced with a choice: go to the store on your bike or steal a car.
+
+</div>
+<div class="choices">
+[[Bike|Motorcycle]]
+[[Car|Rusty Car]]
+</div>
+
+:: Mysterious Man
+<div class="pics n1">[img[s004_image1]]</div>
+<div class="story-text">
+
+You find a mysterious man. He says he can help. What do you do?
+
+</div>
+<div class="choices">
+[[Go Alone|Bike or Car][$withMan to false]]
+[[Go With Him|Go to the Store][$withMan to true]]
+</div>
+
+:: Go to the Store
+<div class="pics n2">[img[s005_image12]][img[s005_image8]]</div>
+<div class="story-text">
+
+Somehow you know he is here to help you. You must go to the store, Dad could be in danger. You must go fast!
+
+</div>
+<div class="choices">
+[[Bike|Found a Bike]]
+[[Steal Car|Nice Car]]
+</div>
+
+:: Nice Car
+<div class="pics n1">[img[s006_image3]]</div>
+<div class="story-text">
+
+You found the nicest car in the parking lot.
+
+</div>
+<div class="choices">
+[[Click to drive|Drive to Store]]
+</div>
+
+:: Found a Bike
+<div class="pics n1">[img[s007_image7]]</div>
+<div class="story-text">
+
+You found a bike.
+
+</div>
+<div class="choices">
+[[Click to ride|Ding Ding]]
+</div>
+
+:: Motorcycle Ride
+<div class="pics n1">[img[s066_image26]]</div>
+<div class="story-text">
+
+BRRRRRRRRRRRRRRRRRRRR
+
+</div>
+<div class="choices">
+[[Go to store|In the Store]]
+</div>
+
+:: Drive to Store
+<div class="pics n1">[img[s067_image11]]</div>
+<div class="story-text">
+
+BRRRRRRRRRRRRRRR
+
+</div>
+<div class="choices">
+[[Go in store|In the Store]]
+</div>
+
+:: Rusty Car
+<div class="pics n1">[img[s068_image9]]</div>
+<div class="story-text">
+
+You found a rusty car.
+
+</div>
+<div class="choices">
+[[Click to drive|Drive to Store]]
+</div>
+
+:: Motorcycle
+<div class="pics n1">[img[s069_image28]]</div>
+<div class="story-text">
+
+You find a sick motorcycle.
+
+</div>
+<div class="choices">
+[[Drive to store|Motorcycle Ride]]
+</div>
+
+:: In the Store
+<div class="pics n1">[img[s070_image21]]</div>
+<div class="choices">
+[[Go to dairy aisle|Missing]]
+[[Go back home to mom|Sad Ending]]
+</div>
+
+:: Missing
+<div class="pics n2">[img[s076_image14]][img[s076_image34]]</div>
+<div class="story-text">
+
+Missing.
+
+No luck here, we have to go to Woodmans... but you saw your dad when he was younger.
+
+</div>
+<div class="choices">
+[[Next|Woodmans]]
+</div>
+
+:: Woodmans
+<div class="pics n1">[img[s077_image21]]</div>
+<div class="story-text">
+
+Woodmans
+
+Dad isn't here. Where to next?
+
+</div>
+<div class="choices">
+[[Meat|Meat Choice]]
+[[Produce|Vegan]]
+</div>
+
+:: Meat Choice
+<div class="story-text">
+
+You are faced with a choice.
+
+</div>
+<div class="choices">
+[[Beef|Run]]
+<<if $withMan>>[[Chicken|Person From the Beginning]]<<else>>[[Chicken|Lost in the Store Ending]]<</if>>
+[[Pork|Food Poisoning Ending]]
+</div>
+
+:: Food Poisoning Ending [ending]
+<div class="story-text">
+
+You got food poisoning.
+
+</div>
+<div class="choices">
+[[Start|Start]]
+</div>
+
+:: Run
+<div class="pics n1">[img[s081_image16]]</div>
+<div class="story-text">
+
+RUN
+
+</div>
+<div class="choices">
+[[Run|Caught Ending]]
+</div>
+
+:: Caught Ending [ending]
+<div class="pics n1">[img[s082_image6]]</div>
+<div class="story-text">
+
+It caught you.
+
+</div>
+<div class="choices">
+[[Back to Start|Start]]
+</div>
+
+:: Lost in the Store Ending [ending]
+<div class="story-text">
+
+You are lost in the store.
+
+</div>
+<div class="choices">
+[[Go to beginning|Start]]
+</div>
+
+:: Person From the Beginning
+<div class="pics n1">[img[s084_image30]]</div>
+<div class="story-text">
+
+You see the person from the beginning.
+
+</div>
+<div class="choices">
+[[Next|Find Your Dad]]
+</div>
+
+:: Find Your Dad
+<div class="pics n1">[img[s085_image4]]</div>
+<div class="story-text">
+
+You want to find your dad?
+
+</div>
+<div class="choices">
+[[Yes|I Know Where He Is]]
+[[Yes!|I Know Where He Is]]
+</div>
+
+:: I Know Where He Is
+<div class="pics n1">[img[s086_image10]]</div>
+<div class="story-text">
+
+I know where he is.
+
+</div>
+<div class="choices">
+[[Go alone|You Escaped]]
+[[Save dad?|Kidnapped Ending]]
+</div>
+
+:: Sad Ending [ending]
+<div class="pics n1">[img[s087_image33]]</div>
+<div class="story-text">
+
+Sad ending.
+
+</div>
+<div class="choices">
+[[GO BACK|Start]]
+</div>
+
+:: Vegan
+<div class="story-text">
+
+You become a vegan so you can't drink milk.
+
+</div>
+<div class="choices">
+[[Go home|Vegan Ending]]
+</div>
+
+:: Vegan Ending [ending]
+<div class="story-text">
+
+Vegan ending.
+
+</div>
+<div class="choices">
+[[To beginning|Start]]
+</div>
+
+:: Hugged Him Ending [ending]
+<div class="story-text">
+
+YOU HUGGED HIM ONE last time... then he ran.
+
+</div>
+<div class="choices">
+[[To beginning|Start]]
+</div>
+
+:: You Wait
+<div class="pics n1">[img[s112_image24]]</div>
+<div class="story-text">
+
+You: wait!
+
+</div>
+<div class="choices">
+[[Next|Hugged Him Ending]]
+</div>
+
+:: Dad Find Me
+<div class="pics n1">[img[s113_image19]]</div>
+<div class="story-text">
+
+Dad: find me!
+
+</div>
+<div class="choices">
+[[Next|You Wait]]
+</div>
+
+:: You Escaped
+<div class="pics n1">[img[s114_image18]]</div>
+<div class="story-text">
+
+He was gonna kidnap you. You escaped.
+
+</div>
+<div class="choices">
+[[Look around|Figure in the Distance]]
+</div>
+
+:: Figure in the Distance
+<div class="story-text">
+
+You see a figure in the distance. It can't be...
+
+</div>
+<div class="choices">
+[[Go after him|Dad]]
+</div>
+
+:: Dad
+<div class="pics n2">[img[s116_image20]][img[s116_image15]]</div>
+<div class="story-text">
+
+Dad?
+
+</div>
+<div class="choices">
+[[Hi kiddo|Come Home Please]]
+[[RUNNNN!|Dad Find Me]]
+</div>
+
+:: Come Home Please
+<div class="pics n1">[img[s117_image22]]</div>
+<div class="story-text">
+
+Come home please.
+
+</div>
+<div class="choices">
+[[Next|OK]]
+</div>
+
+:: OK
+<div class="pics n1">[img[s118_image17]]</div>
+<div class="choices">
+[[OK|Happy Ending]]
+</div>
+
+:: Kidnapped Ending [ending]
+<div class="pics n1">[img[s120_image32]]</div>
+<div class="story-text">
+
+You get kidnapped.
+
+Sad ending NO. 2
+
+</div>
+<div class="choices">
+[[To beginning|Start]]
+</div>
+
+:: Ding Ding
+<div class="story-text">
+
+Ding Ding
+
+</div>
+<div class="choices">
+[[Go to store|Chased]]
+</div>
+
+:: Chased
+<div class="story-text">
+
+A man tries to chase you.
+
+</div>
+<div class="choices">
+[[Run|Basement Ending]]
+[[Hide|You Hide]]
+</div>
+
+:: You Hide
+<div class="story-text">
+
+You hide.
+
+</div>
+<div class="choices">
+[[Look around the store|In the Store]]
+[[Go home|Sad Ending]]
+</div>
+
+:: Basement Ending [ending]
+<div class="pics n1">[img[s124_image29]]</div>
+<div class="story-text">
+
+He caught you.
+
+Basement ending
+
+</div>
+<div class="choices">
+[[To beginning|Start]]
+</div>
+
+:: Part 3 Coming Soon [ending]
+<div class="pics n1">[img[s133_image23]]</div>
+<div class="story-text">
+
+Part 3 Coming soon.
+
+Congrats, you have beaten this game!
+
+
+
+What happened to Alvin?
+
+</div>
+<div class="choices">
+[[PLAY|Start]]
+</div>
+
+:: Secret Ending [ending]
+<div class="pics n1">[img[s147_image27]]</div>
+<div class="story-text">
+
+Secret ending plus 6000 aura
+
+</div>
+<div class="choices">
+[[Continue|Part 3 Coming Soon]]
+[[To beginning|Start]]
+</div>
+
+:: Happy Ending [ending]
+<div class="pics n2">[img[s149_image31]][img[s149_image25]]</div>
+<div class="story-text">
+
+Happy ending
+
+</div>
+<div class="choices">
+[[Restart|Start]]
+</div>

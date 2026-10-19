@@ -1,0 +1,7 @@
+dist/
+export/
+.twine-mcp/
+.tweenode/
+node_modules/
+dist/
+originals-images/
