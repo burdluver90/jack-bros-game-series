@@ -1,0 +1,13 @@
+:: Fx Styles [stylesheet]
+.fx { position: relative; width: 100%; height: 100%; }
+.fxb { display: inline-block; }
+@keyframes fx-in-appear { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+@keyframes fx-in-fade { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+@keyframes fx-in-zoom { from { opacity: 0; visibility: hidden; transform: scale(0); } to { opacity: 1; visibility: visible; transform: scale(1); } }
+@keyframes fx-in-fly { from { opacity: 0; visibility: hidden; transform: translateY(30%); } to { opacity: 1; visibility: visible; transform: none; } }
+@keyframes fx-out-appear { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
+@keyframes fx-out-fade { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
+@keyframes fx-out-fly { from { opacity: 1; visibility: visible; transform: none; } to { opacity: 0; visibility: hidden; transform: translateY(-30%); } }
+@keyframes credits-roll { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: none; } }
+.credits p { margin: .3em 0; }
+.credits { animation: credits-roll 4s ease-out backwards; }

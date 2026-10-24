@@ -104,7 +104,21 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 		<div id="init-lacking"><p>Browser lacks capabilities required to play.</p><p>Upgrade or switch to another browser.</p></div>
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
-	<!-- UUID://2168187F-80F7-41B5-A8E0-5C0C9AEFDCF0// --><tw-storydata name="Finding Milk Part 2" startnode="25" creator="Tweego" creator-version="2.1.1+81d1d71" ifid="2168187F-80F7-41B5-A8E0-5C0C9AEFDCF0" zoom="1" format="SugarCube" format-version="2.37.3" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">body { background: radial-gradient(circle at 50% 0%, #1d2a44 0%, #0b0f1a 70%) fixed; color: #eef1f8; font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
+	<!-- UUID://2168187F-80F7-41B5-A8E0-5C0C9AEFDCF0// --><tw-storydata name="Finding Milk Part 2" startnode="25" creator="Tweego" creator-version="2.1.1+81d1d71" ifid="2168187F-80F7-41B5-A8E0-5C0C9AEFDCF0" zoom="1" format="SugarCube" format-version="2.37.3" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* twine-user-stylesheet #1: "Fx Styles" */
+.fx { position: relative; width: 100%; height: 100%; }
+.fxb { display: inline-block; }
+@keyframes fx-in-appear { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+@keyframes fx-in-fade { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+@keyframes fx-in-zoom { from { opacity: 0; visibility: hidden; transform: scale(0); } to { opacity: 1; visibility: visible; transform: scale(1); } }
+@keyframes fx-in-fly { from { opacity: 0; visibility: hidden; transform: translateY(30%); } to { opacity: 1; visibility: visible; transform: none; } }
+@keyframes fx-out-appear { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
+@keyframes fx-out-fade { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
+@keyframes fx-out-fly { from { opacity: 1; visibility: visible; transform: none; } to { opacity: 0; visibility: hidden; transform: translateY(-30%); } }
+@keyframes credits-roll { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: none; } }
+.credits p { margin: .3em 0; }
+.credits { animation: credits-roll 4s ease-out backwards; }
+/* twine-user-stylesheet #2: "Story Stylesheet" */
+body { background: radial-gradient(circle at 50% 0%, #1d2a44 0%, #0b0f1a 70%) fixed; color: #eef1f8; font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
 #story { max-width: 900px; margin: 0 auto; }
 #passages { padding: 1.5em 1em 3em; text-align: center; font-size: 1.2rem; line-height: 1.5; }
 .passage { animation: fadein .5s ease; }
@@ -250,7 +264,7 @@ $(document).on(':passagedisplay', function (ev) {
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;You are now safe, for now.&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 &lt;a class=&quot;p3link&quot; href=&quot;../part-3-grown-up/&quot;&gt;Continue to Part 3&lt;/a&gt;
-[[Credits|Credits (B25)]]
+[[Credits|Back (B25)]]
 [[Main menu|Start]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="21" name="A bear attacks you but (B20)" tags="" position="100,350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;A bear attacks you but you have the musket&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -259,7 +273,7 @@ $(document).on(':passagedisplay', function (ev) {
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="22" name="You see a bear and (B21)" tags="ending" position="225,350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;You see a bear and it attacks you with nothing to defend yourself.&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Try again|Basement Escape]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="23" name="Credits (B25)" tags="" position="350,350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Credits&lt;/p&gt;&lt;p&gt;Story creator - Lee Hawk&lt;/p&gt;&lt;p&gt;Main story designer - Braxton Bowen&lt;/p&gt;&lt;p&gt;Secondary story designer - Lee Hawk&lt;/p&gt;&lt;p&gt;The series creators - Lee Hawk, Alvin Eichstaedt, and Odin Stronach&lt;/p&gt;&lt;p&gt;Idea for part 2.1 - Braxton Bowen&lt;/p&gt;&lt;p&gt;BIG thanks to Braxton Bowen for our secondary series helper&lt;/p&gt;&lt;p&gt;Thank you!&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="23" name="Back (B25)" tags="" position="350,350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;div class=&quot;credits&quot;&gt;&lt;p&gt;Credits&lt;/p&gt;&lt;p&gt;Story creator - Lee Hawk&lt;/p&gt;&lt;p&gt;Main story designer - Braxton Bowen&lt;/p&gt;&lt;p&gt;Secondary story designer - Lee Hawk&lt;/p&gt;&lt;p&gt;The series creators - Lee Hawk, Alvin Eichstaedt, and Odin Stronach&lt;/p&gt;&lt;p&gt;Idea for part 2.1 - Braxton Bowen&lt;/p&gt;&lt;/div&gt;&lt;p style=&quot;animation:fx-in-fade 1.5s ease-out 4s backwards&quot;&gt;BIG thanks to Braxton Bowen for our secondary series helper&lt;/p&gt;&lt;p style=&quot;animation:fx-in-fade 1.5s ease-out 5.5s backwards&quot;&gt;Thank you!&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Back|You are now safe, for (B22)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="24" name="The bear got you and (B23)" tags="ending" position="475,350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;The bear got you and now you die&lt;/p&gt;&lt;/div&gt;

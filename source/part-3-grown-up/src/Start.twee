@@ -61,14 +61,14 @@
 </div>
 
 :: You Where am I? What (P10)
-<div class="scene"><div class="pos bg">[img[img_Pimage5]]</div><div class="pos" style="left:50.611%;top:30.350%;width:3.055%;height:3.043%">[img[img_Pimage9]]</div><div class="pos" style="left:56.726%;top:28.502%;width:3.789%;height:6.737%">[img[img_Pimage7]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage5]]</div><div class="pos" style="left:50.611%;top:30.350%;width:3.055%;height:3.043%">[img[img_Pimage9]]</div><div class="pos" style="left:56.726%;top:28.502%;width:3.789%;height:6.737%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 0.000s backwards">[img[img_Pimage7]]</div></div></div>
 <div class="story-text"><p>You: Where am I? What is that in the distance?</p></div>
 <div class="choices">
 [[Continue|RUN!!! (P11)]]
 </div>
 
 :: RUN!!! (P11)
-<div class="scene"><div class="pos bg">[img[img_Pimage11]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage11]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%"><div class="fx" style="animation:fx-in-zoom 2.200s ease-out 0.000s backwards">[img[img_Pimage9]]</div></div></div>
 <div id="opts" class="choices">[[RUN!!!|Where am I? (P12)]]</div>
 <div class="timerbar"><span style="animation-duration:2.2s"></span></div>
 <<timed 2.2s>><<replace "#opts">><div class="caught">[[You lost go to end|Main menu (P2)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
@@ -134,7 +134,7 @@
 </div>
 
 :: What's that (P21)
-<div class="scene"><div class="pos bg">[img[img_Pimage33]]</div><div class="pos" style="left:2.656%;top:55.556%;width:25.000%;height:44.444%">[img[img_Pimage23]]</div><div class="pos" style="left:46.727%;top:26.253%;width:4.255%;height:7.443%">[img[img_Pimage24]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage33]]</div><div class="pos" style="left:2.656%;top:55.556%;width:25.000%;height:44.444%">[img[img_Pimage23]]</div><div class="pos" style="left:46.727%;top:26.253%;width:4.255%;height:7.443%"><div class="fx" style="animation:fx-in-fade 1.200s ease-out 0.000s backwards, fx-out-fade 5.000s linear 1.200s forwards">[img[img_Pimage24]]</div></div></div>
 <div class="story-text"><p>What's that</p></div>
 <div class="choices">
 [[Go in building|You this place is nice (P26)]]
@@ -156,7 +156,7 @@
 </div>
 
 :: Wait what's that (P29)
-<div class="scene"><div class="pos bg">[img[img_Pimage38]]</div><div class="pos" style="left:53.845%;top:44.741%;width:19.148%;height:34.041%">[img[img_Pimage35]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage38]]</div><div class="pos" style="left:53.845%;top:44.741%;width:19.148%;height:34.041%"><div class="fx" style="animation:fx-out-fade 4.000s linear 0.000s forwards">[img[img_Pimage35]]</div></div></div>
 <div class="story-text"><p>Wait what's that</p></div>
 <div class="choices">
 [[Run to second story|Go in (P32)]]
@@ -290,7 +290,7 @@
 </div>
 
 :: RUN (P98)
-<div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%">[img[img_Pimage145]]</div><div class="itext" style="left:8.916%;top:10.665%;width:9.905%;font-size:calc(2.222*1cqw);color:#158158;text-decoration:underline">[[Hint|-B- - - (P130)]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%"><div class="fx" style="animation:fx-in-zoom 2.500s ease-out 0.000s backwards">[img[img_Pimage145]]</div></div><div class="itext" style="left:8.916%;top:10.665%;width:9.905%;font-size:calc(2.222*1cqw);color:#158158;text-decoration:underline">[[Hint|-B- - - (P130)]]</div></div>
 <div id="opts" class="choices">[[RUN|You make it to the (P102)]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[It caught you|Stuffed in animatronic ending (P109)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
@@ -409,10 +409,10 @@
 </div>
 
 :: Congrats you have Det0nated THis (P63) [ending]
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:1.667%;top:5.455%;width:93.948%;height:70.286%">[img[img_Pimage66]]</div><div class="pos" style="left:1.667%;top:5.455%;width:94.682%;height:75.669%">[img[img_Pimage67]]</div></div>
-<div class="story-text"><p>Congrats you have Det0nated THis SsITE GOOD GOOD G00OD Job</p></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:1.667%;top:5.455%;width:93.948%;height:70.286%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 0.000s backwards">[img[img_Pimage66]]</div></div><div class="pos" style="left:1.667%;top:5.455%;width:94.682%;height:75.669%"><div class="fx" style="animation:fx-in-fade 5.000s ease-out 0.001s backwards">[img[img_Pimage67]]</div></div></div>
+<div class="story-text"><p style="animation:fx-in-fade 2.900s ease-out 5.001s backwards">Congrats you have Det0nated THis SsITE GOOD GOOD G00OD Job</p></div>
 <div class="choices">
-[[Next|Start]]
+<span class="fxb" style="animation:fx-in-fade 2.900s ease-out 5.001s backwards">[[Next|Start]]</span>
 [[Go to files|open (P125)]]
 </div>
 
@@ -527,7 +527,7 @@
 </div>
 
 :: Wait there's the office (P65)
-<div class="scene"><div class="pos bg">[img[img_Pimage98]]</div><div class="pos" style="left:36.979%;top:13.426%;width:26.042%;height:73.148%">[img[img_Pimage69]]</div><div class="pos" style="left:45.846%;top:-14.372%;width:46.458%;height:92.222%">[img[img_Pimage71]]</div><div class="pos" style="left:15.442%;top:13.426%;width:20.448%;height:58.588%">[img[img_Pimage76]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage98]]</div><div class="pos" style="left:36.979%;top:13.426%;width:26.042%;height:73.148%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 0.000s backwards, fx-out-fade 1.000s linear 1.000s forwards">[img[img_Pimage69]]</div></div><div class="pos" style="left:45.846%;top:-14.372%;width:46.458%;height:92.222%"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.000s backwards, fx-out-fade 1.000s linear 1.000s forwards">[img[img_Pimage71]]</div></div><div class="pos" style="left:15.442%;top:13.426%;width:20.448%;height:58.588%"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.000s backwards, fx-out-fade 1.000s linear 1.000s forwards">[img[img_Pimage76]]</div></div></div>
 <div class="story-text"><p>Wait there's the office</p></div>
 <div class="choices">
 [[Look around|Where to check? (P66)]]
@@ -549,7 +549,7 @@
 </div>
 
 :: next (P99)
-<div class="scene"><div class="pos bg">[img[img_Pimage101]]</div><div class="pos" style="left:25.000%;top:16.236%;width:51.875%;height:72.593%">[img[img_Pimage108]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage101]]</div><div class="pos" style="left:25.000%;top:16.236%;width:51.875%;height:72.593%"><div class="fx" style="animation:fx-in-fade 3.400s ease-out 0.000s backwards, fx-out-fade 2.700s linear 3.400s forwards">[img[img_Pimage108]]</div></div></div>
 <div class="choices">
 [[next|Legit question (P89)]]
 [[Keep walking|Oh my old college dorm (P110)]]
@@ -582,23 +582,23 @@
 </div>
 
 :: Night arrived (P88)
-<div class="scene"><div class="pos bg">[img[img_Pimage105]]</div><div class="pos" style="left:4.375%;top:41.883%;width:26.406%;height:46.945%">[img[img_Pimage35]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage105]]</div><div class="pos" style="left:4.375%;top:41.883%;width:26.406%;height:46.945%"><div class="fx" style="animation:fx-out-fade 3.300s linear 0.000s forwards">[img[img_Pimage35]]</div></div></div>
 <div class="story-text"><p>Night arrived…</p></div>
 <div class="choices">
 [[Continue|It's all good (P83)]]
 </div>
 
 :: Set up (P23)
-<div class="scene"><div class="pos bg">[img[img_Pimage31]]</div><div class="pos" style="left:36.927%;top:11.759%;width:40.573%;height:72.130%">[img[img_Pimage16]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage31]]</div><div class="pos" style="left:36.927%;top:11.759%;width:40.573%;height:72.130%"><div class="fx" style="animation:fx-in-fade 3.800s ease-out 0.000s backwards, fx-out-fade 2.800s linear 3.800s forwards">[img[img_Pimage16]]</div></div></div>
 <div class="choices">
 [[Set up|Turn on (P24)]]
 </div>
 
 :: Mom Dad? (P70)
-<div class="scene"><div class="pos bg">[img[img_Pimage79]]</div><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
-<div class="story-text"><p>Mom Dad?</p><p>Hello Young one</p></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage79]]</div><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%"><div class="fx" style="animation:fx-in-fade 5.000s ease-out 0.000s backwards">[img[img_Pimage78]]</div></div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 5.000s backwards">[img[img_Pimage9]]</div></div></div>
+<div class="story-text"><p style="animation:fx-out-fade 3.000s linear 5.000s forwards">Mom Dad?</p><p style="animation:fx-in-appear 0.010s steps(1,end) 5.000s backwards">Hello Young one</p></div>
 <div class="choices">
-[[Where am i|I am the bringer of (P71)]]
+<span class="fxb" style="animation:fx-in-appear 0.010s steps(1,end) 8.000s backwards">[[Where am i|I am the bringer of (P71)]]</span>
 </div>
 
 :: It's all good (P83)
@@ -622,7 +622,7 @@
 </div>
 
 :: walk (P84)
-<div class="scene"><div class="pos bg">[img[img_Pimage97]]</div><div class="pos" style="left:18.542%;top:21.083%;width:65.208%;height:68.640%">[img[img_Pimage91]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage97]]</div><div class="pos" style="left:18.542%;top:21.083%;width:65.208%;height:68.640%"><div class="fx" style="animation:fx-out-fade 2.100s linear 0.000s forwards">[img[img_Pimage91]]</div></div></div>
 <div class="choices">
 [[walk|Sir theo your back (P85)]]
 </div>
@@ -654,22 +654,22 @@
 </div>
 
 :: aaaaaAAAA!!! (P86)
-<div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:7.604%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos" style="left:13.424%;top:25.713%;width:14.076%;height:18.241%">[img[img_Pimage3]]</div><div class="pos" style="left:9.092%;top:19.786%;width:30.938%;height:45.556%">[img[img_Pimage107]]</div></div>
-<div class="story-text"><p>aaaaaAAAA!!!</p><p>Who are you</p></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:7.604%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos" style="left:13.424%;top:25.713%;width:14.076%;height:18.241%">[img[img_Pimage3]]</div><div class="pos" style="left:9.092%;top:19.786%;width:30.938%;height:45.556%"><div class="fx" style="animation:fx-in-fade 3.200s ease-out 0.000s backwards, fx-out-fade 3.000s linear 3.200s forwards">[img[img_Pimage107]]</div></div></div>
+<div class="story-text"><p>aaaaaAAAA!!!</p><p style="animation:fx-out-fade 3.000s linear 3.200s forwards">Who are you</p></div>
 <div class="choices">
 [[next|sir what? (P87)]]
 </div>
 
 :: These were just memories Theo (P74)
-<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div><div class="pos" style="left:44.989%;top:0.132%;width:47.935%;height:101.172%">[img[img_Pimage84]]</div></div>
-<div class="story-text"><p>These were just memories Theo goodbye</p><p>You have been released</p></div>
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%"><div class="fx" style="animation:fx-out-fade 1.000s linear 6.000s forwards">[img[img_Pimage78]]</div></div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%"><div class="fx" style="animation:fx-out-fade 1.000s linear 6.000s forwards">[img[img_Pimage9]]</div></div><div class="pos" style="left:44.989%;top:0.132%;width:47.935%;height:101.172%"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 7.000s backwards">[img[img_Pimage84]]</div></div></div>
+<div class="story-text"><p>These were just memories Theo goodbye</p><p style="animation:fx-in-fade 3.000s ease-out 0.000s backwards, fx-in-fade 3.000s ease-out 3.000s backwards, fx-in-appear 0.010s steps(1,end) 9.000s backwards">You have been released</p></div>
 <div class="choices">
-[[Release your soul|They bring you up to (P75)]]
+<span class="fxb" style="animation:fx-in-fade 1.000s ease-out 7.000s backwards">[[Release your soul|They bring you up to (P75)]]</span>
 </div>
 
 :: sir what? (P87)
 <div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:8.646%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos clip" style="left:16.210%;top:27.127%;width:14.076%;height:18.241%"><div class="crop" style="left:-6.60%;top:-11.64%;width:100.00%;height:100.00%">[img[img_Pimage3]]</div></div></div>
-<div class="story-text"><p>sir:what?</p><p>you:nothing</p><p>Lets just go keep investigating…</p></div>
+<div class="story-text"><p>sir:what?</p><p style="animation:fx-out-fade 2.600s linear 0.000s forwards">you:nothing</p><p>Lets just go keep investigating…</p></div>
 <div class="choices">
 [[Keep walking|You 2 walk in a (P90)]]
 </div>
@@ -769,7 +769,7 @@
 </div>
 
 :: You see a chair (P108)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:20.433%;top:17.550%;width:53.226%;height:78.161%"><div class="crop" style="left:-32.95%;top:-0.00%;width:153.18%;height:100.00%">[img[img_Pimage117]]</div></div><div class="pos clip" style="left:-1.705%;top:97.258%;width:1.705%;height:2.704%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip late" style="left:20.433%;top:26.152%;width:55.282%;height:73.810%"><div class="crop" style="left:-15.10%;top:-83.48%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:20.433%;top:17.550%;width:53.226%;height:78.161%"><div class="crop" style="left:-32.95%;top:-0.00%;width:153.18%;height:100.00%">[img[img_Pimage117]]</div></div><div class="pos clip" style="left:-1.705%;top:97.258%;width:1.705%;height:2.704%"><div class="fx" style="animation:fx-in-zoom 2.500s ease-out 0.000s backwards"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div><div class="pos clip" style="left:20.433%;top:26.152%;width:55.282%;height:73.810%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.500s backwards"><div class="crop" style="left:-15.10%;top:-83.48%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div></div>
 <div class="story-text"><p>You see a chair</p></div>
 <div id="opts" class="choices">[[Over|You trip and fall (P111)]][[UNDER|You trip and fall (P111)]][[TO THE SIDE|A table is in the (P115)]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
@@ -794,20 +794,20 @@
 </div>
 
 :: A table is in the (P115)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:19.429%;top:27.658%;width:67.173%;height:80.000%"><div class="crop" style="left:-11.11%;top:-0.00%;width:111.11%;height:100.00%">[img[img_Pimage126]]</div></div><div class="pos clip" style="left:0.000%;top:98.099%;width:1.199%;height:1.901%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip late" style="left:19.429%;top:34.324%;width:62.615%;height:62.699%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:19.429%;top:27.658%;width:67.173%;height:80.000%"><div class="crop" style="left:-11.11%;top:-0.00%;width:111.11%;height:100.00%">[img[img_Pimage126]]</div></div><div class="pos clip" style="left:0.000%;top:98.099%;width:1.199%;height:1.901%"><div class="fx" style="animation:fx-in-zoom 2.500s ease-out 0.000s backwards"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div><div class="pos clip" style="left:19.429%;top:34.324%;width:62.615%;height:62.699%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.500s backwards"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div></div>
 <div class="story-text"><p>A table is in the way</p></div>
 <div id="opts" class="choices">[[Under|You see a Cannon? (P117)]][[To The Side|You trip and fall (P111)]][[Over|You trip and fall (P111)]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[It caught you|It catches you (P112)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: It eats you alive (P113)
-<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:0.469%;top:-22.834%;width:99.062%;height:124.600%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:0.469%;top:-22.834%;width:99.062%;height:124.600%"><div class="fx" style="animation:fx-in-zoom 1.500s ease-out 0.000s backwards"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div></div>
 <div class="choices">
 [[It eats you alive|Eaten alive ending (P114)]]
 </div>
 
 :: You see a Cannon? (P117)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos" style="left:8.215%;top:31.171%;width:67.965%;height:51.852%">[img[img_Pimage130]]</div><div class="pos" style="left:3.409%;top:93.638%;width:0.790%;height:2.192%;transform:rotate(180.00deg)">[img[img_Pimage128]]</div><div class="pos clip late" style="left:16.865%;top:33.034%;width:64.932%;height:62.796%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos" style="left:8.215%;top:31.171%;width:67.965%;height:51.852%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 2.500s forwards">[img[img_Pimage130]]</div></div><div class="pos" style="left:3.409%;top:93.638%;width:0.790%;height:2.192%;transform:rotate(180.00deg)"><div class="fx" style="animation:fx-in-zoom 2.500s ease-out 0.000s backwards">[img[img_Pimage128]]</div></div><div class="pos clip" style="left:16.865%;top:33.034%;width:64.932%;height:62.796%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.500s backwards"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div></div>
 <div class="story-text"><p>You see a Cannon?</p></div>
 <div id="opts" class="choices">[[Shoot it|As you blast them the (P116)]][[Keep running|You keep running the level (P118)]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
@@ -840,7 +840,7 @@
 </div>
 
 :: AHHHHH (P120)
-<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos clip" style="left:76.397%;top:32.640%;width:18.414%;height:34.720%;transform:rotate(90.00deg)"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:29.582%;top:10.513%;width:33.994%;height:72.222%">[img[img_Pimage128]]</div><div class="pos" style="left:29.156%;top:43.182%;width:18.917%;height:34.720%;transform:rotate(90.00deg)">[img[img_Pimage2]]</div><div class="pos clip" style="left:50.840%;top:41.369%;width:18.414%;height:43.911%;transform:rotate(90.00deg)"><div class="crop" style="left:-0.00%;top:-0.00%;width:178.85%;height:100.00%">[img[img_Pimage10]]</div></div><div class="pos" style="left:26.201%;top:32.736%;width:13.333%;height:23.333%;transform:rotate(28.25deg)">[img[img_Pimage136]]</div><div class="pos" style="left:54.214%;top:38.148%;width:11.667%;height:23.704%;transform:rotate(-23.17deg)">[img[img_Pimage148]]</div><div class="pos" style="left:33.891%;top:54.742%;width:19.167%;height:37.037%">[img[img_Pimage138]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos clip" style="left:76.397%;top:32.640%;width:18.414%;height:34.720%;transform:rotate(90.00deg)"><div class="fx" style="animation:fx-in-zoom 2.000s ease-out 0.000s backwards"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div><div class="pos" style="left:29.582%;top:10.513%;width:33.994%;height:72.222%">[img[img_Pimage128]]</div><div class="pos" style="left:29.156%;top:43.182%;width:18.917%;height:34.720%;transform:rotate(90.00deg)"><div class="fx" style="animation:fx-out-fly 1.400s linear 2.000s forwards">[img[img_Pimage2]]</div></div><div class="pos clip" style="left:50.840%;top:41.369%;width:18.414%;height:43.911%;transform:rotate(90.00deg)"><div class="fx" style="animation:fx-out-fly 1.400s linear 2.000s forwards"><div class="crop" style="left:-0.00%;top:-0.00%;width:178.85%;height:100.00%">[img[img_Pimage10]]</div></div></div><div class="pos" style="left:26.201%;top:32.736%;width:13.333%;height:23.333%;transform:rotate(28.25deg)">[img[img_Pimage136]]</div><div class="pos" style="left:54.214%;top:38.148%;width:11.667%;height:23.704%;transform:rotate(-23.17deg)">[img[img_Pimage148]]</div><div class="pos" style="left:33.891%;top:54.742%;width:19.167%;height:37.037%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.000s backwards">[img[img_Pimage138]]</div></div></div>
 <div class="choices">
 [[AHHHHH|RUNNNNNNNNN (P121)]]
 </div>

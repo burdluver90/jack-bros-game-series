@@ -129,7 +129,7 @@
 <div class="story-text"><p>You are now safe, for now.</p></div>
 <div class="choices">
 <a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
-[[Credits|Credits (B25)]]
+[[Credits|Back (B25)]]
 [[Main menu|Start]]
 </div>
 
@@ -146,8 +146,8 @@
 [[Try again|Basement Escape]]
 </div>
 
-:: Credits (B25)
-<div class="story-text"><p>Credits</p><p>Story creator - Lee Hawk</p><p>Main story designer - Braxton Bowen</p><p>Secondary story designer - Lee Hawk</p><p>The series creators - Lee Hawk, Alvin Eichstaedt, and Odin Stronach</p><p>Idea for part 2.1 - Braxton Bowen</p><p>BIG thanks to Braxton Bowen for our secondary series helper</p><p>Thank you!</p></div>
+:: Back (B25)
+<div class="story-text"><div class="credits"><p>Credits</p><p>Story creator - Lee Hawk</p><p>Main story designer - Braxton Bowen</p><p>Secondary story designer - Lee Hawk</p><p>The series creators - Lee Hawk, Alvin Eichstaedt, and Odin Stronach</p><p>Idea for part 2.1 - Braxton Bowen</p></div><p style="animation:fx-in-fade 1.5s ease-out 4s backwards">BIG thanks to Braxton Bowen for our secondary series helper</p><p style="animation:fx-in-fade 1.5s ease-out 5.5s backwards">Thank you!</p></div>
 <div class="choices">
 [[Back|You are now safe, for (B22)]]
 </div>
