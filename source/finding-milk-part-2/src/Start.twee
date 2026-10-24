@@ -188,6 +188,7 @@ You got food poisoning.
 </div>
 <div class="choices">
 [[Start|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Run
@@ -210,6 +211,7 @@ It caught you.
 </div>
 <div class="choices">
 [[Back to Start|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Lost in the Store Ending [ending]
@@ -220,6 +222,7 @@ You are lost in the store.
 </div>
 <div class="choices">
 [[Go to beginning|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Person From the Beginning
@@ -266,6 +269,7 @@ Sad ending.
 </div>
 <div class="choices">
 [[GO BACK|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Vegan
@@ -286,6 +290,7 @@ Vegan ending.
 </div>
 <div class="choices">
 [[To beginning|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Hugged Him Ending [ending]
@@ -296,6 +301,7 @@ YOU HUGGED HIM ONE last time... then he ran.
 </div>
 <div class="choices">
 [[To beginning|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: You Wait
@@ -380,6 +386,7 @@ Sad ending NO. 2
 
 </div>
 <div class="choices">
+[[Escape?|Basement Escape]]
 [[To beginning|Start]]
 </div>
 
@@ -425,24 +432,22 @@ Basement ending
 
 </div>
 <div class="choices">
+[[Escape?|Basement Escape]]
 [[To beginning|Start]]
 </div>
 
-:: Part 3 Coming Soon [ending]
+:: Part 3
 <div class="pics n1">[img[s133_image23]]</div>
 <div class="story-text">
 
-Part 3 Coming soon.
-
 Congrats, you have beaten this game!
 
-
-
-What happened to Alvin?
+Part 3 is ready.
 
 </div>
 <div class="choices">
-[[PLAY|Start]]
+<a class="p3link" href="../part-3-grown-up/">Play Part 3</a>
+[[Back to the title|Start]]
 </div>
 
 :: Secret Ending [ending]
@@ -453,8 +458,9 @@ Secret ending plus 6000 aura
 
 </div>
 <div class="choices">
-[[Continue|Part 3 Coming Soon]]
+[[Continue|Part 3]]
 [[To beginning|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>
 
 :: Happy Ending [ending]
@@ -466,4 +472,5 @@ Happy ending
 </div>
 <div class="choices">
 [[Restart|Start]]
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
 </div>

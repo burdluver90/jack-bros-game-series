@@ -1,0 +1,883 @@
+:: Start
+<div class="scene"><div class="pos bg">[img[img_Pimage1]]</div></div>
+<div class="story-text"><p>Part 3: Grown Up</p><p>Made by Jack-Bros</p><p>Rated T: crude humor, violence, and mild gore.</p><p>Email one of the Jack Bros (aka Odin, Lee, Vinny, Braxton) once you have the secret code. If you guess correctly, you can find out the truth.</p></div>
+<div class="choices">
+[[Play|Main menu (P2)]]
+</div>
+
+:: Main menu (P2)
+<div class="scene"><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%">[img[img_Pimage10]]</div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%">[img[img_Pimage2]]</div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%">[img[img_Pimage3]]</div></div>
+<div class="story-text"><p>Main menu</p></div>
+<div class="choices">
+[[Play|memories (P3)]]
+</div>
+
+:: memories (P3)
+<div class="scene"><div class="pos bg">[img[img_Pimage17]]</div></div>
+<div class="story-text"><p>memories</p></div>
+<div class="choices">
+[[next|next (P4)]]
+</div>
+
+:: next (P4)
+<div class="scene"><div class="pos bg">[img[img_Pimage12]]</div></div>
+<div class="choices">
+[[next|next (P5)]]
+[[Hi kiddo|next (P5)]]
+</div>
+
+:: next (P5)
+<div class="scene"><div class="pos" style="left:49.217%;top:25.767%;width:31.802%;height:52.563%">[img[img_Pimage25]]</div><div class="pos" style="left:11.254%;top:39.385%;width:29.567%;height:52.563%">[img[img_Pimage29]]</div></div>
+<div class="choices">
+[[next|You i miss those memories (P6)]]
+</div>
+
+:: You i miss those memories (P6)
+<div class="scene"><div class="pos" style="left:24.062%;top:3.889%;width:51.875%;height:92.222%">[img[img_Pimage6]]</div><div class="pos" style="left:70.511%;top:26.856%;width:26.080%;height:30.811%">[img[img_Pimage4]]</div></div>
+<div class="story-text"><p>You:i miss those memories</p></div>
+<div class="choices">
+[[Turn it off|YOU time for bed (P7)]]
+</div>
+
+:: YOU time for bed (P7)
+<div class="scene"><div class="pos" style="left:1.698%;top:-17.925%;width:95.988%;height:134.982%">[img[img_Pimage21]]</div><div class="pos" style="left:52.708%;top:17.243%;width:36.250%;height:91.852%">[img[img_Pimage13]]</div></div>
+<div class="story-text"><p>YOU:time for bed…</p></div>
+<div class="choices">
+[[sleep|Memories pt 2 (P8)]]
+</div>
+
+:: Memories pt 2 (P8)
+<div class="scene"><div class="pos" style="left:40.045%;top:3.014%;width:88.789%;height:105.206%">[img[img_Pimage26]]</div><div class="pos" style="left:-33.563%;top:5.617%;width:84.396%;height:100.000%">[img[img_Pimage14]]</div></div>
+<div class="story-text"><p>Memories pt 2</p></div>
+<div class="choices">
+[[dream|Processing... 100 (P9)]]
+</div>
+
+:: Processing... 100 (P9)
+<div class="scene"><div class="pos" style="left:-6.030%;top:0.000%;width:104.795%;height:104.749%">[img[img_Pimage20]]</div></div>
+<div class="story-text"><p>Processing... 100%</p></div>
+<div class="choices">
+[[next|You Where am I? What (P10)]]
+</div>
+
+:: You Where am I? What (P10)
+<div class="scene"><div class="pos bg">[img[img_Pimage5]]</div><div class="pos" style="left:50.611%;top:30.350%;width:3.055%;height:3.043%">[img[img_Pimage9]]</div><div class="pos" style="left:56.726%;top:28.502%;width:3.789%;height:6.737%">[img[img_Pimage7]]</div></div>
+<div class="story-text"><p>You: Where am I? What is that in the distance?</p></div>
+<div class="choices">
+[[Continue|RUN!!! (P11)]]
+</div>
+
+:: RUN!!! (P11)
+<div class="scene"><div class="pos bg">[img[img_Pimage11]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="choices">
+[[RUN!!!|Where am I? (P12)]]
+[[You lost go to end|Main menu (P2)]]
+</div>
+
+:: Where am I? (P12)
+<div class="scene"><div class="pos bg">[img[img_Pimage8]]</div></div>
+<div class="story-text"><p>Where am I?</p></div>
+<div class="choices">
+[[Continue|Uh oh (P13)]]
+</div>
+
+:: Uh oh (P13)
+<div class="scene"><div class="pos bg">[img[img_Pimage8]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="story-text"><p>Uh oh…</p><p>hello.</p></div>
+<div class="choices">
+[[Continue|WHAT DO YOU WANT FROM (P14)]]
+</div>
+
+:: WHAT DO YOU WANT FROM (P14)
+<div class="scene"><div class="pos bg">[img[img_Pimage8]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="story-text"><p>WHAT DO YOU WANT FROM ME!!</p></div>
+<div class="choices">
+[[Continue|I don't want to hurt (P15)]]
+</div>
+
+:: I don't want to hurt (P15)
+<div class="story-text"><p>I don't want to hurt you…</p></div>
+<div class="choices">
+[[next|You can't run (P16)]]
+</div>
+
+:: You can't run (P16)
+<div class="story-text"><p>You can't run…</p></div>
+<div class="choices">
+[[Continue|From the history (P17)]]
+</div>
+
+:: From the history (P17)
+<div class="story-text"><p>From the history…</p><p>WAKE UPPPP!!!!!!</p></div>
+<div class="choices">
+[[Continue|You escaped (P18)]]
+</div>
+
+:: You escaped (P18)
+<div class="scene"><div class="pos bg">[img[img_Pimage19]]</div></div>
+<div class="story-text"><p>You escaped</p></div>
+<div class="choices">
+[[Continue|Just a nightmare just a (P19)]]
+</div>
+
+:: Just a nightmare just a (P19)
+<div class="scene"><div class="pos bg">[img[img_Pimage28]]</div><div class="pos" style="left:47.058%;top:8.652%;width:39.062%;height:92.222%">[img[img_Pimage15]]</div></div>
+<div class="story-text"><p>Just a nightmare…just a nightmare</p></div>
+<div class="choices">
+[[Continue|I have to go to (P20)]]
+</div>
+
+:: I have to go to (P20)
+<div class="scene"><div class="pos bg">[img[img_Pimage30]]</div></div>
+<div class="story-text"><p>I have to go to work…</p></div>
+<div class="choices">
+[[Grab keys|What's that (P21)]]
+</div>
+
+:: What's that (P21)
+<div class="scene"><div class="pos bg">[img[img_Pimage33]]</div><div class="pos" style="left:2.656%;top:55.556%;width:25.000%;height:44.444%">[img[img_Pimage23]]</div><div class="pos" style="left:46.727%;top:26.253%;width:4.255%;height:7.443%">[img[img_Pimage24]]</div></div>
+<div class="story-text"><p>What's that</p></div>
+<div class="choices">
+[[Go in building|You this place is nice (P26)]]
+</div>
+
+:: You this place is nice (P26)
+<div class="scene"><div class="pos bg">[img[img_Pimage42]]</div><div class="pos" style="left:14.740%;top:33.981%;width:9.252%;height:16.019%">[img[img_Pimage22]]</div></div>
+<div class="story-text"><p>You:this place is nice</p></div>
+<div class="choices">
+[[Continue|Sir hello sir what is (P27)]]
+</div>
+
+:: Sir hello sir what is (P27)
+<div class="scene"><div class="pos bg">[img[img_Pimage42]]</div><div class="pos" style="left:32.722%;top:11.173%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div></div>
+<div class="story-text"><p>Sir:hello sir what is your name</p></div>
+<div class="choices">
+[[Don't say|Wait what's that (P29)]]
+[[say|its theo . (P28)]]
+</div>
+
+:: Wait what's that (P29)
+<div class="scene"><div class="pos bg">[img[img_Pimage38]]</div><div class="pos" style="left:53.845%;top:44.741%;width:19.148%;height:34.041%">[img[img_Pimage35]]</div></div>
+<div class="story-text"><p>Wait what's that</p></div>
+<div class="choices">
+[[Run to second story|Go in (P32)]]
+</div>
+
+:: its theo . (P28)
+<div class="scene"><div class="pos bg">[img[img_Pimage42]]</div><div class="pos" style="left:33.333%;top:11.173%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div></div>
+<div class="story-text"><p>its…theo….</p></div>
+<div class="choices">
+[[Walk away|Wait what's that (P29)]]
+</div>
+
+:: Go in (P32)
+<div class="scene"><div class="pos bg">[img[img_Pimage52]]</div></div>
+<div class="choices">
+[[Go in|You why it was just (P30)]]
+</div>
+
+:: You why it was just (P30)
+<div class="scene"><div class="pos bg">[img[img_Pimage32]]</div></div>
+<div class="story-text"><p>You:why…it was just a dream</p></div>
+<div class="choices">
+[[Continue|You oh! Time to open (P31)]]
+</div>
+
+:: You oh! Time to open (P31)
+<div class="scene"><div class="pos bg">[img[img_Pimage92]]</div></div>
+<div class="story-text"><p>You:oh! Time to open</p></div>
+<div class="choices">
+[[Go to office|use (P33)]]
+</div>
+
+:: use (P33)
+<div class="scene"><div class="pos bg">[img[img_Pimage39]]</div></div>
+<div class="choices">
+[[use|1230ht (P34)]]
+</div>
+
+:: 1230ht (P34)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:3.929%;top:68.088%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
+<div class="story-text"><p>1230ht</p></div>
+<div class="choices">
+[[Password to access|1230ht enter (P35)]]
+</div>
+
+:: 1230ht enter (P35)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div></div>
+<div class="choices">
+[[1230ht enter|Work (P36)]]
+</div>
+
+:: Work (P36)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:3.386%;top:2.939%;width:92.396%;height:72.061%">[img[img_Pimage27]]</div></div>
+<div class="choices">
+[[Work|Hi i know whats happening (P41)]]
+[[tax|Pay tax 200 (P38)]]
+[[files|New file unlocked (P81)]]
+</div>
+
+:: Hi i know whats happening (P41)
+<div class="scene"><div class="pos bg">[img[img_Pimage46]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>Hi i know whats happening here this is what i know</p></div>
+<div class="choices">
+[[Learn whats happening|Aliens will be released from (P40)]]
+[[Find the computer code with him|First we must find the (P42)]]
+</div>
+
+:: Pay tax 200 (P38)
+<div class="scene"><div class="pos bg">[img[img_Pimage65]]</div></div>
+<div class="choices">
+[[Pay tax ($200)|You lost (P39)]]
+</div>
+
+:: New file unlocked (P81)
+<div class="scene"><div class="pos bg">[img[img_Pimage81]]</div></div>
+<div class="story-text"><p>New file unlocked</p><p>Open</p></div>
+<div class="choices">
+[[Open|You must sneak around back (P82)]]
+</div>
+
+:: Aliens will be released from (P40)
+<div class="scene"><div class="pos bg">[img[img_Pimage46]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:47.619%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>Aliens will be released from a data site in 48 hours we must detonate the site</p></div>
+<div class="choices">
+[[Go back|Hi i know whats happening (P41)]]
+</div>
+
+:: First we must find the (P42)
+<div class="scene"><div class="pos bg">[img[img_Pimage46]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>First we must find the exact monitor model</p></div>
+<div class="choices">
+[[Storage|Alright look in the boxes (P47)]]
+[[Office|Drawer (P43)]]
+</div>
+
+:: You lost (P39) [ending]
+<div class="story-text"><p>You lost</p><p>From bank lost</p></div>
+<div class="choices">
+[[Go to main menu|Main menu (P2)]]
+</div>
+
+:: You must sneak around back (P82)
+<div class="scene"><div class="pos bg">[img[img_Pimage56]]</div></div>
+<div class="story-text"><p>You must sneak around back to the computer</p></div>
+<div class="choices">
+[[Cut through the library|You make it (P97)]]
+[[Sneak around storage|RUN (P98)]]
+[[Book it|Sir put your hands up (P79)]]
+</div>
+
+:: Alright look in the boxes (P47)
+<div class="scene"><div class="pos bg">[img[img_Pimage54]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:69.818%;top:76.620%;width:22.984%;height:21.087%"><div class="crop" style="left:-9.06%;top:-31.95%;width:114.56%;height:162.26%">[img[img_Pimage55]]</div></div><div class="pos clip" style="left:3.409%;top:76.620%;width:20.421%;height:19.130%"><div class="crop" style="left:-5.80%;top:-27.71%;width:112.55%;height:156.12%">[img[img_Pimage55]]</div></div><div class="pos clip" style="left:2.127%;top:40.873%;width:22.984%;height:21.087%"><div class="crop" style="left:-9.06%;top:-31.95%;width:114.56%;height:162.26%">[img[img_Pimage55]]</div></div><div class="pos clip" style="left:74.130%;top:40.873%;width:22.984%;height:21.087%"><div class="crop" style="left:-9.06%;top:-31.95%;width:114.56%;height:162.26%">[img[img_Pimage55]]</div></div></div>
+<div class="story-text"><p>Alright look in the boxes</p></div>
+<div class="choices">
+[[BOX 1|30 MINUTES HAVE PASSED. THIS (P48)]]
+[[BOX 2|30 MINUTES HAVE PASSED. THIS (P51)]]
+[[BOX 3|30 MINUTES HAVE PASSED. THIS (P49)]]
+[[BOX 4|Aha pg27ucdm we need the (P50)]]
+</div>
+
+:: Drawer (P43)
+<div class="scene"><div class="pos bg">[img[img_Pimage56]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="choices">
+[[Drawer|Ok guess the code (P77)]]
+[[Look around|Sir put your hands up (P79)]]
+</div>
+
+:: You make it (P97)
+<div class="scene"><div class="pos bg">[img[img_Pimage127]]</div></div>
+<div class="choices">
+[[You make it|As you put in the (P96)]]
+</div>
+
+:: RUN (P98)
+<div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%">[img[img_Pimage145]]</div></div>
+<div class="choices">
+[[RUN|You make it to the (P102)]]
+[[It caught you|Stuffed in animatronic ending (P109)]]
+[[Hint|-B- - - (P130)]]
+</div>
+
+:: Sir put your hands up (P79)
+<div class="scene"><div class="pos bg">[img[img_Pimage99]]</div></div>
+<div class="story-text"><p>Sir put your hands up</p></div>
+<div class="choices">
+[[Run|Death ending (P91)]]
+[[Fight|Death ending (P91)]]
+[[Give up|Arrested ending (P76)]]
+</div>
+
+:: 30 MINUTES HAVE PASSED. THIS (P48)
+<div class="story-text"><p>30 MINUTES HAVE PASSED. THIS WASN'T THE BOX!</p></div>
+<div class="choices">
+[[GO BACK.|Alright look in the boxes (P47)]]
+</div>
+
+:: 30 MINUTES HAVE PASSED. THIS (P51)
+<div class="story-text"><p>30 MINUTES HAVE PASSED. THIS WASN'T THE BOX!</p></div>
+<div class="choices">
+[[GO BACK.|Alright look in the boxes (P47)]]
+</div>
+
+:: 30 MINUTES HAVE PASSED. THIS (P49)
+<div class="story-text"><p>30 MINUTES HAVE PASSED. THIS WASN'T THE BOX!</p></div>
+<div class="choices">
+[[GO BACK.|Alright look in the boxes (P47)]]
+</div>
+
+:: Aha pg27ucdm we need the (P50)
+<div class="scene"><div class="pos bg">[img[img_Pimage57]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>Aha pg27ucdm we need the first letter so P go to the monitor!</p></div>
+<div class="choices">
+[[Go to monitor|Password P . . . (P64)]]
+</div>
+
+:: Ok guess the code (P77)
+<div class="scene"><div class="pos bg">[img[img_Pimage149]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div></div>
+<div class="story-text"><p>Ok guess the code</p></div>
+<div class="choices">
+[[Next|guessing (P78)]]
+</div>
+
+:: As you put in the (P96)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
+<div class="story-text"><p>As you put in the password your memory blurs and you make a typo securing your fate you have lost</p></div>
+<div class="choices">
+[[Continue|You lost! Aliens are gonna (P37)]]
+[[File|open (P125)]]
+</div>
+
+:: You make it to the (P102)
+<div class="story-text"><p>You make it to the computer</p></div>
+<div class="choices">
+[[Put in code|Congrats you have Det0nated THis (P63)]]
+</div>
+
+:: Stuffed in animatronic ending (P109) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage120]]</div></div>
+<div class="story-text"><p>Stuffed in animatronic ending</p></div>
+<div class="choices">
+[[Beginning|Start]]
+[[Hint|.-.-.-.-.o.- (P128)]]
+</div>
+
+:: -B- - - (P130)
+<div class="story-text"><p>-B- - -</p><p>Code</p></div>
+<div class="choices">
+[[Go back|RUN (P98)]]
+</div>
+
+:: Death ending (P91) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage111]]</div></div>
+<div class="story-text"><p>Death ending</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>
+
+:: Arrested ending (P76) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage77]]</div></div>
+<div class="story-text"><p>Arrested ending</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>
+
+:: Password P . . . (P64)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
+<div class="story-text"><p>Password P_._._._</p></div>
+<div class="choices">
+[[Back|Where to next (P53)]]
+</div>
+
+:: guessing (P78)
+<div class="scene"><div class="pos bg">[img[img_Pimage104]]</div><div class="pos clip" style="left:42.911%;top:46.654%;width:22.989%;height:46.522%"><div class="crop" style="left:-75.55%;top:-84.39%;width:244.68%;height:214.95%">[img[img_Pimage83]]</div></div></div>
+<div class="story-text"><p>guessing</p></div>
+<div class="choices">
+[[1|You lost! Aliens are gonna (P37)]]
+[[2|You lost! Aliens are gonna (P37)]]
+[[3|You lost! Aliens are gonna (P37)]]
+[[4|You lost! Aliens are gonna (P37)]]
+[[5|You lost! Aliens are gonna (P37)]]
+[[6|You lost! Aliens are gonna (P37)]]
+[[7|You lost! Aliens are gonna (P37)]]
+[[1 178|PB227 (P80)]]
+</div>
+
+:: You lost! Aliens are gonna (P37)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:3.386%;top:2.939%;width:92.396%;height:72.061%">[img[img_Pimage27]]</div><div class="pos" style="left:3.386%;top:2.939%;width:92.396%;height:72.061%">[img[img_Pimage60]]</div></div>
+<div class="story-text"><p>You lost! Aliens are gonna be released.</p></div>
+<div class="choices">
+[[Continue|Mayhem arrived (P44)]]
+</div>
+
+:: open (P125)
+<div class="scene"><div class="pos bg">[img[img_Pimage81]]</div></div>
+<div class="choices">
+[[open|Files opened (P124)]]
+</div>
+
+:: Congrats you have Det0nated THis (P63) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:1.667%;top:5.455%;width:93.948%;height:70.286%">[img[img_Pimage66]]</div><div class="pos" style="left:1.667%;top:5.455%;width:94.682%;height:75.669%">[img[img_Pimage67]]</div></div>
+<div class="story-text"><p>Congrats you have Det0nated THis SsITE GOOD GOOD G00OD Job</p></div>
+<div class="choices">
+[[Next|Start]]
+[[Go to files|open (P125)]]
+</div>
+
+:: .-.-.-.-.o.- (P128)
+<div class="story-text"><p>.-.-.-.-.o.-</p></div>
+<div class="choices">
+[[Go back|Stuffed in animatronic ending (P109)]]
+</div>
+
+:: Where to next (P53)
+<div class="scene"><div class="pos bg">[img[img_Pimage46]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:23.918%;top:8.652%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div></div>
+<div class="story-text"><p>Where to next</p></div>
+<div class="choices">
+[[Library|Which genre (P54)]]
+</div>
+
+:: PB227 (P80)
+<div class="scene"><div class="pos bg">[img[img_Pimage93]]</div><div class="pos clip" style="left:22.979%;top:31.871%;width:43.147%;height:54.348%"><div class="crop" style="left:-16.80%;top:-10.62%;width:130.37%;height:122.73%">[img[img_Pimage82]]</div></div></div>
+<div class="choices">
+[[PB227|You must sneak around back (P82)]]
+</div>
+
+:: Mayhem arrived (P44) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage63]]</div><div class="pos" style="left:0.000%;top:41.520%;width:49.219%;height:58.480%">[img[img_Pimage50]]</div><div class="pos" style="left:41.972%;top:55.026%;width:23.333%;height:49.656%">[img[img_Pimage47]]</div></div>
+<div class="story-text"><p>Mayhem arrived</p></div>
+<div class="choices">
+[[Go back|Start]]
+</div>
+
+:: Files opened (P124)
+<div class="story-text"><p>Files opened</p><p>The fourth file: Creators note</p><p>Vinny's note</p></div>
+<div class="choices">
+[[Read the note|note (P131)]]
+[[Back to the title|Start]]
+</div>
+
+:: Which genre (P54)
+<div class="scene"><div class="pos bg">[img[img_Pimage74]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>Which genre</p></div>
+<div class="choices">
+[[The Art Of Secrecy|-- L-.-.- (P126)]]
+[[SCI-FI|You lost! Aliens are gonna (P37)]]
+[[Science|1178 (P56)]]
+[[Comic|You lost! Aliens are gonna (P37)]]
+</div>
+
+:: note (P131)
+<div class="story-text"><p>note</p><p>Hi one of the notes to the code is j…</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>
+
+:: -- L-.-.- (P126)
+<div class="story-text"><p>-- L-.-.-</p></div>
+<div class="choices">
+[[GO Back|Which genre (P54)]]
+</div>
+
+:: 1178 (P56)
+<div class="scene"><div class="pos bg">[img[img_Pimage61]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>1178</p><p>Aha bird so B!</p><p>JBLVOB CODE</p></div>
+<div class="choices">
+[[Enter code|Password PB . . (P61)]]
+</div>
+
+:: Password PB . . (P61)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
+<div class="story-text"><p>Password PB_._._</p></div>
+<div class="choices">
+[[back|Alright you must do this (P60)]]
+</div>
+
+:: Alright you must do this (P60)
+<div class="scene"><div class="pos bg">[img[img_Pimage68]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div></div>
+<div class="story-text"><p>Alright you must do this one yourself go to the ceo's office there are answers there</p></div>
+<div class="choices">
+[[Go|You see one guard what (P58)]]
+</div>
+
+:: You see one guard what (P58)
+<div class="scene"><div class="pos bg">[img[img_Pimage87]]</div><div class="pos clip" style="left:60.450%;top:53.828%;width:21.479%;height:14.884%;transform:rotate(83.39deg)"><div class="crop" style="left:10.99%;top:-41.52%;width:88.45%;height:171.86%">[img[img_Pimage59]]</div></div><div class="pos" style="left:78.967%;top:57.864%;width:10.789%;height:29.934%">[img[img_Pimage70]]</div></div>
+<div class="story-text"><p>You see one guard what will you do?</p></div>
+<div class="choices">
+[[Don't pick this|Wake up please (P59)]]
+[[Vent|Great keep quiet so you (P57)]]
+</div>
+
+:: Wake up please (P59)
+<div class="scene"><div class="pos bg">[img[img_Pimage75]]</div></div>
+<div class="story-text"><p>Wake up please</p></div>
+<div class="choices">
+[[THEO!! THEO!!|Huh that was weird (P55)]]
+</div>
+
+:: Great keep quiet so you (P57)
+<div class="scene"><div class="pos bg">[img[img_Pimage73]]</div><div class="pos" style="left:70.312%;top:0.331%;width:15.625%;height:27.778%">[img[img_Pimage62]]</div></div>
+<div class="story-text"><p>Great keep quiet so you don't get caught</p><p>Wait that lamp is from minecraft what?</p></div>
+<div class="choices">
+[[Rub your eyes|Great keep quiet so you (P52)]]
+</div>
+
+:: Huh that was weird (P55)
+<div class="story-text"><p>Huh that was weird</p></div>
+<div class="choices">
+[[Go back|You see one guard what (P58)]]
+</div>
+
+:: Great keep quiet so you (P52)
+<div class="scene"><div class="pos bg">[img[img_Pimage73]]</div><div class="pos" style="left:77.450%;top:-1.087%;width:17.501%;height:37.524%;transform:rotate(180.00deg)">[img[img_Pimage51]]</div></div>
+<div class="story-text"><p>Great keep quiet so you don't get caught</p><p>Ok normal again… for now</p></div>
+<div class="choices">
+[[Keep crawling|Wait there's the office (P65)]]
+</div>
+
+:: Wait there's the office (P65)
+<div class="scene"><div class="pos bg">[img[img_Pimage98]]</div><div class="pos" style="left:36.979%;top:13.426%;width:26.042%;height:73.148%">[img[img_Pimage69]]</div><div class="pos" style="left:45.846%;top:-14.372%;width:46.458%;height:92.222%">[img[img_Pimage71]]</div><div class="pos" style="left:15.442%;top:13.426%;width:20.448%;height:58.588%">[img[img_Pimage76]]</div></div>
+<div class="story-text"><p>Wait there's the office</p></div>
+<div class="choices">
+[[Look around|Where to check? (P66)]]
+</div>
+
+:: Where to check? (P66)
+<div class="scene"><div class="pos bg">[img[img_Pimage89]]</div></div>
+<div class="story-text"><p>Where to check?</p><p>Box</p></div>
+<div class="choices">
+[[Drawer Box|On your way to the (P67)]]
+[[Other room|next (P99)]]
+</div>
+
+:: On your way to the (P67)
+<div class="scene"><div class="pos bg">[img[img_Pimage72]]</div></div>
+<div class="story-text"><p>On your way to the drawer you fall</p></div>
+<div class="choices">
+[[WHat'S HaPpenInG|THEO THEOOO! WAKE UP PLEASEE (P68)]]
+</div>
+
+:: next (P99)
+<div class="scene"><div class="pos bg">[img[img_Pimage101]]</div><div class="pos" style="left:25.000%;top:16.236%;width:51.875%;height:72.593%">[img[img_Pimage108]]</div></div>
+<div class="choices">
+[[next|Legit question (P89)]]
+[[Keep walking|Oh my old college dorm (P110)]]
+</div>
+
+:: THEO THEOOO! WAKE UP PLEASEE (P68)
+<div class="scene"><div class="pos bg">[img[img_Pimage85]]</div></div>
+<div class="choices">
+[[THEO THEOOO! WAKE UP PLEASEE|Mom Dad? (P69)]]
+</div>
+
+:: Legit question (P89)
+<div class="story-text"><p>Legit question</p></div>
+<div class="choices">
+[[Keep investigating|Night arrived (P88)]]
+[[End shift and sneak with the computer.|Set up (P23)]]
+</div>
+
+:: Oh my old college dorm (P110)
+<div class="scene"><div class="pos bg">[img[img_Pimage141]]</div><div class="pos" style="left:45.781%;top:48.611%;width:19.375%;height:23.148%">[img[img_Pimage124]]</div></div>
+<div class="story-text"><p>Oh my old college dorm</p></div>
+<div class="choices">
+[[open|note (P131)]]
+</div>
+
+:: Mom Dad? (P69)
+<div class="scene"><div class="pos bg">[img[img_Pimage80]]</div><div class="pos" style="left:44.361%;top:4.183%;width:35.610%;height:25.297%">[img[img_Pimage103]]</div></div>
+<div class="choices">
+[[Mom Dad?|Mom Dad? (P70)]]
+</div>
+
+:: Night arrived (P88)
+<div class="scene"><div class="pos bg">[img[img_Pimage105]]</div><div class="pos" style="left:4.375%;top:41.883%;width:26.406%;height:46.945%">[img[img_Pimage35]]</div></div>
+<div class="story-text"><p>Night arrived…</p></div>
+<div class="choices">
+[[Continue|It's all good (P83)]]
+</div>
+
+:: Set up (P23)
+<div class="scene"><div class="pos bg">[img[img_Pimage31]]</div><div class="pos" style="left:36.927%;top:11.759%;width:40.573%;height:72.130%">[img[img_Pimage16]]</div></div>
+<div class="choices">
+[[Set up|Turn on (P24)]]
+</div>
+
+:: Mom Dad? (P70)
+<div class="scene"><div class="pos bg">[img[img_Pimage79]]</div><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="story-text"><p>Mom Dad?</p><p>Hello Young one</p></div>
+<div class="choices">
+[[Where am i|I am the bringer of (P71)]]
+</div>
+
+:: It's all good (P83)
+<div class="scene"><div class="pos bg">[img[img_Pimage97]]</div></div>
+<div class="story-text"><p>It's all good</p></div>
+<div class="choices">
+[[next|walk (P84)]]
+</div>
+
+:: Turn on (P24)
+<div class="scene"><div class="pos bg">[img[img_Pimage31]]</div><div class="pos clip" style="left:29.613%;top:-3.439%;width:20.387%;height:36.243%"><div class="crop" style="left:-0.00%;top:4.14%;width:100.00%;height:100.00%">[img[img_Pimage18]]</div></div></div>
+<div class="choices">
+[[Turn on|work (P25)]]
+</div>
+
+:: I am the bringer of (P71)
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="story-text"><p>I am the bringer of death your time has come young one</p></div>
+<div class="choices">
+[[Continue|You may watch your memories (P72)]]
+</div>
+
+:: walk (P84)
+<div class="scene"><div class="pos bg">[img[img_Pimage97]]</div><div class="pos" style="left:18.542%;top:21.083%;width:65.208%;height:68.640%">[img[img_Pimage91]]</div></div>
+<div class="choices">
+[[walk|Sir theo your back (P85)]]
+</div>
+
+:: work (P25)
+<div class="scene"><div class="pos bg">[img[img_Pimage43]]</div><div class="pos" style="left:17.420%;top:9.669%;width:66.524%;height:62.123%">[img[img_Pimage27]]</div></div>
+<div class="choices">
+[[work|You lost! Aliens are gonna (P37)]]
+</div>
+
+:: You may watch your memories (P72)
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="story-text"><p>You may watch your memories enjoy you have 5 minutes</p></div>
+<div class="choices">
+[[Next|Times up Theo did you (P73)]]
+</div>
+
+:: Sir theo your back (P85)
+<div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:7.604%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos" style="left:13.424%;top:25.713%;width:14.076%;height:18.241%">[img[img_Pimage3]]</div></div>
+<div class="story-text"><p>Sir:theo your back</p></div>
+<div class="choices">
+[[next|aaaaaAAAA!!! (P86)]]
+</div>
+
+:: Times up Theo did you (P73)
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
+<div class="choices">
+[[Times up Theo did you enjoy your last day?|These were just memories Theo (P74)]]
+</div>
+
+:: aaaaaAAAA!!! (P86)
+<div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:7.604%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos" style="left:13.424%;top:25.713%;width:14.076%;height:18.241%">[img[img_Pimage3]]</div><div class="pos" style="left:9.092%;top:19.786%;width:30.938%;height:45.556%">[img[img_Pimage107]]</div></div>
+<div class="story-text"><p>aaaaaAAAA!!!</p><p>Who are you</p></div>
+<div class="choices">
+[[next|sir what? (P87)]]
+</div>
+
+:: These were just memories Theo (P74)
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.506%;height:100.000%">[img[img_Pimage78]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div><div class="pos" style="left:44.989%;top:0.132%;width:47.935%;height:101.172%">[img[img_Pimage84]]</div></div>
+<div class="story-text"><p>These were just memories Theo goodbye</p><p>You have been released</p></div>
+<div class="choices">
+[[Release your soul|They bring you up to (P75)]]
+</div>
+
+:: sir what? (P87)
+<div class="scene"><div class="pos bg">[img[img_Pimage119]]</div><div class="pos" style="left:8.646%;top:25.713%;width:55.716%;height:74.287%">[img[img_Pimage10]]</div><div class="pos clip" style="left:16.210%;top:27.127%;width:14.076%;height:18.241%"><div class="crop" style="left:-6.60%;top:-11.64%;width:100.00%;height:100.00%">[img[img_Pimage3]]</div></div></div>
+<div class="story-text"><p>sir:what?</p><p>you:nothing</p><p>Lets just go keep investigating…</p></div>
+<div class="choices">
+[[Keep walking|You 2 walk in a (P90)]]
+</div>
+
+:: They bring you up to (P75) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage86]]</div></div>
+<div class="story-text"><p>They bring you up to the heavens ending</p></div>
+<div class="choices">
+[[Go to main menu|Main menu (P2)]]
+</div>
+
+:: You 2 walk in a (P90)
+<div class="story-text"><p>You 2 walk in a secret tunnel</p></div>
+<div class="choices">
+[[Continue|Split up (P92)]]
+</div>
+
+:: Split up (P92)
+<div class="scene"><div class="pos bg">[img[img_Pimage100]]</div><div class="pos" style="left:22.917%;top:23.856%;width:49.816%;height:66.422%">[img[img_Pimage10]]</div><div class="pos" style="left:27.031%;top:22.406%;width:14.171%;height:18.363%">[img[img_Pimage3]]</div><div class="pos" style="left:17.485%;top:83.032%;width:33.263%;height:71.889%">[img[img_Pimage2]]</div></div>
+<div class="choices">
+[[Split up|ARE YOU SURE (P93)]]
+[[Walk right|Right tunnel (P95)]]
+[[Walk left|Everything collapses into a limi (P105)]]
+</div>
+
+:: ARE YOU SURE (P93)
+<div class="story-text"><p>ARE YOU SURE</p></div>
+<div class="choices">
+[[yes|What the (P94)]]
+[[no|Split up (P92)]]
+</div>
+
+:: Right tunnel (P95)
+<div class="scene"><div class="pos bg">[img[img_Pimage102]]</div></div>
+<div class="story-text"><p>Right tunnel</p></div>
+<div class="choices">
+[[Walk|Turn around (P106)]]
+</div>
+
+:: Everything collapses into a limi (P105) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage113]]</div></div>
+<div class="story-text"><p>Everything collapses into a liminal space. Good luck, wayward adventurer.</p><p>Part 3.1</p></div>
+<div class="choices">
+[[Back to the title|Start]]
+</div>
+
+:: What the (P94)
+<div class="scene"><div class="pos bg">[img[img_Pimage106]]</div></div>
+<div class="story-text"><p>What the…</p></div>
+<div class="choices">
+[[Run|Death (P100)]]
+[[hide|Rando hello (P103)]]
+</div>
+
+:: Turn around (P106)
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div></div>
+<div class="choices">
+[[Turn around|1v1 Run 4o6 70ur 1!Fe (P107)]]
+</div>
+
+:: Death (P100)
+<div class="scene"><div class="pos bg">[img[img_Pimage118]]</div></div>
+<div class="choices">
+[[Death|Beginning (P101)]]
+[[Hint|-.-.-.-.-.-.B (P129)]]
+</div>
+
+:: Rando hello (P103)
+<div class="scene"><div class="pos bg">[img[img_Pimage115]]</div><div class="pos" style="left:30.778%;top:15.777%;width:67.079%;height:93.261%">[img[img_Pimage109]]</div></div>
+<div class="story-text"><p>Rando: hello</p></div>
+<div class="choices">
+[[next|dad hello?! (P104)]]
+</div>
+
+:: 1v1 Run 4o6 70ur 1!Fe (P107)
+<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div></div>
+<div class="choices">
+[[1v1 Run 4o6 70ur 1!Fe|You see a chair (P108)]]
+</div>
+
+:: Beginning (P101)
+<div class="scene"><div class="pos bg">[img[img_Pimage123]]</div></div>
+<div class="choices">
+[[Beginning|Start]]
+[[Hint|-.-.-.V.-.- (P127)]]
+</div>
+
+:: -.-.-.-.-.-.B (P129)
+<div class="story-text"><p>-.-.-.-.-.-.B</p></div>
+<div class="choices">
+[[Go back|Death (P100)]]
+</div>
+
+:: dad hello?! (P104)
+<div class="scene"><div class="pos bg">[img[img_Pimage115]]</div><div class="pos" style="left:47.494%;top:15.306%;width:67.079%;height:93.261%">[img[img_Pimage109]]</div><div class="pos" style="left:35.574%;top:41.112%;width:14.426%;height:33.611%">[img[img_Pimage112]]</div><div class="pos" style="left:34.164%;top:71.557%;width:17.247%;height:31.111%">[img[img_Pimage116]]</div><div class="pos" style="left:39.598%;top:48.680%;width:5.012%;height:10.780%">[img[img_Pimage114]]</div></div>
+<div class="story-text"><p>dad : hello?!</p></div>
+<div class="choices">
+[[Continue|Everything collapses into a limi (P105)]]
+</div>
+
+:: You see a chair (P108)
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:20.433%;top:17.550%;width:53.226%;height:78.161%"><div class="crop" style="left:-32.95%;top:-0.00%;width:153.18%;height:100.00%">[img[img_Pimage117]]</div></div><div class="pos clip" style="left:-1.705%;top:97.258%;width:1.705%;height:2.704%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip" style="left:20.433%;top:26.152%;width:55.282%;height:73.810%"><div class="crop" style="left:-15.10%;top:-83.48%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="story-text"><p>You see a chair</p></div>
+<div class="choices">
+[[IT CAUGHT YOU|It catches you (P112)]]
+[[Over|You trip and fall (P111)]]
+[[UNDER|You trip and fall (P111)]]
+[[TO THE SIDE|A table is in the (P115)]]
+</div>
+
+:: -.-.-.V.-.- (P127)
+<div class="story-text"><p>-.-.-.V.-.-</p></div>
+<div class="choices">
+[[Go back|Beginning (P101)]]
+</div>
+
+:: It catches you (P112)
+<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:26.239%;top:18.577%;width:50.322%;height:79.833%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="choices">
+[[It catches you|It eats you alive (P113)]]
+</div>
+
+:: You trip and fall (P111)
+<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:26.239%;top:18.577%;width:50.322%;height:79.833%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="choices">
+[[You trip and fall|It catches you (P112)]]
+</div>
+
+:: A table is in the (P115)
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:19.429%;top:27.658%;width:67.173%;height:80.000%"><div class="crop" style="left:-11.11%;top:-0.00%;width:111.11%;height:100.00%">[img[img_Pimage126]]</div></div><div class="pos clip" style="left:0.000%;top:98.099%;width:1.199%;height:1.901%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip" style="left:19.429%;top:34.324%;width:62.615%;height:62.699%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="story-text"><p>A table is in the way</p></div>
+<div class="choices">
+[[Under|You see a Cannon? (P117)]]
+[[To The Side|You trip and fall (P111)]]
+[[Over|You trip and fall (P111)]]
+[[It caught you|It catches you (P112)]]
+</div>
+
+:: It eats you alive (P113)
+<div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:0.469%;top:-22.834%;width:99.062%;height:124.600%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="choices">
+[[It eats you alive|Eaten alive ending (P114)]]
+</div>
+
+:: You see a Cannon? (P117)
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos" style="left:8.215%;top:31.171%;width:67.965%;height:51.852%">[img[img_Pimage130]]</div><div class="pos" style="left:3.409%;top:93.638%;width:0.790%;height:2.192%;transform:rotate(180.00deg)">[img[img_Pimage128]]</div><div class="pos clip" style="left:16.865%;top:33.034%;width:64.932%;height:62.796%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="story-text"><p>You see a Cannon?</p></div>
+<div class="choices">
+[[IT CAUGHT YOU|It catches you (P112)]]
+[[Shoot it|As you blast them the (P116)]]
+[[Keep running|You keep running the level (P118)]]
+</div>
+
+:: Eaten alive ending (P114) [ending]
+<div class="story-text"><p>Eaten alive ending</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>
+
+:: As you blast them the (P116) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage137]]</div></div>
+<div class="story-text"><p>As you blast them the level collapses and you are crushed</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>
+
+:: You keep running the level (P118)
+<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos" style="left:35.750%;top:19.787%;width:32.933%;height:43.911%">[img[img_Pimage10]]</div><div class="pos" style="left:33.935%;top:61.421%;width:18.917%;height:34.720%">[img[img_Pimage2]]</div><div class="pos clip" style="left:52.519%;top:14.496%;width:18.414%;height:34.720%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
+<div class="story-text"><p>You keep running the level fades away and you are greeted by your coworker chasing after you</p></div>
+<div class="choices">
+[[Hi theo why were you running|SIR THEO RUNNNNN (P119)]]
+</div>
+
+:: SIR THEO RUNNNNN (P119)
+<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos clip" style="left:52.887%;top:14.062%;width:18.414%;height:34.720%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:24.889%;top:10.848%;width:26.042%;height:72.222%">[img[img_Pimage128]]</div><div class="pos clip" style="left:37.050%;top:19.787%;width:18.414%;height:43.911%"><div class="crop" style="left:-0.00%;top:-0.00%;width:178.85%;height:100.00%">[img[img_Pimage10]]</div></div><div class="pos" style="left:35.438%;top:63.697%;width:18.917%;height:34.720%">[img[img_Pimage2]]</div></div>
+<div class="choices">
+[[SIR THEO RUNNNNN|AHHHHH (P120)]]
+</div>
+
+:: AHHHHH (P120)
+<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos clip" style="left:76.397%;top:32.640%;width:18.414%;height:34.720%;transform:rotate(90.00deg)"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos" style="left:29.582%;top:10.513%;width:33.994%;height:72.222%">[img[img_Pimage128]]</div><div class="pos" style="left:29.156%;top:43.182%;width:18.917%;height:34.720%;transform:rotate(90.00deg)">[img[img_Pimage2]]</div><div class="pos clip" style="left:50.840%;top:41.369%;width:18.414%;height:43.911%;transform:rotate(90.00deg)"><div class="crop" style="left:-0.00%;top:-0.00%;width:178.85%;height:100.00%">[img[img_Pimage10]]</div></div><div class="pos" style="left:26.201%;top:32.736%;width:13.333%;height:23.333%;transform:rotate(28.25deg)">[img[img_Pimage136]]</div><div class="pos" style="left:54.214%;top:38.148%;width:11.667%;height:23.704%;transform:rotate(-23.17deg)">[img[img_Pimage148]]</div><div class="pos" style="left:33.891%;top:54.742%;width:19.167%;height:37.037%">[img[img_Pimage138]]</div></div>
+<div class="choices">
+[[AHHHHH|RUNNNNNNNNN (P121)]]
+</div>
+
+:: RUNNNNNNNNN (P121)
+<div class="scene"><div class="pos bg">[img[img_Pimage143]]</div><div class="pos" style="left:30.682%;top:23.340%;width:33.994%;height:72.222%">[img[img_Pimage128]]</div></div>
+<div class="choices">
+[[RUNNNNNNNNN|Stop running (P122)]]
+</div>
+
+:: Stop running (P122)
+<div class="scene"><div class="pos clip" style="left:36.533%;top:18.597%;width:18.414%;height:43.911%"><div class="crop" style="left:-0.00%;top:-0.00%;width:178.85%;height:100.00%">[img[img_Pimage10]]</div></div><div class="pos" style="left:33.935%;top:61.421%;width:18.917%;height:34.720%">[img[img_Pimage2]]</div><div class="pos clip" style="left:55.609%;top:12.359%;width:18.414%;height:34.720%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="pos clip" style="left:38.631%;top:15.370%;width:15.775%;height:24.327%"><div class="crop" style="left:-112.52%;top:-83.73%;width:328.85%;height:284.70%">[img[img_Pimage147]]</div></div></div>
+<div class="choices">
+[[Stop running|Insanity ending (P123)]]
+</div>
+
+:: Insanity ending (P123) [ending]
+<div class="story-text"><p>Insanity ending</p></div>
+<div class="choices">
+[[Beginning|Start]]
+</div>

@@ -1,0 +1,159 @@
+:: Basement Escape
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div></div>
+<div class="story-text"><p>Part 2.1: The basement escape</p><p>It's been 3 days since my capture, I think i have found a way out i just cant be loud</p><p>Content note: mild illegal activity (trespassing), horror, intense violence, blood, light gore.</p></div>
+<div class="choices">
+[[Next|Try to escape (B7)]]
+</div>
+
+:: Try to escape (B7)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div></div>
+<div class="choices">
+[[Try to escape|You tryna escape, sonny? (B5)]]
+[[Wait it out for 30 minutes|rat (B8)]]
+</div>
+
+:: You tryna escape, sonny? (B5)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div><div class="pos clip" style="left:47.497%;top:18.880%;width:11.749%;height:28.858%"><div class="crop" style="left:-25.89%;top:-0.00%;width:142.36%;height:101.58%">[img[img_Bimage4]]</div></div><div class="pos clip" style="left:49.348%;top:48.826%;width:8.047%;height:26.826%"><div class="crop" style="left:-52.43%;top:-0.00%;width:205.92%;height:100.00%">[img[img_Bimage9]]</div></div><div class="pos" style="left:51.363%;top:57.451%;width:28.871%;height:28.858%;transform:rotate(-144.03deg)">[img[img_Bimage7]]</div><div class="pos" style="left:36.654%;top:67.837%;width:14.528%;height:30.794%">[img[img_Bimage13]]</div><div class="pos" style="left:53.319%;top:69.061%;width:14.528%;height:30.794%;transform:rotate(-56.31deg)">[img[img_Bimage13]]</div><div class="pos clip" style="left:11.974%;top:69.822%;width:25.762%;height:26.824%"><div class="crop" style="left:-2.89%;top:-4.94%;width:105.19%;height:107.73%">[img[img_Bimage6]]</div></div><div class="pos" style="left:23.123%;top:57.451%;width:28.871%;height:28.858%;transform:rotate(-45.00deg)">[img[img_Bimage7]]</div><div class="pos clip" style="left:42.434%;top:67.584%;width:6.807%;height:27.302%;transform:rotate(16.38deg)"><div class="crop" style="left:-98.06%;top:-13.98%;width:410.64%;height:122.28%">[img[img_Bimage11]]</div></div><div class="pos clip" style="left:57.694%;top:67.584%;width:7.002%;height:27.303%;transform:rotate(-52.55deg)"><div class="crop" style="left:-98.06%;top:-13.98%;width:410.64%;height:122.28%">[img[img_Bimage11]]</div></div><div class="pos" style="left:44.710%;top:46.842%;width:17.321%;height:30.794%">[img[img_Bimage2]]</div><div class="pos clip" style="left:59.105%;top:6.559%;width:23.818%;height:38.571%"><div class="crop" style="left:-7.43%;top:-13.21%;width:113.86%;height:125.00%">[img[img_Bimage14]]</div></div></div>
+<div class="story-text"><p>You tryna escape, sonny?</p></div>
+<div class="choices">
+[[Continue|Try again (B6)]]
+</div>
+
+:: rat (B8)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div><div class="pos" style="left:64.803%;top:55.263%;width:15.306%;height:21.073%">[img[img_Bimage5]]</div></div>
+<div class="choices">
+[[rat|Wow a rat okay (B12)]]
+[[Try to escape|You tryna escape, sonny? (B5)]]
+</div>
+
+:: Try again (B6) [ending]
+<div class="scene"><div class="pos bg">[img[img_Bimage1]]</div></div>
+<div class="choices">
+[[Try again|Basement Escape]]
+</div>
+
+:: Wow a rat okay (B12)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div><div class="pos" style="left:53.760%;top:32.271%;width:42.832%;height:58.972%">[img[img_Bimage5]]</div></div>
+<div class="story-text"><p>Wow a rat okay</p></div>
+<div class="choices">
+[[Make a friend|See what the rat is (B9)]]
+[[Go away|escape (B13)]]
+</div>
+
+:: See what the rat is (B9)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div><div class="pos" style="left:0.000%;top:71.562%;width:17.000%;height:23.407%">[img[img_Bimage5]]</div></div>
+<div class="choices">
+[[See what the rat is doing|Go through the hole (B14)]]
+[[Look up at the window|Try to escape (B10)]]
+</div>
+
+:: escape (B13)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div></div>
+<div class="choices">
+[[escape|Run far far away (B17)]]
+</div>
+
+:: Go through the hole (B14)
+<div class="scene"><div class="pos bg">[img[img_Bimage19]]</div></div>
+<div class="choices">
+[[Go through the hole|Wow a pantry full of (B15)]]
+</div>
+
+:: Try to escape (B10)
+<div class="scene"><div class="pos bg">[img[img_Bimage18]]</div></div>
+<div class="choices">
+[[Try to escape|I can't fit (B11)]]
+[[Sit back down|No luck (B16)]]
+</div>
+
+:: Run far far away (B17)
+<div class="scene"><div class="pos bg">[img[img_Bimage25]]</div></div>
+<div class="choices">
+[[Run far far away|You enter a lab (B18)]]
+</div>
+
+:: Wow a pantry full of (B15)
+<div class="scene"><div class="pos bg">[img[img_Bimage22]]</div></div>
+<div class="story-text"><p>Wow a pantry full of food</p></div>
+<div class="choices">
+[[Eat something|As you are eating he (B27)]]
+[[Hide till the door unlocks|You wait it out and (B28)]]
+</div>
+
+:: I can't fit (B11)
+<div class="scene"><div class="pos bg">[img[img_Bimage18]]</div></div>
+<div class="choices">
+[[I can't fit|No luck (B16)]]
+</div>
+
+:: No luck (B16)
+<div class="scene"><div class="pos bg">[img[img_Bimage10]]</div></div>
+<div class="choices">
+[[No luck|See what the rat is (B9)]]
+[[escape|Sneak behind (B24)]]
+</div>
+
+:: You enter a lab (B18)
+<div class="choices">
+[[You enter a lab|You found a old musket. (B19)]]
+</div>
+
+:: As you are eating he (B27)
+<div class="story-text"><p>As you are eating he checks on you and finds you</p></div>
+<div class="choices">
+[[Next|You tryna escape, sonny? (B5)]]
+</div>
+
+:: You wait it out and (B28)
+<div class="story-text"><p>You wait it out and he comes</p></div>
+<div class="choices">
+[[Next|Sneak behind (B24)]]
+</div>
+
+:: Sneak behind (B24)
+<div class="scene"><div class="pos clip" style="left:47.497%;top:18.880%;width:11.749%;height:28.858%"><div class="crop" style="left:-25.89%;top:-0.00%;width:142.36%;height:101.58%">[img[img_Bimage4]]</div></div><div class="pos" style="left:59.245%;top:30.025%;width:15.313%;height:28.333%">[img[img_Bimage23]]</div><div class="pos" style="left:75.306%;top:8.652%;width:20.579%;height:28.333%">[img[img_Bimage5]]</div></div>
+<div class="choices">
+[[Sneak behind|You are now safe, for (B22)]]
+</div>
+
+:: You found a old musket. (B19)
+<div class="scene"><div class="pos bg">[img[img_Bimage27]]</div><div class="pos clip" style="left:4.902%;top:56.079%;width:14.835%;height:15.447%"><div class="crop" style="left:-2.89%;top:-4.94%;width:105.19%;height:107.73%">[img[img_Bimage6]]</div></div></div>
+<div class="story-text"><p>You found a old musket.</p></div>
+<div class="choices">
+[[Take it|A bear attacks you but (B20)]]
+[[leave it|You see a bear and (B21)]]
+</div>
+
+:: You are now safe, for (B22) [ending]
+<div class="scene"><div class="pos bg">[img[img_Bimage26]]</div></div>
+<div class="story-text"><p>You are now safe, for now.</p></div>
+<div class="choices">
+<a class="p3link" href="../part-3-grown-up/">Continue to Part 3</a>
+[[Credits|Credits (B25)]]
+[[Main menu|Start]]
+</div>
+
+:: A bear attacks you but (B20)
+<div class="story-text"><p>A bear attacks you but you have the musket</p></div>
+<div class="choices">
+[[Eliminate the bear|You are now safe, for (B22)]]
+[[run|The bear got you and (B23)]]
+</div>
+
+:: You see a bear and (B21) [ending]
+<div class="story-text"><p>You see a bear and it attacks you with nothing to defend yourself.</p></div>
+<div class="choices">
+[[Try again|Basement Escape]]
+</div>
+
+:: Credits (B25)
+<div class="story-text"><p>Credits</p><p>Story creator - Lee Hawk</p><p>Main story designer - Braxton Bowen</p><p>Secondary story designer - Lee Hawk</p><p>The series creators - Lee Hawk, Alvin Eichstaedt, and Odin Stronach</p><p>Idea for part 2.1 - Braxton Bowen</p><p>BIG thanks to Braxton Bowen for our secondary series helper</p><p>Thank you!</p></div>
+<div class="choices">
+[[Back|You are now safe, for (B22)]]
+</div>
+
+:: The bear got you and (B23) [ending]
+<div class="story-text"><p>The bear got you and now you die</p></div>
+<div class="choices">
+[[Try again|Basement Escape]]
+</div>
