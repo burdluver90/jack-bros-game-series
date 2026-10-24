@@ -56,6 +56,9 @@ body.ending .choices a:hover { background: #ff6b6b; }
 .timerbar { max-width: 320px; height: 8px; margin: .2em auto 1em; background: #26304d; border-radius: 99px; overflow: hidden; }
 .timerbar span { display: block; height: 100%; background: #ff6b6b; transform-origin: left; animation-name: shrink; animation-timing-function: linear; animation-fill-mode: forwards; }
 @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.scene { container-type: inline-size; }
+.scene .itext { position: absolute; padding: 1cqw; box-sizing: border-box; line-height: 1.2; font-family: Arial, Helvetica, sans-serif; overflow-wrap: break-word; text-align: left; }
+.scene .itext a { color: inherit; text-decoration: inherit; cursor: pointer; }
 
 :: Story JavaScript [script]
 Config.ui.stowBarInitially = true;

@@ -160,7 +160,10 @@ body.ending .choices a:hover { background: #ff6b6b; }
 .scene .pos.late { display: none; }
 .timerbar { max-width: 320px; height: 8px; margin: .2em auto 1em; background: #26304d; border-radius: 99px; overflow: hidden; }
 .timerbar span { display: block; height: 100%; background: #ff6b6b; transform-origin: left; animation-name: shrink; animation-timing-function: linear; animation-fill-mode: forwards; }
-@keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }</style><script role="script" id="twine-user-script" type="text/twine-javascript">Config.ui.stowBarInitially = true;
+@keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.scene { container-type: inline-size; }
+.scene .itext { position: absolute; padding: 1cqw; box-sizing: border-box; line-height: 1.2; font-family: Arial, Helvetica, sans-serif; overflow-wrap: break-word; text-align: left; }
+.scene .itext a { color: inherit; text-decoration: inherit; cursor: pointer; }</style><script role="script" id="twine-user-script" type="text/twine-javascript">Config.ui.stowBarInitially = true;
 Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start" tags="" position="100,100" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage1]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Part 3: Grown Up&lt;/p&gt;&lt;p&gt;Made by Jack-Bros&lt;/p&gt;&lt;p&gt;Rated T: crude humor, violence, and mild gore.&lt;/p&gt;&lt;p&gt;Email one of the Jack Bros (aka Odin, Lee, Vinny, Braxton) once you have the secret code. If you guess correctly, you can find out the truth.&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -270,14 +273,13 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 [[Go to office|use (P33)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="29" name="use (P33)" tags="" position="1100,350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage39]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
-[[use|1230ht (P34)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="30" name="1230ht (P34)" tags="" position="1225,350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.929%;top:68.088%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;1230ht&lt;/p&gt;&lt;/div&gt;
+[[use|Password to access (P34)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="30" name="Password to access (P34)" tags="" position="1225,350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.929%;top:68.088%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:6.226%;top:72.306%;width:19.688%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none&quot;&gt;1230ht&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
-[[Password to access|1230ht enter (P35)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="31" name="1230ht enter (P35)" tags="" position="100,475" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;/div&gt;
+[[Password to access|Continue (P35)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="31" name="Continue (P35)" tags="" position="100,475" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:35.268%;top:41.270%;width:23.960%;font-size:calc(3.333*1cqw);color:#00FF00;text-decoration:underline&quot;&gt;[[1230ht enter|Work (P36)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
-[[1230ht enter|Work (P36)]]
+[[Continue|Work (P36)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="32" name="Work (P36)" tags="" position="225,475" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.386%;top:2.939%;width:92.396%;height:72.061%&quot;&gt;[img[img_Pimage27]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Work|Hi i know whats happening (P41)]]
@@ -327,10 +329,9 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="42" name="You make it (P97)" tags="" position="225,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage127]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[You make it|As you put in the (P96)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="43" name="RUN (P98)" tags="" position="350,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage110]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:50.928%;top:0.000%;width:30.135%;height:95.969%&quot;&gt;[img[img_Pimage145]]&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="43" name="RUN (P98)" tags="" position="350,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage110]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:50.928%;top:0.000%;width:30.135%;height:95.969%&quot;&gt;[img[img_Pimage145]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:8.916%;top:10.665%;width:9.905%;font-size:calc(2.222*1cqw);color:#158158;text-decoration:underline&quot;&gt;[[Hint|-B- - - (P130)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div id=&quot;opts&quot; class=&quot;choices&quot;&gt;[[RUN|You make it to the (P102)]]&lt;/div&gt;
 &lt;div class=&quot;timerbar&quot;&gt;&lt;span style=&quot;animation-duration:2.5s&quot;&gt;&lt;/span&gt;&lt;/div&gt;
-&lt;div class=&quot;choices&quot;&gt;[[Hint|-B- - - (P130)]]&lt;/div&gt;
 &lt;&lt;timed 2.5s&gt;&gt;&lt;&lt;replace &quot;#opts&quot;&gt;&gt;&lt;div class=&quot;caught&quot;&gt;[[It caught you|Stuffed in animatronic ending (P109)]]&lt;/div&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;run $(&quot;.timerbar&quot;).remove(); $(&quot;.scene .late&quot;).show()&gt;&gt;&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="44" name="Sir put your hands up (P79)" tags="" position="475,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage99]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Sir put your hands up&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -349,27 +350,25 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="48" name="Aha pg27ucdm we need the (P50)" tags="" position="975,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage57]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Aha pg27ucdm we need the first letter so P go to the monitor!&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
-[[Go to monitor|Password P . . . (P64)]]
+[[Go to monitor|Back (P64)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="49" name="Ok guess the code (P77)" tags="" position="1100,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage149]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Ok guess the code&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Next|guessing (P78)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="50" name="As you put in the (P96)" tags="" position="1225,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="50" name="As you put in the (P96)" tags="" position="1225,600" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:88.278%;top:68.828%;width:7.336%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:none&quot;&gt;[[File|open (P125)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;As you put in the password your memory blurs and you make a typo securing your fate you have lost&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Continue|You lost! Aliens are gonna (P37)]]
-[[File|open (P125)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="51" name="You make it to the (P102)" tags="" position="100,725" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;You make it to the computer&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="51" name="-B- - - (P130)" tags="" position="100,725" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;-B- - -&lt;/p&gt;&lt;p&gt;Code&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;choices&quot;&gt;
+[[Go back|RUN (P98)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="52" name="You make it to the (P102)" tags="" position="225,725" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;You make it to the computer&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Put in code|Congrats you have Det0nated THis (P63)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="52" name="Stuffed in animatronic ending (P109)" tags="ending" position="225,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage120]]&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="53" name="Stuffed in animatronic ending (P109)" tags="ending" position="350,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage120]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:32.639%;top:73.176%;width:11.129%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none&quot;&gt;[[Hint|.-.-.-.-.o.- (P128)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Stuffed in animatronic ending&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Beginning|Start]]
-[[Hint|.-.-.-.-.o.- (P128)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="53" name="-B- - - (P130)" tags="" position="350,725" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;-B- - -&lt;/p&gt;&lt;p&gt;Code&lt;/p&gt;&lt;/div&gt;
-&lt;div class=&quot;choices&quot;&gt;
-[[Go back|RUN (P98)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="54" name="Death ending (P91)" tags="ending" position="475,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage111]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Death ending&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -378,11 +377,10 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Arrested ending&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Beginning|Start]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="56" name="Password P . . . (P64)" tags="" position="725,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Password P_._._._&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="56" name="Back (P64)" tags="" position="725,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:34.375%;top:39.683%;width:34.226%;font-size:calc(2.500*1cqw);color:#00FF00;text-decoration:none&quot;&gt;Password P_._._._&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Back|Where to next (P53)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="57" name="guessing (P78)" tags="" position="850,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage104]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:42.911%;top:46.654%;width:22.989%;height:46.522%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-75.55%;top:-84.39%;width:244.68%;height:214.95%&quot;&gt;[img[img_Pimage83]]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="57" name="guessing (P78)" tags="" position="850,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage104]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:42.911%;top:46.654%;width:22.989%;height:46.522%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-75.55%;top:-84.39%;width:244.68%;height:214.95%&quot;&gt;[img[img_Pimage83]]&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:1.213%;top:62.524%;width:3.058%;font-size:calc(2.500*1cqw);color:#0000FF;text-decoration:underline&quot;&gt;[[1 178|PB227 (P80)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;guessing&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[1|You lost! Aliens are gonna (P37)]]
@@ -392,14 +390,13 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 [[5|You lost! Aliens are gonna (P37)]]
 [[6|You lost! Aliens are gonna (P37)]]
 [[7|You lost! Aliens are gonna (P37)]]
-[[1 178|PB227 (P80)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="58" name="You lost! Aliens are gonna (P37)" tags="" position="975,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.386%;top:2.939%;width:92.396%;height:72.061%&quot;&gt;[img[img_Pimage27]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.386%;top:2.939%;width:92.396%;height:72.061%&quot;&gt;[img[img_Pimage60]]&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="58" name="open (P125)" tags="" position="975,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage81]]&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;choices&quot;&gt;
+[[open|Files opened (P124)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="59" name="You lost! Aliens are gonna (P37)" tags="" position="1100,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.386%;top:2.939%;width:92.396%;height:72.061%&quot;&gt;[img[img_Pimage27]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:3.386%;top:2.939%;width:92.396%;height:72.061%&quot;&gt;[img[img_Pimage60]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;You lost! Aliens are gonna be released.&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Continue|Mayhem arrived (P44)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="59" name="open (P125)" tags="" position="1100,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage81]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;choices&quot;&gt;
-[[open|Files opened (P124)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="60" name="Congrats you have Det0nated THis (P63)" tags="ending" position="1225,725" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:1.667%;top:5.455%;width:93.948%;height:70.286%&quot;&gt;[img[img_Pimage66]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:1.667%;top:5.455%;width:94.682%;height:75.669%&quot;&gt;[img[img_Pimage67]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Congrats you have Det0nated THis SsITE GOOD GOOD G00OD Job&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -415,20 +412,20 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="63" name="PB227 (P80)" tags="" position="350,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage93]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:22.979%;top:31.871%;width:43.147%;height:54.348%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-16.80%;top:-10.62%;width:130.37%;height:122.73%&quot;&gt;[img[img_Pimage82]]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[PB227|You must sneak around back (P82)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="64" name="Mayhem arrived (P44)" tags="ending" position="475,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage63]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:0.000%;top:41.520%;width:49.219%;height:58.480%&quot;&gt;[img[img_Pimage50]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:41.972%;top:55.026%;width:23.333%;height:49.656%&quot;&gt;[img[img_Pimage47]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Mayhem arrived&lt;/p&gt;&lt;/div&gt;
-&lt;div class=&quot;choices&quot;&gt;
-[[Go back|Start]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="65" name="Files opened (P124)" tags="" position="600,850" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Files opened&lt;/p&gt;&lt;p&gt;The fourth file: Creators note&lt;/p&gt;&lt;p&gt;Vinny&#39;s note&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="64" name="Files opened (P124)" tags="" position="475,850" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Files opened&lt;/p&gt;&lt;p&gt;The fourth file: Creators note&lt;/p&gt;&lt;p&gt;Vinny&#39;s note&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Read the note|note (P131)]]
 [[Back to the title|Start]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="65" name="Mayhem arrived (P44)" tags="ending" position="600,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage63]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:0.000%;top:41.520%;width:49.219%;height:58.480%&quot;&gt;[img[img_Pimage50]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:41.972%;top:55.026%;width:23.333%;height:49.656%&quot;&gt;[img[img_Pimage47]]&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Mayhem arrived&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;choices&quot;&gt;
+[[Go back|Start]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="66" name="Which genre (P54)" tags="" position="725,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage74]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Which genre&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[The Art Of Secrecy|-- L-.-.- (P126)]]
 [[SCI-FI|You lost! Aliens are gonna (P37)]]
-[[Science|1178 (P56)]]
+[[Science|Aha bird so B! (P56)]]
 [[Comic|You lost! Aliens are gonna (P37)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="67" name="note (P131)" tags="" position="850,850" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;note&lt;/p&gt;&lt;p&gt;Hi one of the notes to the code is j…&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -436,12 +433,11 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="68" name="-- L-.-.- (P126)" tags="" position="975,850" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;-- L-.-.-&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[GO Back|Which genre (P54)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="69" name="1178 (P56)" tags="" position="1100,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage61]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;1178&lt;/p&gt;&lt;p&gt;Aha bird so B!&lt;/p&gt;&lt;p&gt;JBLVOB CODE&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="69" name="Aha bird so B! (P56)" tags="" position="1100,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage61]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:3.409%;top:8.652%;width:93.182%;font-size:calc(3.500*1cqw);color:#000000;text-decoration:none&quot;&gt;1178&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:85.692%;top:59.045%;width:14.308%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none&quot;&gt;JBLVOB CODE&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Aha bird so B!&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
-[[Enter code|Password PB . . (P61)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="70" name="Password PB . . (P61)" tags="" position="1225,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Password PB_._._&lt;/p&gt;&lt;/div&gt;
+[[Enter code|back (P61)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="70" name="back (P61)" tags="" position="1225,850" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage41]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:34.375%;top:39.683%;width:34.226%;font-size:calc(2.500*1cqw);color:#00FF00;text-decoration:none&quot;&gt;Password PB_._._&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:5.885%;top:68.414%;width:23.430%;height:20.740%&quot;&gt;[img[img_Pimage36]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[back|Alright you must do this (P60)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="71" name="Alright you must do this (P60)" tags="" position="100,975" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage68]]&lt;/div&gt;&lt;div class=&quot;pos clip&quot; style=&quot;left:49.148%;top:0.000%;width:22.256%;height:41.964%&quot;&gt;&lt;div class=&quot;crop&quot; style=&quot;left:-7.69%;top:-7.97%;width:114.83%;height:119.36%&quot;&gt;[img[img_Pimage44]]&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:24.285%;top:10.121%;width:66.667%;height:88.889%&quot;&gt;[img[img_Pimage10]]&lt;/div&gt;&lt;/div&gt;
@@ -582,10 +578,9 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="106" name="Turn around (P106)" tags="" position="725,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage122]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Turn around|1v1 Run 4o6 70ur 1!Fe (P107)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="107" name="Death (P100)" tags="" position="850,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage118]]&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="107" name="Death (P100)" tags="" position="850,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage118]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:90.112%;top:1.437%;width:16.385%;font-size:calc(2.500*1cqw);color:#50B432;text-decoration:none&quot;&gt;[[Hint|-.-.-.-.-.-.B (P129)]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Death|Beginning (P101)]]
-[[Hint|-.-.-.-.-.-.B (P129)]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="108" name="Rando hello (P103)" tags="" position="975,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage115]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:30.778%;top:15.777%;width:67.079%;height:93.261%&quot;&gt;[img[img_Pimage109]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Rando: hello&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
@@ -593,13 +588,12 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="109" name="1v1 Run 4o6 70ur 1!Fe (P107)" tags="" position="1100,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage125]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[1v1 Run 4o6 70ur 1!Fe|You see a chair (P108)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="110" name="Beginning (P101)" tags="" position="1225,1350" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage123]]&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;choices&quot;&gt;
-[[Beginning|Start]]
-[[Hint|-.-.-.V.-.- (P127)]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="111" name="-.-.-.-.-.-.B (P129)" tags="" position="100,1475" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;-.-.-.-.-.-.B&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="110" name="-.-.-.-.-.-.B (P129)" tags="" position="1225,1350" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;-.-.-.-.-.-.B&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Go back|Death (P100)]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="111" name="Beginning (P101)" tags="" position="100,1475" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage123]]&lt;/div&gt;&lt;div class=&quot;itext&quot; style=&quot;left:87.055%;top:72.306%;width:3.301%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:underline&quot;&gt;[[Hi n t|-.-.-.V.-.- (P127)]]&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;choices&quot;&gt;
+[[Beginning|Start]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="112" name="dad hello?! (P104)" tags="" position="225,1475" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[img_Pimage115]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:47.494%;top:15.306%;width:67.079%;height:93.261%&quot;&gt;[img[img_Pimage109]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:35.574%;top:41.112%;width:14.426%;height:33.611%&quot;&gt;[img[img_Pimage112]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:34.164%;top:71.557%;width:17.247%;height:31.111%&quot;&gt;[img[img_Pimage116]]&lt;/div&gt;&lt;div class=&quot;pos&quot; style=&quot;left:39.598%;top:48.680%;width:5.012%;height:10.780%&quot;&gt;[img[img_Pimage114]]&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;dad : hello?!&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;

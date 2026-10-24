@@ -192,20 +192,19 @@
 :: use (P33)
 <div class="scene"><div class="pos bg">[img[img_Pimage39]]</div></div>
 <div class="choices">
-[[use|1230ht (P34)]]
+[[use|Password to access (P34)]]
 </div>
 
-:: 1230ht (P34)
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:3.929%;top:68.088%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
-<div class="story-text"><p>1230ht</p></div>
+:: Password to access (P34)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:3.929%;top:68.088%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div><div class="itext" style="left:6.226%;top:72.306%;width:19.688%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none">1230ht</div></div>
 <div class="choices">
-[[Password to access|1230ht enter (P35)]]
+[[Password to access|Continue (P35)]]
 </div>
 
-:: 1230ht enter (P35)
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div></div>
+:: Continue (P35)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="itext" style="left:35.268%;top:41.270%;width:23.960%;font-size:calc(3.333*1cqw);color:#00FF00;text-decoration:underline">[[1230ht enter|Work (P36)]]</div></div>
 <div class="choices">
-[[1230ht enter|Work (P36)]]
+[[Continue|Work (P36)]]
 </div>
 
 :: Work (P36)
@@ -291,10 +290,9 @@
 </div>
 
 :: RUN (P98)
-<div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%">[img[img_Pimage145]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%">[img[img_Pimage145]]</div><div class="itext" style="left:8.916%;top:10.665%;width:9.905%;font-size:calc(2.222*1cqw);color:#158158;text-decoration:underline">[[Hint|-B- - - (P130)]]</div></div>
 <div id="opts" class="choices">[[RUN|You make it to the (P102)]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
-<div class="choices">[[Hint|-B- - - (P130)]]</div>
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[It caught you|Stuffed in animatronic ending (P109)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: Sir put your hands up (P79)
@@ -328,7 +326,7 @@
 <div class="scene"><div class="pos bg">[img[img_Pimage57]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
 <div class="story-text"><p>Aha pg27ucdm we need the first letter so P go to the monitor!</p></div>
 <div class="choices">
-[[Go to monitor|Password P . . . (P64)]]
+[[Go to monitor|Back (P64)]]
 </div>
 
 :: Ok guess the code (P77)
@@ -339,11 +337,16 @@
 </div>
 
 :: As you put in the (P96)
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div><div class="itext" style="left:88.278%;top:68.828%;width:7.336%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:none">[[File|open (P125)]]</div></div>
 <div class="story-text"><p>As you put in the password your memory blurs and you make a typo securing your fate you have lost</p></div>
 <div class="choices">
 [[Continue|You lost! Aliens are gonna (P37)]]
-[[File|open (P125)]]
+</div>
+
+:: -B- - - (P130)
+<div class="story-text"><p>-B- - -</p><p>Code</p></div>
+<div class="choices">
+[[Go back|RUN (P98)]]
 </div>
 
 :: You make it to the (P102)
@@ -353,17 +356,10 @@
 </div>
 
 :: Stuffed in animatronic ending (P109) [ending]
-<div class="scene"><div class="pos bg">[img[img_Pimage120]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage120]]</div><div class="itext" style="left:32.639%;top:73.176%;width:11.129%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none">[[Hint|.-.-.-.-.o.- (P128)]]</div></div>
 <div class="story-text"><p>Stuffed in animatronic ending</p></div>
 <div class="choices">
 [[Beginning|Start]]
-[[Hint|.-.-.-.-.o.- (P128)]]
-</div>
-
-:: -B- - - (P130)
-<div class="story-text"><p>-B- - -</p><p>Code</p></div>
-<div class="choices">
-[[Go back|RUN (P98)]]
 </div>
 
 :: Death ending (P91) [ending]
@@ -380,15 +376,14 @@
 [[Beginning|Start]]
 </div>
 
-:: Password P . . . (P64)
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
-<div class="story-text"><p>Password P_._._._</p></div>
+:: Back (P64)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="itext" style="left:34.375%;top:39.683%;width:34.226%;font-size:calc(2.500*1cqw);color:#00FF00;text-decoration:none">Password P_._._._</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
 <div class="choices">
 [[Back|Where to next (P53)]]
 </div>
 
 :: guessing (P78)
-<div class="scene"><div class="pos bg">[img[img_Pimage104]]</div><div class="pos clip" style="left:42.911%;top:46.654%;width:22.989%;height:46.522%"><div class="crop" style="left:-75.55%;top:-84.39%;width:244.68%;height:214.95%">[img[img_Pimage83]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage104]]</div><div class="pos clip" style="left:42.911%;top:46.654%;width:22.989%;height:46.522%"><div class="crop" style="left:-75.55%;top:-84.39%;width:244.68%;height:214.95%">[img[img_Pimage83]]</div></div><div class="itext" style="left:1.213%;top:62.524%;width:3.058%;font-size:calc(2.500*1cqw);color:#0000FF;text-decoration:underline">[[1 178|PB227 (P80)]]</div></div>
 <div class="story-text"><p>guessing</p></div>
 <div class="choices">
 [[1|You lost! Aliens are gonna (P37)]]
@@ -398,7 +393,12 @@
 [[5|You lost! Aliens are gonna (P37)]]
 [[6|You lost! Aliens are gonna (P37)]]
 [[7|You lost! Aliens are gonna (P37)]]
-[[1 178|PB227 (P80)]]
+</div>
+
+:: open (P125)
+<div class="scene"><div class="pos bg">[img[img_Pimage81]]</div></div>
+<div class="choices">
+[[open|Files opened (P124)]]
 </div>
 
 :: You lost! Aliens are gonna (P37)
@@ -406,12 +406,6 @@
 <div class="story-text"><p>You lost! Aliens are gonna be released.</p></div>
 <div class="choices">
 [[Continue|Mayhem arrived (P44)]]
-</div>
-
-:: open (P125)
-<div class="scene"><div class="pos bg">[img[img_Pimage81]]</div></div>
-<div class="choices">
-[[open|Files opened (P124)]]
 </div>
 
 :: Congrats you have Det0nated THis (P63) [ending]
@@ -441,18 +435,18 @@
 [[PB227|You must sneak around back (P82)]]
 </div>
 
-:: Mayhem arrived (P44) [ending]
-<div class="scene"><div class="pos bg">[img[img_Pimage63]]</div><div class="pos" style="left:0.000%;top:41.520%;width:49.219%;height:58.480%">[img[img_Pimage50]]</div><div class="pos" style="left:41.972%;top:55.026%;width:23.333%;height:49.656%">[img[img_Pimage47]]</div></div>
-<div class="story-text"><p>Mayhem arrived</p></div>
-<div class="choices">
-[[Go back|Start]]
-</div>
-
 :: Files opened (P124)
 <div class="story-text"><p>Files opened</p><p>The fourth file: Creators note</p><p>Vinny's note</p></div>
 <div class="choices">
 [[Read the note|note (P131)]]
 [[Back to the title|Start]]
+</div>
+
+:: Mayhem arrived (P44) [ending]
+<div class="scene"><div class="pos bg">[img[img_Pimage63]]</div><div class="pos" style="left:0.000%;top:41.520%;width:49.219%;height:58.480%">[img[img_Pimage50]]</div><div class="pos" style="left:41.972%;top:55.026%;width:23.333%;height:49.656%">[img[img_Pimage47]]</div></div>
+<div class="story-text"><p>Mayhem arrived</p></div>
+<div class="choices">
+[[Go back|Start]]
 </div>
 
 :: Which genre (P54)
@@ -461,7 +455,7 @@
 <div class="choices">
 [[The Art Of Secrecy|-- L-.-.- (P126)]]
 [[SCI-FI|You lost! Aliens are gonna (P37)]]
-[[Science|1178 (P56)]]
+[[Science|Aha bird so B! (P56)]]
 [[Comic|You lost! Aliens are gonna (P37)]]
 </div>
 
@@ -477,16 +471,15 @@
 [[GO Back|Which genre (P54)]]
 </div>
 
-:: 1178 (P56)
-<div class="scene"><div class="pos bg">[img[img_Pimage61]]</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div></div>
-<div class="story-text"><p>1178</p><p>Aha bird so B!</p><p>JBLVOB CODE</p></div>
+:: Aha bird so B! (P56)
+<div class="scene"><div class="pos bg">[img[img_Pimage61]]</div><div class="itext" style="left:3.409%;top:8.652%;width:93.182%;font-size:calc(3.500*1cqw);color:#000000;text-decoration:none">1178</div><div class="pos" style="left:24.285%;top:10.121%;width:66.667%;height:88.889%">[img[img_Pimage10]]</div><div class="pos clip" style="left:49.148%;top:0.000%;width:22.256%;height:41.964%"><div class="crop" style="left:-7.69%;top:-7.97%;width:114.83%;height:119.36%">[img[img_Pimage44]]</div></div><div class="itext" style="left:85.692%;top:59.045%;width:14.308%;font-size:calc(2.500*1cqw);color:#158158;text-decoration:none">JBLVOB CODE</div></div>
+<div class="story-text"><p>Aha bird so B!</p></div>
 <div class="choices">
-[[Enter code|Password PB . . (P61)]]
+[[Enter code|back (P61)]]
 </div>
 
-:: Password PB . . (P61)
-<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
-<div class="story-text"><p>Password PB_._._</p></div>
+:: back (P61)
+<div class="scene"><div class="pos bg">[img[img_Pimage41]]</div><div class="itext" style="left:34.375%;top:39.683%;width:34.226%;font-size:calc(2.500*1cqw);color:#00FF00;text-decoration:none">Password PB_._._</div><div class="pos" style="left:5.885%;top:68.414%;width:23.430%;height:20.740%">[img[img_Pimage36]]</div></div>
 <div class="choices">
 [[back|Alright you must do this (P60)]]
 </div>
@@ -738,10 +731,9 @@
 </div>
 
 :: Death (P100)
-<div class="scene"><div class="pos bg">[img[img_Pimage118]]</div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage118]]</div><div class="itext" style="left:90.112%;top:1.437%;width:16.385%;font-size:calc(2.500*1cqw);color:#50B432;text-decoration:none">[[Hint|-.-.-.-.-.-.B (P129)]]</div></div>
 <div class="choices">
 [[Death|Beginning (P101)]]
-[[Hint|-.-.-.-.-.-.B (P129)]]
 </div>
 
 :: Rando hello (P103)
@@ -757,17 +749,16 @@
 [[1v1 Run 4o6 70ur 1!Fe|You see a chair (P108)]]
 </div>
 
-:: Beginning (P101)
-<div class="scene"><div class="pos bg">[img[img_Pimage123]]</div></div>
-<div class="choices">
-[[Beginning|Start]]
-[[Hint|-.-.-.V.-.- (P127)]]
-</div>
-
 :: -.-.-.-.-.-.B (P129)
 <div class="story-text"><p>-.-.-.-.-.-.B</p></div>
 <div class="choices">
 [[Go back|Death (P100)]]
+</div>
+
+:: Beginning (P101)
+<div class="scene"><div class="pos bg">[img[img_Pimage123]]</div><div class="itext" style="left:87.055%;top:72.306%;width:3.301%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:underline">[[Hi n t|-.-.-.V.-.- (P127)]]</div></div>
+<div class="choices">
+[[Beginning|Start]]
 </div>
 
 :: dad hello?! (P104)
