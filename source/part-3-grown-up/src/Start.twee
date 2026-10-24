@@ -69,10 +69,9 @@
 
 :: RUN!!! (P11)
 <div class="scene"><div class="pos bg">[img[img_Pimage11]]</div><div class="pos" style="left:50.000%;top:44.861%;width:34.988%;height:34.848%">[img[img_Pimage9]]</div></div>
-<div class="choices">
-[[RUN!!!|Where am I? (P12)]]
-[[You lost go to end|Main menu (P2)]]
-</div>
+<div id="opts" class="choices">[[RUN!!!|Where am I? (P12)]]</div>
+<div class="timerbar"><span style="animation-duration:2.2s"></span></div>
+<<timed 2.2s>><<replace "#opts">><div class="caught">[[You lost go to end|Main menu (P2)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: Where am I? (P12)
 <div class="scene"><div class="pos bg">[img[img_Pimage8]]</div></div>
@@ -293,11 +292,10 @@
 
 :: RUN (P98)
 <div class="scene"><div class="pos bg">[img[img_Pimage110]]</div><div class="pos" style="left:50.928%;top:0.000%;width:30.135%;height:95.969%">[img[img_Pimage145]]</div></div>
-<div class="choices">
-[[RUN|You make it to the (P102)]]
-[[It caught you|Stuffed in animatronic ending (P109)]]
-[[Hint|-B- - - (P130)]]
-</div>
+<div id="opts" class="choices">[[RUN|You make it to the (P102)]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<div class="choices">[[Hint|-B- - - (P130)]]</div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[It caught you|Stuffed in animatronic ending (P109)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: Sir put your hands up (P79)
 <div class="scene"><div class="pos bg">[img[img_Pimage99]]</div></div>
@@ -780,14 +778,11 @@
 </div>
 
 :: You see a chair (P108)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:20.433%;top:17.550%;width:53.226%;height:78.161%"><div class="crop" style="left:-32.95%;top:-0.00%;width:153.18%;height:100.00%">[img[img_Pimage117]]</div></div><div class="pos clip" style="left:-1.705%;top:97.258%;width:1.705%;height:2.704%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip" style="left:20.433%;top:26.152%;width:55.282%;height:73.810%"><div class="crop" style="left:-15.10%;top:-83.48%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:20.433%;top:17.550%;width:53.226%;height:78.161%"><div class="crop" style="left:-32.95%;top:-0.00%;width:153.18%;height:100.00%">[img[img_Pimage117]]</div></div><div class="pos clip" style="left:-1.705%;top:97.258%;width:1.705%;height:2.704%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip late" style="left:20.433%;top:26.152%;width:55.282%;height:73.810%"><div class="crop" style="left:-15.10%;top:-83.48%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
 <div class="story-text"><p>You see a chair</p></div>
-<div class="choices">
-[[IT CAUGHT YOU|It catches you (P112)]]
-[[Over|You trip and fall (P111)]]
-[[UNDER|You trip and fall (P111)]]
-[[TO THE SIDE|A table is in the (P115)]]
-</div>
+<div id="opts" class="choices">[[Over|You trip and fall (P111)]][[UNDER|You trip and fall (P111)]][[TO THE SIDE|A table is in the (P115)]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[IT CAUGHT YOU|It catches you (P112)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: -.-.-.V.-.- (P127)
 <div class="story-text"><p>-.-.-.V.-.-</p></div>
@@ -808,14 +803,11 @@
 </div>
 
 :: A table is in the (P115)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:19.429%;top:27.658%;width:67.173%;height:80.000%"><div class="crop" style="left:-11.11%;top:-0.00%;width:111.11%;height:100.00%">[img[img_Pimage126]]</div></div><div class="pos clip" style="left:0.000%;top:98.099%;width:1.199%;height:1.901%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip" style="left:19.429%;top:34.324%;width:62.615%;height:62.699%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos clip" style="left:19.429%;top:27.658%;width:67.173%;height:80.000%"><div class="crop" style="left:-11.11%;top:-0.00%;width:111.11%;height:100.00%">[img[img_Pimage126]]</div></div><div class="pos clip" style="left:0.000%;top:98.099%;width:1.199%;height:1.901%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div><div class="pos clip late" style="left:19.429%;top:34.324%;width:62.615%;height:62.699%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
 <div class="story-text"><p>A table is in the way</p></div>
-<div class="choices">
-[[Under|You see a Cannon? (P117)]]
-[[To The Side|You trip and fall (P111)]]
-[[Over|You trip and fall (P111)]]
-[[It caught you|It catches you (P112)]]
-</div>
+<div id="opts" class="choices">[[Under|You see a Cannon? (P117)]][[To The Side|You trip and fall (P111)]][[Over|You trip and fall (P111)]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[It caught you|It catches you (P112)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: It eats you alive (P113)
 <div class="scene"><div class="pos bg">[img[img_Pimage125]]</div><div class="pos clip" style="left:0.469%;top:-22.834%;width:99.062%;height:124.600%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
@@ -824,13 +816,11 @@
 </div>
 
 :: You see a Cannon? (P117)
-<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos" style="left:8.215%;top:31.171%;width:67.965%;height:51.852%">[img[img_Pimage130]]</div><div class="pos" style="left:3.409%;top:93.638%;width:0.790%;height:2.192%;transform:rotate(180.00deg)">[img[img_Pimage128]]</div><div class="pos clip" style="left:16.865%;top:33.034%;width:64.932%;height:62.796%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
+<div class="scene"><div class="pos bg">[img[img_Pimage122]]</div><div class="pos" style="left:8.215%;top:31.171%;width:67.965%;height:51.852%">[img[img_Pimage130]]</div><div class="pos" style="left:3.409%;top:93.638%;width:0.790%;height:2.192%;transform:rotate(180.00deg)">[img[img_Pimage128]]</div><div class="pos clip late" style="left:16.865%;top:33.034%;width:64.932%;height:62.796%"><div class="crop" style="left:-20.28%;top:-78.44%;width:133.04%;height:258.34%">[img[img_Pimage128]]</div></div></div>
 <div class="story-text"><p>You see a Cannon?</p></div>
-<div class="choices">
-[[IT CAUGHT YOU|It catches you (P112)]]
-[[Shoot it|As you blast them the (P116)]]
-[[Keep running|You keep running the level (P118)]]
-</div>
+<div id="opts" class="choices">[[Shoot it|As you blast them the (P116)]][[Keep running|You keep running the level (P118)]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[IT CAUGHT YOU|It catches you (P112)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: Eaten alive ending (P114) [ending]
 <div class="story-text"><p>Eaten alive ending</p></div>
