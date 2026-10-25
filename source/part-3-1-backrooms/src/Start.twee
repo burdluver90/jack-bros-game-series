@@ -785,7 +785,7 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (location.hash === '#concierge') {
