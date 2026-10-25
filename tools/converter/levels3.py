@@ -174,22 +174,16 @@ P.append(':: Level Run Escape\n' + scene('art_level4', (30, 10, .85)) + '\n' + s
 P.append(':: Bacteria Attack\n' + scene('art_bacteria', (4, 14, .75)) + '\n' + story(
     'The lights buzz louder. Something is standing at the end of the hall.',
     'It is tall and thin and pitch black, with no face, and its body is made of jagged spikes. The Bacteria. It twitches, then sprints at you and wraps a black tendril around your leg.',
-    'The virus goes very still. Then every one of its tendrils starts to shake. "Bacteria," it growls. "My kind and its kind have been at war since the very first level. They hunted us when we were small. Not anymore."') +
-    '\n<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]'
-    '<<if setup.hasWeapon()>><<link `"Hit the tendril with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>\n'
-    '<div class="timerbar"><span style="animation-duration:3s"></span></div>\n'
-    '<<timed 3s>><<replace "#opts">><div class="caught">[[It drags you into the vent|Bacteria Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>\n')
-P.append(':: Bacteria Hit\n' + scene('art_bacteria', (4, 14, .75)) + '\n' + story(
-    'You smash the tendril. It lets go of your leg, but two new spiky tendrils grow out of the stump. Hitting it just makes more of it.<<run setup.useWeapon()>>',
-    'The virus shoves you behind it, shaking with rage. "Get back. This one is MINE."') +
-    '\n<div class="choices">[[Let the virus handle it|Bacteria Absorb]]</div>\n')
+    'The virus goes very still. Then every one of its tendrils starts to shake. "Bacteria," it growls. "My kind and its kind have been at war since the very first level. They hunted us when we were small. Not anymore."',
+    'Before you can even scream, the virus ROARS and lunges.') +
+    '\n<div class="choices">[[Watch the virus attack|Bacteria Absorb]]</div>\n')
 P.append(':: Bacteria Absorb\n' + scene('art_absorb', (4, 14, .75)) + '\n' + story(
     'The virus lets out a roar you can feel in your teeth and slams into the Bacteria. It shoots its tendrils straight into it. Its black tendrils start peeling off, one by one, and get pulled into the virus.',
     'The Bacteria shrinks... and shrinks... until it is nothing but a black stain on the carpet.',
-    '<<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, pitch black and covered in spikes, just like the ones on the Bacteria. "That is for every one of us your kind ever ate," it hisses at the stain. Then it turns to you, calm again. "Much better. Now I can fight with you."') +
+    '<<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, pitch black and covered in spikes, just like the ones on the Bacteria. "That is for every one of us your kind ever ate," it hisses at the stain. Then it turns to you, calm again. "Much better. Now I can fight with you."',
+    'It looks down the dark hall. "When I was small, I had brothers and sisters. Hatchlings, tiny viruses that had not mutated yet. The Bacteria ate them like candy. A hatchling cannot fight back. Most of them never got as big as me." It goes quiet for a moment. "Now you know why I hate them."') +
     f'\n<div class="choices">[[Next|{END}]]</div>\n')
 for name, bg, lines in (
-        ('Bacteria Ending', 'art_bacteria', ['The Bacteria drags you down the hall.', 'The lights buzz. Then they go out.']),
         ('Steam Ending', 'art_level2', ['The red pipe gets hotter and hotter.', 'A valve bursts. The steam is the last thing you ever feel.']),
         ('Whispers Ending', 'art_level6', ['The whispering knows your name.', 'It says it one more time, right behind your ear. Then the dark closes in.']),
         ('Run For Your Life Ending', 'art_levelrun', ['You were not fast enough.', 'The lights flicker red one last time. Then nothing.'])):

@@ -48,9 +48,9 @@ setup.BEASTS = [
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
-    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)', 'Bacteria Ending'], beat: ['Bacteria Absorb'],
+    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
     desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back. It and the virus\'s kind have always been at war, and the virus hates it.',
-    tip: 'Never wander off alone. Stay with the virus. If it attacks, let the virus absorb it: the virus gets its black tendrils and the Concierge fight gets easier.' },
+    tip: 'Never wander off alone. Stay with the virus. If one attacks, the virus will kill it and take its black tendrils, and the Concierge fight gets easier.' },
   { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
     seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
     desc: 'A red, scaly thing that chases you through the poolrooms. The black water eats anything dead, including it.',
@@ -119,6 +119,10 @@ setup.BEASTS = [
     seen: ['Hotel Room 217'], deaths: ['Knock Ending'],
     desc: 'It knocks from inside Room 217 using the voice of someone you know.',
     tip: 'Do not open the door. Knock back three times.' },
+  { id: 'hatchlings', name: 'Virus Hatchlings', tag: 'Prey (never seen)', friend: true, img: 'art_p_hatch',
+    seen: ['Bacteria Absorb'], deaths: [],
+    desc: 'Tiny viruses that have not mutated yet, like the virus was when it was small. You never see one: the virus told you about them. They cannot fight back, and the Bacteria eat them easily.',
+    tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
     desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
@@ -216,7 +220,7 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virus1', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';

@@ -1129,25 +1129,13 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Bacteria Attack
 <div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>The lights buzz louder. Something is standing at the end of the hall.</p><p>It is tall and thin and pitch black, with no face, and its body is made of jagged spikes. The Bacteria. It twitches, then sprints at you and wraps a black tendril around your leg.</p><p>The virus goes very still. Then every one of its tendrils starts to shake. "Bacteria," it growls. "My kind and its kind have been at war since the very first level. They hunted us when we were small. Not anymore."</p></div>
-<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]<<if setup.hasWeapon()>><<link `"Hit the tendril with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>
-<div class="timerbar"><span style="animation-duration:3s"></span></div>
-<<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[It drags you into the vent|Bacteria Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
-
-:: Bacteria Hit
-<div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>You smash the tendril. It lets go of your leg, but two new spiky tendrils grow out of the stump. Hitting it just makes more of it.<<run setup.useWeapon()>></p><p>The virus shoves you behind it, shaking with rage. "Get back. This one is MINE."</p></div>
-<div class="choices">[[Let the virus handle it|Bacteria Absorb]]</div>
+<div class="story-text"><p>The lights buzz louder. Something is standing at the end of the hall.</p><p>It is tall and thin and pitch black, with no face, and its body is made of jagged spikes. The Bacteria. It twitches, then sprints at you and wraps a black tendril around your leg.</p><p>The virus goes very still. Then every one of its tendrils starts to shake. "Bacteria," it growls. "My kind and its kind have been at war since the very first level. They hunted us when we were small. Not anymore."</p><p>Before you can even scream, the virus ROARS and lunges.</p></div>
+<div class="choices">[[Watch the virus attack|Bacteria Absorb]]</div>
 
 :: Bacteria Absorb
 <div class="scene"><div class="pos bg">[img[art_absorb]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>The virus lets out a roar you can feel in your teeth and slams into the Bacteria. It shoots its tendrils straight into it. Its black tendrils start peeling off, one by one, and get pulled into the virus.</p><p>The Bacteria shrinks... and shrinks... until it is nothing but a black stain on the carpet.</p><p><<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, pitch black and covered in spikes, just like the ones on the Bacteria. "That is for every one of us your kind ever ate," it hisses at the stain. Then it turns to you, calm again. "Much better. Now I can fight with you."</p></div>
+<div class="story-text"><p>The virus lets out a roar you can feel in your teeth and slams into the Bacteria. It shoots its tendrils straight into it. Its black tendrils start peeling off, one by one, and get pulled into the virus.</p><p>The Bacteria shrinks... and shrinks... until it is nothing but a black stain on the carpet.</p><p><<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, pitch black and covered in spikes, just like the ones on the Bacteria. "That is for every one of us your kind ever ate," it hisses at the stain. Then it turns to you, calm again. "Much better. Now I can fight with you."</p><p>It looks down the dark hall. "When I was small, I had brothers and sisters. Hatchlings, tiny viruses that had not mutated yet. The Bacteria ate them like candy. A hatchling cannot fight back. Most of them never got as big as me." It goes quiet for a moment. "Now you know why I hate them."</p></div>
 <div class="choices">[[Next|Hotel Arrival]]</div>
-
-:: Bacteria Ending [ending]
-<div class="scene"><div class="pos bg">[img[art_bacteria]]</div></div>
-<div class="story-text"><p>The Bacteria drags you down the hall.</p><p>The lights buzz. Then they go out.</p></div>
-<div class="choices">[[Try again|Start]]</div>
 
 :: Steam Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
@@ -1663,9 +1651,9 @@ setup.BEASTS = [
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
-    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)', 'Bacteria Ending'], beat: ['Bacteria Absorb'],
+    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
     desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back. It and the virus\'s kind have always been at war, and the virus hates it.',
-    tip: 'Never wander off alone. Stay with the virus. If it attacks, let the virus absorb it: the virus gets its black tendrils and the Concierge fight gets easier.' },
+    tip: 'Never wander off alone. Stay with the virus. If one attacks, the virus will kill it and take its black tendrils, and the Concierge fight gets easier.' },
   { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
     seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
     desc: 'A red, scaly thing that chases you through the poolrooms. The black water eats anything dead, including it.',
@@ -1734,6 +1722,10 @@ setup.BEASTS = [
     seen: ['Hotel Room 217'], deaths: ['Knock Ending'],
     desc: 'It knocks from inside Room 217 using the voice of someone you know.',
     tip: 'Do not open the door. Knock back three times.' },
+  { id: 'hatchlings', name: 'Virus Hatchlings', tag: 'Prey (never seen)', friend: true, img: 'art_p_hatch',
+    seen: ['Bacteria Absorb'], deaths: [],
+    desc: 'Tiny viruses that have not mutated yet, like the virus was when it was small. You never see one: the virus told you about them. They cannot fight back, and the Bacteria eat them easily.',
+    tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
     desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
@@ -1831,7 +1823,7 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virus1', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';
