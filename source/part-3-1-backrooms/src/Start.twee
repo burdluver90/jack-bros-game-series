@@ -1651,6 +1651,10 @@ setup.BEASTS = [
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even after mutating, the virus has never tested its strength against the Concierge. It could win, or it could be torn apart, so it lowers its tendrils politely and stays out of the way of the Concierge.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
+  { id: 'virusyoung', name: 'The Virus (before mutation)', tag: 'Hunter', friend: true, img: 'img_Qimage26',
+    seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: [],
+    desc: 'What the virus looked like when you first met it: smaller, quieter, and nowhere near the top of the food chain. At this stage a virus is almost the same as a bacteria, and the two are close to an even match. The Bacteria is just slightly stronger, because its tendrils are a little harder. But one good hit and they are equal again.',
+    tip: 'It is not the monster it looks like. Stay close to it, and one day it will be strong enough to protect you.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
     seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
     desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back. It and the virus\'s kind have always been at war, and the virus hates it.',
@@ -1837,7 +1841,7 @@ setup.openBestiary = function () {
 setup.FOODCHAIN = [
   { name: 'Apex predators', apex: true, note: 'Nothing hunts these. Everything else runs.', list: ['virus2', 'concierge', 'clown'] },
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
-  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virus1', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
+  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
   { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
@@ -1849,7 +1853,7 @@ setup.openFoodChain = function () {
       var real = id.replace(/[12]$/, ''), x = setup.BEASTS.filter(function (z) { return z.id === real; })[0], e = b[real] || {};
       var known = x && e.seen && (id !== 'virus2' || e.form2), name = '???', img = '';
       if (known) {
-        name = id === 'virus1' ? 'The Virus (before mutation)' : id === 'virus2' ? 'The Virus (after mutation)' : x.name;
+        name = id === 'virusyoung' ? x.name : id === 'virus2' ? 'The Virus (after mutation)' : x.name;
         img = '<img src="' + setup.bestImg(id === 'virus2' && x.img2 ? x.img2 : x.img) + '" alt="">';
       }
       row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + '</div>';
