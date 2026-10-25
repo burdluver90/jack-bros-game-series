@@ -2,7 +2,7 @@
 <<run setup.reset()>>
 <div class="story-text"><p>Part 3.1: The Backrooms Escape</p><p>A Slide Games production, made by Jack-Bros</p><p>This game is most likely M 17+ due to gore and mental horror.</p><p>@2026 all rights reserved</p></div>
 <div class="choices">
-[[Play|What is this place ive (Q4)]]
+<div class="modepick"><div class="mcard"><<link "Play on Normal" "What is this place ive (Q4)">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div><div class="mcard hard"><<link "Play on Hard" "What is this place ive (Q4)">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and there are no hints. Good luck.</p></div></div>
 </div>
 
 :: What is this place ive (Q4)
@@ -40,6 +40,7 @@
 
 :: Fight (Q9)
 <div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%">[img[img_Qimage7]]</div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%">[img[img_Qimage6]]</div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%">[img[img_Qimage9]]</div><div class="pos" style="left:43.542%;top:2.593%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div></div>
+<<if setup.mode().hints>><p class="modehint">You're not strong enough to fight this yet.</p><</if>>
 <div class="choices">
 [[Fight|You are brutally strangled and (Q10)]]
 [[RUN|Wait don't run (Q11)]]
@@ -55,6 +56,7 @@
 :: Wait don't run (Q11)
 <div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:40.241%;top:-1.087%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div><div class="pos clip" style="left:64.433%;top:-1.087%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:93.949%;top:65.420%;width:5.144%;height:23.630%">[img[img_Qimage24]]</div><a class="hotspot" data-passage="What is this? (Q15)" style="left:93.915%;top:65.421%;width:5.144%;height:23.628%"></a></div>
 <div class="story-text"><p>Wait don't run</p></div>
+<<if setup.mode().hints>><p class="modehint">It sounds like it wants to talk.</p><</if>>
 <div class="choices">
 [[Listen|I am a virus basically (Q12)]]
 [[Run|You are brutally strangled and (Q10)]]
@@ -71,6 +73,7 @@
 :: I am a virus basically (Q12)
 <div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:40.241%;top:-1.087%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div><div class="pos clip" style="left:64.433%;top:-1.087%;width:26.657%;height:40.639%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div></div>
 <div class="story-text"><p>I am a virus basically a bacteria but i don't want to hurt you</p></div>
+<<if setup.mode().hints>><p class="modehint">Going off alone in the Backrooms is never a good idea.</p><</if>>
 <div class="choices">
 [[Follow him|You enter a large poolrooms (Q14)]]
 [[Go a different way|You become lost becoming a (Q36)]]
@@ -86,6 +89,7 @@
 :: You enter a large poolrooms (Q14)
 <div class="scene"><div class="pos bg">[img[img_Qimage25]]</div></div>
 <div class="story-text"><p>You enter a large poolrooms with patches of black water the virus tells you to avoid</p></div>
+<<if setup.mode().hints>><p class="modehint">The water looks dangerous. Maybe just listen.</p><</if>>
 <div class="choices">
 [[Test the water|You are instantly vaporized by (Q13)]]
 [[Listen|What is this? (Q15)]]
@@ -136,6 +140,7 @@
 :: I don't have a bag (Q25)
 <div class="scene"><div class="pos bg">[img[img_Qimage19]]</div><div class="pos clip" style="left:40.221%;top:42.306%;width:8.560%;height:11.273%"><div class="crop" style="left:-15.46%;top:-28.86%;width:132.54%;height:159.29%">[img[img_Qimage21]]</div></div><div class="pos clip" style="left:50.000%;top:67.089%;width:3.791%;height:13.261%"><div class="crop" style="left:-30.92%;top:-8.04%;width:163.01%;height:113.83%">[img[img_Qimage29]]</div></div><div class="poster" style="left:82%;top:3%;width:14%;height:33.0%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">AVOID RED</div><div class="plines">Red water.<br>Red doors.<br>Red lights.<br>Black water is<br>weird, not deadly.</div></div></div>
 <div class="story-text"><p>I don't have a bag should i grab the water or cake</p></div>
+<<if setup.mode().hints>><p class="modehint">Remember the poster: never eat the cake.</p><</if>>
 <div class="choices">
 [[CAKE|Your stomach violently explodes (Q26)]]
 [[WATER|Drink it? (Q27)]]
@@ -163,6 +168,7 @@
 :: One slide has black water (Q29)
 <div class="scene"><div class="pos bg">[img[img_Qimage27]]</div><div class="pos clip" style="left:35.941%;top:43.449%;width:5.869%;height:11.030%"><div class="crop" style="left:-77.97%;top:-85.08%;width:263.68%;height:198.71%">[img[img_Qimage31]]</div></div><div class="pos clip" style="left:43.477%;top:41.318%;width:8.850%;height:14.901%"><div class="crop" style="left:-0.00%;top:-0.00%;width:100.00%;height:104.44%">[img[img_Qimage34]]</div></div><div class="pos" style="left:56.561%;top:41.136%;width:12.558%;height:17.727%">[img[img_Qimage33]]</div><div class="pos" style="left:70.786%;top:2.963%;width:27.547%;height:67.722%">[img[img_Qimage30]]</div><div class="pos clip" style="left:72.381%;top:9.263%;width:10.272%;height:59.463%"><div class="crop" style="left:-11.41%;top:-0.00%;width:111.41%;height:102.54%">[img[img_Qimage32]]</div></div><div class="pos clip" style="left:85.670%;top:4.359%;width:6.463%;height:12.895%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div></div>
 <div class="story-text"><p>One slide has black water</p></div>
+<<if setup.mode().hints>><p class="modehint">Red means danger. Black is strange, but not deadly.</p><</if>>
 <div class="choices">
 [[Red|You are slowly disintegrated and (Q31)]]
 [[Blue|Go (Q30)]]
@@ -202,6 +208,7 @@
 
 :: Left (Q35)
 <div class="scene"><div class="pos bg">[img[img_Qimage38]]</div></div>
+<<if setup.mode().hints>><p class="modehint">Remember the poster: the way down is the way out.</p><</if>>
 <div class="choices">
 [[Left|You become lost becoming a (Q36)]]
 [[Down|It's a sword! (Q42)]]
@@ -211,6 +218,7 @@
 :: It's a sword! (Q42)
 <div class="scene"><div class="pos bg">[img[img_Qimage43]]</div><div class="pos" style="left:45.077%;top:19.050%;width:49.927%;height:54.778%;transform:rotate(-29.12deg)">[img[img_Qimage36]]</div><div class="pos" style="left:51.069%;top:50.000%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div><div class="pos" style="left:70.669%;top:47.391%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div></div>
 <div class="story-text"><p>It's a sword!</p><p>Remember the poster: you will have to fight.</p></div>
+<<if setup.mode().hints>><p class="modehint">You will need a weapon later. Really.</p><</if>>
 <div class="choices">
 <<link "Take the sword">><<if setup.addItem("sword")>><<goto "I guess the water eats (Q43)">><</if>><</link>>
 [[Leave it|I guess the water eats (Q43)]]
@@ -262,9 +270,10 @@
 
 :: Run (Q49)
 <div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:44.588%;top:24.628%;width:12.508%;height:63.383%"><div class="fx" style="animation:fx-in-zoom 3.000s ease-out 0.000s backwards, fx-out-appear 0.010s steps(1,end) 3.000s forwards">[img[img_Qimage44]]</div></div><div class="pos" style="left:39.853%;top:14.403%;width:25.939%;height:79.051%"><div class="fx" style="animation:fx-in-fade 1.600s ease-out 3.000s backwards">[img[img_Qimage54]]</div></div></div>
+<<if setup.mode().hints>><p class="modehint">Remember: if it smiles, RUN.</p><</if>>
 <div id="opts" class="choices">[[Run|You see a door (Q50)]][[Approach|As its teeth sink in (Q52)]]</div>
 <div class="timerbar"><span style="animation-duration:3.0s"></span></div>
-<<timed 3.0s>><<replace "#opts">><div class="caught">[[It catches you|As its teeth sink in (Q52)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
+<<timed `setup.t(3.0)`>><<replace "#opts">><div class="caught">[[It catches you|As its teeth sink in (Q52)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
 
 :: You see a door (Q50)
 <div class="scene"><div class="pos bg">[img[img_Qimage78]]</div></div>
@@ -288,6 +297,7 @@
 
 :: How can i escape (Q53)
 <div class="story-text"><p>How can i escape</p></div>
+<<if setup.mode().hints>><p class="modehint">Fighting only works if you have a weapon. Waiting never works.</p><</if>>
 <div class="choices">
 <<if setup.hasWeapon()>>[[Fight|Phew (Q54)]]<<else>>[[Fight|Unarmed]]<</if>>
 [[Wait|It breaks down the door (Q84)]]
@@ -359,6 +369,7 @@
 </div>
 
 :: Wait here (Q63)
+<<if setup.mode().hints>><p class="modehint">The poster said to stay put after dark.</p><</if>>
 <div class="choices">
 [[Wait here|You hide and you hear (Q64)]]
 [[Go into a house|You don't make it to (Q73)]]
@@ -366,6 +377,7 @@
 
 :: You hide and you hear (Q64)
 <div class="story-text"><p>You hide and you hear noises outside</p></div>
+<<if setup.mode().hints>><p class="modehint">Whatever you do, do not look out the window.</p><</if>>
 <div class="choices">
 [[Hide|You sit it out until (Q65)]]
 [[look out the window|It sees you and it (Q72)]]
@@ -393,6 +405,7 @@
 :: You make it to the (Q66)
 <div class="scene"><div class="pos bg">[img[img_Qimage63]]</div></div>
 <div class="story-text"><p>You make it to the castle and see a 300 ft rope but the sun is setting</p></div>
+<<if setup.mode().hints>><p class="modehint">Be patient. Ropes snap.</p><</if>>
 <div class="choices">
 [[Quick climb the rope|You climb but you suddenly (Q71)]]
 [[wait it out|You enter the castle and (Q67)]]
@@ -422,6 +435,7 @@
 :: Whos him? Maybe the clown? (Q69)
 <div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:2.616%;top:82.122%;width:30.087%;height:16.864%">[img[img_Qimage55]]</div></div>
 <div class="story-text"><p>Whos him? Maybe the clown?</p></div>
+<<if setup.mode().hints>><p class="modehint">Never take your eyes off him.</p><</if>>
 <div class="choices">
 [[Keep your eyes on him|You keep your eyes on (Q70)]]
 [[ignore the poster|You are crushed to death (Q74)]]
@@ -451,6 +465,7 @@
 :: As long as he thinks (Q76)
 <div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:0.981%;top:83.136%;width:31.395%;height:16.864%">[img[img_Qimage55]]</div><div class="pos" style="left:48.647%;top:73.320%;width:13.120%;height:19.265%">[img[img_Qimage69]]</div></div>
 <div class="story-text"><p>As long as he thinks he is being watched he won't attack what if i leave this in front of him i can book it</p></div>
+<<if setup.mode().hints>><p class="modehint">Rushing it will get you crushed.</p><</if>>
 <div class="choices">
 [[Try it|Ok the doll is watching (Q77)]]
 [[Book it|You are crushed to death (Q74)]]
@@ -565,6 +580,14 @@ body.fun .scene { animation: partyhue 3s ease-in-out infinite; }
 .codepad .ck.clr { background: #3a1418; border-color: #ef4444; color: #fecaca; font-size: .8rem; }
 .codepad .cmsg { min-height: 1.2em; margin-top: 8px; text-align: center; font: bold .9rem monospace; color: #fca5a5; }
 .codepad .chint { color: #fde68a; font-weight: normal; }
+#hud .mode { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding: .15em .6em; border-radius: 99px; border: 1px solid #4fd18b; color: #c9ffe0; }
+#hud .mode.hard { border-color: #ef4444; color: #fecaca; background: #3a1418; }
+.modehint { margin: 10px auto 0; max-width: 34em; text-align: center; font-size: .92rem; color: #fde68a; }
+.modehint::before { content: '\1F4A1  '; }
+.modepick { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin: 8px 0 4px; }
+.modepick .mcard { width: 230px; padding: 14px 16px; border-radius: 14px; border: 2px solid #4fd18b; background: #10231a; text-align: center; }
+.modepick .mcard.hard { border-color: #ef4444; background: #2a0f12; }
+.modepick .mcard p { margin: 6px 0 12px; font-size: .88rem; color: #d6d3c4; }
 /* ---- liminal mood: washed-out yellow, film grain, slow breathing, dreamy fades ---- */
 body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #0a0a07 100%) fixed !important; }
 #passages .passage { animation: dreamin 1.1s ease-out; }
@@ -616,13 +639,18 @@ setup.ITEMS = {
   axe:    { name: 'Fire axe', short: 'Axe', icon: '\u{1FA93}', desc: 'IN CASE OF EMERGENCY. The best weapon you have found. Hounds hate it.' }
 };
 setup.SLOTS = 6;      /* inventory size */
-setup.DRAIN = 3;      /* sanity lost every scene */
-setup.FUN_DRAIN = 6;  /* Level Fun drains sanity faster */
+/* Normal and Hard: sanity lost per scene (Level Fun drains twice as fast), how long timers last, wrong codes allowed */
+setup.MODES = {
+  normal: { label: 'Normal', drain: 2, timer: 1.5, codeTries: 3, hints: true },
+  hard:   { label: 'Hard',   drain: 4, timer: 0.75, codeTries: 1, hints: false }
+};
+setup.mode = function () { return setup.MODES[State.variables.mode] || setup.MODES.normal; };
+setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's'; };
 setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
 };
-setup.drainFor = function (p) { return p.tags.indexOf('fun') >= 0 ? setup.FUN_DRAIN : setup.DRAIN; };
+setup.drainFor = function (p) { var d = setup.mode().drain; return p.tags.indexOf('fun') >= 0 ? d * 2 : d; };
 setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
 /* every weapon counts for "Fight"; the first one you carry is the one you swing */
 setup.WEAPONS = ['sword', 'axe', 'bat', 'wrench', 'crowbar'];
@@ -644,7 +672,7 @@ setup.addItem = function (id) {
   v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].name); setup.hud(); return true;
 };
 /* drinking from a button that also moves to the next scene: top up past 100 so the next scene's drain lands on 100 */
-setup.fill = function (beforeMove) { State.variables.sanity = 100 + (beforeMove ? setup.DRAIN : 0); setup.toast('You drink the almond water. Your mind clears.'); setup.hud(); };
+setup.fill = function (beforeMove) { State.variables.sanity = 100 + (beforeMove ? setup.mode().drain : 0); setup.toast('You drink the almond water. Your mind clears.'); setup.hud(); };
 setup.drink = function () {
   var v = State.variables, i = (v.inv || []).indexOf('almond');
   if (i < 0) { return false; }
@@ -696,7 +724,7 @@ setup.hud = function () {
       ? '<button class="slot full' + (id === 'almond' ? ' drinkable' : '') + '" data-i="' + i + '" title="' + it.name + (id === 'almond' ? ' (click to drink or discard)' : '') + '"><span class="key">' + (i + 1) + '</span>' + it.icon + '<small>' + it.short + '</small></button>'
       : '<span class="slot"><span class="key">' + (i + 1) + '</span></span>';
   }
-  h.html('<div class="top"><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
+  h.html('<div class="top"><span class="mode ' + (State.variables.mode || 'normal') + '">' + setup.mode().label + '</span><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') +
     '<button class="hum' + (setup.hum && setup.hum.on ? ' on' : '') + '" title="Fluorescent light hum">' + (setup.hum && setup.hum.on ? '\u{1F50A} Hum on' : '\u{1F508} Hum off') + '</button></div>' +
     '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
@@ -770,16 +798,20 @@ setup.submitPad = function (pad) {
   }
   if (pad.attr('data-fail') === 'boiler') {
     var v = State.variables; v.codeTries = (v.codeTries || 0) + 1;
-    Engine.play(v.codeTries >= 2 ? 'Boiler Ending' : 'Hotel Keypad Wrong');
+    Engine.play(v.codeTries >= setup.mode().codeTries ? 'Boiler Ending' : 'Hotel Keypad Wrong');
     return;
   }
   pad.removeClass('bad'); void pad[0].offsetWidth; pad.addClass('bad');
   /* after 3 misses a pad with data-hint gives a nudge, so nobody gets stuck forever */
   var miss = +(pad.attr('data-miss') || 0) + 1; pad.attr('data-miss', miss);
-  pad.find('.cmsg').html('WRONG CODE' + (miss >= 3 && pad.attr('data-hint') ? '<br><span class="chint">' + pad.attr('data-hint') + '</span>' : ''));
+  pad.find('.cmsg').html('WRONG CODE' + (miss >= 3 && setup.mode().hints && pad.attr('data-hint') ? '<br><span class="chint">' + pad.attr('data-hint') + '</span>' : ''));
   pad.find('.cin').val('').focus();
 };
 $(document).on(':passagedisplay', function () { $('#passages .codepad').each(function () { setup.buildPad(this); }); });
+$(document).on(':passagedisplay', function () {
+  $('#passages .timerbar span').each(function () { var d = parseFloat(this.style.animationDuration) || 3; this.style.animationDuration = setup.t(d); });
+  if (!setup.mode().hints) { $('#passages .modehint').remove(); }
+});
 $(document).on('click', '.poster', function (e) {
   e.preventDefault(); e.stopPropagation();
   $('<div id="posterzoom"></div>').append($(this).clone()).appendTo('body');
@@ -853,9 +885,10 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Level 1 Dark Hall
 <div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
 <div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
+<<if setup.mode().hints>><p class="modehint">Hide. Now.</p><</if>>
 <div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]</div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
-<<timed 3s>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Skin Stealer Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
@@ -876,19 +909,22 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Level Fun [fun]
 <div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
 <div class="story-text"><p>=) Welcome to Level Fun! =)</p><p>Balloons, streamers, and a long table with a cake. Tall yellow partygoers are crowded around it, their drawn-on smiles stretched much too wide.</p><p>They haven't seen you. Partygoers hunt by sound. If they hear you, they will chase you. Stay quiet.</p><p>The music never stops. You can feel your mind slipping faster in here.</p></div>
+<<if setup.mode().hints>><p class="modehint">They can hear you. Stay quiet, and do not eat anything.</p><</if>>
 <div class="choices">[[Sneak along the wall|Level Fun Exits]][[Grab a slice of cake|Party Cake Ending]][[Say hello|Party Chase]][[Smile back at them|Smile Ending]]</div>
 
 :: Level Fun Exits [fun]
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>You make it past the party table without a sound. Behind it there are two doors.</p><p>A bright red door with a glowing EXIT sign, and a plain grey door marked LEVEL 1.</p><p>The note about the almond water said to avoid red things... and the grey door looks old and squeaky.</p></div>
+<<if setup.mode().hints>><p class="modehint">Avoid red. And quiet doors are safer than fast ones.</p><</if>>
 <div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]][[Run for the grey door|Party Chase]]</div>
 
 :: Party Chase [fun]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
 <div class="story-text"><p>The music stops.</p><p>Every smiling face turns toward you at once. They heard you. =)</p></div>
+<<if setup.mode().hints>><p class="modehint">The table might hide you.</p><</if>>
 <div id="opts" class="choices">[[Sprint for the grey door|Level 1 Stairwell]][[Dive under the party table|Under the Party Table]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
-<<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(2.5)`>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Under the Party Table [fun]
 <div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
@@ -931,11 +967,12 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="story-text"><p>The virus steps out from behind the balloons. Its tendrils flex, twelve times stronger than before.</p><p>It throws three partygoers across the room like party favours.</p><p>Then the music stops. Every smiling face in the room turns to look at YOU.</p></div>
 <div id="opts" class="choices">[[Run while the virus holds them off|Present Hallway]]</div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
-<<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Party Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[They grab you|Party Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Present Hallway [fun]
 <div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>A long hallway stacked with wrapped presents.</p><p>One big yellow present has a tag on it: FOR YOU =)</p><p>The virus sniffs it. Its tendrils curl back. "That one smells wrong."</p></div>
+<<if setup.mode().hints>><p class="modehint">Presents here are not always presents.</p><</if>>
 <div class="choices">[[Open your present|Present Ending]][[Let the virus open it|Virus Opens The Present]][[Leave it and keep moving|The Way Out]]</div>
 
 :: Virus Opens The Present [fun]
@@ -946,6 +983,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: The Way Out [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>At the end of the hallway is a grey door marked WAY OUT.</p><p>In front of it stands the biggest partygoer you have ever seen. Its smile stretches all the way around its head.</p><p>The virus moves in front of you.</p></div>
+<<if setup.mode().hints>><p class="modehint">Partygoers like hats.</p><</if>>
 <div class="choices"><<if setup.has("hat")>><<link "Put on the party hat and walk past" "Party Hat Escape">><</link>><</if>>[[Let the virus hold it back|The Virus Holds The Door]][[Run past it|Biggest Partygoer Ending]]</div>
 
 :: Party Hat Escape [fun]
@@ -977,6 +1015,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <<if !setup.isTaken("wl2")>><div class="find" id="fwl2"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wl2","almond")>><<replace "#fwl2">><</replace>><</if>><</link>></div><</if>>
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div><div class="poster" style="left:66%;top:4%;width:13%;height:30.7%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">BRING A LIGHT</div><div class="plines">Some levels<br>have no lights.<br>Things live<br>in the dark.<br>They HATE light.</div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="poster" style="left:66%;top:4%;width:13%;height:30.7%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">BRING A LIGHT</div><div class="plines">Some levels<br>have no lights.<br>Things live<br>in the dark.<br>They HATE light.</div></div></div><</if>>
 <div class="story-text"><p>You fall through a hatch and land on hot metal. Level 2: Pipe Dreams.</p><p>Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.</p><p><<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>></p><p>A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.</p></div>
+<<if setup.mode().hints>><p class="modehint">The hot pipe is a bad idea. Grab what you can first.</p><</if>>
 <div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>
 
 :: Level 4 Abandoned Office [nodrain]
@@ -992,6 +1031,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Level 6 Lights Out
 <div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
 <div class="story-text"><p>The stairs end. The lights go out. Level 6: Lights Out.</p><p>You can't see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.</p><p><<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>></p></div>
+<<if setup.mode().hints>><p class="modehint">Whispers in the dark are never friendly.</p><</if>>
 <div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>><<if setup.hasWeapon()>>[[Swing your <<print setup.weaponName()>> at the red eyes|Lights Out Swing]]<</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
 
 :: Lights Out Swing
@@ -1009,14 +1049,14 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="story-text"><p>The lights snap on. Every single one of them is red. Level !: Run For Your Life.</p><p>Down the hall, the dark is moving. It is coming toward you, fast.</p><p>At the far end, a heavy door is sliding shut.</p></div>
 <div id="opts" class="choices">[[RUN|Run For Your Life 2]]</div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
-<<timed 2.5s>><<replace "#opts">><div class="caught">[[It catches you|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(2.5)`>><<replace "#opts">><div class="caught">[[It catches you|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Run For Your Life 2
 <div class="scene"><div class="pos bg">[img[art_levelrun]]</div><div class="pos" style="left:2%;top:8%;width:90.0%;height:90.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>You sprint. Your lungs burn. The door is closing faster.</p><p><<if $virusWith>>The virus grabs you with every tendril it has and throws you toward the gap.<<else>>Then the wall next to you splits open. The virus bursts out. "Told you," it says. "I always find you."<</if>></p><p>SLIDE!</p></div>
 <div id="opts" class="choices">[[Slide under the door|Level Run Escape]]</div>
 <div class="timerbar"><span style="animation-duration:2s"></span></div>
-<<timed 2s>><<replace "#opts">><div class="caught">[[The door slams shut|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(2)`>><<replace "#opts">><div class="caught">[[The door slams shut|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Level Run Escape
 <div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
@@ -1056,12 +1096,14 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Front Desk [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div><</if>>
 <div class="story-text"><p>Nobody is behind the desk. Behind it, rows and rows of gold key hooks, all empty.</p><p>A little card next to the bell says: RING ONCE FOR SERVICE. ONLY ONCE.</p><p>Someone has scratched words into the wood of the desk: ASK NICELY.</p></div>
+<<if setup.mode().hints>><p class="modehint">Ring once. Only once.</p><</if>>
 <div class="choices">[[Ring the bell|Hotel Concierge]][[Back to the lobby|Hotel Lobby]]</div>
 
 :: Hotel Concierge [hotel]
 <<set $bell to ($bell || 0) + 1>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
 <div class="story-text"><p><<if $bell gt 1>>DING. Again.<<else>>DING.<</if>></p><p>Something stands up from behind the desk. It keeps standing up. It is very, very tall, in a red uniform with gold buttons. Its face is smooth like an egg, except for a faint painted smile.</p><p>"Welcome to the Grand Hotel," it says, though its mouth does not move. "How may I help you, guest? =)"</p></div>
-<<if $bell gt 1>><div class="choices">[[...|Bell Ending]]</div><<else>><div class="choices"><<if !setup.isTaken("roomkey")>><<link "Ask politely for a room" "Hotel Concierge Key">><<run setup.take("roomkey","roomkey")>><</link>><</if>>[[Ask where the exit is|Checkout Ending]][[Ring the bell again|Bell Ending]][[Back away slowly|Hotel Lobby]]</div><</if>>
+<<if $bell gt 1>><<if setup.mode().hints>><p class="modehint">Be polite. Do not ask about the exit.</p><</if>>
+<div class="choices">[[...|Bell Ending]]</div><<else>><div class="choices"><<if !setup.isTaken("roomkey")>><<link "Ask politely for a room" "Hotel Concierge Key">><<run setup.take("roomkey","roomkey")>><</link>><</if>>[[Ask where the exit is|Checkout Ending]][[Ring the bell again|Bell Ending]][[Back away slowly|Hotel Lobby]]</div><</if>>
 
 :: Hotel Concierge Key [hotel nodrain]
 <div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
@@ -1083,7 +1125,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="story-text"><p>You creep up the steps. The sheet music has three big numbers written at the top: 4 1 7.</p><p>The moment you touch it, the music STOPS. Every dancer turns its head toward you at exactly the same time.</p></div>
 <div id="opts" class="choices"><<link "Grab the sheet music and run" "Hotel Lobby">><<run setup.addItem("sheet")>><<set $knowCode to true>><</link>>[[Freeze and pretend to be a mannequin|Dance Forever Ending]]</div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
-<<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Dance Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[They grab you|Dance Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Hotel Elevator Dead [hotel nodrain]
 <div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div>
@@ -1108,6 +1150,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Room 211 [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
 <div class="story-text"><p>The room is dark except for an old TV playing static. The static is moving in shapes, like it is trying to show you something.</p><p>You can almost see a face in it. A smiling face. It is getting clearer.</p></div>
+<<if setup.mode().hints>><p class="modehint">The guest book warned you about this TV.</p><</if>>
 <div class="choices">[[Keep watching|Static Ending]][[Turn off the TV|Hotel Room 211 Off]]</div>
 
 :: Hotel Room 211 Off [hotel nodrain]
@@ -1118,6 +1161,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Room 217 [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
 <div class="story-text"><p>Knock. Knock. Knock.</p><p>A voice from inside. It sounds exactly like Theo. "Hey! It's me! Let me in, quick, before it comes back!"</p><p><<if $virusWith>>The virus's tendrils go stiff. "That is not your friend," it whispers.<<else>>But Theo is not here. Is he?<</if>></p></div>
+<<if setup.mode().hints>><p class="modehint">The guest book said not to answer.</p><</if>>
 <div class="choices">[[Open the door|Knock Ending]][[Knock back three times|Hotel Room 217 Note]][[Walk away|Hotel Floor 2]]</div>
 
 :: Hotel Room 217 Note [hotel nodrain]
@@ -1138,9 +1182,10 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Room 213 Footsteps [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
 <div class="story-text"><p><<if setup.has("brasskey")>>A heavy brass key, warm like someone was just holding it. You put it in your inventory.<<else>>A heavy brass key! But your inventory is full. You will have to come back for it.<</if>></p><p>Then you hear it. Squeak... squeak... squeak. A cleaning cart, rolling down the hall. It stops outside your door. The handle starts to turn.</p></div>
+<<if setup.mode().hints>><p class="modehint">Wardrobes are good hiding spots. Beds are not.</p><</if>>
 <div id="opts" class="choices">[[Hide in the wardrobe|Hotel Wardrobe]][[Hide under the bed|Hotel Under Bed]]</div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
-<<timed 3s>><<replace "#opts">><div class="caught">[[Housekeeping is here|Housekeeping Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[Housekeeping is here|Housekeeping Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Hotel Wardrobe [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
@@ -1155,6 +1200,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Floor 3 [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div><div class="pos" style="left:40%;top:26%;width:45.0%;height:45.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div></div><</if>>
 <div class="story-text"><p>Floor 3 looks like a normal hallway. Doors, lamps, carpet.</p><p>You take a step. The hallway stretches. You take another. It stretches again. The door you came through is a tiny dot far behind you.</p><p>The patterns on the wallpaper are starting to look like smiles.</p></div>
+<<if setup.mode().hints>><p class="modehint">The guest book said to walk backwards.</p><</if>>
 <div class="choices">[[Keep walking forward|Hotel Floor 3 Deeper]][[Walk backwards|Hotel Power Room]][[Run back to the stairs|Hotel Staircase]]</div>
 
 :: Hotel Floor 3 Deeper [hotel]
@@ -1182,7 +1228,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="story-text"><p>The service stairs go down into the dark. At the bottom, something long and black is lying across the steps, breathing slowly.</p><p>A hound. Its white eyes are open. It is listening.</p><p><<if setup.has("flashlight")>>Your flashlight might scare it. Or it might make it angry.<</if>></p></div>
 <div id="opts" class="choices"><<if setup.has("axe")>>[[Charge it with the fire axe|Hotel Hound Axe]]<</if>>[[Hold your breath and tiptoe past it|Hotel Boiler Door]]<<if setup.has("flashlight")>>[[Shine the flashlight in its eyes|Hound Ending]]<</if>>[[Go back up|Hotel Staircase]]</div>
 <div class="timerbar"><span style="animation-duration:4s"></span></div>
-<<timed 4s>><<replace "#opts">><div class="caught">[[It smells you|Hound Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+<<timed `setup.t(4)`>><<replace "#opts">><div class="caught">[[It smells you|Hound Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Hotel Hound Axe [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_stairs]]</div></div>
@@ -1208,6 +1254,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Boiler Room [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
 <div class="story-text"><p>BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.</p><p>On the far wall: a plain grey door with a green EXIT sign. The real exit.</p><p>And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"</p></div>
+<<if setup.mode().hints>><p class="modehint">Polite guests get to check out.</p><</if>>
 <div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Hotel Fight Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>[[Run for the exit|Checkout Ending]]</div>
 
 :: Hotel Checkout Polite [hotel]
