@@ -120,7 +120,7 @@ setup.ITEMS = {
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
-  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three very grumpy Partypoopers. Looking at it keeps you calm: you lose 1 less sanity every scene.' },
+  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three friendly Partypoopers holding up their fake smiles. Looking at it makes you feel safe: you lose 1 less sanity every scene.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'PRO: light, and it pries open doors, hatches and stuck elevators. CON: clumsy, you get hurt in fights (-15 sanity).' },
   bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'PRO: light, no downside while you carry it. CON: it snaps after one fight.' },
   wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'PRO: light, and it turns valves, fixes squeaky hinges and opens taps. CON: weak, you get hurt in fights (-10 sanity).' },

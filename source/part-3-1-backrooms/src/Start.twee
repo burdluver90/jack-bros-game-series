@@ -640,7 +640,7 @@ setup.ITEMS = {
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
-  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three very grumpy Partypoopers. Looking at it keeps you calm: you lose 1 less sanity every scene.' },
+  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three friendly Partypoopers holding up their fake smiles. Looking at it makes you feel safe: you lose 1 less sanity every scene.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'PRO: light, and it pries open doors, hatches and stuck elevators. CON: clumsy, you get hurt in fights (-15 sanity).' },
   bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'PRO: light, no downside while you carry it. CON: it snaps after one fight.' },
   wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'PRO: light, and it turns valves, fixes squeaky hinges and opens taps. CON: weak, you get hurt in fights (-10 sanity).' },
@@ -1094,8 +1094,8 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Partypoopers
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div><div class="pos" style="left:2%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div></div><</if>>
-<div class="story-text"><p>Behind the last door of Level Fun is a small grey room. The streamers are torn down and the balloons are all half deflated.</p><p>Three grey figures are sitting there, arms crossed, frowning as hard as they can. A sign on the wall says NO PARTY. :(</p><p>"We are the Partypoopers," the tallest one grumbles. "They kicked us out for not smiling. We do not do fun." It holds up an old camera. "But we do take pictures. Want one? No smiling."</p></div>
-<div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a grumpy picture with them">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you and three Partypoopers, all frowning. Looking at it makes you feel weirdly calm. It goes in your gear slot.</p><</replace>><</link>><</if>></span>[[Say goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>
+<div class="story-text"><p>Behind the last door of Level Fun is a small grey room. A hand-painted sign on the wall says PARTYGOERS NOT WELCOME.</p><p>Three figures turn around. They are all smiling... but the smiles are painted on masks they hold up on sticks. One of them lowers its mask a little and waves at you.</p><p>"Oh, a real person! Hi! Welcome!" it says happily. "We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them. We cannot STAND the Partygoers." It holds up an old camera. "Want a picture with us? We love pictures!"</p></div>
+<div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a picture with the Partypoopers">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you in the middle, three Partypoopers holding their fake smiles up and giving you a thumbs up. Looking at it makes you feel safe. It goes in your gear slot.</p><</replace>><</link>><</if>></span>[[Wave goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>
 
 :: Level 2 Valve
 <div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
@@ -1768,8 +1768,8 @@ setup.BEASTS = [
     tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
   { id: 'poopers', name: 'The Partypoopers', tag: 'Prey', friend: true, img: 'art_partypoopers',
     seen: ['Partypoopers'], deaths: [],
-    desc: 'Grey, grumpy party guests who got kicked out of Level Fun for frowning. They hate balloons, cake and music, and they are the only creatures in the Backrooms who never smile. The Partygoers chase them off on sight.',
-    tip: 'Take a picture with them. Their frowns are so calming that carrying the photo makes you lose 1 less sanity every scene.' },
+    desc: 'Very friendly grey party guests who hide behind fake smiling masks on sticks. The disguise lets them sneak through Level Fun, because they HATE the Partygoers and want nothing to do with their party. To a real person they are warm, chatty and always happy to help.',
+    tip: 'Say hi and take a picture with them. Carrying the photo makes you feel safe, so you lose 1 less sanity every scene.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
     desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
