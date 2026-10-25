@@ -1,0 +1,74 @@
+:: Level 1 [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>Level 1. The habitable zone.</p><p>Concrete floors, puddles, and lights that buzz and flicker. Somewhere far away, something drips.</p><p>Supply crates are stacked against one of the pillars.</p></div>
+<div class="choices">[[Search the crates|Level 1 Crates]][[Follow the flickering lights|Level 1 Dark Hall]]</div>
+
+:: Level 1 Crates [flicker]
+<div class="scene"><div class="pos bg">[img[art_crates]]</div></div>
+<div class="story-text"><p>The crates are full of almond water. Someone left a crowbar leaning against them.</p></div>
+<div class="choices"><<if !setup.isTaken("l1water")>><span id="pk1"><<link "Take a bottle of almond water">><<if setup.take("l1water","almond")>><<replace "#pk1">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("l1crowbar")>><span id="pk2"><<link "Take the crowbar">><<if setup.take("l1crowbar","crowbar")>><<replace "#pk2">><</replace>><</if>><</link>></span><</if>>[[Keep going|Level 1 Dark Hall]]</div>
+
+:: Level 1 Dark Hall
+<div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
+<div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
+<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Skin Stealer Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
+<div class="story-text"><p>It reaches you in two steps.</p><p>When the lights come back on, there are two of you in the hallway. Only one of them is still you.</p><p>Skin stealer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Level 1 Hidden [flicker]
+<<if !setup.isTaken("whidden")>><div class="find" id="fwhidden"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("whidden","almond")>><<replace "#fwhidden">><</replace>><</if>><</link>></div><</if>>
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You press yourself against the cold concrete and hold your breath.</p><p>It walks right past you. For one second its face looks exactly like Dad's.</p><p>Then it is gone. Further down the hall, you hear music. Party music.</p></div>
+<div class="choices">[[Follow the music|Level Fun]][[Take the stairwell instead|Level 1 Stairwell]]</div>
+
+:: Level 1 Stairwell [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You climb a rusty stairwell. At the top, a familiar voice calls your name.</p></div>
+<div class="choices">[[Go towards the voice|@@T44@@]]</div>
+
+:: Level Fun [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>=) Welcome to Level Fun! =)</p><p>Balloons, streamers, and a long table with a cake. Tall yellow partygoers are crowded around it, their drawn-on smiles stretched much too wide.</p><p>They haven't seen you. Partygoers hunt by sound. If they hear you, they will chase you. Stay quiet.</p><p>The music never stops. You can feel your mind slipping faster in here.</p></div>
+<div class="choices">[[Sneak along the wall|Level Fun Exits]][[Grab a slice of cake|Party Cake Ending]][[Say hello|Party Chase]][[Smile back at them|Smile Ending]]</div>
+
+:: Level Fun Exits [fun]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>You make it past the party table without a sound. Behind it there are two doors.</p><p>A bright red door with a glowing EXIT sign, and a plain grey door marked LEVEL 1.</p><p>The note about the almond water said to avoid red things... and the grey door looks old and squeaky.</p></div>
+<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]][[Run for the grey door|Party Chase]]</div>
+
+:: Party Chase [fun]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>The music stops.</p><p>Every smiling face turns toward you at once. They heard you. =)</p></div>
+<div id="opts" class="choices">[[Sprint for the grey door|Level 1 Stairwell]][[Dive under the party table|Under the Party Table]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Under the Party Table [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>You squeeze under the tablecloth and hold your breath.</p><p>Yellow feet shuffle past, inches from your face. Someone giggles. Then the music starts again and they drift back to the cake.</p></div>
+<div class="choices">[[Crawl out the other side, quietly|Level Fun Exits]]</div>
+
+:: Partygoer Caught Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>Long yellow arms wrap around you and lift you off the ground.</p><p>"Why so serious? =)" They carry you back to the party. You are never allowed to leave.</p><p>Partygoer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Party Cake Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>The cake is warm and sweet and full of teeth.</p><p>The partygoers clap as you stop moving. =)</p><p>Party ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Smile Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_lostmind]]</div></div>
+<div class="story-text"><p>You smile back. And you can't stop.</p><p>Your face stretches wider and wider. You are one of them now. =)</p><p>Partygoer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Red Door Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>The EXIT opens onto nothing but red.</p><p>You fall for a very, very long time.</p><p>Red door ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
