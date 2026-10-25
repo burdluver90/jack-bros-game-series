@@ -252,6 +252,7 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 #bestiary .bcard { background: #16140c; border: 1px solid #4a4528; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 #bestiary .bcard.friend { border: 4px solid #4fd18b; }
 #bestiary .bcard.prey { border: 4px solid #4fd18b; }
+#bestiary .bcard.protect { border: 4px solid #60a5fa; }
 #bestiary .bcard.tophunt { border: 4px solid #d9381e; box-shadow: 0 0 12px rgba(217, 56, 30, .5); }
 #bestiary .bcard.hunter { border: 4px solid #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, .4); }
 #bestiary .bcard.scav { border: 4px solid #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, .35); }
@@ -291,6 +292,9 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 #bestiary .ftier.apex { border-color: #b91c1c; background: #1f0d0b; }
 #bestiary .ftier h3 { margin: 0 0 8px; font: 900 .85rem "Arial Black", Arial; letter-spacing: .12em; text-transform: uppercase; color: #fde68a; }
 #bestiary .ftier.apex h3 { color: #fca5a5; }
+#bestiary .ftier.protect { border-color: #60a5fa; background: #0d1626; }
+#bestiary .ftier.protect h3 { color: #93c5fd; }
+#bestiary .fsep { width: 100%; text-align: center; margin: 14px 0 6px; font: 700 .8rem Arial, sans-serif; color: #93c5fd; letter-spacing: .08em; text-transform: uppercase; }
 #bestiary .ftier .fnote { margin: -4px 0 8px; font-size: .8rem; color: #a8a38a; }
 #bestiary .frow { display: flex; flex-wrap: wrap; gap: 8px; }
 #bestiary .fmon { width: 96px; text-align: center; font-size: .75rem; color: #e7e4d4; }
@@ -824,7 +828,7 @@ setup.BEASTS = [
     tip: 'Turn around and RUN, and take the way down.' },
   { id: 'skinstealer', name: 'Skin Stealer', tag: 'Disguised hunter', img: 'img_Qimage54', battle: 'skinstealer',
     seen: ['The skinstealer almost killed me (Q45)', 'Run (Q49)', 'Level 1 Dark Hall', 'Battle Skin Stealer'], deaths: ['As its teeth sink in (Q52)', 'Skin Stealer Ending'],
-    desc: 'It wears the skin of the people it catches, like the hazmat explorer who said hi. Do not trust anyone. There are only about 10 of them, because Skin Stealers are cannibals: every new one that is born gets eaten by the others.',
+    desc: 'It wears the skin of the people it catches, like the hazmat explorer who said hi. Do not trust anyone. There are only about 10 of them. Skin Stealers are not dumb. They know how to shapeshift into the people they catch, so they can walk right up to you. And most humans die on Level 0 before they ever make it this far, so food is hard to find, and the Skin Stealers eat each other to survive. Every new one that is born gets eaten by the others.',
     tip: 'Never walk toward it. Hide, run, or fight it with a crowbar: it rips its stolen skin right off.' },
   { id: 'smiler', name: 'The Smiler', tag: 'Sanity', img: 'art_lostmind',
     seen: ['Lost Your Mind'], deaths: ['Lost Your Mind'],
@@ -984,7 +988,7 @@ setup.bestView = function () {
 };
 /* outline colour from the food chain tier: top hunters red-orange, hunters orange, scavengers yellow */
 setup.tierClass = function (id) {
-  var names = ['apex', 'tophunt', 'hunter', 'scav', 'prey'], cls = '';
+  var names = ['apex', 'tophunt', 'hunter', 'scav', 'prey', 'protect'], cls = '';
   (setup.FOODCHAIN || []).forEach(function (t, i) { if (t.list.indexOf(id) >= 0) { cls = names[i]; } });
   return cls;
 };
@@ -1047,12 +1051,13 @@ setup.openBestiary = function () {
 setup.FOODCHAIN = [
   { name: 'Apex predators', apex: true, note: 'Nothing hunts these. Everything else runs.', list: ['virus2', 'concierge', 'clown'] },
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
-  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'poopers', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
-  { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Some of them help you if you are kind.', list: ['hatchlings', 'humans', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'poopers', 'partygoers', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
+  { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['mannequins', 'crawler', 'redeyes'] },
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Some of them help you if you are kind.', list: ['hatchlings', 'humans', 'moths', 'mice', 'glowbugs'] },
+  { name: 'Protected', side: true, note: 'Nothing hunts these two. The Doll is your friend, and the Concierge keeps the Bellhop Mouse safe.', list: ['doll', 'bellmouse'] }
 ];
 /* how smart each creature is */
-setup.IQ = { humans: 100, virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 95, chaser: 20, giant: 55,
+setup.IQ = { humans: 100, virus2: 170, concierge: 170, clown: 130, hound: 40, skinstealer: 110, watcher: 95, chaser: 20, giant: 55,
   bacteria: 70, virusyoung: 150, poopers: 105, lizard: 30, whisperer: 90, static: 80, voice: 100, smiler: 50,
   partygoers: 45, mannequins: 25, crawler: 15, redeyes: 10,
   hatchlings: 60, doll: 75, moths: 5, mice: 20, glowbugs: 3, bellmouse: 85 };
@@ -1069,7 +1074,7 @@ setup.openFoodChain = function () {
       }
       row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + (known && setup.IQ[id] !== undefined ? '<span class="fiq">IQ ' + setup.IQ[id] + '</span>' : '') + (known && setup.popNum(id) !== '' ? '<span class="fpop">Pop ' + setup.popNum(id) + '</span>' : '') + '</div>';
     });
-    tiers += (i ? '<div class="farrow">\u{25B2}</div>' : '') + '<div class="ftier' + (t.apex ? ' apex' : '') + '"><h3>' + t.name + '</h3><p class="fnote">' + t.note + '</p><div class="frow">' + row + '</div></div>';
+    tiers += (i ? (t.side ? '<div class="fsep">\u{1F6E1}\uFE0F Outside the food chain</div>' : '<div class="farrow">\u{25B2}</div>') : '') + '<div class="ftier' + (t.apex ? ' apex' : '') + (t.side ? ' protect' : '') + '"><h3>' + t.name + '</h3><p class="fnote">' + t.note + '</p><div class="frow">' + row + '</div></div>';
   });
   $('#bestiary .bgrid, #bestiary .fchain').remove();
   $('#bestiary .bwrap').append('<div class="fchain">' + tiers + '</div>');
