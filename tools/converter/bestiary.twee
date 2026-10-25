@@ -6,11 +6,11 @@
 #bestiary .bclose { position: sticky; top: 0; float: right; padding: .4em 1em; border-radius: 99px; border: 1px solid #fde68a; background: #2a2610; color: #fde68a; cursor: pointer; }
 #bestiary .bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; clear: both; }
 #bestiary .bcard { background: #16140c; border: 1px solid #4a4528; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-#bestiary .bcard.friend { border-color: #4fd18b; }
-#bestiary .bcard.tophunt { border: 2px solid #ea580c; box-shadow: 0 0 0 2px #8a0303, 0 0 12px rgba(200, 50, 10, .5); }
-#bestiary .bcard.hunter { border: 2px solid #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, .4); }
-#bestiary .bcard.scav { border: 2px solid #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, .35); }
-#bestiary .bcard.apex { border: 2px solid #8a0303; box-shadow: 0 0 0 1px #3d0000, 0 0 14px rgba(138, 3, 3, .6); }
+#bestiary .bcard.friend { border: 5px solid #4fd18b; }
+#bestiary .bcard.tophunt { border: 4px solid #ea580c; box-shadow: 0 0 0 4px #8a0303, 0 0 12px rgba(200, 50, 10, .5); }
+#bestiary .bcard.hunter { border: 5px solid #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, .4); }
+#bestiary .bcard.scav { border: 5px solid #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, .35); }
+#bestiary .bcard.apex { border: 5px solid #8a0303; box-shadow: 0 0 0 2px #3d0000, 0 0 14px rgba(138, 3, 3, .6); }
 #bestiary .bcard .bimg { aspect-ratio: 4 / 3; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 #bestiary .bcard .bimg img { width: 100%; height: 100%; object-fit: contain; }
 #bestiary .bcard.locked .bimg { font: 900 3rem "Arial Black", Arial; color: #3a3520; }
