@@ -1647,6 +1647,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 #bestiary .bcard h3 { margin: 0; font-size: 1.05rem; color: #f8f6ee; }
 #bestiary .bcard .btag { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #9db8ff; }
 #bestiary .bcard p { margin: 0; font-size: .86rem; line-height: 1.4; color: #d6d3c4; }
+#bestiary .bcard .biq { font: 700 .8rem Arial, sans-serif; color: #9db8ff; letter-spacing: .04em; }
 #bestiary .bcard .btip { color: #fde68a; }
 #bestiary .bcard .bstat { font-size: .78rem; color: #fca5a5; }
 #bestiary .bcard .bstat.won { color: #86efac; }
@@ -1874,7 +1875,7 @@ setup.openBestiary = function () {
     if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
     cards += '<div class="bcard' + (x.friend ? ' friend' : '') + (x.apex ? ' apex' : ' ' + setup.tierClass(x.id)) + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
-      '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3><p>' + x.desc + '</p>' +
+      '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3>' + setup.iqTag(x.id) + '<p>' + x.desc + '</p>' +
       '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });
   $('#bestiary').remove();
