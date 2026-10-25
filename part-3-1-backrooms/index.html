@@ -139,6 +139,12 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 #hud .slot.full.drinkable { border-color: #4fd18b; }
 #hud .info { font-size: .85rem; color: #c7d2f0; min-height: 1.2em; text-align: center; max-width: 420px; }
 #hud .info b { color: #ffd76b; }
+#hud .slot.sel { outline: 2px solid #ffd76b; outline-offset: 1px; }
+#hud .acts { display: inline-flex; gap: 6px; margin-left: 8px; vertical-align: middle; }
+#hud .act { border-radius: 99px; padding: .15em .8em; font-size: .8rem; cursor: pointer; border: 1px solid #5b8cff; background: #17233f; color: #fff; }
+#hud .act.drinkit { border-color: #4fd18b; background: #143224; color: #c9ffe0; }
+#hud .act.drop { border-color: #ff6b6b; background: #3a1418; color: #ffd0d0; }
+#hud .act:hover { filter: brightness(1.3); }
 @media (max-width: 480px) { #hud .slots { grid-template-columns: repeat(6, 48px); } #hud .slot { width: 48px; height: 48px; font-size: 20px; } #hud .slot small { display: none; } #hud .bar { width: 120px; } }
 #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #17233f; border: 1px solid #5b8cff; color: #fff; padding: .55em 1.2em; border-radius: 99px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 1000; }
 #toast.show { opacity: 1; }
@@ -249,11 +255,19 @@ setup.drink = function () {
   if (i < 0) { return false; }
   v.inv.splice(i, 1); setup.fill(false); return true;
 };
+/* clicking a slot selects it and offers Drink (water) and Discard */
 setup.useSlot = function (i) {
   var v = State.variables, id = (v.inv || [])[i], it = setup.ITEMS[id];
   if (!it) { return; }
-  if (id === 'almond') { setup.drink(); return; }
-  $('#hud .info').html('<b>' + it.name + '</b> &mdash; ' + it.desc);
+  $('#hud .slot').removeClass('sel'); $('#hud .slot[data-i="' + i + '"]').addClass('sel');
+  $('#hud .info').html('<b>' + it.name + '</b> &mdash; ' + it.desc + '<span class="acts">' +
+    (id === 'almond' ? '<button class="act drinkit" data-i="' + i + '">Drink</button>' : '') +
+    '<button class="act drop" data-i="' + i + '">Discard</button></span>');
+};
+setup.discard = function (i) {
+  var v = State.variables, id = (v.inv || [])[i], it = setup.ITEMS[id];
+  if (!it) { return; }
+  v.inv.splice(i, 1); setup.hud(); setup.toast('You dropped the ' + it.name.toLowerCase());
 };
 setup.noDrain = function (p) { return p.tags.indexOf('nodrain') >= 0 || p.tags.indexOf('ending') >= 0; };
 Config.navigation.override = function (dest) {
@@ -276,12 +290,12 @@ setup.hud = function () {
   for (var i = 0; i < setup.SLOTS; i++) {
     var id = inv[i], it = setup.ITEMS[id];
     slots += it
-      ? '<button class="slot full' + (id === 'almond' ? ' drinkable' : '') + '" data-i="' + i + '" title="' + it.name + (id === 'almond' ? ' (click to drink)' : '') + '"><span class="key">' + (i + 1) + '</span>' + it.icon + '<small>' + it.short + '</small></button>'
+      ? '<button class="slot full' + (id === 'almond' ? ' drinkable' : '') + '" data-i="' + i + '" title="' + it.name + (id === 'almond' ? ' (click to drink or discard)' : '') + '"><span class="key">' + (i + 1) + '</span>' + it.icon + '<small>' + it.short + '</small></button>'
       : '<span class="slot"><span class="key">' + (i + 1) + '</span></span>';
   }
   h.html('<div class="top"><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') + '</div>' +
-    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item, or press 1-6' : 'Your inventory is empty') + '</div>');
+    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6. Ctrl or Shift + number discards it' : 'Your inventory is empty') + '</div>');
 };
 $(document).on(':passagedisplay', function (ev) {
   var t = ev.passage.tags, show = !(t.indexOf('nohud') >= 0 || t.indexOf('ending') >= 0);
@@ -291,10 +305,22 @@ $(document).on(':passagedisplay', function (ev) {
 });
 $(document).on('click', '#hud .slot.full', function () { setup.useSlot(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .quick', function () { setup.drink(); });
+$(document).on('click', '#hud .drinkit', function () { var v = State.variables, i = +$(this).attr('data-i'); v.inv.splice(i, 1); setup.fill(false); });
+$(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr('data-i')); });
+/* direct links: index.html#level-fun etc. jump straight into the new levels */
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall' };
+$(document).one(':storyready', function () {
+  var dest = setup.JUMPS[location.hash.slice(1)];
+  if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
+});
 $(document).on('keydown', function (e) {
-  if (!$('#hud').hasClass('on') || e.ctrlKey || e.altKey || e.metaKey) { return; }
-  var n = parseInt(e.key, 10);
-  if (n >= 1 && n <= setup.SLOTS) { setup.useSlot(n - 1); }
+  if (!$('#hud').hasClass('on') || e.altKey || e.metaKey) { return; }
+  /* e.code so Shift+1 still reads as 1 (not "!") */
+  var m = /^(?:Digit|Numpad)(\d)$/.exec(e.code || ''), n = m ? +m[1] : parseInt(e.key, 10);
+  if (!(n >= 1 && n <= setup.SLOTS)) { return; }
+  /* Ctrl+number discards (most browsers keep Ctrl+1-6 for tabs, so Shift+number does too) */
+  if (e.ctrlKey || e.shiftKey) { e.preventDefault(); setup.discard(n - 1); return; }
+  setup.useSlot(n - 1);
 });
 /* twine-user-script #2: "Story JavaScript" */
 Config.ui.stowBarInitially = true;

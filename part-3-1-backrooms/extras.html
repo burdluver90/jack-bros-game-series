@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backrooms Extras</title>
+<style>
+:root{--bg:#0b0f1a;--card:#121a30;--line:#3a4a73;--text:#eef1f8;--muted:#c7d2f0;--accent:#ffd76b;--go:#4fd18b}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 0%,#2a2610,#0b0f1a 60%);color:var(--text);font-family:"Trebuchet MS","Segoe UI",sans-serif;padding:24px 16px 48px}
+main{max-width:1100px;margin:0 auto}
+h1{margin:0 0 .3rem;color:var(--accent);letter-spacing:.04em}
+.lede{color:var(--muted);margin:0 0 1.6rem;max-width:720px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#000;cursor:zoom-in}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h2{margin:0;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);line-height:1.45;font-size:.93rem}
+.card .where{font-size:.8rem;color:#9db8ff;text-transform:uppercase;letter-spacing:.1em}
+.play{margin-top:auto;align-self:flex-start;padding:.45em 1.1em;border-radius:99px;border:1px solid var(--go);background:#143224;color:#c9ffe0;text-decoration:none;font-weight:bold}
+.play:hover{background:#1f4d36}
+.map{margin:2rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.map h2{margin:0 0 .6rem;color:var(--accent)}
+.map ol{margin:0;padding-left:1.2rem;color:var(--muted);line-height:1.7}
+.map b{color:var(--text)}
+.back{display:inline-block;margin-top:1.6rem;color:#9db8ff}
+dialog{border:0;padding:0;background:transparent;max-width:96vw}
+dialog img{max-width:96vw;max-height:90vh;display:block;border-radius:10px}
+dialog::backdrop{background:rgba(0,0,0,.85)}
+</style></head><body><main>
+<h1>Backrooms Extras</h1>
+<p class="lede">These scenes are new in Part 3.1. They weren't in the PowerPoint. Click a picture to see it full size, or click <b>Play this scene</b> to jump straight in with full sanity and one almond water.</p>
+<div class="grid">
+ <div class="card"><img src="art/art_level1.svg" alt="Level 1: a concrete warehouse with flickering lights"><div class="body"><span class="where">Level 1</span><h2>The Habitable Zone</h2><p>A damp concrete warehouse with lights that flicker on and off. It's quieter here, but you're not alone.</p><a class="play" href="index.html#level-1">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_crates.svg" alt="Crates of almond water with a crowbar"><div class="body"><span class="where">Level 1</span><h2>Supply Crates</h2><p>Someone left almond water and a red crowbar here. The crowbar counts as a weapon for the fight later.</p><a class="play" href="index.html#level-1">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_darkhall.svg" alt="A dark hallway with a skin stealer"><div class="body"><span class="where">Level 1</span><h2>The Dark Hall</h2><p>A skin stealer is walking toward you. You have 3 seconds to hide before it sees you.</p><a class="play" href="index.html#dark-hall">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_levelfun.svg" alt="Level Fun party room with partygoers around a cake"><div class="body"><span class="where">Level Fun =)</span><h2>The Party</h2><p>Balloons, streamers, a cake, and partygoers. Don't eat the cake, don't smile back, and don't let them hear you. Sanity drains twice as fast here.</p><a class="play" href="index.html#level-fun">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_funexits.svg" alt="A red EXIT door and a grey door"><div class="body"><span class="where">Level Fun =)</span><h2>Two Doors</h2><p>A glowing red EXIT or an old squeaky grey door. Remember the note about red things. Open the grey door slowly.</p><a class="play" href="index.html#fun-exits">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_partychase.svg" alt="Partygoers running at the player"><div class="body"><span class="where">Level Fun =)</span><h2>The Music Stopped</h2><p>They heard you. You get 2.5 seconds to run for the door or dive under the table.</p><a class="play" href="index.html#party-chase">Play this scene</a></div></div>
+ <div class="card"><img src="art/art_lostmind.svg" alt="The Smiler grinning in the dark"><div class="body"><span class="where">Anywhere</span><h2>Lost Your Mind</h2><p>The Smiler. You see this when your sanity hits zero. Drink almond water before it does.</p><a class="play" href="index.html">Play from the start</a></div></div>
+</div>
+<section class="map"><h2>How to find these in the game</h2><ol>
+ <li>After the poolrooms, pick <b>Habitable zone</b> to go to Level 1.</li>
+ <li><b>Search the crates</b> for almond water and the crowbar, then follow the lights into the <b>Dark Hall</b> and hide fast.</li>
+ <li>Behind the pillar, <b>Follow the music</b> to Level Fun, or take the stairwell to skip it.</li>
+ <li>At the party, <b>Sneak along the wall</b>, then ease the grey door open. Both routes rejoin the main story at "You made it."</li>
+ <li>There are 4 new Level Fun endings to find: the cake, smiling back, the red door, and getting caught.</li>
+</ol></section>
+<a class="back" href="../">&larr; Back to all Jack-Bros games</a>
+</main>
+<dialog id="big"><img alt=""></dialog>
+<script>
+var d=document.getElementById('big');
+document.querySelectorAll('.card img').forEach(function(i){i.onclick=function(){d.querySelector('img').src=i.src;d.querySelector('img').alt=i.alt;d.showModal();};});
+d.onclick=function(){d.close();};
+</script>
+</body></html>

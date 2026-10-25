@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="far" cx=".5" cy=".42" r=".55"><stop offset="0" stop-color="#3d3a2c"/><stop offset=".5" stop-color="#121210"/><stop offset="1" stop-color="#030303"/></radialGradient>
+    <radialGradient id="bulb"><stop offset="0" stop-color="#fff6c8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="eye"><stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="#f2f0d0"/><stop offset="1" stop-color="#f2f0d0" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#far)"/>
+  <!-- corridor edges -->
+  <g stroke="#2a2a24" stroke-width="5" fill="none">
+    <path d="M0 0 L700 330 L900 330 L1600 0"/><path d="M0 900 L700 520 L900 520 L1600 900"/>
+    <path d="M700 330 L700 520 M900 330 L900 520"/>
+  </g>
+  <!-- single flickering light far away -->
+  <rect x="770" y="336" width="60" height="5" fill="#fff6c8"/>
+  <ellipse cx="800" cy="345" rx="120" ry="40" fill="url(#bulb)"/>
+  <!-- the figure: too tall, arms too long -->
+  <g fill="#060606">
+    <ellipse cx="800" cy="390" rx="22" ry="28"/>
+    <path d="M780 415 Q800 405 820 415 L832 520 L768 520 Z"/>
+    <path d="M782 425 Q735 470 712 560 L722 563 Q748 480 790 440 Z"/>
+    <path d="M818 425 Q868 472 888 566 L878 568 Q855 482 810 440 Z"/>
+    <path d="M778 518 L770 600 L782 600 L796 520 Z M822 518 L830 600 L818 600 L804 520 Z"/>
+  </g>
+  <circle cx="792" cy="388" r="5" fill="url(#eye)"/><circle cx="808" cy="388" r="5" fill="url(#eye)"/>
+  <!-- wet floor reflection -->
+  <ellipse cx="800" cy="610" rx="140" ry="14" fill="#fff6c8" opacity=".06"/>
+</svg>
