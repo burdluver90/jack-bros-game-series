@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient>
+    <pattern id="hwall" width="60" height="120" patternUnits="userSpaceOnUse"><rect width="60" height="120" fill="#5b1a1f"/><path d="M30 10 l14 20 l-14 20 l-14 -20 z M30 70 l14 20 l-14 20 l-14 -20 z" fill="#6e2329"/><path d="M0 0 v120" stroke="#4a1418" stroke-width="3"/></pattern>
+    <pattern id="hcarpet" width="80" height="80" patternUnits="userSpaceOnUse"><rect width="80" height="80" fill="#3b1220"/><path d="M40 4 L76 40 L40 76 L4 40 Z" fill="none" stroke="#b08a3a" stroke-width="4"/><circle cx="40" cy="40" r="8" fill="#7a1f2b"/><circle cx="0" cy="0" r="6" fill="#b08a3a"/><circle cx="80" cy="80" r="6" fill="#b08a3a"/><circle cx="80" cy="0" r="6" fill="#b08a3a"/><circle cx="0" cy="80" r="6" fill="#b08a3a"/></pattern>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e27a"/><stop offset=".5" stop-color="#c9971c"/><stop offset="1" stop-color="#8a6410"/></linearGradient>
+    <radialGradient id="candle"><stop offset="0" stop-color="#fff1b8" stop-opacity=".9"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <filter id="hglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="hblur"><feGaussianBlur stdDeviation="2.5"/></filter>
+    <g id="chand"><path d="M0 0 v60" stroke="#8a6410" stroke-width="4"/><ellipse cx="0" cy="80" rx="120" ry="26" fill="url(#gold)"/><ellipse cx="0" cy="110" rx="80" ry="18" fill="url(#gold)"/>
+      <g fill="#e0f2fe" opacity=".85"><path d="M-110 90 l-6 40 l12 0 z"/><path d="M-70 96 l-6 44 l12 0 z"/><path d="M-30 100 l-6 46 l12 0 z"/><path d="M10 100 l-6 46 l12 0 z"/><path d="M50 96 l-6 44 l12 0 z"/><path d="M90 90 l-6 40 l12 0 z"/><path d="M-50 120 l-6 50 l12 0 z"/><path d="M30 120 l-6 50 l12 0 z"/></g>
+      <g fill="#fff1b8" filter="url(#hglow)"><circle cx="-100" cy="66" r="7"/><circle cx="-50" cy="60" r="7"/><circle cx="0" cy="58" r="7"/><circle cx="50" cy="60" r="7"/><circle cx="100" cy="66" r="7"/></g>
+      <ellipse cx="0" cy="90" rx="200" ry="90" fill="url(#candle)" opacity=".5"/></g>
+    <g id="concierge">
+      <ellipse cx="0" cy="6" rx="70" ry="12" fill="#000" opacity=".4"/>
+      <path d="M-26 -300 L-34 -10 h22 L0 -200 L12 -10 h22 L26 -300 Z" fill="#111"/>
+      <path d="M-14 -10 h-30 v10 h34 z M14 -10 h30 v10 h-34 z" fill="#050505"/>
+      <path d="M-60 -560 Q-70 -420 -40 -290 L40 -290 Q70 -420 60 -560 Q0 -590 -60 -560 Z" fill="#9b1c1c" stroke="#5a0d0d" stroke-width="3"/>
+      <path d="M0 -580 V-290" stroke="#5a0d0d" stroke-width="3"/>
+      <g fill="url(#gold)"><circle cx="-14" cy="-540" r="6"/><circle cx="-14" cy="-500" r="6"/><circle cx="-14" cy="-460" r="6"/><circle cx="-14" cy="-420" r="6"/><circle cx="14" cy="-540" r="6"/><circle cx="14" cy="-500" r="6"/><circle cx="14" cy="-460" r="6"/><circle cx="14" cy="-420" r="6"/></g>
+      <path d="M-60 -560 h120" stroke="url(#gold)" stroke-width="8"/>
+      <path d="M-58 -550 Q-110 -420 -104 -200" stroke="#9b1c1c" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M58 -550 Q110 -420 104 -200" stroke="#9b1c1c" stroke-width="26" fill="none" stroke-linecap="round"/>
+      <g fill="#f8fafc"><ellipse cx="-104" cy="-186" rx="20" ry="26"/><ellipse cx="104" cy="-186" rx="20" ry="26"/><path d="M-116 -170 v40 M-104 -166 v48 M-92 -170 v40 M116 -170 v40 M104 -166 v48 M92 -170 v40" stroke="#f8fafc" stroke-width="8" stroke-linecap="round"/></g>
+      <path d="M-10 -600 v-24 h20 v24" fill="#e7d9c4"/>
+      <ellipse cx="0" cy="-660" rx="44" ry="56" fill="#efe5d6" stroke="#bfae96" stroke-width="2"/>
+      <path d="M-18 -660 q4 4 8 0 M10 -660 q4 4 8 0 M-20 -636 Q0 -616 20 -636" stroke="#bfae96" stroke-width="3" fill="none" opacity=".6"/>
+      <rect x="-34" y="-736" width="68" height="34" rx="4" fill="#9b1c1c"/><rect x="-36" y="-708" width="72" height="8" fill="url(#gold)"/><rect x="-6" y="-750" width="12" height="16" fill="url(#gold)"/>
+    </g>
+    <g id="manq">
+      <ellipse cx="0" cy="4" rx="50" ry="10" fill="#000" opacity=".35"/>
+      <path d="M-18 -200 L-26 0 h16 L0 -130 L10 0 h16 L18 -200 Z" fill="#1f2937"/>
+      <path d="M-40 -380 Q-46 -280 -24 -200 L24 -200 Q46 -280 40 -380 Q0 -400 -40 -380 Z" fill="#1f2937"/>
+      <path d="M-12 -380 L0 -330 L12 -380" fill="#f8fafc"/><path d="M-6 -360 l6 10 l6 -10 z" fill="#9b1c1c"/>
+      <path d="M-40 -370 Q-70 -300 -60 -230" stroke="#1f2937" stroke-width="16" fill="none" stroke-linecap="round"/><path d="M40 -370 Q70 -300 60 -230" stroke="#1f2937" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <circle cx="-60" cy="-226" r="10" fill="#e8dccb"/><circle cx="60" cy="-226" r="10" fill="#e8dccb"/>
+      <rect x="-8" y="-404" width="16" height="20" fill="#e8dccb"/>
+      <ellipse cx="0" cy="-440" rx="30" ry="38" fill="#e8dccb"/><path d="M-14 -430 Q0 -418 14 -430" stroke="#9b8a72" stroke-width="2.5" fill="none"/>
+    </g>
+    <g id="manqd">
+      <ellipse cx="0" cy="4" rx="70" ry="12" fill="#000" opacity=".35"/>
+      <path d="M-30 -260 Q-90 -60 -80 0 H80 Q90 -60 30 -260 Z" fill="#7c3aed"/><path d="M-30 -260 Q-60 -120 -40 0" stroke="#6d28d9" stroke-width="4" fill="none"/>
+      <path d="M-30 -380 Q-36 -300 -26 -260 L26 -260 Q36 -300 30 -380 Q0 -396 -30 -380 Z" fill="#7c3aed"/>
+      <path d="M-30 -370 Q-66 -300 -56 -240" stroke="#e8dccb" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M30 -370 Q66 -300 56 -240" stroke="#e8dccb" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <rect x="-7" y="-402" width="14" height="22" fill="#e8dccb"/>
+      <ellipse cx="0" cy="-436" rx="28" ry="36" fill="#e8dccb"/><path d="M-12 -426 Q0 -414 12 -426" stroke="#9b8a72" stroke-width="2.5" fill="none"/>
+    </g>
+  </defs>
+  <rect width="1600" height="900" fill="#18120e"/><rect y="680" width="1600" height="220" fill="#0e0a08"/>
+  <rect x="0" y="80" width="1600" height="40" fill="#3a2418"/><rect x="0" y="83" width="1600" height="10" fill="#6b4226" opacity=".5"/><rect x="0" y="150" width="1600" height="26" fill="#3a2418"/><rect x="0" y="153" width="1600" height="6" fill="#6b4226" opacity=".5"/>
+  <!-- the heavy door -->
+  <rect x="560" y="200" width="480" height="480" fill="#5a1414" stroke="#2a0606" stroke-width="10"/>
+  <circle cx="580" cy="230" r="7" fill="#2a0606"/><circle cx="580" cy="280" r="7" fill="#2a0606"/><circle cx="580" cy="330" r="7" fill="#2a0606"/><circle cx="580" cy="380" r="7" fill="#2a0606"/><circle cx="580" cy="430" r="7" fill="#2a0606"/><circle cx="580" cy="480" r="7" fill="#2a0606"/><circle cx="580" cy="530" r="7" fill="#2a0606"/><circle cx="580" cy="580" r="7" fill="#2a0606"/><circle cx="580" cy="630" r="7" fill="#2a0606"/><circle cx="1020" cy="230" r="7" fill="#2a0606"/><circle cx="1020" cy="280" r="7" fill="#2a0606"/><circle cx="1020" cy="330" r="7" fill="#2a0606"/><circle cx="1020" cy="380" r="7" fill="#2a0606"/><circle cx="1020" cy="430" r="7" fill="#2a0606"/><circle cx="1020" cy="480" r="7" fill="#2a0606"/><circle cx="1020" cy="530" r="7" fill="#2a0606"/><circle cx="1020" cy="580" r="7" fill="#2a0606"/><circle cx="1020" cy="630" r="7" fill="#2a0606"/>
+  <rect x="600" y="240" width="400" height="60" fill="#facc15"/><text x="800" y="282" font-family="Arial Black, Arial" font-size="34" text-anchor="middle" fill="#111">BOILER ROOM</text>
+  <text x="800" y="360" font-family="Arial Black, Arial" font-size="22" text-anchor="middle" fill="#fca5a5">EMPLOYEES ONLY</text>
+  <g transform="translate(700 500)"><circle r="36" fill="url(#gold)"/><path d="M-6 -10 a10 10 0 1 1 12 0 l6 30 h-24 z" fill="#1a0a0a"/></g>
+  <!-- keypad -->
+  <g transform="translate(900 470)"><rect x="-60" y="-80" width="120" height="170" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="4"/><rect x="-46" y="-66" width="92" height="30" fill="#052e16"/><text x="0" y="-44" font-family="monospace" font-size="20" text-anchor="middle" fill="#4ade80">_ _ _</text>
+    <rect x="-42" y="-26" width="24" height="22" rx="3" fill="#374151"/><text x="-30" y="-10" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">1</text><rect x="-12" y="-26" width="24" height="22" rx="3" fill="#374151"/><text x="0" y="-10" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">2</text><rect x="18" y="-26" width="24" height="22" rx="3" fill="#374151"/><text x="30" y="-10" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">3</text><rect x="-42" y="2" width="24" height="22" rx="3" fill="#374151"/><text x="-30" y="18" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">4</text><rect x="-12" y="2" width="24" height="22" rx="3" fill="#374151"/><text x="0" y="18" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">5</text><rect x="18" y="2" width="24" height="22" rx="3" fill="#374151"/><text x="30" y="18" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">6</text><rect x="-42" y="30" width="24" height="22" rx="3" fill="#374151"/><text x="-30" y="46" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">7</text><rect x="-12" y="30" width="24" height="22" rx="3" fill="#374151"/><text x="0" y="46" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">8</text><rect x="18" y="30" width="24" height="22" rx="3" fill="#374151"/><text x="30" y="46" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">9</text><rect x="-42" y="58" width="24" height="22" rx="3" fill="#374151"/><text x="-30" y="74" font-family="monospace" font-size="14" text-anchor="middle" fill="#e5e7eb">0</text></g>
+  <!-- steam, pipes, a pressure gauge in the red, puddles -->
+  <rect x="200" y="0" width="50" height="680" fill="#6b4226"/><rect x="1350" y="0" width="60" height="680" fill="#6b4226"/>
+  <g transform="translate(260 420)"><circle r="46" fill="#3a2418"/><circle r="38" fill="#f5efe0"/><path d="M0 0 L26 -24" stroke="#b91c1c" stroke-width="5"/><circle r="5" fill="#111"/></g>
+  <g fill="#e7e1d4" opacity=".35" filter="url(#hblur)"><ellipse cx="1380" cy="300" rx="120" ry="50"/><ellipse cx="230" cy="200" rx="110" ry="40"/></g>
+  <ellipse cx="800" cy="760" rx="260" ry="26" fill="#2a1a12"/>
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

@@ -306,9 +306,9 @@
 
 :: Here is the pinpad (Q55)
 <div class="scene"><div class="pos bg">[img[img_Qimage53]]</div><div class="pos" style="left:69.871%;top:51.024%;width:23.501%;height:23.563%">[img[img_Qimage62]]</div></div>
-<div class="story-text"><p>Here is the pinpad</p></div>
+<div class="story-text"><p>Here is the pinpad</p><p>Type in the code.</p></div>
 <div class="choices">
-[[Insert code|Aha (Q56)]]
+<div class="codepad" data-kind="colors" data-ok="Aha (Q56)" data-answer="red blue green yellow"></div>
 </div>
 
 :: Aha (Q56)
@@ -550,12 +550,30 @@ body.critical .story-text { animation: jitter .25s steps(2) infinite; }
 body.flicker .scene { animation: flicker 5s infinite; }
 @keyframes partyhue { 0%, 100% { filter: none; } 50% { filter: brightness(1.12) saturate(1.15); } }
 body.fun .scene { animation: partyhue 3s ease-in-out infinite; }
+.codepad { width: fit-content; max-width: 100%; margin: 6px auto 14px; padding: 14px; border-radius: 14px; background: #1f2937; border: 2px solid #6b7280; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+.codepad .cscreen { background: #052e16; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; }
+.codepad .cin { width: 100%; min-width: 220px; box-sizing: border-box; background: transparent; border: 0; outline: 0; color: #4ade80; font: bold 1.4rem monospace; letter-spacing: .25em; text-align: center; }
+.codepad .cin::placeholder { color: #166534; letter-spacing: .05em; font-size: .9rem; }
+.codepad .ckeys { display: grid; grid-template-columns: repeat(5, 46px); gap: 6px; justify-content: center; }
+.codepad .ckeys.colors { grid-template-columns: repeat(3, 76px); }
+.codepad .ck { height: 42px; border-radius: 8px; border: 1px solid #4b5563; background: #374151; color: #e5e7eb; font: bold 1rem monospace; cursor: pointer; }
+.codepad .ck:hover { filter: brightness(1.25); }
+.codepad .ck.color { color: #fff; text-shadow: 0 1px 2px #000; text-transform: capitalize; }
+.codepad .ck.go { background: #14532d; border-color: #4ade80; color: #bbf7d0; }
+.codepad .ck.clr { background: #3a1418; border-color: #ef4444; color: #fecaca; font-size: .8rem; }
+.codepad .cmsg { min-height: 1.2em; margin-top: 8px; text-align: center; font: bold .9rem monospace; color: #fca5a5; }
+.codepad.ok { border-color: #4ade80; } .codepad.ok .cmsg { color: #4ade80; }
+@keyframes padshake { 0%, 100% { transform: none; } 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.codepad.bad { animation: padshake .35s; border-color: #ef4444; }
 
 :: Hud Script [script]
 setup.ITEMS = {
   almond: { name: 'Almond water', short: 'Water', icon: '\u{1F4A7}', desc: 'Drink it if things become distorted or you see smiles.' },
   sword:  { name: 'Sword', short: 'Sword', icon: '\u{1F5E1}\u{FE0F}', desc: 'Sharp. Might help in a fight.' },
-  code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'Red, blue, green, yellow.' },
+  code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'The ink got wet and smudged. You can\'t read it anymore. Hope you remember it.' },
+  roomkey:{ name: 'Room 213 key', short: 'Key 213', icon: '\u{1F5DD}\u{FE0F}', desc: 'A gold hotel key on a red tag: 213.' },
+  brasskey:{ name: 'Brass key', short: 'Brass', icon: '\u{1F511}', desc: 'Heavy and warm. It says BOILER.' },
+  sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F973}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' }
@@ -563,7 +581,10 @@ setup.ITEMS = {
 setup.SLOTS = 6;      /* inventory size */
 setup.DRAIN = 3;      /* sanity lost every scene */
 setup.FUN_DRAIN = 6;  /* Level Fun drains sanity faster */
-setup.reset = function () { var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {}; };
+setup.reset = function () {
+  var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
+  v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
+};
 setup.drainFor = function (p) { return p.tags.indexOf('fun') >= 0 ? setup.FUN_DRAIN : setup.DRAIN; };
 setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
 setup.hasWeapon = function () { return setup.has('sword') || setup.has('crowbar'); };
@@ -654,13 +675,13 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
 });
 $(document).on('keydown', function (e) {
-  if (!$('#hud').hasClass('on') || e.altKey || e.metaKey) { return; }
+  if (!$('#hud').hasClass('on') || e.altKey || e.metaKey || $(e.target).is('input, textarea')) { return; }
   /* e.code so Shift+1 still reads as 1 (not "!") */
   var m = /^(?:Digit|Numpad)(\d)$/.exec(e.code || ''), n = m ? +m[1] : parseInt(e.key, 10);
   if (!(n >= 1 && n <= setup.SLOTS)) { return; }
@@ -668,6 +689,59 @@ $(document).on('keydown', function (e) {
   if (e.ctrlKey || e.shiftKey) { e.preventDefault(); setup.askDiscard(n - 1); return; }
   setup.useSlot(n - 1);
 });
+
+/* code pads: the player has to remember the code and type it in.
+   <div class="codepad" data-kind="digits|colors" data-len="3" data-ok="Passage" data-fail="boiler" data-answer="417"></div> */
+setup.COLORS = { r: ['red', '#dc2626'], b: ['blue', '#2563eb'], g: ['green', '#16a34a'], y: ['yellow', '#eab308'] };
+setup.normCode = function (kind, s) {
+  s = String(s || '').toLowerCase();
+  if (kind === 'colors') {
+    /* accept "red blue green yellow", "red, blue..." or "rbgy" */
+    var words = s.match(/[a-z]+/g) || [];
+    if (words.length === 1 && /^[rbgy]+$/.test(words[0])) { return words[0]; }
+    return words.map(function (w) { return w.charAt(0); }).join('');
+  }
+  return s.replace(/[^0-9]/g, '');
+};
+setup.buildPad = function (el) {
+  var pad = $(el), kind = pad.attr('data-kind') || 'digits', keys = '';
+  if (kind === 'colors') {
+    Object.keys(setup.COLORS).forEach(function (k) {
+      keys += '<button type="button" class="ck color" data-add="' + setup.COLORS[k][0] + '" style="background:' + setup.COLORS[k][1] + '">' + setup.COLORS[k][0] + '</button>';
+    });
+  } else {
+    '1234567890'.split('').forEach(function (d) { keys += '<button type="button" class="ck" data-add="' + d + '">' + d + '</button>'; });
+  }
+  pad.html('<div class="cscreen"><input class="cin" type="text" autocomplete="off" spellcheck="false" ' +
+    (kind === 'colors' ? 'placeholder="type the colours, e.g. red blue..."' : 'inputmode="numeric" placeholder="type the code"') + '></div>' +
+    '<div class="ckeys ' + kind + '">' + keys + '<button type="button" class="ck clr">clear</button><button type="button" class="ck go">ENTER</button></div><div class="cmsg"></div>');
+};
+setup.submitPad = function (pad) {
+  var kind = pad.attr('data-kind') || 'digits', got = setup.normCode(kind, pad.find('.cin').val());
+  if (!got) { return; }
+  if (got === setup.normCode(kind, pad.attr('data-answer'))) {
+    pad.addClass('ok').find('.cmsg').text('ACCEPTED');
+    setTimeout(function () { Engine.play(pad.attr('data-ok')); }, 600);
+    return;
+  }
+  if (pad.attr('data-fail') === 'boiler') {
+    var v = State.variables; v.codeTries = (v.codeTries || 0) + 1;
+    Engine.play(v.codeTries >= 2 ? 'Boiler Ending' : 'Hotel Keypad Wrong');
+    return;
+  }
+  pad.removeClass('bad'); void pad[0].offsetWidth; pad.addClass('bad');
+  pad.find('.cmsg').text('WRONG CODE'); pad.find('.cin').val('').focus();
+};
+$(document).on(':passagedisplay', function () { $('#passages .codepad').each(function () { setup.buildPad(this); }); });
+$(document).on('click', '.codepad .ck', function () {
+  var b = $(this), pad = b.closest('.codepad'), inp = pad.find('.cin');
+  if (b.hasClass('go')) { setup.submitPad(pad); return; }
+  if (b.hasClass('clr')) { inp.val(''); return; }
+  var kind = pad.attr('data-kind'), add = b.attr('data-add'), cur = inp.val();
+  if (kind !== 'colors' && cur.replace(/[^0-9]/g, '').length >= +(pad.attr('data-len') || 8)) { return; }
+  inp.val(kind === 'colors' ? (cur ? cur + ' ' : '') + add : cur + add);
+});
+$(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter') { e.preventDefault(); setup.submitPad($(this).closest('.codepad')); } });
 
 :: Lost Your Mind [ending]
 <div class="scene"><div class="pos bg">[img[art_lostmind]]</div></div>
@@ -854,7 +928,7 @@ $(document).on('keydown', function (e) {
 :: Level Run Escape
 <div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.</p><p>You are lying on cool carpet. The virus sits down next to you, breathing hard.</p><p><<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."</p></div>
-<div class="choices">[[Next|To be continued... (Q83)]]</div>
+<div class="choices">[[Next|Hotel Arrival]]</div>
 
 :: Steam Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
@@ -869,4 +943,236 @@ $(document).on('keydown', function (e) {
 :: Run For Your Life Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_levelrun]]</div></div>
 <div class="story-text"><p>You were not fast enough.</p><p>The lights flicker red one last time. Then nothing.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Hotel Arrival
+<<set $virusWith to true>><div class="scene"><div class="pos bg">[img[art_h_arrive]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You crawl out of a vent into the cold night air. Across the street is a huge old hotel, every window glowing gold.</p><p>Level 5: The Grand Hotel. A banner over the door says CHECK-IN ANYTIME. CHECK-OUT NEVER. =)</p><p>"The real exit is in there," the virus says. "Down in the boiler room. I have smelled it before. But the door will be locked."</p></div>
+<div class="choices">[[Push through the revolving door|Hotel Lobby]]</div>
+
+:: Hotel Lobby [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div><div class="pos" style="left:58%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div><</if>>
+<div class="story-text"><p>The lobby is enormous. A chandelier the size of a car hangs over a red carpet that goes on and on.</p><p>There is a reception desk with a little gold bell, a grand staircase, an elevator, and tall doors marked BALLROOM. Music drifts out from behind them.</p><p><<if $power>>The elevator light is on now.<<else>>The elevator is dark. Its OUT OF ORDER sign is swinging slowly, even though there is no wind.<</if>></p><p><<if $virusWith>>The virus keeps low, sniffing the carpet. "Find the brass key," it whispers. "And find out the code."<<else>>You are alone. The music gets louder, like it noticed.<</if>></p></div>
+<div class="choices">[[Go to the front desk|Hotel Front Desk]][[Read the guest book|Hotel Guest Book]][[Go into the ballroom|Hotel Ballroom]][[Climb the grand staircase|Hotel Staircase]]<<if $power>>[[Take the elevator|Hotel Elevator]]<<else>>[[Press the elevator button|Hotel Elevator Dead]]<</if>></div>
+
+:: Hotel Guest Book [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div><</if>>
+<div class="story-text"><p>The guest book is open. Most pages are blank. The last few have notes scribbled in different handwriting:</p><p>"Room 211: whatever you do, DON'T watch the TV."</p><p>"Room 217: it sounds like someone you know. DO NOT ANSWER."</p><p>"Floor 3: if the hallway gets longer, walk BACKWARDS."</p><p>"The boiler room key is where you sleep. (213)"</p><p>"The band knows the code. Listen to the band."</p><p>The very last line is fresh, the ink still wet: "Welcome back. =)"</p></div>
+<div class="choices">[[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Front Desk [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div><</if>>
+<div class="story-text"><p>Nobody is behind the desk. Behind it, rows and rows of gold key hooks, all empty.</p><p>A little card next to the bell says: RING ONCE FOR SERVICE. ONLY ONCE.</p><p>Someone has scratched words into the wood of the desk: ASK NICELY.</p></div>
+<div class="choices">[[Ring the bell|Hotel Concierge]][[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Concierge [hotel]
+<<set $bell to ($bell || 0) + 1>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
+<div class="story-text"><p><<if $bell gt 1>>DING. Again.<<else>>DING.<</if>></p><p>Something stands up from behind the desk. It keeps standing up. It is very, very tall, in a red uniform with gold buttons. Its face is smooth like an egg, except for a faint painted smile.</p><p>"Welcome to the Grand Hotel," it says, though its mouth does not move. "How may I help you, guest? =)"</p></div>
+<<if $bell gt 1>><div class="choices">[[...|Bell Ending]]</div><<else>><div class="choices"><<if !setup.isTaken("roomkey")>><<link "Ask politely for a room" "Hotel Concierge Key">><<run setup.take("roomkey","roomkey")>><</link>><</if>>[[Ask where the exit is|Checkout Ending]][[Ring the bell again|Bell Ending]][[Back away slowly|Hotel Lobby]]</div><</if>>
+
+:: Hotel Concierge Key [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
+<div class="story-text"><p>"Of course," it says. One long white glove slides a key across the desk. Room 213.</p><p><<if setup.has("roomkey")>>You put the key in your inventory.<<else>>Your pockets are full. The key clatters onto the desk. You can come back for it after you make room.<</if>></p><p>"Enjoy your stay. Forever." It sinks back down behind the desk until you can't see it anymore.</p></div>
+<div class="choices"><<if !setup.has("roomkey")>><<link "Pick up the key" "Hotel Concierge Key">><<run setup.addItem("roomkey")>><</link>><</if>>[[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Ballroom [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div><div class="pos" style="left:58%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div><</if>>
+<div class="story-text"><p>The ballroom is full of dancers. They are mannequins: smooth faces, painted smiles, perfect suits and gowns. They waltz in slow circles without making a sound.</p><p>On the stage, a band of mannequins sits frozen around a black piano. There is sheet music on the piano.</p><p>Round tables line the walls, set with candles and glasses.</p></div>
+<div class="choices"><<if !setup.isTaken("wball")>><span id="pkwball"><<link "Search the tables for almond water">><<if setup.take("wball","almond")>><<replace "#pkwball">><</replace>><</if>><</link>></span><</if>>[[Sneak along the wall to the stage|Hotel Stage]][[Join the dance|Hotel Dance]][[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Dance [hotel]
+<<set $sanity to Math.max(1, $sanity - 20)>><<set $knowCode to true>><div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div>
+<div class="story-text"><p>A cold hand takes yours. Then you are spinning, round and round, faster and faster.</p><p>The music gets inside your head. You feel your mind slipping. (-20 sanity)</p><p>But as you spin you notice something: the dancers only ever step on three numbered tiles. Four... one... seven. Four... one... seven.</p></div>
+<div class="choices">[[Pull free and stumble out of the dance|Hotel Ballroom]]</div>
+
+:: Hotel Stage [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div>
+<div class="story-text"><p>You creep up the steps. The sheet music has three big numbers written at the top: 4 1 7.</p><p>The moment you touch it, the music STOPS. Every dancer turns its head toward you at exactly the same time.</p></div>
+<div id="opts" class="choices"><<link "Grab the sheet music and run" "Hotel Lobby">><<run setup.addItem("sheet")>><<set $knowCode to true>><</link>>[[Freeze and pretend to be a mannequin|Dance Forever Ending]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Dance Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Hotel Elevator Dead [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div>
+<div class="story-text"><p>You press the button. Nothing. Then, very faintly, from inside the shaft, someone presses it back.</p><p>A sticker on the panel says: POWER CONTROLS - FLOOR 3.</p></div>
+<div class="choices">[[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Staircase [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div><div class="pos" style="left:58%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div><</if>>
+<div class="story-text"><p>The grand staircase splits in three directions.</p><p>Up to FLOOR 2. Further up to FLOOR 3, where the sign has been crossed out with red paint. And a narrow service stair going down to the BASEMENT.</p></div>
+<div class="choices">[[Floor 2|Hotel Floor 2]][[Floor 3|Hotel Floor 3]][[Down to the basement|Hotel Basement Stairs]][[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Floor 2 [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_hall2]]</div><div class="pos" style="left:36%;top:22%;width:60.0%;height:60.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div><</if>>
+<div class="story-text"><p>A long hallway of doors. Room 211. Room 213. Room 215 has no handle. Room 217 has light shining under the door... and knocking coming from inside.</p><p>A room service tray sits on the carpet. The food on it is still warm.</p></div>
+<div class="choices">[[Room 211|Hotel Room 211]]<<if setup.has("roomkey")>>[[Unlock Room 213|Hotel Room 213]]<<elseif setup.has("crowbar")>>[[Pry open Room 213 with the crowbar|Hotel Room 213]]<<else>>[[Try Room 213|Hotel Room 213 Locked]]<</if>>[[Room 217|Hotel Room 217]][[Back to the stairs|Hotel Staircase]]</div>
+
+:: Hotel Room 213 Locked [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
+<div class="story-text"><p>Locked. A little gold plate on the door says: KEYS AVAILABLE AT RECEPTION.</p></div>
+<div class="choices">[[Back to the hallway|Hotel Floor 2]]</div>
+
+:: Hotel Room 211 [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>The room is dark except for an old TV playing static. The static is moving in shapes, like it is trying to show you something.</p><p>You can almost see a face in it. A smiling face. It is getting clearer.</p></div>
+<div class="choices">[[Keep watching|Static Ending]][[Turn off the TV|Hotel Room 211 Off]]</div>
+
+:: Hotel Room 211 Off [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>Click. The room goes quiet. Taped to the back of the TV is a note:</p><p>"The power room is on floor 3. The hallway will try to keep you. Don't walk forward. WALK BACKWARDS."</p></div>
+<div class="choices">[[Back to the hallway|Hotel Floor 2]]</div>
+
+:: Hotel Room 217 [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
+<div class="story-text"><p>Knock. Knock. Knock.</p><p>A voice from inside. It sounds exactly like Theo. "Hey! It's me! Let me in, quick, before it comes back!"</p><p><<if $virusWith>>The virus's tendrils go stiff. "That is not your friend," it whispers.<<else>>But Theo is not here. Is he?<</if>></p></div>
+<div class="choices">[[Open the door|Knock Ending]][[Knock back three times|Hotel Room 217 Note]][[Walk away|Hotel Floor 2]]</div>
+
+:: Hotel Room 217 Note [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
+<div class="story-text"><p>Knock. Knock. Knock.</p><p>The voice stops. After a long time, a folded note slides out under the door:</p><p>"you passed the test. the boiler code is the song the band plays. 3 numbers. the dancers know it too, but dancing costs you."</p></div>
+<div class="choices">[[Back to the hallway|Hotel Floor 2]]</div>
+
+:: Hotel Room 213 [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_room]]</div><div class="pos" style="left:54%;top:16%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_room]]</div></div><</if>>
+<div class="story-text"><p>Room 213 is neat and quiet. A made bed, a phone, a wardrobe with its door open a crack.</p><p>In the bathroom, the bathtub is full to the top with almond water.</p><p>Something hard is under one of the pillows.</p></div>
+<div class="choices"><<if !setup.isTaken("bathtub")>><span id="tub"><<link "Drink from the bathtub">><<run setup.fill(false)>><<run State.variables.taken.bathtub = true>><<replace "#tub">><</replace>><</link>></span><</if>><<if !setup.isTaken("brasskey")>><<link "Look under the pillow" "Hotel Room 213 Footsteps">><<run setup.take("brasskey","brasskey")>><</link>><</if>>[[Answer the phone|Hotel Room 213 Phone]][[Back to the hallway|Hotel Floor 2]]</div>
+
+:: Hotel Room 213 Phone [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>The phone wasn't ringing. You pick it up anyway.</p><p>"Front desk," says a smooth voice. "Housekeeping is on its way to your room. Please stay where you are. =)"</p><p>Click.</p></div>
+<div class="choices">[[Back to the room|Hotel Room 213]]</div>
+
+:: Hotel Room 213 Footsteps [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p><<if setup.has("brasskey")>>A heavy brass key, warm like someone was just holding it. You put it in your inventory.<<else>>A heavy brass key! But your inventory is full. You will have to come back for it.<</if>></p><p>Then you hear it. Squeak... squeak... squeak. A cleaning cart, rolling down the hall. It stops outside your door. The handle starts to turn.</p></div>
+<div id="opts" class="choices">[[Hide in the wardrobe|Hotel Wardrobe]][[Hide under the bed|Hotel Under Bed]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[Housekeeping is here|Housekeeping Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Hotel Wardrobe [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>You squeeze into the wardrobe and pull the door almost shut.</p><p>Through the crack you see long red sleeves and white gloves. It makes the bed perfectly. It fluffs the pillows. It turns toward the wardrobe... and stops.</p><p>"Enjoy your stay," it says to no one, and leaves.</p></div>
+<div class="choices"><<if !setup.isTaken("brasskey")>><<link "Grab the key now" "Hotel Room 213">><<run setup.take("brasskey","brasskey")>><</link>><</if>>[[Sneak back out to the hallway|Hotel Floor 2]]</div>
+
+:: Hotel Under Bed [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>You slide under the bed. It is dusty and dark down here.</p><p>Two very long legs walk in. Then the top of a smooth, smiling face lowers slowly into view, upside down, looking right at you.</p><p>"Housekeeping," it whispers.</p></div>
+<div class="choices">[[...|Housekeeping Ending]]</div>
+
+:: Hotel Floor 3 [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div><div class="pos" style="left:40%;top:26%;width:45.0%;height:45.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div></div><</if>>
+<div class="story-text"><p>Floor 3 looks like a normal hallway. Doors, lamps, carpet.</p><p>You take a step. The hallway stretches. You take another. It stretches again. The door you came through is a tiny dot far behind you.</p><p>The patterns on the wallpaper are starting to look like smiles.</p></div>
+<div class="choices">[[Keep walking forward|Hotel Floor 3 Deeper]][[Walk backwards|Hotel Power Room]][[Run back to the stairs|Hotel Staircase]]</div>
+
+:: Hotel Floor 3 Deeper [hotel]
+<<set $sanity to Math.max(1, $sanity - 10)>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div></div>
+<div class="story-text"><p>Forward. Forward. The hallway never ends. The room numbers go up and up: 340, 380, 399, 3000...</p><p>The smiles on the wallpaper are definitely smiles now. (-10 sanity)</p><p><<if $virusWith>>The virus wraps a tendril around your wrist. "Backwards," it says. "Now."<<else>>You remember something about walking backwards.<</if>></p></div>
+<div class="choices">[[Keep going forward|Endless Hall Ending]][[Walk backwards|Hotel Power Room]]</div>
+
+:: Hotel Power Room [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_power]]</div><div class="pos" style="left:-4%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_power]]</div></div><</if>>
+<div class="story-text"><p>You walk backwards, one step at a time, eyes closed. When you open them you are standing in a humming room full of fuse boxes.</p><p>A huge lever on the wall says ELEVATOR. It is pointing at OFF.</p><p><<if $power>>The lever is already pointing at ON.<</if>></p></div>
+<div class="choices"><<if !$power>><<link "Pull the lever" "Hotel Power On">><<set $power to true>><</link>><</if>>[[Walk backwards out of the room|Hotel Staircase]]</div>
+
+:: Hotel Power On [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_power]]</div></div>
+<div class="story-text"><p>CLUNK. The lights flicker, then burn brighter. Far below you hear a cheerful DING.</p><p>The elevator works now. It can take you straight down to the basement.</p></div>
+<div class="choices">[[Walk backwards out of the room|Hotel Staircase]]</div>
+
+:: Hotel Elevator [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_elevator]]</div><div class="pos" style="left:12%;top:16%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_elevator]]</div></div><</if>>
+<div class="story-text"><p>The elevator is gold and velvet and smells like old perfume. Soft music plays.</p><p>The buttons say 3, 2, L and B. A tiny sign under the B says: STAFF ONLY.</p></div>
+<div class="choices">[[Press B|Hotel Boiler Door]][[Press 2|Hotel Floor 2]][[Press 3|Hotel Floor 3]][[Press L|Hotel Lobby]]</div>
+
+:: Hotel Basement Stairs [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_stairs]]</div></div>
+<div class="story-text"><p>The service stairs go down into the dark. At the bottom, something long and black is lying across the steps, breathing slowly.</p><p>A hound. Its white eyes are open. It is listening.</p><p><<if setup.has("flashlight")>>Your flashlight might scare it. Or it might make it angry.<</if>></p></div>
+<div id="opts" class="choices">[[Hold your breath and tiptoe past it|Hotel Boiler Door]]<<if setup.has("flashlight")>>[[Shine the flashlight in its eyes|Hound Ending]]<</if>>[[Go back up|Hotel Staircase]]</div>
+<div class="timerbar"><span style="animation-duration:4s"></span></div>
+<<timed 4s>><<replace "#opts">><div class="caught">[[It smells you|Hound Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Hotel Boiler Door [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div><div class="pos" style="left:-4%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div><</if>>
+<div class="story-text"><p>A heavy red steel door: BOILER ROOM. EMPLOYEES ONLY. It has a big brass keyhole and a keypad that wants a 3-digit code.</p><p><<if setup.has("brasskey")>>The brass key in your inventory is warm, almost hot.<<else>>You don't have a key for that keyhole.<</if>></p><p>You will have to type the code in yourself. Hope you remember it.</p></div>
+<div class="choices"><<if setup.has("brasskey")>>[[Unlock the door and use the keypad|Hotel Keypad]]<</if>><<if $power>>[[Take the elevator back up|Hotel Elevator]]<<else>>[[Go back up the stairs|Hotel Staircase]]<</if>></div>
+
+:: Hotel Keypad [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div>
+<div class="story-text"><p>The brass key turns with a heavy CLUNK. The keypad lights up green: ENTER CODE.</p><p>Behind the door, the boiler rumbles like it is waiting.</p></div>
+<div class="codepad" data-kind="digits" data-len="3" data-ok="Hotel Boiler Room" data-fail="boiler" data-answer="417"></div>
+<div class="choices"><<if $power>>[[Step away from the keypad|Hotel Elevator]]<<else>>[[Step away from the keypad|Hotel Staircase]]<</if>></div>
+
+:: Hotel Keypad Wrong [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div>
+<div class="story-text"><p>BZZZT. The keypad flashes red: WRONG.</p><p>The whole door shakes. The pressure gauge needle swings into the red. Steam screams out of a pipe.</p><p>A sign you didn't notice before: TWO WRONG CODES = PRESSURE RELEASE.</p></div>
+<div class="choices">[[Try again, carefully|Hotel Keypad]]<<if $power>>[[Leave and find the code|Hotel Elevator]]<<else>>[[Leave and find the code|Hotel Staircase]]<</if>></div>
+
+:: Hotel Boiler Room [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
+<div class="story-text"><p>BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.</p><p>On the far wall: a plain grey door with a green EXIT sign. The real exit.</p><p>And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"</p></div>
+<div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Hotel Fight Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>[[Run for the exit|Checkout Ending]]</div>
+
+:: Hotel Checkout Polite [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div>
+<div class="story-text"><p>You walk up and hold out the key to Room 213. "I'd like to check out, please."</p><p>The Concierge looks at the key for a long time. Then it bows. "A polite guest. How rare." It opens the exit door for you.</p><p>"Do come again. =)"</p></div>
+<div class="choices">[[Walk through the exit|Hotel Exit]]</div>
+
+:: Hotel Fight Concierge [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div>
+<div class="story-text"><p><<if setup.has("sword")>>You raise the sword.<<else>>You swing the crowbar.<</if>> The Concierge reaches for you with its long white gloves.</p><p>You hit it right in its smooth smiling face. It cracks like porcelain. It stumbles back into the boiler... and the fire takes it.</p><p>The exit door is clear.</p></div>
+<div class="choices">[[Run through the exit|Hotel Exit]]</div>
+
+:: Hotel Virus Distracts [hotel]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
+<div class="story-text"><p>The virus rises up to its full height, twelve times stronger, and wraps itself around the Concierge.</p><p>"GO! Through the door!" It drags the tall thing toward the boiler as you run past.</p><p>You hear a crash and a roar of fire. Then the virus comes limping through the steam after you, smoking but grinning.</p></div>
+<div class="choices">[[Through the exit together|Hotel Exit]]</div>
+
+:: Hotel Exit
+<div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The exit door slams shut behind you. The heat, the music and the smiles are gone.</p><p>You are standing on cool carpet under buzzing lights. Somewhere ahead, you can hear wind. Real wind.</p><p>"We are close now," the virus says. "Closer than anyone."</p></div>
+<div class="choices">[[Next|To be continued... (Q83)]]</div>
+
+:: Checkout Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
+<div class="story-text"><p>"The exit?" The Concierge leans down until its smooth face is right in front of yours.</p><p>"Guests don't leave. Guests STAY." Your stay at the Grand Hotel lasts forever. =)</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Bell Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div>
+<div class="story-text"><p>DING. DING.</p><p>The Concierge's painted smile cracks open into a real mouth. "ONLY. ONCE."</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Static Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>The face in the static smiles wider and wider.</p><p>When the TV turns off by itself, the room is empty. The face on the screen looks like yours now.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Knock Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
+<div class="story-text"><p>You open the door. It isn't Theo.</p><p>It just used his voice. It can use yours now too.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Housekeeping Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>The door opens. Long red sleeves, white gloves.</p><p>"Housekeeping," it says, and tucks you in. Forever.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Endless Hall Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_hall3]]</div></div>
+<div class="story-text"><p>You keep walking. Room 4000. Room 9000. Room ∞.</p><p>You never reach the end of floor 3. Nobody does.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Dance Forever Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div>
+<div class="story-text"><p>Cold hands grab you and pull you onto the dance floor.</p><p>Your face goes smooth. Your smile gets painted on. You dance forever. =)</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Hound Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_stairs]]</div></div>
+<div class="story-text"><p>The hound's white eyes snap toward you.</p><p>It moves faster than anything that size should be able to move.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Boiler Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div>
+<div class="story-text"><p>BZZZT. WRONG. The gauge spins into the red.</p><p>PRESSURE RELEASE. The whole basement fills with scalding steam.</p></div>
 <div class="choices">[[Try again|Start]]</div>
