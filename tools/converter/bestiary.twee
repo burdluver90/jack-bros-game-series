@@ -7,6 +7,7 @@
 #bestiary .bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; clear: both; }
 #bestiary .bcard { background: #16140c; border: 1px solid #4a4528; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 #bestiary .bcard.friend { border: 4px solid #4fd18b; }
+#bestiary .bcard.prey { border: 4px solid #4fd18b; }
 #bestiary .bcard.tophunt { border: 4px solid #d9381e; box-shadow: 0 0 12px rgba(217, 56, 30, .5); }
 #bestiary .bcard.hunter { border: 4px solid #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, .4); }
 #bestiary .bcard.scav { border: 4px solid #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, .35); }
@@ -157,6 +158,10 @@ setup.BEASTS = [
     seen: ['Level 6 Lights Out'], deaths: [],
     desc: 'A drifting cloud of tiny glowing bugs in the darkness of Lights Out. The Light Haters cannot stand them.',
     tip: 'No flashlight? Cup a handful of glow bugs and use them as a light.' },
+  { id: 'humans', name: 'Humans', tag: 'Prey', known: true, img: 'art_p_human',
+    seen: ['Start'], deaths: [],
+    desc: 'Lost explorers in yellow hazmat suits and gas masks who fell into the Backrooms, just like you. Only about 100 of them are still alive in the levels. Humans are smart, with an IQ of 100, but they are slow and soft and have no claws or tendrils, so almost every hunter in the Backrooms eats them. Most of them are scared and alone, and they will not help you. Some will even steal your almond water. Their hazmat suits keep out the bad air, but not the teeth. And sometimes the human waving at you is not a human at all.',
+    tip: 'Do not count on other humans. If someone waves at you in the dark, it might be a Skin Stealer.' },
   { id: 'bellmouse', name: 'The Bellhop Mouse', tag: 'Helpful prey', friend: true, img: 'art_p_bellmouse',
     seen: ['Hotel Lobby'], deaths: [],
     desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays. It is the most protected creature in all of the Backrooms, because it is the favorite of the Concierge, who feeds it little pieces of cheese from the ballroom every night. Nothing dares to touch it.',
@@ -231,13 +236,13 @@ setup.bestView = function () {
 };
 /* outline colour from the food chain tier: top hunters red-orange, hunters orange, scavengers yellow */
 setup.tierClass = function (id) {
-  var names = ['apex', 'tophunt', 'hunter', 'scav', ''], cls = '';
+  var names = ['apex', 'tophunt', 'hunter', 'scav', 'prey'], cls = '';
   (setup.FOODCHAIN || []).forEach(function (t, i) { if (t.list.indexOf(id) >= 0) { cls = names[i]; } });
   return cls;
 };
 /* IQ badge on a bestiary card (the main virus page uses its mutated IQ) */
 /* how many of each creature live in the Backrooms */
-setup.POP = { virus2: 25, concierge: 1, clown: 1, hound: 340, skinstealer: 10, watcher: 75, chaser: 1, giant: 1,
+setup.POP = { humans: 100, virus2: 25, concierge: 1, clown: 1, hound: 340, skinstealer: 10, watcher: 75, chaser: 1, giant: 1,
   bacteria: 40000, virusyoung: 33000, poopers: 500, lizard: 8000, whisperer: 300, static: 1, voice: 1, smiler: 5000,
   partygoers: 12000, mannequins: 2500, crawler: 15000, redeyes: 30000,
   hatchlings: 100000, doll: 1, moths: 1000000, mice: 250000, glowbugs: 5000000, bellmouse: 1 };
@@ -258,7 +263,7 @@ setup.openBestiary = function () {
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
     cards += '<div class="bcard' + (x.friend ? ' friend' : '') + (x.apex ? ' apex' : ' ' + setup.tierClass(x.id)) + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
       '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3>' + setup.iqTag(x.id) + setup.popTag(x.id) + '<p>' + x.desc + '</p>' +
-      '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
+      '<p class="btip">' + (learned || x.friend || x.known ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });
   $('#bestiary').remove();
   $('<div id="bestiary"><div class="bwrap"><button class="bclose">Close</button><h2>\u{1F4D6} Bestiary</h2>' +
@@ -272,10 +277,10 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'poopers', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Some of them help you if you are kind.', list: ['hatchlings', 'humans', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 /* how smart each creature is */
-setup.IQ = { virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 95, chaser: 20, giant: 55,
+setup.IQ = { humans: 100, virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 95, chaser: 20, giant: 55,
   bacteria: 70, virusyoung: 150, poopers: 105, lizard: 30, whisperer: 90, static: 80, voice: 100, smiler: 50,
   partygoers: 45, mannequins: 25, crawler: 15, redeyes: 10,
   hatchlings: 60, doll: 75, moths: 5, mice: 20, glowbugs: 3, bellmouse: 85 };
