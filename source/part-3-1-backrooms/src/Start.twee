@@ -1117,7 +1117,8 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Level Run Escape
 <div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.</p><p>You are lying on cool carpet. The virus sits down next to you, breathing hard.</p><p><<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."</p></div>
-<div class="choices">[[Next|Bacteria Attack]]</div>
+<p>Down the hall, the lights are buzzing louder than they should.</p>
+<div class="choices">[[Check out the buzzing lights|Bacteria Attack]][[Keep going|Hotel Arrival]]</div>
 
 :: Bacteria Attack
 <div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
@@ -1452,7 +1453,7 @@ setup.BATTLES = {
   hound: { name: 'The Hound', hp: 12, hit: 14, weak: 'axe', win: 'Hotel Boiler Door', lose: 'Hound Ending', run: 'Hotel Staircase',
     intro: 'The hound stands up. It is much bigger than you thought. Its white eyes lock on you.', weakHint: 'It flinches from the glint of a big blade.',
     weakLine: 'The fire axe bites deep. The hound howls.' },
-  concierge: { name: 'The Concierge', hp: 16, hit: 13, weak: 'sword', win: 'Hotel Fight Concierge', lose: 'Checkout Ending', run: null,
+  concierge: { name: 'The Concierge', hp: 40, hit: 14, boss: true, weak: 'sword', win: 'Hotel Fight Concierge', lose: 'Checkout Ending', run: null,
     intro: '"Fighting the staff is against the rules, guest." It unfolds to its full height. =)', weakHint: 'Its porcelain face has a crack running down it. A sharp point might split it.',
     weakLine: 'You drive the sword into the crack in its porcelain face. It shatters a little more.' }
 };
@@ -1460,8 +1461,9 @@ setup.battleWeapons = function () { return setup.WEAPONS.filter(setup.has); };
 setup.startBattle = function (el) {
   var pad = $(el), b = setup.BATTLES[pad.attr('data-b')];
   if (!b) { return; }
-  pad.data('hp', b.hp).data('guard', false).data('stun', false).data('used', {});
-  setup.drawBattle(pad, b.intro);
+  var weak = b.boss && State.variables.virusStrong;
+  pad.data('hp', weak ? b.hp - 10 : b.hp).data('guard', false).data('stun', false).data('used', {}).data('turn', 0).data('phase', 1).data('charge', false);
+  setup.drawBattle(pad, b.intro + (weak ? '<br><b>The virus strikes first with its black tendrils! The Concierge staggers (-10).</b>' : ''));
 };
 setup.drawBattle = function (pad, log) {
   var b = setup.BATTLES[pad.attr('data-b')], hp = pad.data('hp'), acts = '';
@@ -1471,6 +1473,7 @@ setup.drawBattle = function (pad, log) {
   });
   if (!setup.battleWeapons().length) { acts += '<a class="bbtn" data-act="hit" data-w="">\u{270A} Punch (1)</a>'; }
   acts += '<a class="bbtn block" data-act="block">\u{1F6E1}\u{FE0F} Block</a>';
+  if (b.boss && State.variables.virusWith) { var cd = pad.data('vcd') || 0; acts += cd > 0 ? '<a class="bbtn vir off" data-act="wait">\u{1F9A0} Virus is resting (' + cd + ')</a>' : '<a class="bbtn vir" data-act="virus">\u{1F9A0} Virus: hold it down</a>'; }
   if (setup.has('almond')) { acts += '<a class="bbtn drink" data-act="drink">\u{1F4A7} Drink almond water</a>'; }
   if (b.run) { acts += '<a class="bbtn run" data-act="run">Run away</a>'; }
   pad.html('<div class="bname">' + b.name + '<small>' + hp + ' / ' + b.hp + '</small></div>' +
@@ -1482,6 +1485,8 @@ setup.battleTurn = function (pad, act, w) {
   var v = State.variables, b = setup.BATTLES[pad.attr('data-b')], hp = pad.data('hp'), log = '';
   if (act === 'run') { setup.toast('You run!'); v.sanity = Math.max(1, v.sanity - 10); Engine.play(b.run); return; }
   if (act === 'drink') { var i = v.inv.indexOf('almond'); v.inv.splice(i, 1); v.sanity = 100; log = 'You gulp down almond water. Your mind clears. '; }
+  if (act === 'wait') { return; }
+  if (act === 'virus') { pad.data('held', true).data('vcd', State.variables.virusStrong ? 2 : 4); log = '<b>The virus wraps every tendril it has around the Concierge and holds it still!</b> '; }
   if (act === 'block') { pad.data('guard', true); log = 'You brace yourself and watch for an opening. '; }
   if (act === 'hit') {
     var s = setup.WSTATS[w] || { dmg: 1 }, dmg = s.dmg, used = pad.data('used');
@@ -1493,7 +1498,13 @@ setup.battleTurn = function (pad, act, w) {
     hp -= dmg; pad.data('hp', hp);
     log += 'You hit the ' + b.name.toLowerCase().replace(/^the /, '') + ' for <b>' + dmg + '</b>. ';
     if (b.stun && w === b.stun) { pad.data('stun', true); }
+    if (b.boss && pad.data('phase') === 2 && Math.random() < .25) { hp += 2; pad.data('hp', hp); log += 'Porcelain dust swirls back into the crack. <b>It heals 2.</b> '; }
   }
+  if (b.boss && v.virusWith && act !== 'virus') {
+    var vd = v.virusStrong ? 3 : 2; hp -= vd; pad.data('hp', hp);
+    log += 'The virus lunges in beside you and hits it for <b>' + vd + '</b>. ';
+  }
+  if (b.boss && pad.data('vcd') > 0 && act !== 'virus') { pad.data('vcd', pad.data('vcd') - 1); }
   if (hp <= 0) {
     Object.keys(pad.data('used')).forEach(function (u) { if (setup.WSTATS[u] && setup.WSTATS[u].breaks && setup.has(u)) { v.inv.splice(v.inv.indexOf(u), 1); setup.toast('You won, but your ' + setup.ITEMS[u].name.toLowerCase() + ' snapped!'); } });
     setup.hud(); pad.find('.bacts').remove();
@@ -1503,6 +1514,7 @@ setup.battleTurn = function (pad, act, w) {
     return;
   }
   /* the monster's turn */
+  if (b.boss) { pad.data('log', log).data('lastw', w || ''); setup.bossTurn(pad, b, act); return; }
   if (pad.data('stun')) { pad.data('stun', false); log += 'It is too dazed to hit back!'; }
   else {
     var hit = Math.round(b.hit * (setup.mode().label === 'Hard' ? 1.5 : 1)), light = setup.battleWeapons().some(function (x) { return !setup.WSTATS[x].heavy; }) && !setup.battleWeapons().some(function (x) { return setup.WSTATS[x].heavy; });
@@ -1517,6 +1529,41 @@ setup.battleTurn = function (pad, act, w) {
   setup.hud();
   if (v.sanity <= 0) { pad.find('.bacts').remove(); pad.find('.blog').html(log); setTimeout(function () { Engine.play(b.lose); }, 900); return; }
   setup.drawBattle(pad, log);
+};
+/* the boss: at half health it cracks open and gets stronger, and every third turn it winds up a slam you must block */
+setup.bossTurn = function (pad, b, act) {
+  var v = State.variables, hp = pad.data('hp'), turn = pad.data('turn') + 1, log = pad.find('.blog').data('pending') || '';
+  pad.data('turn', turn);
+  var hard = setup.mode().label === 'Hard' ? 1.5 : 1, extra = '';
+  if (pad.data('phase') === 1 && hp <= b.hp / 2) {
+    pad.data('phase', 2); hp += 4; pad.data('hp', hp);
+    extra += '<br><b>CRACK.</b> Its porcelain face splits wide open. Something dark grins out from inside. It grows taller, and it heals 4. =) ';
+  }
+  var hit = Math.round((b.hit + (pad.data('phase') === 2 ? 4 : 0)) * hard);
+  if (pad.data('held')) {
+    pad.data('held', false);
+    extra += pad.data('charge') ? '<br>The silver tray drops out of its hands. The virus saved you from the slam!' : '<br>It struggles in the tendrils and cannot hit you this turn.';
+    pad.data('charge', false);
+  } else if (pad.data('charge')) {
+    pad.data('charge', false);
+    var slam = act === 'block' ? Math.ceil(hit / 3) : hit * 2;
+    v.sanity = Math.max(0, v.sanity - slam);
+    extra += act === 'block' ? '<br>The silver tray SLAMS down on your guard. <b>-' + slam + ' sanity</b>. You held it!'
+                             : '<br>The silver tray SLAMS down on you. You did not block. <b>-' + slam + ' sanity</b>.';
+    pad.removeClass('hit'); void pad[0].offsetWidth; pad.addClass('hit');
+  } else if (turn % 3 === 0) {
+    pad.data('charge', true);
+    extra += '<br>It raises a silver tray high above its head. <b>\u26A0\uFE0F Block next turn!</b>';
+  } else {
+    var light = act === 'hit' && pad.data('lastw') && !setup.WSTATS[pad.data('lastw')].heavy;
+    if (light && Math.random() < .2) { extra += '<br>It swings, but you <b>dodge</b>!'; }
+    else { if (act === 'block') { hit = Math.ceil(hit / 2); } v.sanity = Math.max(0, v.sanity - hit); extra += '<br>It hits you. <b>-' + hit + ' sanity</b>.'; pad.removeClass('hit'); void pad[0].offsetWidth; pad.addClass('hit'); }
+  }
+  setup.hud();
+  var msg = pad.data('log') + extra;
+  if (v.sanity <= 0) { pad.find('.bacts').remove(); pad.find('.blog').html(msg); setTimeout(function () { Engine.play(b.lose); }, 900); return true; }
+  setup.drawBattle(pad, msg);
+  return true;
 };
 $(document).on(':passagedisplay', function () { $('#passages .battle').each(function () { setup.startBattle(this); }); });
 $(document).on('click', '.battle .bbtn', function (e) {
@@ -1588,10 +1635,10 @@ setup.BEASTS = [
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
-  { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15',
-    seen: ["What's this Bacteria (Q5)"], deaths: ['You become lost becoming a (Q36)'],
-    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own.',
-    tip: 'Never wander off alone. Stay with the virus.' },
+  { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
+    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)', 'Bacteria Ending'], beat: ['Bacteria Absorb'],
+    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back.',
+    tip: 'Never wander off alone. Stay with the virus. If it attacks, let the virus absorb it: the virus gets its black tendrils and the Concierge fight gets easier.' },
   { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
     seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
     desc: 'A red, scaly thing that chases you through the poolrooms. The black water eats anything dead, including it.',
@@ -1624,10 +1671,6 @@ setup.BEASTS = [
     seen: ['The Way Out'], deaths: ['Biggest Partygoer Ending'],
     desc: 'It guards the way out of Level Fun. Its smile stretches all the way around its head.',
     tip: 'Partygoers like hats. Wear one and walk right past it.' },
-  { id: 'bacteria', name: 'The Bacteria', tag: 'After Level !', img: 'art_bacteria',
-    seen: ['Bacteria Attack'], deaths: ['Bacteria Ending'], beat: ['Bacteria Absorb'],
-    desc: 'A tall, thin, faceless black figure made of jagged spikes. It twitches, then sprints. Cut a tendril and two grow back.',
-    tip: 'Weapons only make more tendrils. Let the virus absorb it, and the virus grows spiky black tendrils of its own.' },
   { id: 'crawler', name: 'Pipe Crawler', tag: 'Level 2', img: 'art_crawler', battle: 'crawler',
     seen: ['Level 2 Crawler', 'Battle Pipe Crawler'], deaths: ['Crawler Ending', 'Steam Ending'],
     desc: 'A knot of rusty metal legs and tiny red lights that lives in the vents of Pipe Dreams.',
@@ -1694,7 +1737,7 @@ setup.openBestiary = function () {
     var img = setup.bestImg(e.form2 && x.img2 ? x.img2 : x.img), learned = e.beaten || e.died, stat = '';
     if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
-    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt=""></div><div class="bbody">' +
+    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
       '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3><p>' + x.desc + '</p>' +
       '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });

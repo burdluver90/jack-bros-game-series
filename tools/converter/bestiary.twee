@@ -27,10 +27,10 @@ setup.BEASTS = [
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
-  { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15',
-    seen: ["What's this Bacteria (Q5)"], deaths: ['You become lost becoming a (Q36)'],
-    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own.',
-    tip: 'Never wander off alone. Stay with the virus.' },
+  { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
+    seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)', 'Bacteria Ending'], beat: ['Bacteria Absorb'],
+    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back.',
+    tip: 'Never wander off alone. Stay with the virus. If it attacks, let the virus absorb it: the virus gets its black tendrils and the Concierge fight gets easier.' },
   { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
     seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
     desc: 'A red, scaly thing that chases you through the poolrooms. The black water eats anything dead, including it.',
@@ -63,10 +63,6 @@ setup.BEASTS = [
     seen: ['The Way Out'], deaths: ['Biggest Partygoer Ending'],
     desc: 'It guards the way out of Level Fun. Its smile stretches all the way around its head.',
     tip: 'Partygoers like hats. Wear one and walk right past it.' },
-  { id: 'bacteria', name: 'The Bacteria', tag: 'After Level !', img: 'art_bacteria',
-    seen: ['Bacteria Attack'], deaths: ['Bacteria Ending'], beat: ['Bacteria Absorb'],
-    desc: 'A tall, thin, faceless black figure made of jagged spikes. It twitches, then sprints. Cut a tendril and two grow back.',
-    tip: 'Weapons only make more tendrils. Let the virus absorb it, and the virus grows spiky black tendrils of its own.' },
   { id: 'crawler', name: 'Pipe Crawler', tag: 'Level 2', img: 'art_crawler', battle: 'crawler',
     seen: ['Level 2 Crawler', 'Battle Pipe Crawler'], deaths: ['Crawler Ending', 'Steam Ending'],
     desc: 'A knot of rusty metal legs and tiny red lights that lives in the vents of Pipe Dreams.',
@@ -133,7 +129,7 @@ setup.openBestiary = function () {
     var img = setup.bestImg(e.form2 && x.img2 ? x.img2 : x.img), learned = e.beaten || e.died, stat = '';
     if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
-    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt=""></div><div class="bbody">' +
+    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
       '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3><p>' + x.desc + '</p>' +
       '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });
