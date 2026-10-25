@@ -11,7 +11,7 @@
 :: Level 1 Dark Hall
 <div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
 <div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
-<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]<<if setup.has("crowbar")>>[[Pry open the floor hatch with the crowbar|Level 1 Hatch]]<</if>></div>
+<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]<<if setup.hasWeapon()>>[[Turn and fight it|Battle Skin Stealer]]<</if>><<if setup.has("crowbar")>>[[Pry open the floor hatch with the crowbar|Level 1 Hatch]]<</if>></div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
 <<timed 3s>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
@@ -44,7 +44,7 @@
 :: Party Chase [fun]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
 <div class="story-text"><p>The music stops.</p><p>Every smiling face turns toward you at once. They heard you. =)</p></div>
-<div id="opts" class="choices">[[Sprint for the grey door|Level 1 Stairwell]][[Dive under the party table|Under the Party Table]]</div>
+<div id="opts" class="choices">[[Sprint for the grey door|Level 1 Stairwell]][[Dive under the party table|Under the Party Table]]<<if setup.hasWeapon()>>[[Turn and fight them|Battle Partygoers]]<</if>></div>
 <div class="timerbar"><span style="animation-duration:2.5s"></span></div>
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 

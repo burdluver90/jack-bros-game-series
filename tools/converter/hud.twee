@@ -159,7 +159,12 @@ setup.weaponName = function () {
   return w ? setup.ITEMS[w].name.toLowerCase() : 'bare hands';
 };
 setup.isTaken = function (k) { return !!(State.variables.taken || {})[k]; };
-setup.take = function (k, id) { var v = State.variables; v.taken = v.taken || {}; if (v.taken[k]) { return false; } if (setup.addItem(id)) { v.taken[k] = true; return true; } return false; };
+setup.take = function (k, id) {
+  var v = State.variables; v.taken = v.taken || {}; if (v.taken[k]) { return false; }
+  /* already carrying one (only water stacks): the pickup just goes away */
+  if (id !== 'almond' && setup.has(id)) { v.taken[k] = true; setup.toast('You already have a ' + setup.ITEMS[id].name.toLowerCase() + '.'); return true; }
+  if (setup.addItem(id)) { v.taken[k] = true; return true; } return false;
+};
 setup.toast = function (msg) {
   var t = $('#toast'); if (!t.length) { t = $('<div id="toast"></div>').appendTo('body'); }
   t.text(msg).addClass('show'); clearTimeout(setup._tt); setup._tt = setTimeout(function () { t.removeClass('show'); }, 2200);

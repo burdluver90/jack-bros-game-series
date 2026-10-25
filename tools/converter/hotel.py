@@ -514,7 +514,7 @@ add('Hotel Basement Stairs', scene('art_h_stairs') + '\n' + story(
     'The service stairs go down into the dark. At the bottom, something long and black is lying across the steps, breathing slowly.',
     'A hound. Its white eyes are open. It is listening.',
     '<<if setup.has("flashlight")>>Your flashlight might scare it. Or it might make it angry.<</if>>') + '\n' +
-    timed(4, ['<<if setup.has("axe")>>[[Charge it with the fire axe|Hotel Hound Axe]]<</if>>', '[[Hold your breath and tiptoe past it|Hotel Boiler Door]]',
+    timed(4, ['<<if setup.has("axe")>>[[Charge it with the fire axe|Hotel Hound Axe]]<</if>>', '<<if setup.hasWeapon()>>[[Fight the hound|Battle Hound]]<</if>>', '[[Hold your breath and tiptoe past it|Hotel Boiler Door]]',
               '<<if setup.has("flashlight")>>[[Shine the flashlight in its eyes|Hound Ending]]<</if>>',
               '[[Go back up|Hotel Staircase]]'], 'It smells you', 'Hound Ending'), 'hotel')
 
@@ -547,7 +547,7 @@ add('Hotel Boiler Room', withVirus('art_h_boiler', (8, 12, .8)) + '\n' + story(
     'On the far wall: a plain grey door with a green EXIT sign. The real exit.',
     'And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"') + '\n' +
     choices('<<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>>',
-            '<<if setup.hasWeapon()>>[[Fight the Concierge|Hotel Fight Concierge]]<</if>>',
+            '<<if setup.hasWeapon()>>[[Fight the Concierge|Battle Concierge]]<</if>>',
             '<<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>',
             '[[Run for the exit|Checkout Ending]]'), 'hotel')
 
@@ -558,9 +558,9 @@ add('Hotel Checkout Polite', scene('art_h_boiler') + '\n' + story(
     choices('[[Walk through the exit|Hotel Exit]]'), 'hotel')
 
 add('Hotel Fight Concierge', scene('art_h_boiler') + '\n' + story(
-    'You swing your <<print setup.weaponName()>>. The Concierge reaches for you with its long white gloves.',
+    'One last swing of your <<print setup.weaponName()>>. The Concierge reaches for you with its long white gloves... too slow.',
     'You hit it right in its smooth smiling face. It cracks like porcelain. It stumbles back into the boiler... and the fire takes it.',
-    'The exit door is clear.<<run setup.useWeapon()>>') + '\n' +
+    'The exit door is clear.') + '\n' +
     choices('[[Run through the exit|Hotel Exit]]'), 'hotel')
 
 add('Hotel Virus Distracts', withVirus('art_h_boiler', (8, 12, .8)) + '\n' + story(

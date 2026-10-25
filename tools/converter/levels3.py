@@ -120,7 +120,7 @@ P.append(':: Level 2 Pipe Dreams\n' + find('wl2') + '\n' + withVirus('art_level2
     '<<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>>',
     'A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.') +
     '\n<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>'
-    '<<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>\n')
+    '<<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 2 Crawler]][[Follow the hot red pipe|Steam Ending]]</div>\n')
 P.append(':: Level 2 Valve\n' + scene('art_level2') + '\n' + story(
     'You clamp the pipe wrench onto the big red valve and pull with everything you have.',
     'SCREEEECH. The valve turns. The hissing stops. The red-hot pipe slowly fades to a dull grey.',

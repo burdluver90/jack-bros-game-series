@@ -1,0 +1,146 @@
+:: Battle Styles [stylesheet]
+.battle { max-width: 560px; margin: 4px auto 16px; padding: 14px 16px; border-radius: 14px; background: rgba(20,10,10,.92); border: 2px solid #7f1d1d; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+.battle .bname { display: flex; justify-content: space-between; align-items: baseline; font: 900 1.15rem "Arial Black", Arial, sans-serif; color: #fecaca; letter-spacing: .04em; }
+.battle .bname small { font: .8rem Arial, sans-serif; color: #fca5a5; letter-spacing: 0; }
+.battle .bhp { height: 14px; margin: 8px 0 10px; border-radius: 99px; background: #3a1418; overflow: hidden; }
+.battle .bhp span { display: block; height: 100%; background: linear-gradient(90deg, #ef4444, #f97316); transition: width .35s ease; }
+.battle .blog { min-height: 3.6em; font-size: .92rem; line-height: 1.45; color: #f3e9d2; margin-bottom: 10px; }
+.battle .blog b { color: #fde68a; }
+.battle .bweak { font-size: .82rem; color: #fde68a; margin-bottom: 8px; }
+.battle .bacts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.battle .bbtn { display: inline-block; padding: .45em 1em; border-radius: 99px; border: 1px solid #ef4444; background: #3a1418; color: #fee2e2; text-decoration: none; cursor: pointer; font-size: .92rem; }
+.battle .bbtn:hover { background: #5a1d22; }
+.battle .bbtn.block { border-color: #60a5fa; background: #172554; color: #dbeafe; }
+.battle .bbtn.drink { border-color: #4fd18b; background: #143224; color: #c9ffe0; }
+.battle .bbtn.run { border-color: #9ca3af; background: #1f2937; color: #e5e7eb; }
+@keyframes bshake { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.battle.hit { animation: bshake .25s; }
+
+:: Battle Script [script]
+/* turn-based battles: each weapon has damage, heavy ones never dodge, light ones dodge 30% of hits.
+   each monster has a weak spot that takes double damage.
+   <div class="battle" data-b="skinstealer"></div> */
+setup.WSTATS = {
+  sword:   { dmg: 3, heavy: true },
+  axe:     { dmg: 4, heavy: true },
+  wrench:  { dmg: 2 },
+  crowbar: { dmg: 2 },
+  bat:     { dmg: 2, breaks: true }
+};
+setup.BATTLES = {
+  skinstealer: { name: 'Skin Stealer', hp: 8, hit: 11, weak: 'crowbar', win: 'Level 1 Hidden', lose: 'Skin Stealer Ending', run: 'Skin Stealer Ending',
+    intro: 'It lunges at you, its stolen face stretching into a grin.', weakHint: 'Its skin looks loose. Something that pries might rip it right off.',
+    weakLine: 'You hook the crowbar under its stolen skin and RIP.' },
+  partygoers: { name: 'Partygoers', hp: 10, hit: 9, weak: 'bat', stun: 'bat', win: 'Level 1 Stairwell', lose: 'Partygoer Caught Ending', run: 'Partygoer Caught Ending',
+    intro: 'Three of them come at you at once, arms out, smiling. =)', weakHint: 'They are light and wobbly. A good swing could knock them flying.',
+    weakLine: 'HOME RUN! The bat sends one flying into the cake. The others stumble.' },
+  crawler: { name: 'Pipe Crawler', hp: 9, hit: 10, weak: 'wrench', win: 'Level 4 Abandoned Office', lose: 'Crawler Ending', run: 'Level 2 Pipe Dreams',
+    intro: 'A mass of rusty metal legs unfolds out of the vent and clicks toward you.', weakHint: 'It is held together by bolts. Something that turns bolts would take it apart.',
+    weakLine: 'You lock the wrench on a bolt and twist. A whole leg falls off with a clang.' },
+  hound: { name: 'The Hound', hp: 12, hit: 14, weak: 'axe', win: 'Hotel Boiler Door', lose: 'Hound Ending', run: 'Hotel Staircase',
+    intro: 'The hound stands up. It is much bigger than you thought. Its white eyes lock on you.', weakHint: 'It flinches from the glint of a big blade.',
+    weakLine: 'The fire axe bites deep. The hound howls.' },
+  concierge: { name: 'The Concierge', hp: 16, hit: 13, weak: 'sword', win: 'Hotel Fight Concierge', lose: 'Checkout Ending', run: null,
+    intro: '"Fighting the staff is against the rules, guest." It unfolds to its full height. =)', weakHint: 'Its porcelain face has a crack running down it. A sharp point might split it.',
+    weakLine: 'You drive the sword into the crack in its porcelain face. It shatters a little more.' }
+};
+setup.battleWeapons = function () { return setup.WEAPONS.filter(setup.has); };
+setup.startBattle = function (el) {
+  var pad = $(el), b = setup.BATTLES[pad.attr('data-b')];
+  if (!b) { return; }
+  pad.data('hp', b.hp).data('guard', false).data('stun', false).data('used', {});
+  setup.drawBattle(pad, b.intro);
+};
+setup.drawBattle = function (pad, log) {
+  var b = setup.BATTLES[pad.attr('data-b')], hp = pad.data('hp'), acts = '';
+  setup.battleWeapons().forEach(function (w) {
+    var s = setup.WSTATS[w];
+    acts += '<a class="bbtn" data-act="hit" data-w="' + w + '">' + setup.ITEMS[w].icon + ' Swing ' + setup.ITEMS[w].name.toLowerCase() + ' (' + s.dmg + (s.heavy ? ', heavy' : ', light') + ')</a>';
+  });
+  if (!setup.battleWeapons().length) { acts += '<a class="bbtn" data-act="hit" data-w="">\u{270A} Punch (1)</a>'; }
+  acts += '<a class="bbtn block" data-act="block">\u{1F6E1}\u{FE0F} Block</a>';
+  if (setup.has('almond')) { acts += '<a class="bbtn drink" data-act="drink">\u{1F4A7} Drink almond water</a>'; }
+  if (b.run) { acts += '<a class="bbtn run" data-act="run">Run away</a>'; }
+  pad.html('<div class="bname">' + b.name + '<small>' + hp + ' / ' + b.hp + '</small></div>' +
+    '<div class="bhp"><span style="width:' + Math.max(0, hp / b.hp * 100) + '%"></span></div>' +
+    (setup.mode().hints ? '<div class="bweak">\u{1F4A1} ' + b.weakHint + '</div>' : '') +
+    '<div class="blog">' + log + '</div><div class="bacts">' + acts + '</div>');
+};
+setup.battleTurn = function (pad, act, w) {
+  var v = State.variables, b = setup.BATTLES[pad.attr('data-b')], hp = pad.data('hp'), log = '';
+  if (act === 'run') { setup.toast('You run!'); v.sanity = Math.max(1, v.sanity - 10); Engine.play(b.run); return; }
+  if (act === 'drink') { var i = v.inv.indexOf('almond'); v.inv.splice(i, 1); v.sanity = 100; log = 'You gulp down almond water. Your mind clears. '; }
+  if (act === 'block') { pad.data('guard', true); log = 'You brace yourself and watch for an opening. '; }
+  if (act === 'hit') {
+    var s = setup.WSTATS[w] || { dmg: 1 }, dmg = s.dmg, used = pad.data('used');
+    if (w) { used[w] = true; }
+    if (w === b.weak) { dmg *= 2; log = '<b>' + b.weakLine + '</b> '; }
+    if (pad.data('guard')) { dmg += 1; pad.data('guard', false); log += 'Your counter-attack lands hard. '; }
+    if (Math.random() < .15) { dmg += 1; log += '<b>Critical hit!</b> '; }
+    hp -= dmg; pad.data('hp', hp);
+    log += 'You hit the ' + b.name.toLowerCase().replace(/^the /, '') + ' for <b>' + dmg + '</b>. ';
+    if (b.stun && w === b.stun) { pad.data('stun', true); }
+  }
+  if (hp <= 0) {
+    Object.keys(pad.data('used')).forEach(function (u) { if (setup.WSTATS[u] && setup.WSTATS[u].breaks && setup.has(u)) { v.inv.splice(v.inv.indexOf(u), 1); setup.toast('You won, but your ' + setup.ITEMS[u].name.toLowerCase() + ' snapped!'); } });
+    setup.hud(); pad.find('.bacts').remove();
+    pad.find('.blog').html(log + '<br><b>You beat the ' + b.name.replace(/^The /, '') + '!</b>');
+    setTimeout(function () { Engine.play(b.win); }, 900);
+    return;
+  }
+  /* the monster's turn */
+  if (pad.data('stun')) { pad.data('stun', false); log += 'It is too dazed to hit back!'; }
+  else {
+    var hit = Math.round(b.hit * (setup.mode().label === 'Hard' ? 1.5 : 1)), light = setup.battleWeapons().some(function (x) { return !setup.WSTATS[x].heavy; }) && !setup.battleWeapons().some(function (x) { return setup.WSTATS[x].heavy; });
+    var swungLight = act === 'hit' && w && !setup.WSTATS[w].heavy;
+    if ((swungLight || (act !== 'hit' && light)) && Math.random() < .3) { log += 'It swings at you, but you <b>dodge</b>!'; }
+    else {
+      if (act === 'block') { hit = Math.ceil(hit / 2); }
+      v.sanity = Math.max(0, v.sanity - hit); log += 'It hits you. <b>-' + hit + ' sanity</b>.';
+      pad.removeClass('hit'); void pad[0].offsetWidth; pad.addClass('hit');
+    }
+  }
+  setup.hud();
+  if (v.sanity <= 0) { pad.find('.bacts').remove(); pad.find('.blog').html(log); setTimeout(function () { Engine.play(b.lose); }, 900); return; }
+  setup.drawBattle(pad, log);
+};
+$(document).on(':passagedisplay', function () { $('#passages .battle').each(function () { setup.startBattle(this); }); });
+$(document).on('click', '.battle .bbtn', function (e) {
+  e.preventDefault();
+  setup.battleTurn($(this).closest('.battle'), $(this).attr('data-act'), $(this).attr('data-w'));
+});
+
+:: Battle Skin Stealer [flicker]
+<div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
+<div class="story-text"><p>You stop running. You turn around and raise your weapon.</p></div>
+<div class="battle" data-b="skinstealer"></div>
+
+:: Battle Partygoers [fun]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>You spin around to face them. The music stops. Everyone is smiling.</p></div>
+<div class="battle" data-b="partygoers"></div>
+
+:: Level 2 Crawler
+<div class="scene"><div class="pos bg">[img[art_crawler]]</div></div>
+<div class="story-text"><p>The cold pipe leads to a vent. Something is wedged inside it: a knot of rusty metal legs and tiny red lights.</p><p>It clicks. It has noticed you.</p></div>
+<div class="choices"><<if setup.hasWeapon()>>[[Fight it|Battle Pipe Crawler]]<</if>><<link "Squeeze past it (-15 sanity)" "Level 4 Abandoned Office">><<set $sanity to Math.max(1, $sanity - 15)>><</link>>[[Go back|Level 2 Pipe Dreams]]</div>
+
+:: Battle Pipe Crawler
+<div class="scene"><div class="pos bg">[img[art_crawler]]</div></div>
+<div class="story-text"><p>The legs unfold. It is coming out of the vent.</p></div>
+<div class="battle" data-b="crawler"></div>
+
+:: Crawler Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_crawler]]</div></div>
+<div class="story-text"><p>The metal legs wrap around you and pull you into the vent.</p><p>It is very, very tight in there.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Battle Hound [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_stairs]]</div></div>
+<div class="story-text"><p>You grip your weapon and walk down the stairs toward it.</p></div>
+<div class="battle" data-b="hound"></div>
+
+:: Battle Concierge [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div>
+<div class="story-text"><p>The boiler roars. The Concierge straightens its gloves.</p></div>
+<div class="battle" data-b="concierge"></div>
