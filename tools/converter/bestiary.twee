@@ -21,6 +21,8 @@
 .bestlink { text-align: center; margin: 6px 0 0; }
 #bestiary .btabs { display: flex; gap: 8px; margin: 0 0 16px; clear: both; }
 #bestiary .btab { padding: .35em 1em; border-radius: 99px; border: 1px solid #4a4528; background: #16140c; color: #c7c2a4; cursor: pointer; }
+#bestiary .bshow { margin-left: auto; padding: .35em 1em; border-radius: 99px; border: 1px solid #4a4528; background: #16140c; color: #9db8ff; cursor: pointer; }
+#bestiary .bshow.on { border-color: #9db8ff; background: #101a30; }
 #bestiary .btab.on { border-color: #fde68a; color: #fde68a; background: #2a2610; }
 #bestiary .fchain { display: flex; flex-direction: column; align-items: center; gap: 0; }
 #bestiary .ftier { width: 100%; background: #16140c; border: 1px solid #4a4528; border-radius: 12px; padding: 10px 12px 12px; }
@@ -131,8 +133,12 @@ $(document).on(':passagedisplay', function (ev) {
   });
 });
 setup.bestImg = function (name) { var p = Story.get(name); return p && p.text ? p.text.trim() : ''; };
+setup.bestView = function () {
+  if (!setup.showAll) { return setup.best(); }
+  var all = {}; setup.BEASTS.forEach(function (x) { all[x.id] = { seen: true, form2: true, beaten: true }; }); return all;
+};
 setup.openBestiary = function () {
-  var b = setup.best(), found = 0, cards = '';
+  var b = setup.bestView(), found = 0, cards = '';
   setup.BEASTS.forEach(function (x) {
     var e = b[x.id];
     if (!e || !e.seen) {
@@ -150,7 +156,7 @@ setup.openBestiary = function () {
   $('#bestiary').remove();
   $('<div id="bestiary"><div class="bwrap"><button class="bclose">Close</button><h2>\u{1F4D6} Bestiary</h2>' +
     '<p class="bsub">' + found + ' of ' + setup.BEASTS.length + ' creatures found. Tips unlock when you beat a creature or it gets you.</p>' +
-    '<div class="btabs"><button class="btab on" data-t="cards">Creatures</button><button class="btab" data-t="chain">\u{1F356} Food chain</button></div>' +
+    '<div class="btabs"><button class="btab on" data-t="cards">Creatures</button><button class="btab" data-t="chain">\u{1F356} Food chain</button><button class="bshow' + (setup.showAll ? ' on' : '') + '">\u{1F441}\u{FE0F} ' + (setup.showAll ? 'Hide what I have not found' : 'Show everything') + '</button></div>' +
     '<div class="bgrid">' + cards + '</div></div></div>').appendTo('body');
 };
 /* the food chain: who eats who in the Backrooms. Higher tiers hunt everything below them. */
@@ -162,7 +168,7 @@ setup.FOODCHAIN = [
   { name: 'Prey', note: 'Small, weak, and hunted by nearly everything.', list: ['doll'] }
 ];
 setup.openFoodChain = function () {
-  var b = setup.best(), tiers = '';
+  var b = setup.bestView(), tiers = '';
   setup.FOODCHAIN.forEach(function (t, i) {
     var row = '';
     t.list.forEach(function (id) {
@@ -183,6 +189,7 @@ $(document).on('click', '#bestiary .btab', function () {
   $('#bestiary .btab').removeClass('on'); $(this).addClass('on');
   if ($(this).attr('data-t') === 'chain') { setup.openFoodChain(); } else { setup.openBestiary(); }
 });
+$(document).on('click', '#bestiary .bshow', function () { setup.showAll = !setup.showAll; setup.openBestiary(); });
 $(document).on('click', '#bestiary .bclose', function () { $('#bestiary').remove(); });
 $(document).on('click', '#hud .bestbtn, .bestlink a', function (e) { e.preventDefault(); setup.openBestiary(); });
 $(document).on('keydown', function (e) { if (e.key === 'Escape') { $('#bestiary').remove(); } });
