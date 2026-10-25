@@ -341,7 +341,7 @@ add('Hotel Lobby', withVirus('art_h_lobby', VR) + '\n' + story(
     'The lobby is enormous. A chandelier the size of a car hangs over a red carpet that goes on and on.',
     'There is a reception desk with a little gold bell, a grand staircase, an elevator, and tall doors marked BALLROOM. Music drifts out from behind them.',
     '<<if $power>>The elevator light is on now.<<else>>The elevator is dark. Its OUT OF ORDER sign is swinging slowly, even though there is no wind.<</if>>',
-    V('As soon as it is through the door, the virus stops and bows low toward the reception desk. "Manners," it whispers. "The Concierge is always watching." Then it keeps low, sniffing the carpet. "Find the brass key. And find out the code."', 'You are alone. The music gets louder, like it noticed.')) + '\n' +
+    V('The virus bows. Then it keeps low, sniffing the carpet. "Find the brass key," it whispers. "And find out the code."', 'You are alone. The music gets louder, like it noticed.')) + '\n' +
     choices(pickup('wlobby', 'almond', 'Check the luggage cart for almond water'), '[[Go to the front desk|Hotel Front Desk]]', '[[Read the guest book|Hotel Guest Book]]', '[[Go into the ballroom|Hotel Ballroom]]',
             '[[Climb the grand staircase|Hotel Staircase]]',
             '<<if $power>>[[Take the elevator|Hotel Elevator]]<<else>>[[Press the elevator button|Hotel Elevator Dead]]<</if>>'), 'hotel')
