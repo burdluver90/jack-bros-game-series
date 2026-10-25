@@ -626,17 +626,17 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 :: Hud Script [script]
 setup.ITEMS = {
   almond: { name: 'Almond water', short: 'Water', icon: '\u{1F4A7}', desc: 'Drink it if things become distorted or you see smiles.' },
-  sword:  { name: 'Sword', short: 'Sword', icon: '\u{1F5E1}\u{FE0F}', desc: 'Sharp. Might help in a fight.' },
+  sword:  { name: 'Sword', short: 'Sword', icon: '⚔️', desc: 'Sharp. Might help in a fight.' },
   code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'The ink got wet and smudged. You can\'t read it anymore. Hope you remember it.' },
-  roomkey:{ name: 'Room 213 key', short: 'Key 213', icon: '\u{1F5DD}\u{FE0F}', desc: 'A gold hotel key on a red tag: 213.' },
-  brasskey:{ name: 'Brass key', short: 'Brass', icon: '\u{1F511}', desc: 'Heavy and warm. It says BOILER.' },
+  roomkey:{ name: 'Room 213 key', short: 'Key 213', icon: '\u{1F511}', desc: 'A gold hotel key on a red tag: 213.' },
+  brasskey:{ name: 'Brass key', short: 'Brass', icon: '\u{1F510}', desc: 'Heavy and warm. It says BOILER.' },
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
-  hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F973}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
+  hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' },
   bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'Wet from the poolrooms, but still solid. A weapon.' },
-  wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F6E0}\u{FE0F}', desc: 'Heavy enough to dent metal. A weapon.' },
-  axe:    { name: 'Fire axe', short: 'Axe', icon: '\u{1FA93}', desc: 'IN CASE OF EMERGENCY. The best weapon you have found. Hounds hate it.' }
+  wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'Heavy enough to dent metal. A weapon.' },
+  axe:    { name: 'Fire axe', short: 'Axe', icon: '⛏️', desc: 'IN CASE OF EMERGENCY. The best weapon you have found. Hounds hate it.' }
 };
 setup.SLOTS = 6;      /* inventory size */
 /* Normal and Hard: sanity lost per scene (Level Fun drains twice as fast), how long timers last, wrong codes allowed */
@@ -669,7 +669,7 @@ setup.addItem = function (id) {
   var v = State.variables; v.inv = v.inv || [];
   if (setup.has(id) && id !== 'almond') { return false; }
   if (v.inv.length >= setup.SLOTS) { setup.toast('Your inventory is full'); return false; }
-  v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].name); setup.hud(); return true;
+  v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].icon + ' ' + setup.ITEMS[id].name); setup.hud(); return true;
 };
 /* drinking from a button that also moves to the next scene: top up past 100 so the next scene's drain lands on 100 */
 setup.fill = function (beforeMove) { State.variables.sanity = 100 + (beforeMove ? setup.mode().drain : 0); setup.toast('You drink the almond water. Your mind clears.'); setup.hud(); };
