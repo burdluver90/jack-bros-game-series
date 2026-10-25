@@ -1653,7 +1653,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 setup.BEASTS = [
   { id: 'virus', name: 'The Virus', tag: 'Friend', apex: true, friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
-    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even after mutating, the virus has never tested its strength against the Concierge. It could win, or it could be torn apart, so it lowers its tendrils politely and stays out of the way of the Concierge.',
+    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even after mutating, the virus has never tested its strength against the Concierge. It could win, or it could be torn apart, so it lowers its tendrils politely and stays out of the way of the Concierge. The virus and the Concierge are the smartest creatures in the Backrooms, each with a shocking IQ of 170.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'virusyoung', name: 'The Virus (before mutation)', tag: 'Hunter', friend: true, img: 'img_Qimage26',
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: [],
@@ -1717,7 +1717,7 @@ setup.BEASTS = [
     tip: 'Grab the sheet music and run. Dancing costs sanity, but it shows you the code too.' },
   { id: 'concierge', name: 'The Concierge', tag: 'Grand Hotel boss', apex: true, img: 'art_h_desk', battle: 'concierge',
     seen: ['Hotel Concierge', 'Hotel Boiler Room', 'Battle Concierge'], deaths: ['Checkout Ending', 'Bell Ending', 'Housekeeping Ending'],
-    desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out. The Concierge only likes polite creatures. The top hunters know this, and even the other two apex predators, the mutated virus and the Clown, bow to it when they pass through the hotel. The hunters and scavengers are not smart enough to mind their manners, so the Concierge hunts them. But it loves small things, so prey always get a free pass.',
+    desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out. The Concierge only likes polite creatures. The top hunters know this, and even the other two apex predators, the mutated virus and the Clown, bow to it when they pass through the hotel. The hunters and scavengers are not smart enough to mind their manners, so the Concierge hunts them. But it loves small things, so prey always get a free pass. The Concierge and the virus are the smartest creatures in the Backrooms, each with a shocking IQ of 170.',
     tip: 'Ring the bell once, ask nicely, hide in the wardrobe. Polite guests may check out. Its cracked face is weak to the sword.' },
   { id: 'hound', name: 'The Hound', tag: 'Grand Hotel', img: 'art_h_stairs', battle: 'hound',
     seen: ['Hotel Basement Stairs', 'Battle Hound'], deaths: ['Hound Ending'],
