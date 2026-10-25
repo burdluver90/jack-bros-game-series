@@ -34,12 +34,12 @@
 :: Party Hat Escape [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.<<set $virusWith to true>></p></div>
-<div class="choices">[[Through the door|Level 2 Pipe Dreams]]</div>
+<div class="choices">[[Through the door|Partypoopers]]</div>
 
 :: The Virus Holds The Door [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.<<set $virusWith to false>></p></div>
-<div class="choices">[[Keep running|Level 2 Pipe Dreams]]</div>
+<div class="choices">[[Keep running|Partypoopers]]</div>
 
 :: Party Forever Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>

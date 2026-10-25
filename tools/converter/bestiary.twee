@@ -23,6 +23,11 @@
 #bestiary .bcard .bstat.won { color: #86efac; }
 #hud .bestbtn { border-radius: 99px; border: 1px solid #a16207; background: #2a2610; color: #fde68a; padding: .25em .8em; cursor: pointer; font-size: .8rem; }
 .bestlink { text-align: center; margin: 6px 0 0; }
+#hud .gear { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; }
+#hud .gear .glbl { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #a8a38a; margin-right: 4px; }
+#hud .gslot { width: 44px; height: 44px; border: 1px dashed #4a4528; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.2rem; }
+#hud .gslot.full { border: 1px solid #a16207; background: #2a2610; }
+#hud .gslot small { font-size: .55rem; color: #c7c2a4; }
 .preybox { margin: 10px auto; max-width: 640px; padding: 10px 14px; border: 1px dashed #86efac; border-radius: 10px; background: rgba(20, 50, 36, .55); }
 .preybox p { margin: 0 0 6px; }
 .preybox .preyout { color: #bbf7d0; }
@@ -132,6 +137,10 @@ setup.BEASTS = [
     seen: ['Bacteria Absorb'], deaths: [],
     desc: 'Tiny viruses that have not mutated yet, like the virus was when it was small. You never see one: the virus told you about them. They cannot fight back, and the Bacteria eat them easily. Only about 1 in 3 hatchlings ever grows bigger, and only about 1 in 5 survives long enough to mutate. But the ones that do mutate turn the tables: they pick off the Bacteria the same way the Bacteria once picked them off when they were small.',
     tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
+  { id: 'poopers', name: 'The Partypoopers', tag: 'Prey', friend: true, img: 'art_partypoopers',
+    seen: ['Partypoopers'], deaths: [],
+    desc: 'Grey, grumpy party guests who got kicked out of Level Fun for frowning. They hate balloons, cake and music, and they are the only creatures in the Backrooms who never smile. The Partygoers chase them off on sight.',
+    tip: 'Take a picture with them. Their frowns are so calming that carrying the photo makes you lose 1 less sanity every scene.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
     desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
@@ -250,7 +259,7 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'poopers', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';

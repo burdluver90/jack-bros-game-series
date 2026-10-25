@@ -120,12 +120,15 @@ setup.ITEMS = {
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
+  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three very grumpy Partypoopers. Looking at it keeps you calm: you lose 1 less sanity every scene.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'PRO: light, and it pries open doors, hatches and stuck elevators. CON: clumsy, you get hurt in fights (-15 sanity).' },
   bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'PRO: light, no downside while you carry it. CON: it snaps after one fight.' },
   wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'PRO: light, and it turns valves, fixes squeaky hinges and opens taps. CON: weak, you get hurt in fights (-10 sanity).' },
   axe:    { name: 'Fire axe', short: 'Axe', icon: '⛏️', desc: 'PRO: wins every fight and hounds are scared of it. CON: heavy, you lose 1 extra sanity every scene while you carry it.' }
 };
 setup.SLOTS = 6;      /* inventory size */
+/* gear goes in its own little slots, not the main inventory */
+setup.GEAR = ['flashlight', 'photo'];
 /* Normal and Hard: sanity lost per scene (Level Fun drains twice as fast), how long timers last, wrong codes allowed */
 setup.MODES = {
   normal: { label: 'Normal', drain: 2, timer: 1.5, codeTries: 3, hints: true },
@@ -134,7 +137,7 @@ setup.MODES = {
 setup.mode = function () { return setup.MODES[State.variables.mode] || setup.MODES.normal; };
 setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's'; };
 setup.reset = function () {
-  var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
+  var v = State.variables; v.sanity = 100; v.inv = []; v.gear = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
   v.boilerCode = setup.newCode(); v.virusStrong = false; v.preyUsed = {};
 };
@@ -153,9 +156,11 @@ setup.codeWords = function () {
 };
 setup.drainFor = function (p) {
   var d = setup.mode().drain; if (p.tags.indexOf('fun') >= 0) { d *= 2; }
-  return d + setup.HEAVY.filter(setup.has).length;   /* +1 for each heavy weapon you carry */
+  d += setup.HEAVY.filter(setup.has).length;   /* +1 for each heavy weapon you carry */
+  if (setup.has('photo')) { d -= 1; }          /* the Partypooper photo keeps you calm */
+  return Math.max(0, d);
 };
-setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
+setup.has = function (id) { var v = State.variables; return (v.inv || []).indexOf(id) >= 0 || (v.gear || []).indexOf(id) >= 0; };
 /* every weapon counts for "Fight"; the first one you carry is the one you swing */
 setup.WEAPONS = ['sword', 'axe', 'wrench', 'crowbar', 'bat'];
 setup.HEAVY = ['sword', 'axe'];
@@ -186,6 +191,7 @@ setup.toast = function (msg) {
 setup.addItem = function (id) {
   var v = State.variables; v.inv = v.inv || [];
   if (setup.has(id) && id !== 'almond') { return false; }
+  if (setup.GEAR.indexOf(id) >= 0) { v.gear = v.gear || []; v.gear.push(id); setup.toast('Gear: ' + setup.ITEMS[id].icon + ' ' + setup.ITEMS[id].name); setup.hud(); return true; }
   if (v.inv.length >= setup.SLOTS) { setup.toast('Your inventory is full'); return false; }
   v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].icon + ' ' + setup.ITEMS[id].name); setup.hud(); return true;
 };
@@ -229,6 +235,16 @@ $(document).on(':passageinit', function (ev) {
   var v = State.variables; if (typeof v.sanity !== 'number') { v.sanity = 100; }
   v.sanity = Math.max(0, v.sanity - setup.drainFor(ev.passage));
 });
+setup.gearRow = function () {
+  var v = State.variables; v.gear = v.gear || [];
+  setup.GEAR.forEach(function (id) { var i = (v.inv || []).indexOf(id); if (i >= 0) { v.inv.splice(i, 1); if (v.gear.indexOf(id) < 0) { v.gear.push(id); } } });
+  var g = v.gear, out = '';
+  setup.GEAR.forEach(function (id) {
+    var it = setup.ITEMS[id], have = g.indexOf(id) >= 0;
+    out += have ? '<span class="gslot full" title="' + it.name + ': ' + it.desc.replace(/"/g, '') + '">' + it.icon + '<small>' + it.short + '</small></span>' : '<span class="gslot"></span>';
+  });
+  return '<div class="gear"><span class="glbl">Gear</span>' + out + '</div>';
+};
 setup.hud = function () {
   var v = State.variables, s = Math.max(0, Math.min(100, v.sanity || 0)), inv = v.inv || [];
   $('body').toggleClass('low', s < 35 && s >= 15).toggleClass('critical', s < 15);
@@ -245,7 +261,7 @@ setup.hud = function () {
   h.html('<div class="top"><span class="mode ' + (State.variables.mode || 'normal') + '">' + setup.mode().label + '</span><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') +
     '<button class="bestbtn" title="Bestiary">\u{1F4D6} Bestiary</button><button class="hum' + (setup.hum && setup.hum.on ? ' on' : '') + '" title="Fluorescent light hum">' + (setup.hum && setup.hum.on ? '\u{1F50A} Hum on' : '\u{1F508} Hum off') + '</button></div>' +
-    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
+    '<div class="slots">' + slots + '</div>' + setup.gearRow() + '<div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
 };
 $(document).on(':passagedisplay', function (ev) {
   var t = ev.passage.tags, show = !(t.indexOf('nohud') >= 0 || t.indexOf('ending') >= 0);
@@ -265,7 +281,7 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby', 'partypoopers': 'Partypoopers' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (location.hash === '#concierge' || location.hash === '#concierge2') {

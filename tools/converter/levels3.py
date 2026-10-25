@@ -121,6 +121,12 @@ P.append(':: Level 2 Pipe Dreams\n' + find('wl2') + '\n' + withVirus('art_level2
     'A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.') +
     '\n<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>'
     '<<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 2 Crawler]][[Follow the hot red pipe|Steam Ending]]</div>\n')
+P.append(':: Partypoopers\n' + withVirus('art_partypoopers', (2, 14, .7)) + '\n' + story(
+    'Behind the last door of Level Fun is a small grey room. The streamers are torn down and the balloons are all half deflated.',
+    'Three grey figures are sitting there, arms crossed, frowning as hard as they can. A sign on the wall says NO PARTY. :(',
+    '"We are the Partypoopers," the tallest one grumbles. "They kicked us out for not smiling. We do not do fun." It holds up an old camera. "But we do take pictures. Want one? No smiling."') +
+    '\n<div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a grumpy picture with them">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you and three Partypoopers, all frowning. Looking at it makes you feel weirdly calm. It goes in your gear slot.</p><</replace>><</link>><</if>></span>'
+    '[[Say goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>\n')
 P.append(':: Level 2 Valve\n' + scene('art_level2') + '\n' + story(
     'You clamp the pipe wrench onto the big red valve and pull with everything you have.',
     'SCREEEECH. The valve turns. The hissing stops. The red-hot pipe slowly fades to a dull grey.',

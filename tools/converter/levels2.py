@@ -5,7 +5,7 @@ GEN = os.path.dirname(os.path.abspath(__file__))
 VIRUS = ('<div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div>'
          '<div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div>'
          '<div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div>')
-END = 'Level 2 Pipe Dreams'
+END = 'Partypoopers'
 
 def scene(bg, left, top, k):
     # a same-aspect box keeps the rotated arms exactly as he placed them

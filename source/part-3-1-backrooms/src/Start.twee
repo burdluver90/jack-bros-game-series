@@ -640,12 +640,15 @@ setup.ITEMS = {
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
+  photo:  { name: 'Partypooper photo', short: 'Photo', icon: '\u{1F4F7}', desc: 'You and three very grumpy Partypoopers. Looking at it keeps you calm: you lose 1 less sanity every scene.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'PRO: light, and it pries open doors, hatches and stuck elevators. CON: clumsy, you get hurt in fights (-15 sanity).' },
   bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'PRO: light, no downside while you carry it. CON: it snaps after one fight.' },
   wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'PRO: light, and it turns valves, fixes squeaky hinges and opens taps. CON: weak, you get hurt in fights (-10 sanity).' },
   axe:    { name: 'Fire axe', short: 'Axe', icon: '⛏️', desc: 'PRO: wins every fight and hounds are scared of it. CON: heavy, you lose 1 extra sanity every scene while you carry it.' }
 };
 setup.SLOTS = 6;      /* inventory size */
+/* gear goes in its own little slots, not the main inventory */
+setup.GEAR = ['flashlight', 'photo'];
 /* Normal and Hard: sanity lost per scene (Level Fun drains twice as fast), how long timers last, wrong codes allowed */
 setup.MODES = {
   normal: { label: 'Normal', drain: 2, timer: 1.5, codeTries: 3, hints: true },
@@ -654,7 +657,7 @@ setup.MODES = {
 setup.mode = function () { return setup.MODES[State.variables.mode] || setup.MODES.normal; };
 setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's'; };
 setup.reset = function () {
-  var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
+  var v = State.variables; v.sanity = 100; v.inv = []; v.gear = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
   v.boilerCode = setup.newCode(); v.virusStrong = false; v.preyUsed = {};
 };
@@ -673,9 +676,11 @@ setup.codeWords = function () {
 };
 setup.drainFor = function (p) {
   var d = setup.mode().drain; if (p.tags.indexOf('fun') >= 0) { d *= 2; }
-  return d + setup.HEAVY.filter(setup.has).length;   /* +1 for each heavy weapon you carry */
+  d += setup.HEAVY.filter(setup.has).length;   /* +1 for each heavy weapon you carry */
+  if (setup.has('photo')) { d -= 1; }          /* the Partypooper photo keeps you calm */
+  return Math.max(0, d);
 };
-setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
+setup.has = function (id) { var v = State.variables; return (v.inv || []).indexOf(id) >= 0 || (v.gear || []).indexOf(id) >= 0; };
 /* every weapon counts for "Fight"; the first one you carry is the one you swing */
 setup.WEAPONS = ['sword', 'axe', 'wrench', 'crowbar', 'bat'];
 setup.HEAVY = ['sword', 'axe'];
@@ -706,6 +711,7 @@ setup.toast = function (msg) {
 setup.addItem = function (id) {
   var v = State.variables; v.inv = v.inv || [];
   if (setup.has(id) && id !== 'almond') { return false; }
+  if (setup.GEAR.indexOf(id) >= 0) { v.gear = v.gear || []; v.gear.push(id); setup.toast('Gear: ' + setup.ITEMS[id].icon + ' ' + setup.ITEMS[id].name); setup.hud(); return true; }
   if (v.inv.length >= setup.SLOTS) { setup.toast('Your inventory is full'); return false; }
   v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].icon + ' ' + setup.ITEMS[id].name); setup.hud(); return true;
 };
@@ -749,6 +755,16 @@ $(document).on(':passageinit', function (ev) {
   var v = State.variables; if (typeof v.sanity !== 'number') { v.sanity = 100; }
   v.sanity = Math.max(0, v.sanity - setup.drainFor(ev.passage));
 });
+setup.gearRow = function () {
+  var v = State.variables; v.gear = v.gear || [];
+  setup.GEAR.forEach(function (id) { var i = (v.inv || []).indexOf(id); if (i >= 0) { v.inv.splice(i, 1); if (v.gear.indexOf(id) < 0) { v.gear.push(id); } } });
+  var g = v.gear, out = '';
+  setup.GEAR.forEach(function (id) {
+    var it = setup.ITEMS[id], have = g.indexOf(id) >= 0;
+    out += have ? '<span class="gslot full" title="' + it.name + ': ' + it.desc.replace(/"/g, '') + '">' + it.icon + '<small>' + it.short + '</small></span>' : '<span class="gslot"></span>';
+  });
+  return '<div class="gear"><span class="glbl">Gear</span>' + out + '</div>';
+};
 setup.hud = function () {
   var v = State.variables, s = Math.max(0, Math.min(100, v.sanity || 0)), inv = v.inv || [];
   $('body').toggleClass('low', s < 35 && s >= 15).toggleClass('critical', s < 15);
@@ -765,7 +781,7 @@ setup.hud = function () {
   h.html('<div class="top"><span class="mode ' + (State.variables.mode || 'normal') + '">' + setup.mode().label + '</span><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') +
     '<button class="bestbtn" title="Bestiary">\u{1F4D6} Bestiary</button><button class="hum' + (setup.hum && setup.hum.on ? ' on' : '') + '" title="Fluorescent light hum">' + (setup.hum && setup.hum.on ? '\u{1F50A} Hum on' : '\u{1F508} Hum off') + '</button></div>' +
-    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
+    '<div class="slots">' + slots + '</div>' + setup.gearRow() + '<div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
 };
 $(document).on(':passagedisplay', function (ev) {
   var t = ev.passage.tags, show = !(t.indexOf('nohud') >= 0 || t.indexOf('ending') >= 0);
@@ -785,7 +801,7 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby', 'partypoopers': 'Partypoopers' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (location.hash === '#concierge' || location.hash === '#concierge2') {
@@ -1047,12 +1063,12 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Party Hat Escape [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.<<set $virusWith to true>></p></div>
-<div class="choices">[[Through the door|Level 2 Pipe Dreams]]</div>
+<div class="choices">[[Through the door|Partypoopers]]</div>
 
 :: The Virus Holds The Door [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.<<set $virusWith to false>></p></div>
-<div class="choices">[[Keep running|Level 2 Pipe Dreams]]</div>
+<div class="choices">[[Keep running|Partypoopers]]</div>
 
 :: Party Forever Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
@@ -1075,6 +1091,11 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="story-text"><p>You fall through a hatch and land on hot metal. Level 2: Pipe Dreams.</p><p>Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.</p><p><<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>></p><p>A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.</p></div>
 <<if setup.mode().hints>><p class="modehint">The hot pipe is a bad idea. Grab what you can first.</p><</if>>
 <div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>><<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 2 Crawler]][[Follow the hot red pipe|Steam Ending]]</div>
+
+:: Partypoopers
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div><div class="pos" style="left:2%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div></div><</if>>
+<div class="story-text"><p>Behind the last door of Level Fun is a small grey room. The streamers are torn down and the balloons are all half deflated.</p><p>Three grey figures are sitting there, arms crossed, frowning as hard as they can. A sign on the wall says NO PARTY. :(</p><p>"We are the Partypoopers," the tallest one grumbles. "They kicked us out for not smiling. We do not do fun." It holds up an old camera. "But we do take pictures. Want one? No smiling."</p></div>
+<div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a grumpy picture with them">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you and three Partypoopers, all frowning. Looking at it makes you feel weirdly calm. It goes in your gear slot.</p><</replace>><</link>><</if>></span>[[Say goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>
 
 :: Level 2 Valve
 <div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
@@ -1631,6 +1652,11 @@ $(document).on('click', '.battle .bbtn', function (e) {
 #bestiary .bcard .bstat.won { color: #86efac; }
 #hud .bestbtn { border-radius: 99px; border: 1px solid #a16207; background: #2a2610; color: #fde68a; padding: .25em .8em; cursor: pointer; font-size: .8rem; }
 .bestlink { text-align: center; margin: 6px 0 0; }
+#hud .gear { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; }
+#hud .gear .glbl { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #a8a38a; margin-right: 4px; }
+#hud .gslot { width: 44px; height: 44px; border: 1px dashed #4a4528; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.2rem; }
+#hud .gslot.full { border: 1px solid #a16207; background: #2a2610; }
+#hud .gslot small { font-size: .55rem; color: #c7c2a4; }
 .preybox { margin: 10px auto; max-width: 640px; padding: 10px 14px; border: 1px dashed #86efac; border-radius: 10px; background: rgba(20, 50, 36, .55); }
 .preybox p { margin: 0 0 6px; }
 .preybox .preyout { color: #bbf7d0; }
@@ -1740,6 +1766,10 @@ setup.BEASTS = [
     seen: ['Bacteria Absorb'], deaths: [],
     desc: 'Tiny viruses that have not mutated yet, like the virus was when it was small. You never see one: the virus told you about them. They cannot fight back, and the Bacteria eat them easily. Only about 1 in 3 hatchlings ever grows bigger, and only about 1 in 5 survives long enough to mutate. But the ones that do mutate turn the tables: they pick off the Bacteria the same way the Bacteria once picked them off when they were small.',
     tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
+  { id: 'poopers', name: 'The Partypoopers', tag: 'Prey', friend: true, img: 'art_partypoopers',
+    seen: ['Partypoopers'], deaths: [],
+    desc: 'Grey, grumpy party guests who got kicked out of Level Fun for frowning. They hate balloons, cake and music, and they are the only creatures in the Backrooms who never smile. The Partygoers chase them off on sight.',
+    tip: 'Take a picture with them. Their frowns are so calming that carrying the photo makes you lose 1 less sanity every scene.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
     desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
@@ -1858,7 +1888,7 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'poopers', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';
