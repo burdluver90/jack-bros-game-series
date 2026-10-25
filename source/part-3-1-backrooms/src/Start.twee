@@ -33,6 +33,7 @@
 </div>
 
 :: Hi theo (Q8)
+<<if !setup.isTaken("w8")>><div class="find" id="fw8"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w8","almond")>><<replace "#fw8">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage7]]</div></div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage6]]</div></div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%"><div class="fx" style="animation:fx-out-fade 2.100s linear 0.000s forwards">[img[img_Qimage9]]</div></div><div class="pos clip" style="left:65.534%;top:5.160%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:44.032%;top:0.000%;width:22.864%;height:100.000%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.100s backwards">[img[img_Qimage26]]</div></div></div>
 <div class="choices">
 [[Hi theo|Fight (Q9)]]
@@ -105,6 +106,7 @@
 </div>
 
 :: The water is everywhere surround (Q18)
+<<if !setup.isTaken("w18")>><div class="find" id="fw18"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w18","almond")>><<replace "#fw18">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage20]]</div></div>
 <div class="story-text"><p>The water is everywhere surrounding you as you splash</p></div>
 <div class="choices">
@@ -186,6 +188,7 @@
 </div>
 
 :: Turn around (Q33)
+<<if !setup.isTaken("w33")>><div class="find" id="fw33"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w33","almond")>><<replace "#fw33">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage38]]</div></div>
 <div class="choices">
 [[Turn around|RUN (Q34)]]
@@ -232,6 +235,7 @@
 </div>
 
 :: The skinstealer almost killed me (Q45)
+<<if !setup.isTaken("w45")>><div class="find" id="fw45"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w45","almond")>><<replace "#fw45">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos clip" style="left:61.865%;top:30.231%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos clip" style="left:37.244%;top:26.956%;width:11.861%;height:92.222%;transform:rotate(90.00deg)"><div class="crop" style="left:-119.91%;top:-0.00%;width:219.91%;height:100.00%">[img[img_Qimage46]]</div></div></div>
 <div class="choices">
 [[The skinstealer almost killed me|Try to find the code (Q46)]]
@@ -302,6 +306,7 @@
 </div>
 
 :: Here is the pinpad (Q55)
+<<if !setup.isTaken("w55")>><div class="find" id="fw55"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w55","almond")>><<replace "#fw55">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage53]]</div><div class="pos" style="left:69.871%;top:51.024%;width:23.501%;height:23.563%">[img[img_Qimage62]]</div></div>
 <div class="story-text"><p>Here is the pinpad</p></div>
 <div class="choices">
@@ -328,6 +333,7 @@
 </div>
 
 :: At night go into one (Q59)
+<<if !setup.isTaken("w59")>><div class="find" id="fw59"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w59","almond")>><<replace "#fw59">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage68]]</div><div class="pos" style="left:8.154%;top:17.194%;width:15.021%;height:81.955%">[img[img_Qimage26]]</div><div class="pos clip" style="left:23.175%;top:10.463%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div></div>
 <div class="choices">
 [[At night go into one of the houses|You see a van (Q60)]]
@@ -373,6 +379,7 @@
 </div>
 
 :: You sit it out until (Q65)
+<<if !setup.isTaken("w65")>><div class="find" id="fw65"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w65","almond")>><<replace "#fw65">><</replace>><</if>><</link>></div><</if>>
 <div class="story-text"><p>You sit it out until morning the creatures retreat and you live another day</p></div>
 <div class="choices">
 [[Keep driving|You make it to the (Q66)]]
@@ -406,6 +413,7 @@
 </div>
 
 :: You look into the interior (Q68)
+<<if !setup.isTaken("w68")>><div class="find" id="fw68"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w68","almond")>><<replace "#fw68">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage67]]</div><div class="pos" style="left:50.000%;top:12.323%;width:19.413%;height:45.090%">[img[img_Qimage30]]</div><div class="pos clip" style="left:53.704%;top:10.520%;width:6.463%;height:12.895%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="pos" style="left:50.000%;top:16.363%;width:9.991%;height:37.009%">[img[img_Qimage44]]</div><div class="pos" style="left:58.539%;top:39.244%;width:11.182%;height:16.445%">[img[img_Qimage58]]</div></div>
 <div class="story-text"><p>You look into the interior but before that you see a poster</p></div>
 <div class="choices">
@@ -457,6 +465,7 @@
 </div>
 
 :: You escape safely (Q78)
+<<if !setup.isTaken("w78")>><div class="find" id="fw78"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w78","almond")>><<replace "#fw78">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage74]]</div></div>
 <div class="choices">
 [[You escape safely|Hi theo (Q79)]]
@@ -522,6 +531,10 @@
 @media (max-width: 480px) { #hud .slots { grid-template-columns: repeat(6, 48px); } #hud .slot { width: 48px; height: 48px; font-size: 20px; } #hud .slot small { display: none; } #hud .bar { width: 120px; } }
 #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #17233f; border: 1px solid #5b8cff; color: #fff; padding: .55em 1.2em; border-radius: 99px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 1000; }
 #toast.show { opacity: 1; }
+.find { text-align: center; margin: 0 auto 10px; }
+.find a { display: inline-block; padding: .4em 1.1em; border-radius: 99px; border: 1px solid #4fd18b; background: #143224; color: #c9ffe0; text-decoration: none; animation: findpulse 1.6s ease-in-out infinite; }
+.find a:hover { background: #1f4d36; }
+@keyframes findpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(79,209,139,.5); } 50% { box-shadow: 0 0 0 8px rgba(79,209,139,0); } }
 @keyframes wobble { 0%, 100% { transform: none; } 50% { transform: skewX(1.2deg) scale(1.015); } }
 @keyframes jitter { 0%, 100% { transform: none; } 25% { transform: translate(1px, -1px); } 75% { transform: translate(-1px, 1px); } }
 body.low .scene { filter: saturate(1.5) contrast(1.15) brightness(.92); animation: wobble 4s ease-in-out infinite; }
@@ -541,8 +554,8 @@ setup.ITEMS = {
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' }
 };
 setup.SLOTS = 6;      /* inventory size */
-setup.DRAIN = 4;      /* sanity lost every scene */
-setup.FUN_DRAIN = 8;  /* Level Fun drains sanity faster */
+setup.DRAIN = 3;      /* sanity lost every scene */
+setup.FUN_DRAIN = 6;  /* Level Fun drains sanity faster */
 setup.reset = function () { var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {}; };
 setup.drainFor = function (p) { return p.tags.indexOf('fun') >= 0 ? setup.FUN_DRAIN : setup.DRAIN; };
 setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
@@ -646,6 +659,7 @@ $(document).on('keydown', function (e) {
 <div class="choices">[[Try again|Start]]</div>
 
 :: Level 1 Hidden [flicker]
+<<if !setup.isTaken("whidden")>><div class="find" id="fwhidden"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("whidden","almond")>><<replace "#fwhidden">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
 <div class="story-text"><p>You press yourself against the cold concrete and hold your breath.</p><p>It walks right past you. For one second its face looks exactly like Dad's.</p><p>Then it is gone. Further down the hall, you hear music. Party music.</p></div>
 <div class="choices">[[Follow the music|Level Fun]][[Take the stairwell instead|Level 1 Stairwell]]</div>
@@ -673,6 +687,7 @@ $(document).on('keydown', function (e) {
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Under the Party Table [fun]
+<<if !setup.isTaken("wtable")>><div class="find" id="fwtable"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wtable","almond")>><<replace "#fwtable">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
 <div class="story-text"><p>You squeeze under the tablecloth and hold your breath.</p><p>Yellow feet shuffle past, inches from your face. Someone giggles. Then the music starts again and they drift back to the cake.</p></div>
 <div class="choices">[[Crawl out the other side, quietly|Level Fun Exits]]</div>
