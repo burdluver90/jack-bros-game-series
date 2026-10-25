@@ -12,7 +12,7 @@
     return out;
   };
   for (let run = 0; run < RUNS; run++) {
-    S.setup.reset(); if (START) { (INV || []).forEach(i => S.setup.addItem(i)); if (START === 'Hotel Arrival' || START === 'Level 2 Pipe Dreams') S.State.variables.virusWith = Math.random() < .5; } S.Engine.play(START || 'Start'); await settle();
+    S.setup.reset(); if (START) { S.State.variables.mode = Math.random() < .5 ? 'hard' : 'normal'; (INV || []).forEach(i => S.setup.addItem(i)); if (START === 'Hotel Arrival' || START === 'Level 2 Pipe Dreams') S.State.variables.virusWith = Math.random() < .5; } S.Engine.play(START || 'Start'); await settle();
     const path = [], R = { path, ending: null, steps: 0, minSanity: 100, drank: 0, codesWrong: 0 };
     let sameClicks = 0, last = '';
     for (let step = 0; step < 400; step++) {
@@ -25,8 +25,10 @@
       const root = passageEl(), txt = root.innerText;
       if (root.querySelector('.error-view')) issue('ERROR', p + ' :: ' + root.querySelector('.error-view').innerText.slice(0, 160));
       if (/undefined|NaN|\[object/.test(txt)) issue('BAD TEXT', p);
+      if (v.mode === 'hard' && root.querySelector('.modehint:not(.hardtoo)')) issue('HARD HINT LEAK', p);
+      if (/<<|>>|\[\[/.test(txt)) issue('RAW MACRO TEXT', p);
       root.querySelectorAll('img').forEach(im => { if (im.complete && im.naturalWidth === 0) issue('BROKEN IMG', p + ' ' + (im.src || '').slice(0, 40)); });
-      if (typeof v.sanity !== 'number' || v.sanity > 100 + S.setup.DRAIN || v.sanity < 0) issue('SANITY RANGE', p + ' ' + v.sanity);
+      if (typeof v.sanity !== 'number' || v.sanity > 100 + S.setup.mode().drain || v.sanity < 0) issue('SANITY RANGE', p + ' ' + v.sanity);
       if ((v.inv || []).length > S.setup.SLOTS) issue('INV OVERFLOW', p);
       if (P.tags.includes('ending')) { R.ending = p; break; }
       // code pads: usually right, sometimes wrong
@@ -68,7 +70,7 @@
     }
     if (!R.ending) issue('NO ENDING', 'run ' + B.runs.length + ' stopped at ' + S.State.passage + ' after ' + R.steps + ' steps');
     B.endings[R.ending] = (B.endings[R.ending] || 0) + 1;
-    R.inv = (S.State.variables.inv || []).slice(); R.start = START || 'Start';
+    R.inv = (S.State.variables.inv || []).slice(); R.start = START || 'Start'; R.mode = S.State.variables.mode || 'normal';
     B.runs.push(R);
   }
   return { runs: B.runs.length, issues: B.issues.length };

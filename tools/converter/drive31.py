@@ -43,7 +43,7 @@ cfg={'first':1,'fix':fix,'over':OVER,'exact':{1:'Start',83:'To be continued... (
      'timers':{49:{'secs':3.0,'fast':['Run','Approach'],'late':['It catches you'],'late_pics':[]}},
      'inscene':{54:[{'match':'V'}]},
      'actions':{15:{'Drink it':'setup.fill(true)'},27:{'Drink it':'setup.fill(true)'}},
-     'on_enter':{1:'<<run setup.reset()>>',51:'<<run setup.addItem("code")>>',**{n:FIND(n) for n in WATER_AT},23:BAT},
+     'on_enter':{1:'<<run setup.reset()>>',54:'<<run setup.useWeapon()>>',51:'<<run setup.addItem("code")>>',**{n:FIND(n) for n in WATER_AT},23:BAT},
      'extra_edges':{1:[4],53:[54],55:[56],82:[83]},
      'extra':open(os.path.join(GEN,'hud.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels2.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels3.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'hotel.twee'),encoding='utf8').read()}
 g=build.Game(r'C:\Users\dahaw\Downloads\Part 3.1.pptx','Q',SRC,cfg)

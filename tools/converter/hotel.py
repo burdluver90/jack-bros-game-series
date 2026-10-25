@@ -398,7 +398,13 @@ add('Hotel Stage', scene('art_h_ballroom') + '\n' + story(
 add('Hotel Elevator Dead', scene('art_h_lobby') + '\n' + story(
     'You press the button. Nothing. Then, very faintly, from inside the shaft, someone presses it back.',
     'A sticker on the panel says: POWER CONTROLS - FLOOR 3.') + '\n' +
-    choices('[[Back to the lobby|Hotel Lobby]]'), 'hotel')
+    choices('<<if setup.has("crowbar")>>[[Pry the elevator doors open with the crowbar|Hotel Elevator Shaft]]<</if>>', '[[Back to the lobby|Hotel Lobby]]'), 'hotel')
+
+add('Hotel Elevator Shaft', scene('art_h_stairs') + '\n' + story(
+    'You force the crowbar between the doors and lean on it until they grind open.',
+    'No elevator. Just a dark shaft and thick greasy cables going all the way down.',
+    'At the very bottom you can see a faint light and the word BASEMENT.') + '\n' +
+    choices('[[Climb down the cables|Hotel Boiler Door]]', '[[Back to the lobby|Hotel Lobby]]'), 'hotel')
 
 add('Hotel Staircase', withVirus('art_h_lobby', VR) + '\n' + story(
     'The grand staircase splits in three directions.',
@@ -411,7 +417,13 @@ add('Hotel Floor 2', withVirus('art_h_hall2', (36, 22, .6)) + '\n' + story(
     'A room service tray sits on the carpet. The food on it is still warm.') + '\n' +
     choices('[[Room 211|Hotel Room 211]]',
             '<<if setup.has("roomkey")>>[[Unlock Room 213|Hotel Room 213]]<<elseif setup.has("crowbar")>>[[Pry open Room 213 with the crowbar|Hotel Room 213]]<<else>>[[Try Room 213|Hotel Room 213 Locked]]<</if>>',
-            '[[Room 217|Hotel Room 217]]', '[[Back to the stairs|Hotel Staircase]]'), 'hotel')
+            '<<if setup.has("crowbar")>>[[Pry open Room 215 with the crowbar|Hotel Room 215]]<</if>>', '[[Room 217|Hotel Room 217]]', '[[Back to the stairs|Hotel Staircase]]'), 'hotel')
+
+add('Hotel Room 215', scene('art_h_room') + '\n' + story(
+    'Room 215 has no handle because it is not a guest room. It is the maid\'s closet.',
+    'Shelves of towels, tiny soaps, and a cleaning cart. Pinned to the wall is a staff notice:',
+    '"STAFF REMINDER: the boiler code is the same as the band\'s song. Do NOT tell the guests."') + '\n' +
+    choices(pickup('w215', 'almond', 'Take a bottle of almond water from the cart'), '[[Back to the hallway|Hotel Floor 2]]'), 'hotel')
 
 add('Hotel Room 213 Locked', scene('art_h_hall2') + '\n' + story(
     'Locked. A little gold plate on the door says: KEYS AVAILABLE AT RECEPTION.') + '\n' +
@@ -528,7 +540,7 @@ add('Hotel Keypad Wrong', scene('art_h_boilerdoor') + '\n' + story(
     'BZZZT. The keypad flashes red: WRONG.',
     'The whole door shakes. The pressure gauge needle swings into the red. Steam screams out of a pipe.',
     'A sign you didn\'t notice before: TWO WRONG CODES = PRESSURE RELEASE.') + '\n' +
-    choices('[[Try again, carefully|Hotel Keypad]]', '<<if $power>>[[Leave and find the code|Hotel Elevator]]<<else>>[[Leave and find the code|Hotel Staircase]]<</if>>'), 'hotel')
+    choices('<<if setup.has("wrench")>><<link "Bleed the pressure valve with the wrench" "Hotel Keypad">><<set $codeTries to 0>><<run setup.toast("Hissss. The pressure drops back to safe.")>><</link>><</if>>', '[[Try again, carefully|Hotel Keypad]]', '<<if $power>>[[Leave and find the code|Hotel Elevator]]<<else>>[[Leave and find the code|Hotel Staircase]]<</if>>'), 'hotel')
 
 add('Hotel Boiler Room', withVirus('art_h_boiler', (8, 12, .8)) + '\n' + story(
     'BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.',
@@ -548,7 +560,7 @@ add('Hotel Checkout Polite', scene('art_h_boiler') + '\n' + story(
 add('Hotel Fight Concierge', scene('art_h_boiler') + '\n' + story(
     'You swing your <<print setup.weaponName()>>. The Concierge reaches for you with its long white gloves.',
     'You hit it right in its smooth smiling face. It cracks like porcelain. It stumbles back into the boiler... and the fire takes it.',
-    'The exit door is clear.') + '\n' +
+    'The exit door is clear.<<run setup.useWeapon()>>') + '\n' +
     choices('[[Run through the exit|Hotel Exit]]'), 'hotel')
 
 add('Hotel Virus Distracts', withVirus('art_h_boiler', (8, 12, .8)) + '\n' + story(

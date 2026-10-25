@@ -120,12 +120,17 @@ P.append(':: Level 2 Pipe Dreams\n' + find('wl2') + '\n' + withVirus('art_level2
     '<<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>>',
     'A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.') +
     '\n<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>'
-    '[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>\n')
+    '<<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>\n')
+P.append(':: Level 2 Valve\n' + scene('art_level2') + '\n' + story(
+    'You clamp the pipe wrench onto the big red valve and pull with everything you have.',
+    'SCREEEECH. The valve turns. The hissing stops. The red-hot pipe slowly fades to a dull grey.',
+    'Now you can follow it. It goes straight down, a shortcut.') +
+    '\n<div class="choices">[[Follow the cooled pipe down|Level 6 Lights Out]]</div>\n')
 P.append(':: Level 4 Abandoned Office [nodrain]\n' + withVirus('art_level4', V) + '\n' + story(
     'The pipe ends at a vent. You crawl out into a quiet office. Level 4.',
     'Empty cubicles, humming lights, and a water cooler full of almond water. It feels... safe. Your sanity stops dropping here.',
     'One computer is still on. A sticky note on it says: "Lights out is next. Bring a light."') +
-    '\n<div class="choices"><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>'
+    '\n<div class="choices">' + '<<if setup.has("wrench")>><<if !setup.isTaken("coolerbottle")>><span id="pkcb"><<link "Unscrew the cooler tap with the wrench and fill a bottle">><<if setup.take("coolerbottle","almond")>><<replace "#pkcb">><</replace>><</if>><</link>></span><</if>><</if>>' + '<span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>'
     '[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>\n')
 P.append(':: Office Computer [nodrain]\n' + withVirus('art_level4', V) + '\n' + story(
     'The screen flickers. Someone typed a message and never sent it:',
@@ -137,10 +142,10 @@ P.append(':: Level 6 Lights Out\n' + scene('art_level6') + '\n' + story(
     'You can\'t see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.',
     '<<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>>') +
     '\n<div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>>'
-    '<<if setup.hasWeapon()>>[[Swing your <<print setup.weaponName()>> at the red eyes|Lights Out Swing]]<</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>\n')
+    '<<if setup.hasWeapon()>><<link `"Swing your " + setup.weaponName() + " at the red eyes"` "Lights Out Swing">><</link>><</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>\n')
 P.append(':: Lights Out Swing\n' + scene('art_level6') + '\n' + story(
     'You swing blindly into the dark. CRACK. Something shrieks.',
-    'The red eyes blink out one pair at a time. Under your feet you feel the floor slope toward a faint red glow.') +
+    'The red eyes blink out one pair at a time. Under your feet you feel the floor slope toward a faint red glow.<<run setup.useWeapon()>>') +
     '\n<div class="choices">[[Follow the slope|Level Run For Your Life]]</div>\n')
 P.append(':: Lights Out Flashlight\n' + withVirus('art_level6', (20, 14, .7)) + '\n' + story(
     'Click. The beam cuts through the dark.',

@@ -11,7 +11,7 @@
 :: Level 1 Dark Hall
 <div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
 <div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
-<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]</div>
+<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]<<if setup.has("crowbar")>>[[Pry open the floor hatch with the crowbar|Level 1 Hatch]]<</if>></div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
 <<timed 3s>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
@@ -39,7 +39,7 @@
 :: Level Fun Exits [fun]
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>You make it past the party table without a sound. Behind it there are two doors.</p><p>A bright red door with a glowing EXIT sign, and a plain grey door marked LEVEL 1.</p><p>The note about the almond water said to avoid red things... and the grey door looks old and squeaky.</p></div>
-<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]][[Run for the grey door|Party Chase]]</div>
+<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]]<<if setup.has("wrench")>>[[Tighten the squeaky hinges with the wrench first|Level Fun Hinges]]<</if>>[[Run for the grey door|Party Chase]]</div>
 
 :: Party Chase [fun]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
@@ -72,3 +72,13 @@
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>The EXIT opens onto nothing but red.</p><p>You fall for a very, very long time.</p><p>Red door ending</p></div>
 <div class="choices">[[Try again|Start]]</div>
+
+:: Level 1 Hatch [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You jam the crowbar into the edge of a metal hatch in the floor and heave. It pops open with a clang.</p><p>You drop down and pull it shut just as long grey fingers slide across the floor above you.</p><p>A ladder leads down to a stairwell.</p></div>
+<div class="choices">[[Climb down to the stairwell|Level 1 Stairwell]]</div>
+
+:: Level Fun Hinges [fun]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>You tighten the rusty hinges of the grey door one careful turn at a time.</p><p>The door swings open without a single squeak. Behind you, the party keeps going. Nobody noticed.</p></div>
+<div class="choices">[[Slip through the grey door|Level 1 Stairwell]]</div>

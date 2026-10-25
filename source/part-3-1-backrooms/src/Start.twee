@@ -304,6 +304,7 @@
 </div>
 
 :: Phew (Q54)
+<<run setup.useWeapon()>>
 <div class="scene"><div class="pos bg">[img[img_Qimage60]]</div><div class="itext" style="left:3.409%;top:55.101%;width:93.182%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:none">V</div><div class="pos clip" style="left:38.613%;top:14.476%;width:11.387%;height:79.051%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 0.700s forwards"><div class="crop" style="left:-0.00%;top:-0.00%;width:227.80%;height:100.00%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:18.396%;top:53.488%;width:10.547%;height:70.494%;transform:rotate(-90.00deg)"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.701s backwards"><div class="crop" style="left:-1.50%;top:-7.06%;width:245.95%;height:112.14%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:72.820%;top:50.847%;width:12.260%;height:74.845%;transform:rotate(90.00deg)"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.701s backwards"><div class="crop" style="left:-87.74%;top:-4.66%;width:209.66%;height:104.66%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:49.256%;top:14.476%;width:15.083%;height:79.051%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 0.700s forwards"><div class="crop" style="left:-71.97%;top:-0.00%;width:171.97%;height:100.00%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:42.894%;top:4.081%;width:15.606%;height:60.696%;transform:rotate(167.74deg)"><div class="fx" style="animation:fx-out-fly 0.700s linear 0.000s forwards"><div class="crop" style="left:-101.14%;top:-0.00%;width:319.92%;height:100.00%">[img[img_Qimage36]]</div></div></div><div class="pos clip" style="left:60.310%;top:16.729%;width:15.606%;height:60.696%;transform:rotate(180.00deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-101.14%;top:-0.00%;width:319.92%;height:100.00%">[img[img_Qimage36]]</div></div></div><div class="pos clip" style="left:64.661%;top:76.250%;width:8.634%;height:24.039%;transform:rotate(63.26deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div><div class="pos clip" style="left:88.089%;top:65.656%;width:3.170%;height:24.039%;transform:rotate(71.72deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div><div class="pos clip" style="left:21.695%;top:65.573%;width:3.170%;height:24.039%;transform:rotate(85.62deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div></div>
 <div class="choices">
 <span class="fxb" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards">[[Phew|Here is the pinpad (Q55)]]</span>
@@ -632,17 +633,17 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 :: Hud Script [script]
 setup.ITEMS = {
   almond: { name: 'Almond water', short: 'Water', icon: '\u{1F4A7}', desc: 'Drink it if things become distorted or you see smiles.' },
-  sword:  { name: 'Sword', short: 'Sword', icon: '⚔️', desc: 'Sharp. Might help in a fight.' },
+  sword:  { name: 'Sword', short: 'Sword', icon: '⚔️', desc: 'PRO: wins every fight and never breaks. CON: heavy, you lose 1 extra sanity every scene while you carry it.' },
   code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'The ink got wet and smudged. You can\'t read it anymore. Hope you remember it.' },
   roomkey:{ name: 'Room 213 key', short: 'Key 213', icon: '\u{1F511}', desc: 'A gold hotel key on a red tag: 213.' },
   brasskey:{ name: 'Brass key', short: 'Brass', icon: '\u{1F510}', desc: 'Heavy and warm. It says BOILER.' },
   sheet:  { name: 'Sheet music', short: 'Music', icon: '\u{1F3BC}', desc: 'The numbers at the top are smeared. You will have to remember them.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F389}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
-  crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' },
-  bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'Wet from the poolrooms, but still solid. A weapon.' },
-  wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'Heavy enough to dent metal. A weapon.' },
-  axe:    { name: 'Fire axe', short: 'Axe', icon: '⛏️', desc: 'IN CASE OF EMERGENCY. The best weapon you have found. Hounds hate it.' }
+  crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'PRO: light, and it pries open doors, hatches and stuck elevators. CON: clumsy, you get hurt in fights (-15 sanity).' },
+  bat:    { name: 'Baseball bat', short: 'Bat', icon: '\u{1F3CF}', desc: 'PRO: light, no downside while you carry it. CON: it snaps after one fight.' },
+  wrench: { name: 'Pipe wrench', short: 'Wrench', icon: '\u{1F529}', desc: 'PRO: light, and it turns valves, fixes squeaky hinges and opens taps. CON: weak, you get hurt in fights (-10 sanity).' },
+  axe:    { name: 'Fire axe', short: 'Axe', icon: '⛏️', desc: 'PRO: wins every fight and hounds are scared of it. CON: heavy, you lose 1 extra sanity every scene while you carry it.' }
 };
 setup.SLOTS = 6;      /* inventory size */
 /* Normal and Hard: sanity lost per scene (Level Fun drains twice as fast), how long timers last, wrong codes allowed */
@@ -656,10 +657,22 @@ setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
 };
-setup.drainFor = function (p) { var d = setup.mode().drain; return p.tags.indexOf('fun') >= 0 ? d * 2 : d; };
+setup.drainFor = function (p) {
+  var d = setup.mode().drain; if (p.tags.indexOf('fun') >= 0) { d *= 2; }
+  return d + setup.HEAVY.filter(setup.has).length;   /* +1 for each heavy weapon you carry */
+};
 setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
 /* every weapon counts for "Fight"; the first one you carry is the one you swing */
-setup.WEAPONS = ['sword', 'axe', 'bat', 'wrench', 'crowbar'];
+setup.WEAPONS = ['sword', 'axe', 'wrench', 'crowbar', 'bat'];
+setup.HEAVY = ['sword', 'axe'];
+/* call after a won fight: the weapon's downside kicks in */
+setup.useWeapon = function () {
+  var v = State.variables, w = setup.WEAPONS.filter(setup.has)[0];
+  if (w === 'bat') { v.inv.splice(v.inv.indexOf('bat'), 1); setup.toast('CRACK! Your baseball bat snapped in half.'); }
+  else if (w === 'crowbar') { v.sanity = Math.max(1, v.sanity - 15); setup.toast('The crowbar slipped. You got hurt (-15 sanity).'); }
+  else if (w === 'wrench') { v.sanity = Math.max(1, v.sanity - 10); setup.toast('The wrench is too weak. You got hurt (-10 sanity).'); }
+  setup.hud();
+};
 setup.hasWeapon = function () { return setup.WEAPONS.some(setup.has); };
 setup.weaponName = function () {
   var w = setup.WEAPONS.filter(setup.has)[0];
@@ -892,7 +905,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
 <div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
 <<if setup.mode().hints>><p class="modehint">Hide. Now.</p><</if>>
-<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]</div>
+<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]<<if setup.has("crowbar")>>[[Pry open the floor hatch with the crowbar|Level 1 Hatch]]<</if>></div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
 <<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
@@ -922,7 +935,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>You make it past the party table without a sound. Behind it there are two doors.</p><p>A bright red door with a glowing EXIT sign, and a plain grey door marked LEVEL 1.</p><p>The note about the almond water said to avoid red things... and the grey door looks old and squeaky.</p></div>
 <<if setup.mode().hints>><p class="modehint">Avoid red. And quiet doors are safer than fast ones.</p><</if>>
-<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]][[Run for the grey door|Party Chase]]</div>
+<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]]<<if setup.has("wrench")>>[[Tighten the squeaky hinges with the wrench first|Level Fun Hinges]]<</if>>[[Run for the grey door|Party Chase]]</div>
 
 :: Party Chase [fun]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
@@ -956,6 +969,16 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>The EXIT opens onto nothing but red.</p><p>You fall for a very, very long time.</p><p>Red door ending</p></div>
 <div class="choices">[[Try again|Start]]</div>
+
+:: Level 1 Hatch [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You jam the crowbar into the edge of a metal hatch in the floor and heave. It pops open with a clang.</p><p>You drop down and pull it shut just as long grey fingers slide across the floor above you.</p><p>A ladder leads down to a stairwell.</p></div>
+<div class="choices">[[Climb down to the stairwell|Level 1 Stairwell]]</div>
+
+:: Level Fun Hinges [fun]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>You tighten the rusty hinges of the grey door one careful turn at a time.</p><p>The door swings open without a single squeak. Behind you, the party keeps going. Nobody noticed.</p></div>
+<div class="choices">[[Slip through the grey door|Level 1 Stairwell]]</div>
 
 :: Fun With The Virus [fun]
 <<if !setup.isTaken("wv1")>><div class="find" id="fwv1"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wv1","almond")>><<replace "#fwv1">><</replace>><</if>><</link>></div><</if>>
@@ -1022,12 +1045,17 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div><div class="poster" style="left:66%;top:4%;width:13%;height:30.7%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">BRING A LIGHT</div><div class="plines">Some levels<br>have no lights.<br>Things live<br>in the dark.<br>They HATE light.</div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="poster" style="left:66%;top:4%;width:13%;height:30.7%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">BRING A LIGHT</div><div class="plines">Some levels<br>have no lights.<br>Things live<br>in the dark.<br>They HATE light.</div></div></div><</if>>
 <div class="story-text"><p>You fall through a hatch and land on hot metal. Level 2: Pipe Dreams.</p><p>Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.</p><p><<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>></p><p>A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.</p></div>
 <<if setup.mode().hints>><p class="modehint">The hot pipe is a bad idea. Grab what you can first.</p><</if>>
-<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>
+<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>><<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>
+
+:: Level 2 Valve
+<div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
+<div class="story-text"><p>You clamp the pipe wrench onto the big red valve and pull with everything you have.</p><p>SCREEEECH. The valve turns. The hissing stops. The red-hot pipe slowly fades to a dull grey.</p><p>Now you can follow it. It goes straight down, a shortcut.</p></div>
+<div class="choices">[[Follow the cooled pipe down|Level 6 Lights Out]]</div>
 
 :: Level 4 Abandoned Office [nodrain]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div><div class="poster" style="left:66%;top:3%;width:14%;height:33.0%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">GRAND HOTEL</div><div class="plines">Ring the bell<br>ONCE.<br>Ask NICELY.<br>Lost on floor 3?<br>Walk backwards.</div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="poster" style="left:66%;top:3%;width:14%;height:33.0%"><div class="pp" style="left:0;top:0;width:100%;height:100%">[img[img_Qimage30]]</div><div class="pp" style="left:3.7%;top:35.7%;width:38.4%;height:60.3%">[img[img_Qimage44]]</div><div class="pp" style="left:57.8%;top:72%;width:38.4%;height:23.9%">[img[img_Qimage58]]</div><div class="pp clip" style="left:24.4%;top:5%;width:25.3%;height:21.4%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:0;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="ptitle">GRAND HOTEL</div><div class="plines">Ring the bell<br>ONCE.<br>Ask NICELY.<br>Lost on floor 3?<br>Walk backwards.</div></div></div><</if>>
 <div class="story-text"><p>The pipe ends at a vent. You crawl out into a quiet office. Level 4.</p><p>Empty cubicles, humming lights, and a water cooler full of almond water. It feels... safe. Your sanity stops dropping here.</p><p>One computer is still on. A sticky note on it says: "Lights out is next. Bring a light."</p></div>
-<div class="choices"><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>
+<div class="choices"><<if setup.has("wrench")>><<if !setup.isTaken("coolerbottle")>><span id="pkcb"><<link "Unscrew the cooler tap with the wrench and fill a bottle">><<if setup.take("coolerbottle","almond")>><<replace "#pkcb">><</replace>><</if>><</link>></span><</if>><</if>><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>
 
 :: Office Computer [nodrain]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
@@ -1038,11 +1066,11 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
 <div class="story-text"><p>The stairs end. The lights go out. Level 6: Lights Out.</p><p>You can't see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.</p><p><<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>></p></div>
 <p class="modehint hardtoo">Whispers in the dark are never friendly.</p>
-<div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>><<if setup.hasWeapon()>>[[Swing your <<print setup.weaponName()>> at the red eyes|Lights Out Swing]]<</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
+<div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>><<if setup.hasWeapon()>><<link `"Swing your " + setup.weaponName() + " at the red eyes"` "Lights Out Swing">><</link>><</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
 
 :: Lights Out Swing
 <div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
-<div class="story-text"><p>You swing blindly into the dark. CRACK. Something shrieks.</p><p>The red eyes blink out one pair at a time. Under your feet you feel the floor slope toward a faint red glow.</p></div>
+<div class="story-text"><p>You swing blindly into the dark. CRACK. Something shrieks.</p><p>The red eyes blink out one pair at a time. Under your feet you feel the floor slope toward a faint red glow.<<run setup.useWeapon()>></p></div>
 <div class="choices">[[Follow the slope|Level Run For Your Life]]</div>
 
 :: Lights Out Flashlight
@@ -1136,7 +1164,12 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Elevator Dead [hotel nodrain]
 <div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div>
 <div class="story-text"><p>You press the button. Nothing. Then, very faintly, from inside the shaft, someone presses it back.</p><p>A sticker on the panel says: POWER CONTROLS - FLOOR 3.</p></div>
-<div class="choices">[[Back to the lobby|Hotel Lobby]]</div>
+<div class="choices"><<if setup.has("crowbar")>>[[Pry the elevator doors open with the crowbar|Hotel Elevator Shaft]]<</if>>[[Back to the lobby|Hotel Lobby]]</div>
+
+:: Hotel Elevator Shaft [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_stairs]]</div></div>
+<div class="story-text"><p>You force the crowbar between the doors and lean on it until they grind open.</p><p>No elevator. Just a dark shaft and thick greasy cables going all the way down.</p><p>At the very bottom you can see a faint light and the word BASEMENT.</p></div>
+<div class="choices">[[Climb down the cables|Hotel Boiler Door]][[Back to the lobby|Hotel Lobby]]</div>
 
 :: Hotel Staircase [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div><div class="pos" style="left:58%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div><</if>>
@@ -1146,7 +1179,12 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Floor 2 [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_hall2]]</div><div class="pos" style="left:36%;top:22%;width:60.0%;height:60.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div><</if>>
 <div class="story-text"><p>A long hallway of doors. Room 211. Room 213. Room 215 has no handle. Room 217 has light shining under the door... and knocking coming from inside.</p><p>A room service tray sits on the carpet. The food on it is still warm.</p></div>
-<div class="choices">[[Room 211|Hotel Room 211]]<<if setup.has("roomkey")>>[[Unlock Room 213|Hotel Room 213]]<<elseif setup.has("crowbar")>>[[Pry open Room 213 with the crowbar|Hotel Room 213]]<<else>>[[Try Room 213|Hotel Room 213 Locked]]<</if>>[[Room 217|Hotel Room 217]][[Back to the stairs|Hotel Staircase]]</div>
+<div class="choices">[[Room 211|Hotel Room 211]]<<if setup.has("roomkey")>>[[Unlock Room 213|Hotel Room 213]]<<elseif setup.has("crowbar")>>[[Pry open Room 213 with the crowbar|Hotel Room 213]]<<else>>[[Try Room 213|Hotel Room 213 Locked]]<</if>><<if setup.has("crowbar")>>[[Pry open Room 215 with the crowbar|Hotel Room 215]]<</if>>[[Room 217|Hotel Room 217]][[Back to the stairs|Hotel Staircase]]</div>
+
+:: Hotel Room 215 [hotel]
+<div class="scene"><div class="pos bg">[img[art_h_room]]</div></div>
+<div class="story-text"><p>Room 215 has no handle because it is not a guest room. It is the maid's closet.</p><p>Shelves of towels, tiny soaps, and a cleaning cart. Pinned to the wall is a staff notice:</p><p>"STAFF REMINDER: the boiler code is the same as the band's song. Do NOT tell the guests."</p></div>
+<div class="choices"><<if !setup.isTaken("w215")>><span id="pkw215"><<link "Take a bottle of almond water from the cart">><<if setup.take("w215","almond")>><<replace "#pkw215">><</replace>><</if>><</link>></span><</if>>[[Back to the hallway|Hotel Floor 2]]</div>
 
 :: Hotel Room 213 Locked [hotel nodrain]
 <div class="scene"><div class="pos bg">[img[art_h_hall2]]</div></div>
@@ -1255,7 +1293,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Keypad Wrong [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div>
 <div class="story-text"><p>BZZZT. The keypad flashes red: WRONG.</p><p>The whole door shakes. The pressure gauge needle swings into the red. Steam screams out of a pipe.</p><p>A sign you didn't notice before: TWO WRONG CODES = PRESSURE RELEASE.</p></div>
-<div class="choices">[[Try again, carefully|Hotel Keypad]]<<if $power>>[[Leave and find the code|Hotel Elevator]]<<else>>[[Leave and find the code|Hotel Staircase]]<</if>></div>
+<div class="choices"><<if setup.has("wrench")>><<link "Bleed the pressure valve with the wrench" "Hotel Keypad">><<set $codeTries to 0>><<run setup.toast("Hissss. The pressure drops back to safe.")>><</link>><</if>>[[Try again, carefully|Hotel Keypad]]<<if $power>>[[Leave and find the code|Hotel Elevator]]<<else>>[[Leave and find the code|Hotel Staircase]]<</if>></div>
 
 :: Hotel Boiler Room [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
@@ -1270,7 +1308,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Hotel Fight Concierge [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div>
-<div class="story-text"><p>You swing your <<print setup.weaponName()>>. The Concierge reaches for you with its long white gloves.</p><p>You hit it right in its smooth smiling face. It cracks like porcelain. It stumbles back into the boiler... and the fire takes it.</p><p>The exit door is clear.</p></div>
+<div class="story-text"><p>You swing your <<print setup.weaponName()>>. The Concierge reaches for you with its long white gloves.</p><p>You hit it right in its smooth smiling face. It cracks like porcelain. It stumbles back into the boiler... and the fire takes it.</p><p>The exit door is clear.<<run setup.useWeapon()>></p></div>
 <div class="choices">[[Run through the exit|Hotel Exit]]</div>
 
 :: Hotel Virus Distracts [hotel]
