@@ -297,7 +297,7 @@ setup.submitPad = function (pad) {
 $(document).on(':passagedisplay', function () { $('#passages .codepad').each(function () { setup.buildPad(this); }); });
 $(document).on(':passagedisplay', function () {
   $('#passages .timerbar span').each(function () { var d = parseFloat(this.style.animationDuration) || 3; this.style.animationDuration = setup.t(d); });
-  if (!setup.mode().hints) { $('#passages .modehint').remove(); }
+  if (!setup.mode().hints) { $('#passages .modehint:not(.hardtoo)').remove(); }
 });
 $(document).on('click', '.poster', function (e) {
   e.preventDefault(); e.stopPropagation();

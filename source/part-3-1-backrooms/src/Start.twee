@@ -2,7 +2,7 @@
 <<run setup.reset()>>
 <div class="story-text"><p>Part 3.1: The Backrooms Escape</p><p>A Slide Games production, made by Jack-Bros</p><p>This game is most likely M 17+ due to gore and mental horror.</p><p>@2026 all rights reserved</p></div>
 <div class="choices">
-<div class="modepick"><div class="mcard"><<link "Play on Normal" "What is this place ive (Q4)">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div><div class="mcard hard"><<link "Play on Hard" "What is this place ive (Q4)">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and there are no hints. Good luck.</p></div></div>
+<div class="modepick"><div class="mcard"><<link "Play on Normal" "What is this place ive (Q4)">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div><div class="mcard hard"><<link "Play on Hard" "What is this place ive (Q4)">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and only a few hints. Good luck.</p></div></div>
 </div>
 
 :: What is this place ive (Q4)
@@ -208,7 +208,7 @@
 
 :: Left (Q35)
 <div class="scene"><div class="pos bg">[img[img_Qimage38]]</div></div>
-<<if setup.mode().hints>><p class="modehint">Remember the poster: the way down is the way out.</p><</if>>
+<p class="modehint hardtoo">Remember the poster: the way down is the way out.</p>
 <div class="choices">
 [[Left|You become lost becoming a (Q36)]]
 [[Down|It's a sword! (Q42)]]
@@ -218,7 +218,7 @@
 :: It's a sword! (Q42)
 <div class="scene"><div class="pos bg">[img[img_Qimage43]]</div><div class="pos" style="left:45.077%;top:19.050%;width:49.927%;height:54.778%;transform:rotate(-29.12deg)">[img[img_Qimage36]]</div><div class="pos" style="left:51.069%;top:50.000%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div><div class="pos" style="left:70.669%;top:47.391%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div></div>
 <div class="story-text"><p>It's a sword!</p><p>Remember the poster: you will have to fight.</p></div>
-<<if setup.mode().hints>><p class="modehint">You will need a weapon later. Really.</p><</if>>
+<p class="modehint hardtoo">You will need a weapon later. Really.</p>
 <div class="choices">
 <<link "Take the sword">><<if setup.addItem("sword")>><<goto "I guess the water eats (Q43)">><</if>><</link>>
 [[Leave it|I guess the water eats (Q43)]]
@@ -270,7 +270,7 @@
 
 :: Run (Q49)
 <div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:44.588%;top:24.628%;width:12.508%;height:63.383%"><div class="fx" style="animation:fx-in-zoom 3.000s ease-out 0.000s backwards, fx-out-appear 0.010s steps(1,end) 3.000s forwards">[img[img_Qimage44]]</div></div><div class="pos" style="left:39.853%;top:14.403%;width:25.939%;height:79.051%"><div class="fx" style="animation:fx-in-fade 1.600s ease-out 3.000s backwards">[img[img_Qimage54]]</div></div></div>
-<<if setup.mode().hints>><p class="modehint">Remember: if it smiles, RUN.</p><</if>>
+<p class="modehint hardtoo">Remember: if it smiles, RUN.</p>
 <div id="opts" class="choices">[[Run|You see a door (Q50)]][[Approach|As its teeth sink in (Q52)]]</div>
 <div class="timerbar"><span style="animation-duration:3.0s"></span></div>
 <<timed `setup.t(3.0)`>><<replace "#opts">><div class="caught">[[It catches you|As its teeth sink in (Q52)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
@@ -297,7 +297,7 @@
 
 :: How can i escape (Q53)
 <div class="story-text"><p>How can i escape</p></div>
-<<if setup.mode().hints>><p class="modehint">Fighting only works if you have a weapon. Waiting never works.</p><</if>>
+<p class="modehint hardtoo">Fighting only works if you have a weapon. Waiting never works.</p>
 <div class="choices">
 <<if setup.hasWeapon()>>[[Fight|Phew (Q54)]]<<else>>[[Fight|Unarmed]]<</if>>
 [[Wait|It breaks down the door (Q84)]]
@@ -816,7 +816,7 @@ setup.submitPad = function (pad) {
 $(document).on(':passagedisplay', function () { $('#passages .codepad').each(function () { setup.buildPad(this); }); });
 $(document).on(':passagedisplay', function () {
   $('#passages .timerbar span').each(function () { var d = parseFloat(this.style.animationDuration) || 3; this.style.animationDuration = setup.t(d); });
-  if (!setup.mode().hints) { $('#passages .modehint').remove(); }
+  if (!setup.mode().hints) { $('#passages .modehint:not(.hardtoo)').remove(); }
 });
 $(document).on('click', '.poster', function (e) {
   e.preventDefault(); e.stopPropagation();
@@ -1037,7 +1037,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Level 6 Lights Out
 <div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
 <div class="story-text"><p>The stairs end. The lights go out. Level 6: Lights Out.</p><p>You can't see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.</p><p><<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>></p></div>
-<<if setup.mode().hints>><p class="modehint">Whispers in the dark are never friendly.</p><</if>>
+<p class="modehint hardtoo">Whispers in the dark are never friendly.</p>
 <div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>><<if setup.hasWeapon()>>[[Swing your <<print setup.weaponName()>> at the red eyes|Lights Out Swing]]<</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
 
 :: Lights Out Swing
@@ -1102,7 +1102,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Front Desk [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div><</if>>
 <div class="story-text"><p>Nobody is behind the desk. Behind it, rows and rows of gold key hooks, all empty.</p><p>A little card next to the bell says: RING ONCE FOR SERVICE. ONLY ONCE.</p><p>Someone has scratched words into the wood of the desk: ASK NICELY.</p></div>
-<<if setup.mode().hints>><p class="modehint">Ring once. Only once.</p><</if>>
+<p class="modehint hardtoo">Ring once. Only once.</p>
 <div class="choices">[[Ring the bell|Hotel Concierge]][[Back to the lobby|Hotel Lobby]]</div>
 
 :: Hotel Concierge [hotel]
@@ -1206,7 +1206,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Floor 3 [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div><div class="pos" style="left:40%;top:26%;width:45.0%;height:45.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_hall3]]</div></div><</if>>
 <div class="story-text"><p>Floor 3 looks like a normal hallway. Doors, lamps, carpet.</p><p>You take a step. The hallway stretches. You take another. It stretches again. The door you came through is a tiny dot far behind you.</p><p>The patterns on the wallpaper are starting to look like smiles.</p></div>
-<<if setup.mode().hints>><p class="modehint">The guest book said to walk backwards.</p><</if>>
+<p class="modehint hardtoo">The guest book said to walk backwards.</p>
 <div class="choices">[[Keep walking forward|Hotel Floor 3 Deeper]][[Walk backwards|Hotel Power Room]][[Run back to the stairs|Hotel Staircase]]</div>
 
 :: Hotel Floor 3 Deeper [hotel]
@@ -1260,7 +1260,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Boiler Room [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
 <div class="story-text"><p>BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.</p><p>On the far wall: a plain grey door with a green EXIT sign. The real exit.</p><p>And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"</p></div>
-<<if setup.mode().hints>><p class="modehint">Polite guests get to check out.</p><</if>>
+<p class="modehint hardtoo">Polite guests get to check out.</p>
 <div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Hotel Fight Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>[[Run for the exit|Checkout Ending]]</div>
 
 :: Hotel Checkout Polite [hotel]

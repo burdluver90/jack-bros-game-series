@@ -12,7 +12,7 @@ def fix(t): return t.replace('\u2019',"'").replace('\u201c','"').replace('\u201d
 DEATHS={10,13,26,31,36,39,40,52,71,72,73,74,84}
 MODEPICK=('<div class="modepick">'
   '<div class="mcard"><<link "Play on Normal" "@@T4@@">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div>'
-  '<div class="mcard hard"><<link "Play on Hard" "@@T4@@">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and there are no hints. Good luck.</p></div>'
+  '<div class="mcard hard"><<link "Play on Hard" "@@T4@@">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and only a few hints. Good luck.</p></div>'
   '</div>')
 def KEEP(label, item, to):
     return f'<<link "{label}">><<if setup.addItem("{item}")>><<goto "@@T{to}@@">><</if>><</link>>'

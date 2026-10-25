@@ -34,6 +34,10 @@ HINTS = {
     'Hotel Boiler Room': 'Polite guests get to check out.',
 }
 
+# the few hints Hard mode still shows: the ones that stop a run from being unwinnable or a total guess
+HARD_TOO = {"It's a sword! (Q42)", 'How can i escape (Q53)', 'Left (Q35)', 'Run (Q49)',
+            'Level 6 Lights Out', 'Hotel Front Desk', 'Hotel Floor 3', 'Hotel Boiler Room'}
+
 def apply(text):
     # <<timed 3s>> becomes mode-scaled
     text = re.sub(r'<<timed (\d+(?:\.\d+)?)s>>', lambda m: f'<<timed `setup.t({m.group(1)})`>>', text)
@@ -45,7 +49,8 @@ def apply(text):
         block = text[m.end():end]
         if 'class="modehint"' in block:
             continue
-        line = f'<<if setup.mode().hints>><p class="modehint">{hint}</p><</if>>'
+        line = (f'<p class="modehint hardtoo">{hint}</p>' if title in HARD_TOO
+                else f'<<if setup.mode().hints>><p class="modehint">{hint}</p><</if>>')
         # put the hint right before the choices
         i = block.find('<div class="choices"')
         if i < 0:
