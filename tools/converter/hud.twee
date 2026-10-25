@@ -136,7 +136,7 @@ setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's';
 setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
-  v.boilerCode = setup.newCode(); v.virusStrong = false;
+  v.boilerCode = setup.newCode(); v.virusStrong = false; v.preyUsed = {};
 };
 /* the hotel boiler code: three different digits, new every run */
 setup.newCode = function () {
@@ -268,7 +268,14 @@ $(document).on('click', '#hud .keep', function () { setup.hud(); });
 setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
-  if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
+  if (location.hash === '#concierge') {
+    setTimeout(function () {
+      setup.reset(); var v = State.variables;
+      v.inv = ['sword', 'almond', 'almond', 'almond']; v.virusWith = true;
+      Engine.play('Battle Concierge');
+    }, 0);
+  }
+  else if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
   /* opening or refreshing the game always starts at the title screen, not wherever you left off */
   else if (State.passage !== 'Start') { setTimeout(function () { Engine.play('Start'); }, 0); }
 });

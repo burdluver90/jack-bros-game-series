@@ -19,6 +19,10 @@
 #bestiary .bcard .bstat.won { color: #86efac; }
 #hud .bestbtn { border-radius: 99px; border: 1px solid #a16207; background: #2a2610; color: #fde68a; padding: .25em .8em; cursor: pointer; font-size: .8rem; }
 .bestlink { text-align: center; margin: 6px 0 0; }
+.preybox { margin: 10px auto; max-width: 640px; padding: 10px 14px; border: 1px dashed #86efac; border-radius: 10px; background: rgba(20, 50, 36, .55); }
+.preybox p { margin: 0 0 6px; }
+.preybox .preyout { color: #bbf7d0; }
+.preybtn { display: inline-block; padding: .35em 1em; border-radius: 99px; border: 1px solid #4fd18b; background: #143224; color: #c9ffe0; cursor: pointer; text-decoration: none; }
 #bestiary .btabs { display: flex; gap: 8px; margin: 0 0 16px; clear: both; }
 #bestiary .btab { padding: .35em 1em; border-radius: 99px; border: 1px solid #4a4528; background: #16140c; color: #c7c2a4; cursor: pointer; }
 #bestiary .bshow { margin-left: auto; padding: .35em 1em; border-radius: 99px; border: 1px solid #4a4528; background: #16140c; color: #9db8ff; cursor: pointer; }
@@ -114,8 +118,55 @@ setup.BEASTS = [
   { id: 'voice', name: 'The Voice in 217', tag: 'Grand Hotel', img: 'art_h_hall2',
     seen: ['Hotel Room 217'], deaths: ['Knock Ending'],
     desc: 'It knocks from inside Room 217 using the voice of someone you know.',
-    tip: 'Do not open the door. Knock back three times.' }
+    tip: 'Do not open the door. Knock back three times.' },
+  { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
+    seen: ['Level 1'], deaths: [],
+    desc: 'Pale, dusty moths that can smell almond water from a whole level away. They are harmless, and almost everything eats them.',
+    tip: 'Follow them. They always fly toward almond water.' },
+  { id: 'mice', name: 'Pipe Mice', tag: 'Helpful prey', friend: true, img: 'art_p_mice',
+    seen: ['Level 2 Pipe Dreams'], deaths: [],
+    desc: 'Tiny grey mice that live along the pipes of Pipe Dreams. They never, ever touch a hot pipe.',
+    tip: 'Go where the mice go. They know which way is safe.' },
+  { id: 'glowbugs', name: 'Glow Bugs', tag: 'Helpful prey', friend: true, img: 'art_p_glow',
+    seen: ['Level 6 Lights Out'], deaths: [],
+    desc: 'A drifting cloud of tiny glowing bugs in the darkness of Lights Out. The Light Haters cannot stand them.',
+    tip: 'No flashlight? Cup a handful of glow bugs and use them as a light.' },
+  { id: 'bellmouse', name: 'The Bellhop Mouse', tag: 'Helpful prey', friend: true, img: 'art_p_bellmouse',
+    seen: ['Hotel Lobby'], deaths: [],
+    desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays.',
+    tip: 'Be kind to it. It scratches part of the boiler code into the carpet for you.' }
 ];
+/* helpful prey: each one offers a little help once per run, in the passage where you meet it */
+setup.PREY = {
+  'Level 1': { id: 'moths', text: 'A few pale moths flutter past you and drift off toward a crack in the wall.', btn: 'Follow the moths',
+    use: function () { State.variables.sanity = Math.min(100, State.variables.sanity + 15); return 'The moths lead you to a puddle of almond water dripping from the ceiling. You drink. <b>+15 sanity</b>.'; } },
+  'Level 2 Pipe Dreams': { id: 'mice', text: 'Three tiny grey mice scurry past your feet, running along the cold blue pipe.', btn: 'Watch where the mice go',
+    use: function () { State.variables.sanity = Math.min(100, State.variables.sanity + 5); return 'The mice run along the <b>cold blue pipe</b> and stay far away from the hot one. Smart mice. You feel a little calmer. <b>+5 sanity</b>.'; } },
+  'Level 6 Lights Out': { id: 'glowbugs', text: 'A tiny green light blinks near your face. Then another. A cloud of glow bugs is drifting by.', btn: 'Cup a handful of glow bugs',
+    use: function () { setTimeout(function () { Engine.play('Lights Out Flashlight'); }, 1400); return 'You cup them in your hands. They glow brighter, and the red eyes shriek and back away.'; } },
+  'Hotel Lobby': { id: 'bellmouse', text: 'A mouse in a tiny red bellhop cap peeks out from under the front desk.', btn: 'Kneel down and be nice to the mouse',
+    use: function () { var c = setup.boiler(); return 'The mouse sniffs your hand, then scratches a number into the carpet with its claw: <b>' + c.charAt(0) + '</b>. It taps it twice, then points its nose at the ballroom.'; } }
+};
+$(document).on(':passagedisplay', function (ev) {
+  var p = setup.PREY[ev.passage.title], v = State.variables;
+  if (!p) { return; }
+  v.preyUsed = v.preyUsed || {};
+  var box = $('<div class="preybox"><p>' + p.text + '</p></div>');
+  if (!v.preyUsed[p.id]) {
+    $('<a class="preybtn">\u{1F43E} ' + p.btn + '</a>').on('click', function () {
+      v.preyUsed[p.id] = true; box.find('.preybtn').remove();
+      box.append('<p class="preyout">' + p.use() + '</p>'); setup.hud();
+    }).appendTo(box);
+  }
+  /* wait a moment: some scenes finish drawing their choices after the passage shows */
+  setTimeout(function () {
+    /* the old scene is still fading out, so use the newest passage */
+    var cur = $('#passages .passage').not('.passage-out').last();
+    if (State.passage !== ev.passage.title || cur.find('.preybox').length) { return; }
+    var ch = cur.find('.choices').first();
+    if (ch.length) { box.insertBefore(ch); } else { box.appendTo(cur); }
+  }, 80);
+});
 setup.best = function () { var b = recall('bestiary', null); return b && typeof b === 'object' ? b : {}; };
 setup.bestMark = function (id, field) {
   var b = setup.best(), e = b[id] || {}, first = !e.seen;
@@ -165,7 +216,7 @@ setup.FOODCHAIN = [
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
   { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virus1', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything.', list: ['doll'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';
