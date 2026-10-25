@@ -1159,7 +1159,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Hotel Lobby [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div><div class="pos" style="left:58%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_lobby]]</div></div><</if>>
-<div class="story-text"><p>The lobby is enormous. A chandelier the size of a car hangs over a red carpet that goes on and on.</p><p>There is a reception desk with a little gold bell, a grand staircase, an elevator, and tall doors marked BALLROOM. Music drifts out from behind them.</p><p><<if $power>>The elevator light is on now.<<else>>The elevator is dark. Its OUT OF ORDER sign is swinging slowly, even though there is no wind.<</if>></p><p><<if $virusWith>>The virus keeps low, sniffing the carpet. "Find the brass key," it whispers. "And find out the code."<<else>>You are alone. The music gets louder, like it noticed.<</if>></p></div>
+<div class="story-text"><p>The lobby is enormous. A chandelier the size of a car hangs over a red carpet that goes on and on.</p><p>There is a reception desk with a little gold bell, a grand staircase, an elevator, and tall doors marked BALLROOM. Music drifts out from behind them.</p><p><<if $power>>The elevator light is on now.<<else>>The elevator is dark. Its OUT OF ORDER sign is swinging slowly, even though there is no wind.<</if>></p><p><<if $virusWith>>As soon as it is through the door, the virus stops and bows low toward the reception desk. "Manners," it whispers. "The Concierge is always watching." Then it keeps low, sniffing the carpet. "Find the brass key. And find out the code."<<else>>You are alone. The music gets louder, like it noticed.<</if>></p></div>
 <div class="choices"><<if !setup.isTaken("wlobby")>><span id="pkwlobby"><<link "Check the luggage cart for almond water">><<if setup.take("wlobby","almond")>><<replace "#pkwlobby">><</replace>><</if>><</link>></span><</if>>[[Go to the front desk|Hotel Front Desk]][[Read the guest book|Hotel Guest Book]][[Go into the ballroom|Hotel Ballroom]][[Climb the grand staircase|Hotel Staircase]]<<if $power>>[[Take the elevator|Hotel Elevator]]<<else>>[[Press the elevator button|Hotel Elevator Dead]]<</if>></div>
 
 :: Hotel Guest Book [hotel nodrain]
@@ -1448,7 +1448,7 @@ setup.BATTLES = {
   hound: { name: 'The Hound', hp: 12, hit: 14, weak: 'axe', win: 'Hotel Boiler Door', lose: 'Hound Ending', run: 'Hotel Staircase',
     intro: 'The hound stands up. It is much bigger than you thought. Its white eyes lock on you.', weakHint: 'It flinches from the glint of a big blade.',
     weakLine: 'The fire axe bites deep. The hound howls.' },
-  concierge: { name: 'The Concierge', hp: 40, hit: 14, boss: true, weak: 'sword', win: 'Hotel Fight Concierge', lose: 'Checkout Ending', run: null,
+  concierge: { name: 'The Concierge', hp: 60, hit: 14, boss: true, weak: 'sword', win: 'Hotel Fight Concierge', lose: 'Checkout Ending', run: null,
     intro: '"Fighting the staff is against the rules, guest." It unfolds to its full height. =)', weakHint: 'Its porcelain face has a crack running down it. A sharp point might split it.',
     weakLine: 'You drive the sword into the crack in its porcelain face. It shatters a little more.' }
 };
@@ -1457,7 +1457,7 @@ setup.startBattle = function (el) {
   var pad = $(el), b = setup.BATTLES[pad.attr('data-b')];
   if (!b) { return; }
   var weak = b.boss && State.variables.virusStrong;
-  pad.data('hp', weak ? b.hp - 10 : b.hp).data('guard', false).data('stun', false).data('used', {}).data('turn', 0).data('phase', 1).data('charge', false);
+  pad.data('hp', weak ? b.hp - 10 : b.hp).data('vrest', false).data('held', false).data('guard', false).data('stun', false).data('used', {}).data('turn', 0).data('phase', 1).data('charge', false);
   setup.drawBattle(pad, b.intro + (weak ? '<br><b>The virus strikes first with its black tendrils! The Concierge staggers (-10).</b>' : ''));
 };
 setup.drawBattle = function (pad, log) {
@@ -1468,7 +1468,6 @@ setup.drawBattle = function (pad, log) {
   });
   if (!setup.battleWeapons().length) { acts += '<a class="bbtn" data-act="hit" data-w="">\u{270A} Punch (1)</a>'; }
   acts += '<a class="bbtn block" data-act="block">\u{1F6E1}\u{FE0F} Block</a>';
-  if (b.boss && State.variables.virusWith) { var cd = pad.data('vcd') || 0; acts += cd > 0 ? '<a class="bbtn vir off" data-act="wait">\u{1F9A0} Virus is resting (' + cd + ')</a>' : '<a class="bbtn vir" data-act="virus">\u{1F9A0} Virus: hold it down</a>'; }
   if (setup.has('almond')) { acts += '<a class="bbtn drink" data-act="drink">\u{1F4A7} Drink almond water</a>'; }
   if (b.run) { acts += '<a class="bbtn run" data-act="run">Run away</a>'; }
   pad.html('<div class="bname">' + b.name + '<small>' + hp + ' / ' + b.hp + '</small></div>' +
@@ -1495,11 +1494,17 @@ setup.battleTurn = function (pad, act, w) {
     if (b.stun && w === b.stun) { pad.data('stun', true); }
     if (b.boss && pad.data('phase') === 2 && Math.random() < .25) { hp += 2; pad.data('hp', hp); log += 'Porcelain dust swirls back into the crack. <b>It heals 2.</b> '; }
   }
-  if (b.boss && v.virusWith && act !== 'virus') {
-    var vd = v.virusStrong ? 3 : 2; hp -= vd; pad.data('hp', hp);
-    log += 'The virus lunges in beside you and hits it for <b>' + vd + '</b>. ';
+  /* the virus's own turn: rest if it held the Concierge last turn, otherwise hold it (always when the tray is raised) or whip it */
+  if (b.boss && v.virusWith) {
+    if (pad.data('vrest')) { pad.data('vrest', false); log += 'The virus is catching its breath this turn. '; }
+    else if (pad.data('charge') || Math.random() < .35) {
+      pad.data('held', true).data('vrest', true);
+      log += '<b>The virus wraps every tendril it has around the Concierge and holds it still!</b> It will have to rest next turn. ';
+    } else {
+      var vd = v.virusStrong ? 4 : 3; hp -= vd; pad.data('hp', hp);
+      log += 'The virus whips it with its tendrils for <b>' + vd + '</b>. ';
+    }
   }
-  if (b.boss && pad.data('vcd') > 0 && act !== 'virus') { pad.data('vcd', pad.data('vcd') - 1); }
   if (hp <= 0) {
     Object.keys(pad.data('used')).forEach(function (u) { if (setup.WSTATS[u] && setup.WSTATS[u].breaks && setup.has(u)) { v.inv.splice(v.inv.indexOf(u), 1); setup.toast('You won, but your ' + setup.ITEMS[u].name.toLowerCase() + ' snapped!'); } });
     setup.hud(); pad.find('.bacts').remove();
