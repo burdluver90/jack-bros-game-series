@@ -266,6 +266,7 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 .preybox { margin: 10px auto; max-width: 640px; padding: 10px 14px; border: 1px dashed #86efac; border-radius: 10px; background: rgba(20, 50, 36, .55); }
 .preybox p { margin: 0 0 6px; }
 .preybox .preyout { color: #bbf7d0; }
+.preybox .preybtn + .preybtn { margin-left: 8px; }
 .preybtn { display: inline-block; padding: .35em 1em; border-radius: 99px; border: 1px solid #4fd18b; background: #143224; color: #c9ffe0; cursor: pointer; text-decoration: none; }
 #bestiary .btabs { display: flex; gap: 8px; margin: 0 0 16px; clear: both; }
 #bestiary .btab { padding: .35em 1em; border-radius: 99px; border: 1px solid #4a4528; background: #16140c; color: #c7c2a4; cursor: pointer; }
@@ -498,7 +499,7 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (location.hash === '#concierge') {
@@ -862,7 +863,7 @@ setup.BEASTS = [
   { id: 'bellmouse', name: 'The Bellhop Mouse', tag: 'Helpful prey', friend: true, img: 'art_p_bellmouse',
     seen: ['Hotel Lobby'], deaths: [],
     desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays.',
-    tip: 'Be kind to it. It scratches part of the boiler code into the carpet for you.' }
+    tip: 'Be kind to it and it scratches the first number of the boiler code into the carpet. Share a sip of almond water and it gives you the whole code, but it drinks three quarters of the bottle.' }
 ];
 /* helpful prey: each one offers a little help once per run, in the passage where you meet it */
 setup.PREY = {
@@ -873,7 +874,16 @@ setup.PREY = {
   'Level 6 Lights Out': { id: 'glowbugs', text: 'A tiny green light blinks near your face. Then another. A cloud of glow bugs is drifting by.', btn: 'Cup a handful of glow bugs',
     use: function () { setTimeout(function () { Engine.play('Lights Out Flashlight'); }, 1400); return 'You cup them in your hands. They glow brighter, and the red eyes shriek and back away.'; } },
   'Hotel Lobby': { id: 'bellmouse', text: 'A mouse in a tiny red bellhop cap peeks out from under the front desk.', btn: 'Kneel down and be nice to the mouse',
-    use: function () { var c = setup.boiler(); return 'The mouse sniffs your hand, then scratches a number into the carpet with its claw: <b>' + c.charAt(0) + '</b>. It taps it twice, then points its nose at the ballroom.'; } }
+    use: function () { var c = setup.boiler(); return 'The mouse sniffs your hand, then scratches a number into the carpet with its claw: <b>' + c.charAt(0) + '</b>. It taps it twice, then points its nose at the ballroom.'; },
+    /* a second choice: share your almond water */
+    btn2: 'Give the mouse a sip of almond water', need2: function () { return setup.has('almond'); },
+    use2: function () {
+      var v = State.variables, c = setup.boiler();
+      v.inv.splice(v.inv.indexOf('almond'), 1);
+      v.sanity = Math.min(100, v.sanity + 25);
+      return 'The mouse squeaks happily and drinks... and drinks... and drinks. It gulps down three quarters of the bottle! You finish the last little bit yourself (<b>+25 sanity</b> instead of a full bottle). '
+        + 'Then the mouse scratches three numbers into the carpet, one after another: <b>' + c.split('').join(' ') + '</b>. The whole boiler code.';
+    } }
 };
 $(document).on(':passagedisplay', function (ev) {
   var p = setup.PREY[ev.passage.title], v = State.variables;
@@ -885,6 +895,12 @@ $(document).on(':passagedisplay', function (ev) {
       v.preyUsed[p.id] = true; box.find('.preybtn').remove();
       box.append('<p class="preyout">' + p.use() + '</p>'); setup.hud();
     }).appendTo(box);
+    if (p.btn2 && p.need2()) {
+      $('<a class="preybtn">\u{1F4A7} ' + p.btn2 + '</a>').on('click', function () {
+        v.preyUsed[p.id] = true; box.find('.preybtn').remove();
+        box.append('<p class="preyout">' + p.use2() + '</p>'); setup.hud();
+      }).appendTo(box);
+    }
   }
   /* wait a moment: some scenes finish drawing their choices after the passage shows */
   setTimeout(function () {
