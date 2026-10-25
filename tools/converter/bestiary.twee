@@ -43,7 +43,7 @@ setup.BEASTS = [
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
     seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)', 'Bacteria Ending'], beat: ['Bacteria Absorb'],
-    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back.',
+    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own. Cut one of its black tendrils and two grow back. It and the virus\'s kind have always been at war, and the virus hates it.',
     tip: 'Never wander off alone. Stay with the virus. If it attacks, let the virus absorb it: the virus gets its black tendrils and the Concierge fight gets easier.' },
   { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
     seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
