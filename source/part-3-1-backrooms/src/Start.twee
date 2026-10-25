@@ -1610,6 +1610,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 #bestiary .bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; clear: both; }
 #bestiary .bcard { background: #16140c; border: 1px solid #4a4528; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 #bestiary .bcard.friend { border-color: #4fd18b; }
+#bestiary .bcard.apex { border: 2px solid #8a0303; box-shadow: 0 0 0 1px #3d0000, 0 0 14px rgba(138, 3, 3, .6); }
 #bestiary .bcard .bimg { aspect-ratio: 4 / 3; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 #bestiary .bcard .bimg img { width: 100%; height: 100%; object-fit: contain; }
 #bestiary .bcard.locked .bimg { font: 900 3rem "Arial Black", Arial; color: #3a3520; }
@@ -1647,7 +1648,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 :: Bestiary Script [script]
 /* the bestiary remembers every creature across all playthroughs (saved in the browser) */
 setup.BEASTS = [
-  { id: 'virus', name: 'The Virus', tag: 'Friend', friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
+  { id: 'virus', name: 'The Virus', tag: 'Friend', apex: true, friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
     desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even after mutating, the virus has never tested its strength against the Concierge. It could win, or it could be torn apart, so it lowers its tendrils politely and stays out of the way of the Concierge.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
@@ -1675,7 +1676,7 @@ setup.BEASTS = [
     seen: ['Wait here (Q63)', 'You hide and you hear (Q64)'], deaths: ['It sees you and it (Q72)', "You don't make it to (Q73)"],
     desc: 'Level 94 is peaceful in the day. At night, something huge walks between the houses, strong enough to flip a car.',
     tip: 'After dark: stay put, hide, and never look out the window.' },
-  { id: 'clown', name: 'The Clown', tag: 'Hunter', img: 'img_Qimage75',
+  { id: 'clown', name: 'The Clown', tag: 'Hunter', apex: true, img: 'img_Qimage75',
     seen: ['Whos him? Maybe the clown? (Q69)', 'You keep your eyes on (Q70)', 'As long as he thinks (Q76)'], deaths: ['You are crushed to death (Q74)'],
     desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched, he will not attack. Nobody knows who would win in a fight between the Clown and the Concierge, so he bows to it and avoids such a risky fight.',
     tip: 'Never take your eyes off him. Let the doll watch him while you fix the coaster.' },
@@ -1711,7 +1712,7 @@ setup.BEASTS = [
     seen: ['Hotel Ballroom', 'Hotel Stage', 'Hotel Dance'], deaths: ['Dance Forever Ending'],
     desc: 'They waltz in the ballroom without a sound. The band knows the boiler code.',
     tip: 'Grab the sheet music and run. Dancing costs sanity, but it shows you the code too.' },
-  { id: 'concierge', name: 'The Concierge', tag: 'Grand Hotel boss', img: 'art_h_desk', battle: 'concierge',
+  { id: 'concierge', name: 'The Concierge', tag: 'Grand Hotel boss', apex: true, img: 'art_h_desk', battle: 'concierge',
     seen: ['Hotel Concierge', 'Hotel Boiler Room', 'Battle Concierge'], deaths: ['Checkout Ending', 'Bell Ending', 'Housekeeping Ending'],
     desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out. The Concierge only likes polite creatures. The top hunters know this, and even the other two apex predators, the mutated virus and the Clown, bow to it when they pass through the hotel. The hunters and scavengers are not smart enough to mind their manners, so the Concierge hunts them. But it loves small things, so prey always get a free pass.',
     tip: 'Ring the bell once, ask nicely, hide in the wardrobe. Polite guests may check out. Its cracked face is weak to the sword.' },
@@ -1827,7 +1828,7 @@ setup.openBestiary = function () {
     var img = setup.bestImg(e.form2 && x.img2 ? x.img2 : x.img), learned = e.beaten || e.died, stat = '';
     if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
-    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
+    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + (x.apex ? ' apex' : '') + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
       '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3><p>' + x.desc + '</p>' +
       '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });
