@@ -263,6 +263,7 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 #bestiary .bcard .btag { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #9db8ff; }
 #bestiary .bcard p { margin: 0; font-size: .86rem; line-height: 1.4; color: #d6d3c4; }
 #bestiary .bcard .biq { font: 700 .8rem Arial, sans-serif; color: #9db8ff; letter-spacing: .04em; }
+#bestiary .bcard .bpop { font: 700 .8rem Arial, sans-serif; color: #8fe3b0; letter-spacing: .04em; }
 #bestiary .bcard .btip { color: #fde68a; }
 #bestiary .bcard .bstat { font-size: .78rem; color: #fca5a5; }
 #bestiary .bcard .bstat.won { color: #86efac; }
@@ -294,6 +295,7 @@ body { background: radial-gradient(ellipse at 50% 0%, #2b2716 0%, #14130c 55%, #
 #bestiary .fmon .fimg { width: 96px; height: 72px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; font: 900 1.6rem "Arial Black", Arial; color: #3a3520; }
 #bestiary .fmon .fimg img { width: 100%; height: 100%; object-fit: contain; }
 #bestiary .fmon .fiq { display: block; margin-top: 2px; font: 700 .7rem Arial, sans-serif; color: #9db8ff; letter-spacing: .05em; }
+#bestiary .fmon .fpop { display: block; font: 700 .7rem Arial, sans-serif; color: #8fe3b0; letter-spacing: .05em; }
 #bestiary .farrow { font-size: 1.4rem; color: #8a845e; line-height: 1.6; }
 /* twine-user-stylesheet #5: "Story Stylesheet" */
 body { background: radial-gradient(circle at 50% 0%, #1d2a44 0%, #0b0f1a 70%) fixed; color: #eef1f8; font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
@@ -981,6 +983,13 @@ setup.tierClass = function (id) {
   return cls;
 };
 /* IQ badge on a bestiary card (the main virus page uses its mutated IQ) */
+/* how many of each creature live in the Backrooms */
+setup.POP = { virus2: 6600, concierge: 1, clown: 1, hound: 340, skinstealer: 900, watcher: 75, chaser: 1, giant: 1,
+  bacteria: 40000, virusyoung: 33000, poopers: 500, lizard: 8000, whisperer: 300, static: 1200, voice: 1, smiler: 5000,
+  partygoers: 12000, mannequins: 2500, crawler: 15000, redeyes: 30000,
+  hatchlings: 100000, doll: 1, moths: 1000000, mice: 250000, glowbugs: 5000000, bellmouse: 1 };
+setup.popNum = function (id) { var n = setup.POP[id === 'virus' ? 'virus2' : id]; return n === undefined ? '' : n.toLocaleString('en-US'); };
+setup.popTag = function (id) { var n = setup.popNum(id); return n === '' ? '' : '<div class="bpop">\u{1F465} Population ' + n + (n === '1' ? ' (the only one)' : '') + '</div>'; };
 setup.iqTag = function (id) { var n = setup.IQ && setup.IQ[id === 'virus' ? 'virus2' : id]; return n === undefined ? '' : '<div class="biq">\u{1F9E0} IQ ' + n + '</div>'; };
 setup.openBestiary = function () {
   var b = setup.bestView(), found = 0, cards = '';
@@ -995,7 +1004,7 @@ setup.openBestiary = function () {
     if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
     if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
     cards += '<div class="bcard' + (x.friend ? ' friend' : '') + (x.apex ? ' apex' : ' ' + setup.tierClass(x.id)) + '"><div class="bimg"><img src="' + img + '" alt="">' + '</div><div class="bbody">' +
-      '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3>' + setup.iqTag(x.id) + '<p>' + x.desc + '</p>' +
+      '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3>' + setup.iqTag(x.id) + setup.popTag(x.id) + '<p>' + x.desc + '</p>' +
       '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
   });
   $('#bestiary').remove();
@@ -1028,7 +1037,7 @@ setup.openFoodChain = function () {
         name = id === 'virusyoung' ? x.name : id === 'virus2' ? 'The Virus (after mutation)' : x.name;
         img = '<img src="' + setup.bestImg(id === 'virus2' && x.img2 ? x.img2 : x.img) + '" alt="">';
       }
-      row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + (known && setup.IQ[id] !== undefined ? '<span class="fiq">IQ ' + setup.IQ[id] + '</span>' : '') + '</div>';
+      row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + (known && setup.IQ[id] !== undefined ? '<span class="fiq">IQ ' + setup.IQ[id] + '</span>' : '') + (known && setup.popNum(id) !== '' ? '<span class="fpop">Pop ' + setup.popNum(id) + '</span>' : '') + '</div>';
     });
     tiers += (i ? '<div class="farrow">\u{25B2}</div>' : '') + '<div class="ftier' + (t.apex ? ' apex' : '') + '"><h3>' + t.name + '</h3><p class="fnote">' + t.note + '</p><div class="frow">' + row + '</div></div>';
   });
