@@ -3,6 +3,9 @@
     <radialGradient id="far" cx=".5" cy=".42" r=".55"><stop offset="0" stop-color="#3d3a2c"/><stop offset=".5" stop-color="#121210"/><stop offset="1" stop-color="#030303"/></radialGradient>
     <radialGradient id="bulb"><stop offset="0" stop-color="#fff6c8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
     <radialGradient id="eye"><stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="#f2f0d0"/><stop offset="1" stop-color="#f2f0d0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="d2lamp"><stop offset="0" stop-color="#fff6c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="d2ball" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#cbd5e1"/><stop offset="1" stop-color="#64748b"/></radialGradient>
+    <filter id="d2glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
   <rect width="1600" height="900" fill="url(#far)"/>
   <!-- corridor edges -->
@@ -24,4 +27,16 @@
   <circle cx="792" cy="388" r="5" fill="url(#eye)"/><circle cx="808" cy="388" r="5" fill="url(#eye)"/>
   <!-- wet floor reflection -->
   <ellipse cx="800" cy="610" rx="140" ry="14" fill="#fff6c8" opacity=".06"/>
+  <!-- detail pass 2 -->
+  <!-- doors and panels along both walls -->
+  <g fill="none" stroke="#1c1c1c" stroke-width="6"><path d="M120 800 V320 L300 400 V720"/><path d="M1480 800 V320 L1300 400 V720"/><path d="M450 640 V430 L540 460 V600"/><path d="M1150 640 V430 L1060 460 V600"/></g>
+  <g fill="#262626"><circle cx="280" cy="560" r="7"/><circle cx="1320" cy="560" r="7"/></g>
+  <!-- a second, dead light and hanging wires -->
+  <rect x="740" y="150" width="120" height="12" fill="#262626"/><path d="M760 162 q-6 40 6 60 M840 162 q10 30 -4 56" stroke="#151515" stroke-width="3" fill="none"/>
+  <!-- long scratch marks on the walls, at the figure's height -->
+  <g stroke="#2e2e2e" stroke-width="3" stroke-linecap="round"><path d="M330 300 l60 180 M345 296 l60 182 M360 292 l58 184"/><path d="M1270 300 l-60 180 M1255 296 l-60 182"/></g>
+  <!-- eyes much further back in the dark -->
+  <g fill="#e5e7eb" opacity=".5"><circle cx="700" cy="420" r="3"/><circle cx="712" cy="420" r="3"/><circle cx="905" cy="440" r="2.5"/><circle cx="915" cy="440" r="2.5"/></g>
+  <!-- wet footprints that are not yours leading toward you -->
+  <g fill="#3a3a3a" opacity=".55"><path d="M830 640 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.00)"/><path d="M770 680 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.05)"/><path d="M830 720 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.10)"/><path d="M770 760 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.15)"/><path d="M830 800 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.20)"/><path d="M770 840 q-10 -20 0 -30 q12 0 10 30 z" transform="scale(1 1.25)"/></g>
 </svg>
