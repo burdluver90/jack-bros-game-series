@@ -78,7 +78,7 @@ setup.BEASTS = [
     tip: 'After dark: stay put, hide, and never look out the window.' },
   { id: 'clown', name: 'The Clown', tag: 'Hunter', apex: true, img: 'img_Qimage75',
     seen: ['Whos him? Maybe the clown? (Q69)', 'You keep your eyes on (Q70)', 'As long as he thinks (Q76)'], deaths: ['You are crushed to death (Q74)'],
-    desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched, he will not attack. Nobody knows who would win in a fight between the Clown and the Concierge, so he bows to it and avoids such a risky fight.',
+    desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched by a human, at least, he will not attack. Other creatures staring at him do not count, but the doll looks human enough to fool him. Nobody knows who would win in a fight between the Clown and the Concierge, so he bows to it and avoids such a risky fight.',
     tip: 'Never take your eyes off him. Let the doll watch him while you fix the coaster.' },
   { id: 'doll', name: 'The Doll', tag: 'Friend', friend: true, img: 'img_Qimage69',
     seen: ['Ok the doll is watching (Q77)'], deaths: [],
