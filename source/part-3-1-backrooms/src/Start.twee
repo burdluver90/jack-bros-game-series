@@ -1708,7 +1708,7 @@ setup.BEASTS = [
     tip: 'Grab the sheet music and run. Dancing costs sanity, but it shows you the code too.' },
   { id: 'concierge', name: 'The Concierge', tag: 'Grand Hotel boss', img: 'art_h_desk', battle: 'concierge',
     seen: ['Hotel Concierge', 'Hotel Boiler Room', 'Battle Concierge'], deaths: ['Checkout Ending', 'Bell Ending', 'Housekeeping Ending'],
-    desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out.',
+    desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out. The Concierge only likes polite creatures. The top hunters know this, and even the other two apex predators, the mutated virus and the Clown, bow to it when they pass through the hotel. The hunters and scavengers are not smart enough to mind their manners, so the Concierge hunts them. But it loves small things, so prey always get a free pass.',
     tip: 'Ring the bell once, ask nicely, hide in the wardrobe. Polite guests may check out. Its cracked face is weak to the sword.' },
   { id: 'hound', name: 'The Hound', tag: 'Grand Hotel', img: 'art_h_stairs', battle: 'hound',
     seen: ['Hotel Basement Stairs', 'Battle Hound'], deaths: ['Hound Ending'],
