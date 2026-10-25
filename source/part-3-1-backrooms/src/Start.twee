@@ -1,0 +1,698 @@
+:: Start [nodrain nohud]
+<<run setup.reset()>>
+<div class="story-text"><p>Part 3.1: The Backrooms Escape</p><p>A Slide Games production, made by Jack-Bros</p><p>This game is most likely M 17+ due to gore and mental horror.</p><p>@2026 all rights reserved</p></div>
+<div class="choices">
+[[Play|What is this place ive (Q4)]]
+</div>
+
+:: What is this place ive (Q4)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:84.207%;top:47.089%;width:7.348%;height:16.910%">[img[img_Qimage15]]</div><div class="pos clip" style="left:82.251%;top:40.717%;width:6.394%;height:10.285%"><div class="crop" style="left:-0.00%;top:-0.00%;width:304.43%;height:336.46%">[img[img_Qimage5]]</div></div></div>
+<div class="story-text"><p>What is this place ive seen tons of posters</p></div>
+<div class="choices">
+[[Wait what's that poster say|What's this Bacteria (Q5)]]
+</div>
+
+:: What's this Bacteria (Q5)
+<div class="scene"><div class="pos" style="left:-0.499%;top:0.000%;width:100.499%;height:100.000%">[img[img_Qimage15]]</div></div>
+<div class="story-text"><p>What's this "Bacteria"</p></div>
+<div class="choices">
+[[Next|Theo check out this sign (Q6)]]
+</div>
+
+:: Theo check out this sign (Q6)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%">[img[img_Qimage7]]</div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%">[img[img_Qimage6]]</div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%">[img[img_Qimage9]]</div><div class="pos clip" style="left:1.667%;top:18.333%;width:43.490%;height:19.190%"><div class="crop" style="left:-0.00%;top:-80.09%;width:100.00%;height:268.51%">[img[img_Qimage4]]</div></div><div class="pos clip" style="left:65.534%;top:5.160%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div></div>
+<div class="choices">
+[[Theo check out this sign|What is this place (Q7)]]
+</div>
+
+:: What is this place (Q7)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%">[img[img_Qimage7]]</div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%">[img[img_Qimage6]]</div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%">[img[img_Qimage9]]</div><div class="pos clip" style="left:65.534%;top:5.160%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:51.026%;top:18.333%;width:9.182%;height:16.324%"><div class="fx" style="animation:fx-in-fade 2.500s ease-out 0.000s backwards, fx-out-appear 0.010s steps(1,end) 2.500s forwards">[img[img_Qimage18]]</div></div></div>
+<div class="story-text"><p>What is this place</p></div>
+<div class="choices">
+[[Continue|Hi theo (Q8)]]
+</div>
+
+:: Hi theo (Q8)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage7]]</div></div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage6]]</div></div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%"><div class="fx" style="animation:fx-out-fade 2.100s linear 0.000s forwards">[img[img_Qimage9]]</div></div><div class="pos clip" style="left:65.534%;top:5.160%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:44.032%;top:0.000%;width:22.864%;height:100.000%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.100s backwards">[img[img_Qimage26]]</div></div></div>
+<div class="choices">
+[[Hi theo|Fight (Q9)]]
+</div>
+
+:: Fight (Q9)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%">[img[img_Qimage7]]</div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%">[img[img_Qimage6]]</div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%">[img[img_Qimage9]]</div><div class="pos" style="left:43.542%;top:2.593%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div></div>
+<div class="choices">
+[[Fight|You are brutally strangled and (Q10)]]
+[[RUN|Wait don't run (Q11)]]
+</div>
+
+:: You are brutally strangled and (Q10) [ending]
+<div class="scene"><div class="pos" style="left:0.000%;top:0.199%;width:100.000%;height:99.604%">[img[img_Qimage8]]</div><div class="pos" style="left:72.809%;top:0.199%;width:27.191%;height:48.339%">[img[img_Qimage12]]</div><div class="pos" style="left:3.409%;top:53.106%;width:22.447%;height:39.907%">[img[img_Qimage12]]</div></div>
+<div class="story-text"><p>You are brutally strangled and mauled being found by an explorer in 17 pieces</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Wait don't run (Q11)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:40.241%;top:-1.087%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div><div class="pos clip" style="left:64.433%;top:-1.087%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:93.949%;top:65.420%;width:5.144%;height:23.630%">[img[img_Qimage24]]</div><a class="hotspot" data-passage="What is this? (Q15)" style="left:93.915%;top:65.421%;width:5.144%;height:23.628%"></a></div>
+<div class="story-text"><p>Wait don't run</p></div>
+<div class="choices">
+[[Listen|I am a virus basically (Q12)]]
+[[Run|You are brutally strangled and (Q10)]]
+</div>
+
+:: What is this? (Q15)
+<div class="scene"><div class="pos" style="left:0.000%;top:0.000%;width:100.000%;height:100.000%">[img[img_Qimage1]]</div><div class="pos" style="left:63.323%;top:61.966%;width:23.732%;height:31.228%">[img[img_Qimage24]]</div><div class="pos" style="left:42.320%;top:2.522%;width:6.675%;height:96.522%">[img[img_Qimage26]]</div><div class="pos clip" style="left:55.262%;top:-1.087%;width:41.576%;height:32.159%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos clip" style="left:71.079%;top:43.934%;width:9.941%;height:12.132%"><div class="crop" style="left:-100.21%;top:-24.66%;width:300.41%;height:149.31%">[img[img_Qimage22]]</div></div></div>
+<div class="story-text"><p>What is this?</p><p>Drink it if things become distorted or you see smiles. Also avoid red things.</p></div>
+<div class="choices">
+<<link "Drink it" "You survived your sanity was (Q16)">><<run setup.fill(true)>><</link>>
+<<link "Save it" "We aren't safe here where (Q17)">><<run setup.addItem("almond")>><</link>>
+</div>
+
+:: I am a virus basically (Q12)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:40.241%;top:-1.087%;width:22.864%;height:100.000%">[img[img_Qimage26]]</div><div class="pos clip" style="left:64.433%;top:-1.087%;width:26.657%;height:40.639%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div></div>
+<div class="story-text"><p>I am a virus basically a bacteria but i don't want to hurt you</p></div>
+<div class="choices">
+[[Follow him|You enter a large poolrooms (Q14)]]
+[[Go a different way|You become lost becoming a (Q36)]]
+</div>
+
+:: You survived your sanity was (Q16)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:39.874%;top:18.045%;width:15.021%;height:81.955%">[img[img_Qimage26]]</div><div class="pos clip" style="left:55.506%;top:17.841%;width:16.875%;height:32.159%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:60.468%;top:64.697%;width:4.944%;height:23.984%"><div class="fx" style="animation:fx-out-fade 2.300s linear 0.000s forwards">[img[img_Qimage24]]</div></div></div>
+<div class="story-text"><p>You survived your sanity was low</p></div>
+<div class="choices">
+[[Better now?|We aren't safe here where (Q17)]]
+</div>
+
+:: We aren't safe here where (Q17)
+<div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:39.874%;top:18.045%;width:15.021%;height:81.955%">[img[img_Qimage26]]</div></div>
+<div class="story-text"><p>We aren't safe here where to next</p><p>Status habitable safe and monsterless</p><p>level one danger, one skin stealer mostly habitable</p></div>
+<div class="choices">
+[[Poolrooms|The water is everywhere surround (Q18)]]
+[[Habitable zone|Level 1]]
+</div>
+
+:: You enter a large poolrooms (Q14)
+<div class="scene"><div class="pos bg">[img[img_Qimage25]]</div></div>
+<div class="story-text"><p>You enter a large poolrooms with patches of black water the virus tells you to avoid</p></div>
+<div class="choices">
+[[Test the water|You are instantly vaporized by (Q13)]]
+[[Listen|What is this? (Q15)]]
+</div>
+
+:: You become lost becoming a (Q36) [ending]
+<div class="choices">
+[[You become lost becoming a bacteria's lunch|Start]]
+</div>
+
+:: The water is everywhere surround (Q18)
+<div class="scene"><div class="pos bg">[img[img_Qimage20]]</div></div>
+<div class="story-text"><p>The water is everywhere surrounding you as you splash</p></div>
+<div class="choices">
+[[next|He said he dies in (Q23)]]
+</div>
+
+:: You are instantly vaporized by (Q13) [ending]
+<div class="scene"><div class="pos bg">[img[img_Qimage17]]</div></div>
+<div class="choices">
+[[You are instantly vaporized by acid|Start]]
+</div>
+
+:: He said he dies in (Q23)
+<div class="scene"><div class="pos bg">[img[img_Qimage20]]</div></div>
+<div class="story-text"><p>He said he dies in pool water because of chlorine</p></div>
+<div class="choices">
+[[next|He wants to meet in (Q24)]]
+</div>
+
+:: He wants to meet in (Q24)
+<div class="scene"><div class="pos bg">[img[img_Qimage20]]</div></div>
+<div class="story-text"><p>He wants to meet in the habitable zone i must find more food and water</p></div>
+<div class="choices">
+[[next|I don't have a bag (Q25)]]
+</div>
+
+:: I don't have a bag (Q25)
+<div class="scene"><div class="pos bg">[img[img_Qimage19]]</div><div class="pos clip" style="left:40.221%;top:42.306%;width:8.560%;height:11.273%"><div class="crop" style="left:-15.46%;top:-28.86%;width:132.54%;height:159.29%">[img[img_Qimage21]]</div></div><div class="pos clip" style="left:50.000%;top:67.089%;width:3.791%;height:13.261%"><div class="crop" style="left:-30.92%;top:-8.04%;width:163.01%;height:113.83%">[img[img_Qimage29]]</div></div></div>
+<div class="story-text"><p>I don't have a bag should i grab the water or cake</p></div>
+<div class="choices">
+[[CAKE|Your stomach violently explodes (Q26)]]
+[[WATER|Drink it? (Q27)]]
+</div>
+
+:: Your stomach violently explodes (Q26) [ending]
+<div class="story-text"><p>Your stomach violently explodes and you die that was a party cake with human flesh and bones filled with a bomb you make a red stain before being eaten by the acid of the black water</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Drink it? (Q27)
+<div class="story-text"><p>Drink it?</p></div>
+<div class="choices">
+<<link "Drink it" "Next (Q28)">><<run setup.fill(true)>><</link>>
+<<link "Store it" "Next (Q28)">><<run setup.addItem("almond")>><</link>>
+</div>
+
+:: Next (Q28)
+<div class="scene"><div class="pos bg">[img[img_Qimage27]]</div><div class="pos clip" style="left:35.941%;top:43.449%;width:5.869%;height:11.030%"><div class="crop" style="left:-77.97%;top:-85.08%;width:263.68%;height:198.71%">[img[img_Qimage31]]</div></div><div class="pos clip" style="left:43.477%;top:41.318%;width:8.850%;height:14.901%"><div class="crop" style="left:-0.00%;top:-0.00%;width:100.00%;height:104.44%">[img[img_Qimage34]]</div></div><div class="pos" style="left:56.561%;top:41.136%;width:12.558%;height:17.727%">[img[img_Qimage33]]</div></div>
+<div class="choices">
+[[Next|One slide has black water (Q29)]]
+</div>
+
+:: One slide has black water (Q29)
+<div class="scene"><div class="pos bg">[img[img_Qimage27]]</div><div class="pos clip" style="left:35.941%;top:43.449%;width:5.869%;height:11.030%"><div class="crop" style="left:-77.97%;top:-85.08%;width:263.68%;height:198.71%">[img[img_Qimage31]]</div></div><div class="pos clip" style="left:43.477%;top:41.318%;width:8.850%;height:14.901%"><div class="crop" style="left:-0.00%;top:-0.00%;width:100.00%;height:104.44%">[img[img_Qimage34]]</div></div><div class="pos" style="left:56.561%;top:41.136%;width:12.558%;height:17.727%">[img[img_Qimage33]]</div><div class="pos" style="left:70.786%;top:2.963%;width:27.547%;height:67.722%">[img[img_Qimage30]]</div><div class="pos clip" style="left:72.381%;top:9.263%;width:10.272%;height:59.463%"><div class="crop" style="left:-11.41%;top:-0.00%;width:111.41%;height:102.54%">[img[img_Qimage32]]</div></div><div class="pos clip" style="left:85.670%;top:4.359%;width:6.463%;height:12.895%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div></div>
+<div class="story-text"><p>One slide has black water</p></div>
+<div class="choices">
+[[Red|You are slowly disintegrated and (Q31)]]
+[[Blue|Go (Q30)]]
+[[Black|Next (Q32)]]
+</div>
+
+:: You are slowly disintegrated and (Q31) [ending]
+<div class="story-text"><p>You are slowly disintegrated and killed screaming for help until fading to black</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Go (Q30)
+<div class="scene"><div class="pos clip" style="left:0.000%;top:0.000%;width:100.000%;height:99.491%"><div class="crop" style="left:-6.90%;top:-7.37%;width:114.72%;height:114.43%">[img[img_Qimage41]]</div></div></div>
+<div class="choices">
+[[Go|Turn around (Q33)]]
+</div>
+
+:: Next (Q32)
+<div class="scene"><div class="pos clip" style="left:0.000%;top:0.000%;width:100.000%;height:131.974%"><div class="crop" style="left:-0.00%;top:-0.00%;width:100.00%;height:104.44%">[img[img_Qimage34]]</div></div></div>
+<div class="choices">
+[[Next|Turn around (Q33)]]
+</div>
+
+:: Turn around (Q33)
+<div class="scene"><div class="pos bg">[img[img_Qimage38]]</div></div>
+<div class="choices">
+[[Turn around|RUN (Q34)]]
+</div>
+
+:: RUN (Q34)
+<div class="scene"><div class="pos bg">[img[img_Qimage38]]</div><div class="pos" style="left:24.647%;top:36.089%;width:42.480%;height:40.430%">[img[img_Qimage40]]</div></div>
+<div class="choices">
+[[RUN|Left (Q35)]]
+</div>
+
+:: Left (Q35)
+<div class="scene"><div class="pos bg">[img[img_Qimage38]]</div></div>
+<div class="choices">
+[[Left|You become lost becoming a (Q36)]]
+[[Down|It's a sword! (Q42)]]
+[[right|You go right and reach (Q39)]]
+</div>
+
+:: It's a sword! (Q42)
+<div class="scene"><div class="pos bg">[img[img_Qimage43]]</div><div class="pos" style="left:45.077%;top:19.050%;width:49.927%;height:54.778%;transform:rotate(-29.12deg)">[img[img_Qimage36]]</div><div class="pos" style="left:51.069%;top:50.000%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div><div class="pos" style="left:70.669%;top:47.391%;width:19.601%;height:23.224%">[img[img_Qimage35]]</div></div>
+<div class="story-text"><p>It's a sword!</p></div>
+<div class="choices">
+<<link "Take the sword" "I guess the water eats (Q43)">><<run setup.addItem("sword")>><</link>>
+[[Leave it|I guess the water eats (Q43)]]
+</div>
+
+:: You go right and reach (Q39) [ending]
+<div class="story-text"><p>You go right and reach a pool with black water so you are immobilized and slowly disintegrated before fading into black</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: I guess the water eats (Q43)
+<div class="scene"><div class="pos bg">[img[img_Qimage38]]</div><div class="pos" style="left:26.681%;top:37.117%;width:42.480%;height:40.430%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 1.000s forwards">[img[img_Qimage40]]</div></div><div class="pos" style="left:36.504%;top:22.760%;width:49.927%;height:54.778%;transform:rotate(61.27deg)"><div class="fx" style="animation:fx-out-fly 1.000s linear 0.000s forwards">[img[img_Qimage36]]</div></div><div class="pos clip" style="left:20.519%;top:46.899%;width:29.481%;height:40.430%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.001s backwards, fx-out-fly 5.000s linear 1.002s forwards"><div class="crop" style="left:-0.00%;top:-0.00%;width:144.09%;height:100.00%">[img[img_Qimage40]]</div></div></div><div class="pos clip" style="left:72.870%;top:50.000%;width:15.074%;height:35.083%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.001s backwards, fx-out-fly 5.000s linear 1.002s forwards"><div class="crop" style="left:-181.81%;top:-0.00%;width:281.81%;height:115.24%">[img[img_Qimage40]]</div></div></div><div class="pos clip" style="left:74.235%;top:27.899%;width:19.734%;height:35.083%"><div class="fx" style="animation:fx-in-fly 2.500s ease-out 1.002s backwards, fx-out-appear 0.010s steps(1,end) 6.003s forwards"><div class="crop" style="left:-38.93%;top:-0.00%;width:177.86%;height:100.00%">[img[img_Qimage42]]</div></div></div><div class="pos clip" style="left:60.641%;top:24.387%;width:15.606%;height:60.696%;transform:rotate(180.00deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 6.002s backwards"><div class="crop" style="left:-101.14%;top:-0.00%;width:319.92%;height:100.00%">[img[img_Qimage36]]</div></div></div><div class="pos clip" style="left:29.741%;top:20.018%;width:19.734%;height:35.083%"><div class="fx" style="animation:fx-in-fly 2.500s ease-out 1.002s backwards, fx-out-appear 0.010s steps(1,end) 6.003s forwards"><div class="crop" style="left:-38.93%;top:-0.00%;width:177.86%;height:100.00%">[img[img_Qimage42]]</div></div></div></div>
+<div class="choices">
+<span class="fxb" style="animation:fx-in-appear 0.010s steps(1,end) 1.002s backwards">[[I guess the water eats anything dead|You made it (Q44)]]</span>
+</div>
+
+:: You made it (Q44)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos clip" style="left:61.865%;top:30.231%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:30.133%;top:14.313%;width:26.084%;height:92.222%;transform:rotate(90.00deg)">[img[img_Qimage46]]</div></div>
+<div class="choices">
+[[You made it|The skinstealer almost killed me (Q45)]]
+</div>
+
+:: The skinstealer almost killed me (Q45)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos clip" style="left:61.865%;top:30.231%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos clip" style="left:37.244%;top:26.956%;width:11.861%;height:92.222%;transform:rotate(90.00deg)"><div class="crop" style="left:-119.91%;top:-0.00%;width:219.91%;height:100.00%">[img[img_Qimage46]]</div></div></div>
+<div class="choices">
+[[The skinstealer almost killed me|Try to find the code (Q46)]]
+</div>
+
+:: Try to find the code (Q46)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos clip" style="left:61.865%;top:30.231%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos clip" style="left:37.244%;top:26.956%;width:11.861%;height:92.222%;transform:rotate(90.00deg)"><div class="crop" style="left:-119.91%;top:-0.00%;width:219.91%;height:100.00%">[img[img_Qimage46]]</div></div></div>
+<div class="story-text"><p>Try to find the code before he gets you</p></div>
+<div class="choices">
+[[Continue|Don't trust anyone (Q47)]]
+</div>
+
+:: Don't trust anyone (Q47)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:79.912%;top:36.522%;width:18.760%;height:46.120%">[img[img_Qimage30]]</div><div class="pos clip" style="left:85.181%;top:35.665%;width:6.463%;height:12.895%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="pos" style="left:80.417%;top:44.045%;width:9.991%;height:37.009%">[img[img_Qimage44]]</div></div>
+<div class="choices">
+[[Don't trust anyone|Hi who are you (Q48)]]
+</div>
+
+:: Hi who are you (Q48)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:43.487%;top:46.654%;width:5.416%;height:27.444%">[img[img_Qimage44]]</div></div>
+<div class="choices">
+[[Hi who are you|Run (Q49)]]
+</div>
+
+:: Run (Q49)
+<div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:44.588%;top:24.628%;width:12.508%;height:63.383%"><div class="fx" style="animation:fx-in-zoom 3.000s ease-out 0.000s backwards, fx-out-appear 0.010s steps(1,end) 3.000s forwards">[img[img_Qimage44]]</div></div><div class="pos" style="left:39.853%;top:14.403%;width:25.939%;height:79.051%"><div class="fx" style="animation:fx-in-fade 1.600s ease-out 3.000s backwards">[img[img_Qimage54]]</div></div></div>
+<div id="opts" class="choices">[[Run|You see a door (Q50)]][[Approach|As its teeth sink in (Q52)]]</div>
+<div class="timerbar"><span style="animation-duration:3.0s"></span></div>
+<<timed 3.0s>><<replace "#opts">><div class="caught">[[It catches you|As its teeth sink in (Q52)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
+
+:: You see a door (Q50)
+<div class="scene"><div class="pos bg">[img[img_Qimage78]]</div></div>
+<div class="story-text"><p>You see a door</p></div>
+<div class="choices">
+[[Go in|Wait is that the code (Q51)]]
+</div>
+
+:: As its teeth sink in (Q52) [ending]
+<div class="story-text"><p>As its teeth sink in your flesh is ripped apart and blood splatters everywhere making that corridor red as you are shredded to pieces screaming until your head flops to the ground</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Wait is that the code (Q51)
+<<run setup.addItem("code")>>
+<div class="scene"><div class="pos bg">[img[img_Qimage50]]</div><div class="pos clip" style="left:41.780%;top:13.140%;width:10.913%;height:39.907%"><div class="crop" style="left:-37.36%;top:-0.00%;width:323.78%;height:122.96%">[img[img_Qimage52]]</div></div><div class="pos clip" style="left:42.772%;top:14.476%;width:6.201%;height:17.624%"><div class="crop" style="left:-93.83%;top:-0.00%;width:352.80%;height:378.27%">[img[img_Qimage54]]</div></div><div class="pos clip" style="left:47.624%;top:56.605%;width:51.875%;height:41.887%"><div class="crop" style="left:-0.00%;top:-46.82%;width:100.00%;height:190.98%">[img[img_Qimage45]]</div></div><div class="pos" style="left:63.725%;top:50.000%;width:8.171%;height:20.751%;transform:rotate(51.54deg)">[img[img_Qimage49]]</div><div class="pos" style="left:70.987%;top:58.639%;width:17.708%;height:8.333%">[img[img_Qimage48]]</div><div class="pos" style="left:65.531%;top:43.712%;width:12.604%;height:20.926%">[img[img_Qimage51]]</div><div class="pos" style="left:53.286%;top:48.234%;width:13.659%;height:24.283%">[img[img_Qimage56]]</div></div>
+<div class="choices">
+[[Wait is that the code red blue green yellow|How can i escape (Q53)]]
+</div>
+
+:: How can i escape (Q53)
+<div class="story-text"><p>How can i escape</p></div>
+<div class="choices">
+<<if setup.hasWeapon()>>[[Fight|Phew (Q54)]]<<else>>[[Fight|Unarmed]]<</if>>
+[[Wait|It breaks down the door (Q84)]]
+</div>
+
+:: Phew (Q54)
+<div class="scene"><div class="pos bg">[img[img_Qimage60]]</div><div class="itext" style="left:3.409%;top:55.101%;width:93.182%;font-size:calc(2.500*1cqw);color:#000000;text-decoration:none">V</div><div class="pos clip" style="left:38.613%;top:14.476%;width:11.387%;height:79.051%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 0.700s forwards"><div class="crop" style="left:-0.00%;top:-0.00%;width:227.80%;height:100.00%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:18.396%;top:53.488%;width:10.547%;height:70.494%;transform:rotate(-90.00deg)"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.701s backwards"><div class="crop" style="left:-1.50%;top:-7.06%;width:245.95%;height:112.14%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:72.820%;top:50.847%;width:12.260%;height:74.845%;transform:rotate(90.00deg)"><div class="fx" style="animation:fx-in-fade 1.000s ease-out 0.701s backwards"><div class="crop" style="left:-87.74%;top:-4.66%;width:209.66%;height:104.66%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:49.256%;top:14.476%;width:15.083%;height:79.051%"><div class="fx" style="animation:fx-out-appear 0.010s steps(1,end) 0.700s forwards"><div class="crop" style="left:-71.97%;top:-0.00%;width:171.97%;height:100.00%">[img[img_Qimage54]]</div></div></div><div class="pos clip" style="left:42.894%;top:4.081%;width:15.606%;height:60.696%;transform:rotate(167.74deg)"><div class="fx" style="animation:fx-out-fly 0.700s linear 0.000s forwards"><div class="crop" style="left:-101.14%;top:-0.00%;width:319.92%;height:100.00%">[img[img_Qimage36]]</div></div></div><div class="pos clip" style="left:60.310%;top:16.729%;width:15.606%;height:60.696%;transform:rotate(180.00deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-101.14%;top:-0.00%;width:319.92%;height:100.00%">[img[img_Qimage36]]</div></div></div><div class="pos clip" style="left:64.661%;top:76.250%;width:8.634%;height:24.039%;transform:rotate(63.26deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div><div class="pos clip" style="left:88.089%;top:65.656%;width:3.170%;height:24.039%;transform:rotate(71.72deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div><div class="pos clip" style="left:21.695%;top:65.573%;width:3.170%;height:24.039%;transform:rotate(85.62deg)"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards"><div class="crop" style="left:-0.00%;top:-84.82%;width:100.00%;height:228.13%">[img[img_Qimage57]]</div></div></div></div>
+<div class="choices">
+<span class="fxb" style="animation:fx-in-appear 0.010s steps(1,end) 1.701s backwards">[[Phew|Here is the pinpad (Q55)]]</span>
+</div>
+
+:: It breaks down the door (Q84) [ending]
+<div class="story-text"><p>It breaks down the door and rips apart your limbs to torture you as you bleed out slowly it puts and end to your suffering by biting through your flesh and slicing you in half</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Here is the pinpad (Q55)
+<div class="scene"><div class="pos bg">[img[img_Qimage53]]</div><div class="pos" style="left:69.871%;top:51.024%;width:23.501%;height:23.563%">[img[img_Qimage62]]</div></div>
+<div class="story-text"><p>Here is the pinpad</p></div>
+<div class="choices">
+[[Insert code|Aha (Q56)]]
+</div>
+
+:: Aha (Q56)
+<div class="scene"><div class="pos" style="left:-0.410%;top:0.695%;width:99.734%;height:100.000%">[img[img_Qimage62]]</div></div>
+<div class="choices">
+[[Aha|This elevator warps space we (Q57)]]
+</div>
+
+:: This elevator warps space we (Q57)
+<div class="scene"><div class="pos bg">[img[img_Qimage59]]</div><div class="pos" style="left:40.122%;top:13.415%;width:15.021%;height:81.955%">[img[img_Qimage26]]</div><div class="pos clip" style="left:58.765%;top:13.415%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div></div>
+<div class="choices">
+[[This elevator warps space we will go to level 94|So peaceful (Q58)]]
+</div>
+
+:: So peaceful (Q58)
+<div class="scene"><div class="pos bg">[img[img_Qimage68]]</div></div>
+<div class="story-text"><p>So peaceful</p></div>
+<div class="choices">
+[[Next|At night go into one (Q59)]]
+</div>
+
+:: At night go into one (Q59)
+<div class="scene"><div class="pos bg">[img[img_Qimage68]]</div><div class="pos" style="left:8.154%;top:17.194%;width:15.021%;height:81.955%">[img[img_Qimage26]]</div><div class="pos clip" style="left:23.175%;top:10.463%;width:18.220%;height:39.537%"><div class="crop" style="left:-91.10%;top:-0.00%;width:300.21%;height:196.75%">[img[img_Qimage3]]</div></div></div>
+<div class="choices">
+[[At night go into one of the houses|You see a van (Q60)]]
+</div>
+
+:: You see a van (Q60)
+<div class="scene"><div class="pos bg">[img[img_Qimage61]]</div></div>
+<div class="story-text"><p>You see a van</p></div>
+<div class="choices">
+[[Drive it?|You see a castle floating (Q61)]]
+</div>
+
+:: You see a castle floating (Q61)
+<div class="scene"><div class="pos bg">[img[img_Qimage68]]</div></div>
+<div class="story-text"><p>You see a castle floating in the sky</p></div>
+<div class="choices">
+[[Drive towards it|Its getting dark (Q62)]]
+</div>
+
+:: Its getting dark (Q62)
+<div class="scene"><div class="pos bg">[img[img_Qimage63]]</div></div>
+<div class="choices">
+[[Its getting dark|Wait here (Q63)]]
+</div>
+
+:: Wait here (Q63)
+<div class="choices">
+[[Wait here|You hide and you hear (Q64)]]
+[[Go into a house|You don't make it to (Q73)]]
+</div>
+
+:: You hide and you hear (Q64)
+<div class="story-text"><p>You hide and you hear noises outside</p></div>
+<div class="choices">
+[[Hide|You sit it out until (Q65)]]
+[[look out the window|It sees you and it (Q72)]]
+</div>
+
+:: You don't make it to (Q73) [ending]
+<div class="story-text"><p>You don't make it to a house in time I will spare you no graphic death this time go to the beginning</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: You sit it out until (Q65)
+<div class="story-text"><p>You sit it out until morning the creatures retreat and you live another day</p></div>
+<div class="choices">
+[[Keep driving|You make it to the (Q66)]]
+</div>
+
+:: It sees you and it (Q72) [ending]
+<div class="story-text"><p>It sees you and it tips over the car crushing you and making you explode blood while you still are conscious it grabs your head and rips it off</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: You make it to the (Q66)
+<div class="scene"><div class="pos bg">[img[img_Qimage63]]</div></div>
+<div class="story-text"><p>You make it to the castle and see a 300 ft rope but the sun is setting</p></div>
+<div class="choices">
+[[Quick climb the rope|You climb but you suddenly (Q71)]]
+[[wait it out|You enter the castle and (Q67)]]
+</div>
+
+:: You climb but you suddenly (Q71) [ending]
+<div class="story-text"><p>You climb but you suddenly fall and one of your ribs breaks piercing your heart and lungs and everytime you scream blood flows out of your mouth until you choke on your own blood and turn into a rotting corpse</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: You enter the castle and (Q67)
+<div class="scene"><div class="pos bg">[img[img_Qimage67]]</div></div>
+<div class="story-text"><p>You enter the castle and see a large amusement park</p></div>
+<div class="choices">
+[[Continue|You look into the interior (Q68)]]
+</div>
+
+:: You look into the interior (Q68)
+<div class="scene"><div class="pos bg">[img[img_Qimage67]]</div><div class="pos" style="left:50.000%;top:12.323%;width:19.413%;height:45.090%">[img[img_Qimage30]]</div><div class="pos clip" style="left:53.704%;top:10.520%;width:6.463%;height:12.895%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="pos" style="left:50.000%;top:16.363%;width:9.991%;height:37.009%">[img[img_Qimage44]]</div><div class="pos" style="left:58.539%;top:39.244%;width:11.182%;height:16.445%">[img[img_Qimage58]]</div></div>
+<div class="story-text"><p>You look into the interior but before that you see a poster</p></div>
+<div class="choices">
+[[Always watch him|Whos him? Maybe the clown? (Q69)]]
+</div>
+
+:: Whos him? Maybe the clown? (Q69)
+<div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:2.616%;top:82.122%;width:30.087%;height:16.864%">[img[img_Qimage55]]</div></div>
+<div class="story-text"><p>Whos him? Maybe the clown?</p></div>
+<div class="choices">
+[[Keep your eyes on him|You keep your eyes on (Q70)]]
+[[ignore the poster|You are crushed to death (Q74)]]
+</div>
+
+:: You keep your eyes on (Q70)
+<div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:2.616%;top:82.122%;width:30.087%;height:16.864%">[img[img_Qimage55]]</div></div>
+<div class="story-text"><p>You keep your eyes on him</p></div>
+<div class="choices">
+[[Read the instructions with one eye|Make the roller coaster work (Q75)]]
+</div>
+
+:: You are crushed to death (Q74) [ending]
+<div class="scene"><div class="pos clip" style="left:46.112%;top:22.965%;width:6.786%;height:9.593%"><div class="fx" style="animation:fx-in-fade 2.500s ease-out 0.000s backwards"><div class="crop" style="left:-218.98%;top:-99.99%;width:552.58%;height:739.37%">[img[img_Qimage75]]</div></div></div></div>
+<div class="story-text"><p>You are crushed to death by his hammer his first hit exploding your cranium but he loves the look of blood so he keeps hitting you and drains you of your blood to use as a paint for his shoes</p></div>
+<div class="choices">
+[[Try again|Start]]
+</div>
+
+:: Make the roller coaster work (Q75)
+<div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:51.308%;top:0.000%;width:48.692%;height:100.000%">[img[img_Qimage30]]</div><div class="pos clip" style="left:64.430%;top:-2.115%;width:12.183%;height:24.309%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div><div class="pos" style="left:55.968%;top:26.484%;width:17.845%;height:66.103%">[img[img_Qimage44]]</div><div class="pos" style="left:77.517%;top:67.151%;width:19.075%;height:28.052%">[img[img_Qimage58]]</div><div class="pos" style="left:0.981%;top:83.136%;width:31.395%;height:16.864%">[img[img_Qimage55]]</div></div>
+<div class="story-text"><p>Make the roller coaster work so you can escape i already did -Virus</p></div>
+<div class="choices">
+[[next|As long as he thinks (Q76)]]
+</div>
+
+:: As long as he thinks (Q76)
+<div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:0.981%;top:83.136%;width:31.395%;height:16.864%">[img[img_Qimage55]]</div><div class="pos" style="left:48.647%;top:73.320%;width:13.120%;height:19.265%">[img[img_Qimage69]]</div></div>
+<div class="story-text"><p>As long as he thinks he is being watched he won't attack what if i leave this in front of him i can book it</p></div>
+<div class="choices">
+[[Try it|Ok the doll is watching (Q77)]]
+[[Book it|You are crushed to death (Q74)]]
+</div>
+
+:: Ok the doll is watching (Q77)
+<div class="scene"><div class="pos bg">[img[img_Qimage72]]</div><div class="pos" style="left:40.226%;top:48.376%;width:5.669%;height:8.324%">[img[img_Qimage69]]</div><div class="pos" style="left:0.981%;top:83.136%;width:31.395%;height:16.864%">[img[img_Qimage55]]</div></div>
+<div class="story-text"><p>Ok the doll is watching him i can try to fix the coaster</p></div>
+<div class="choices">
+[[Go|You escape safely (Q78)]]
+</div>
+
+:: You escape safely (Q78)
+<div class="scene"><div class="pos bg">[img[img_Qimage74]]</div></div>
+<div class="choices">
+[[You escape safely|Hi theo (Q79)]]
+</div>
+
+:: Hi theo (Q79)
+<div class="scene"><div class="pos bg">[img[img_Qimage77]]</div><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.209%;top:21.142%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div>
+<div class="choices">
+[[Hi theo|One reason my kind is (Q80)]]
+</div>
+
+:: One reason my kind is (Q80)
+<div class="scene"><div class="pos bg">[img[img_Qimage77]]</div><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div>
+<div class="story-text"><p>One reason my kind is stronger than the bashful bacteria is because of mutations that make us stronger i underwent a mutation so i am about 12 times stronger</p></div>
+<div class="choices">
+[[Continue|Lets go (Q81)]]
+</div>
+
+:: Lets go (Q81)
+<div class="scene"><div class="pos bg">[img[img_Qimage77]]</div><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div>
+<div class="choices">
+[[Lets go|Be quiet or they'll hear (Q82)]]
+</div>
+
+:: Be quiet or they'll hear (Q82)
+<div class="scene"><div class="pos bg">[img[img_Qimage77]]</div><div class="pos" style="left:60.479%;top:24.897%;width:29.878%;height:70.412%">[img[img_Qimage30]]</div><div class="pos" style="left:61.593%;top:50.000%;width:11.461%;height:42.455%">[img[img_Qimage44]]</div><div class="pos" style="left:77.761%;top:75.600%;width:11.461%;height:16.855%">[img[img_Qimage58]]</div><div class="pos clip" style="left:67.772%;top:28.450%;width:7.565%;height:15.094%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div></div>
+<div class="story-text"><p>Be quiet or they'll hear you</p></div>
+<div class="choices">
+[[Next|To be continued... (Q83)]]
+</div>
+
+:: To be continued... (Q83) [ending]
+<div class="story-text"><p>To be continued...</p><p>Part 4 is coming in a month.</p></div>
+<div class="choices">
+[[Back to the title|Start]]
+</div>
+
+:: StoryInit
+<<run setup.reset()>>
+
+:: Hud Styles [stylesheet]
+/* fixed hotbar at the bottom of the screen */
+#hud { position: sticky; top: 8px; z-index: 900; display: none; flex-direction: column; align-items: center; gap: 8px; width: fit-content; margin: 0 auto 12px;
+  padding: 10px 14px 12px; background: rgba(9, 13, 26, .94); border: 1px solid #3a4a73; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.6); max-width: calc(100vw - 24px); }
+#hud.on { display: flex; }
+#hud .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+#hud .lbl { letter-spacing: .12em; text-transform: uppercase; font-size: .75rem; color: #9db8ff; }
+#hud .bar { width: 180px; height: 12px; background: #26304d; border-radius: 99px; overflow: hidden; }
+#hud .bar span { display: block; height: 100%; border-radius: 99px; transition: width .4s ease, background-color .4s ease; }
+#hud .num { min-width: 2.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: bold; }
+#hud .quick { border-radius: 99px; border: 1px solid #4fd18b; background: #143224; color: #c9ffe0; padding: .25em .9em; cursor: pointer; font-size: .85rem; }
+#hud .quick:hover { background: #1f4d36; }
+#hud .slots { display: grid; grid-template-columns: repeat(6, 60px); gap: 6px; }
+#hud .slot { position: relative; width: 60px; height: 60px; padding: 4px 2px 0; border-radius: 12px; border: 1px solid #3a4a73; background: #121a30; color: #fff;
+  font-size: 24px; line-height: 1.2; text-align: center; cursor: default; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#hud .slot small { display: block; font-size: 9.5px; line-height: 1.1; color: #c7d2f0; margin-top: 2px; }
+#hud .slot .key { position: absolute; top: 2px; left: 5px; font-size: 9px; color: #6c7899; }
+#hud .slot.full { cursor: pointer; border-color: #5b8cff; background: #17233f; }
+#hud .slot.full:hover { background: #24366a; transform: translateY(-2px); }
+#hud .slot.full.drinkable { border-color: #4fd18b; }
+#hud .info { font-size: .85rem; color: #c7d2f0; min-height: 1.2em; text-align: center; max-width: 420px; }
+#hud .info b { color: #ffd76b; }
+@media (max-width: 480px) { #hud .slots { grid-template-columns: repeat(6, 48px); } #hud .slot { width: 48px; height: 48px; font-size: 20px; } #hud .slot small { display: none; } #hud .bar { width: 120px; } }
+#toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #17233f; border: 1px solid #5b8cff; color: #fff; padding: .55em 1.2em; border-radius: 99px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 1000; }
+#toast.show { opacity: 1; }
+@keyframes wobble { 0%, 100% { transform: none; } 50% { transform: skewX(1.2deg) scale(1.015); } }
+@keyframes jitter { 0%, 100% { transform: none; } 25% { transform: translate(1px, -1px); } 75% { transform: translate(-1px, 1px); } }
+body.low .scene { filter: saturate(1.5) contrast(1.15) brightness(.92); animation: wobble 4s ease-in-out infinite; }
+body.critical .scene { filter: saturate(2) contrast(1.3) blur(.6px) sepia(.25); animation: wobble 1.4s ease-in-out infinite; }
+body.critical .story-text { animation: jitter .25s steps(2) infinite; }
+.hotspot { position: absolute; display: block; cursor: pointer; }
+@keyframes flicker { 0%, 17%, 19.5%, 21%, 58%, 61%, 100% { filter: none; } 18%, 20%, 59.5% { filter: brightness(.3); } }
+body.flicker .scene { animation: flicker 5s infinite; }
+@keyframes partyhue { 0%, 100% { filter: none; } 50% { filter: brightness(1.12) saturate(1.15); } }
+body.fun .scene { animation: partyhue 3s ease-in-out infinite; }
+
+:: Hud Script [script]
+setup.ITEMS = {
+  almond: { name: 'Almond water', short: 'Water', icon: '\u{1F4A7}', desc: 'Drink it if things become distorted or you see smiles.' },
+  sword:  { name: 'Sword', short: 'Sword', icon: '\u{1F5E1}\u{FE0F}', desc: 'Sharp. Might help in a fight.' },
+  code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'Red, blue, green, yellow.' },
+  crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' }
+};
+setup.SLOTS = 6;      /* inventory size */
+setup.DRAIN = 4;      /* sanity lost every scene */
+setup.FUN_DRAIN = 8;  /* Level Fun drains sanity faster */
+setup.reset = function () { var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {}; };
+setup.drainFor = function (p) { return p.tags.indexOf('fun') >= 0 ? setup.FUN_DRAIN : setup.DRAIN; };
+setup.has = function (id) { return (State.variables.inv || []).indexOf(id) >= 0; };
+setup.hasWeapon = function () { return setup.has('sword') || setup.has('crowbar'); };
+setup.isTaken = function (k) { return !!(State.variables.taken || {})[k]; };
+setup.take = function (k, id) { var v = State.variables; v.taken = v.taken || {}; if (v.taken[k]) { return false; } if (setup.addItem(id)) { v.taken[k] = true; return true; } return false; };
+setup.toast = function (msg) {
+  var t = $('#toast'); if (!t.length) { t = $('<div id="toast"></div>').appendTo('body'); }
+  t.text(msg).addClass('show'); clearTimeout(setup._tt); setup._tt = setTimeout(function () { t.removeClass('show'); }, 2200);
+};
+setup.addItem = function (id) {
+  var v = State.variables; v.inv = v.inv || [];
+  if (setup.has(id) && id !== 'almond') { return false; }
+  if (v.inv.length >= setup.SLOTS) { setup.toast('Your inventory is full'); return false; }
+  v.inv.push(id); setup.toast('Picked up: ' + setup.ITEMS[id].name); setup.hud(); return true;
+};
+/* drinking from a button that also moves to the next scene: top up past 100 so the next scene's drain lands on 100 */
+setup.fill = function (beforeMove) { State.variables.sanity = 100 + (beforeMove ? setup.DRAIN : 0); setup.toast('You drink the almond water. Your mind clears.'); setup.hud(); };
+setup.drink = function () {
+  var v = State.variables, i = (v.inv || []).indexOf('almond');
+  if (i < 0) { return false; }
+  v.inv.splice(i, 1); setup.fill(false); return true;
+};
+setup.useSlot = function (i) {
+  var v = State.variables, id = (v.inv || [])[i], it = setup.ITEMS[id];
+  if (!it) { return; }
+  if (id === 'almond') { setup.drink(); return; }
+  $('#hud .info').html('<b>' + it.name + '</b> &mdash; ' + it.desc);
+};
+setup.noDrain = function (p) { return p.tags.indexOf('nodrain') >= 0 || p.tags.indexOf('ending') >= 0; };
+Config.navigation.override = function (dest) {
+  var p = Story.get(dest);
+  if (!p || setup.noDrain(p)) { return; }
+  if ((State.variables.sanity || 0) - setup.drainFor(p) <= 0) { return 'Lost Your Mind'; }
+};
+$(document).on(':passageinit', function (ev) {
+  if (setup.noDrain(ev.passage)) { return; }
+  var v = State.variables; if (typeof v.sanity !== 'number') { v.sanity = 100; }
+  v.sanity = Math.max(0, v.sanity - setup.drainFor(ev.passage));
+});
+setup.hud = function () {
+  var v = State.variables, s = Math.max(0, Math.min(100, v.sanity || 0)), inv = v.inv || [];
+  $('body').toggleClass('low', s < 35 && s >= 15).toggleClass('critical', s < 15);
+  var h = $('#hud'); if (!h.length) { h = $('<div id="hud"></div>').insertBefore('#passages'); }
+  var col = s >= 60 ? '#4fd18b' : s >= 35 ? '#ffd76b' : '#ff6b6b';
+  var waters = inv.filter(function (x) { return x === 'almond'; }).length;
+  var slots = '';
+  for (var i = 0; i < setup.SLOTS; i++) {
+    var id = inv[i], it = setup.ITEMS[id];
+    slots += it
+      ? '<button class="slot full' + (id === 'almond' ? ' drinkable' : '') + '" data-i="' + i + '" title="' + it.name + (id === 'almond' ? ' (click to drink)' : '') + '"><span class="key">' + (i + 1) + '</span>' + it.icon + '<small>' + it.short + '</small></button>'
+      : '<span class="slot"><span class="key">' + (i + 1) + '</span></span>';
+  }
+  h.html('<div class="top"><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
+    (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') + '</div>' +
+    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item, or press 1-6' : 'Your inventory is empty') + '</div>');
+};
+$(document).on(':passagedisplay', function (ev) {
+  var t = ev.passage.tags, show = !(t.indexOf('nohud') >= 0 || t.indexOf('ending') >= 0);
+  setup.hud();
+  $('#hud').toggleClass('on', show); $('body').toggleClass('hud-on', show);
+  if (!show) { $('body').removeClass('low critical'); }
+});
+$(document).on('click', '#hud .slot.full', function () { setup.useSlot(+$(this).attr('data-i')); });
+$(document).on('click', '#hud .quick', function () { setup.drink(); });
+$(document).on('keydown', function (e) {
+  if (!$('#hud').hasClass('on') || e.ctrlKey || e.altKey || e.metaKey) { return; }
+  var n = parseInt(e.key, 10);
+  if (n >= 1 && n <= setup.SLOTS) { setup.useSlot(n - 1); }
+});
+
+:: Lost Your Mind [ending]
+<div class="scene"><div class="pos bg">[img[art_lostmind]]</div></div>
+<div class="story-text"><p>The yellow walls start smiling back at you.</p><p>Your sanity ran out and you were never seen again.</p><p>Sanity ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Unarmed [ending]
+<div class="story-text"><p>You try to fight it with your bare hands.</p><p>It doesn't go well. Maybe you should have picked up a weapon.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Level 1 [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>Level 1. The habitable zone.</p><p>Concrete floors, puddles, and lights that buzz and flicker. Somewhere far away, something drips.</p><p>Supply crates are stacked against one of the pillars.</p></div>
+<div class="choices">[[Search the crates|Level 1 Crates]][[Follow the flickering lights|Level 1 Dark Hall]]</div>
+
+:: Level 1 Crates [flicker]
+<div class="scene"><div class="pos bg">[img[art_crates]]</div></div>
+<div class="story-text"><p>The crates are full of almond water. Someone left a crowbar leaning against them.</p></div>
+<div class="choices"><<if !setup.isTaken("l1water")>><span id="pk1"><<link "Take a bottle of almond water">><<if setup.take("l1water","almond")>><<replace "#pk1">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("l1crowbar")>><span id="pk2"><<link "Take the crowbar">><<if setup.take("l1crowbar","crowbar")>><<replace "#pk2">><</replace>><</if>><</link>></span><</if>>[[Keep going|Level 1 Dark Hall]]</div>
+
+:: Level 1 Dark Hall
+<div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
+<div class="story-text"><p>The lights die one by one. In the last flicker you see it: something tall, with arms that are much too long.</p><p>It hasn't seen you yet. Hide. Now.</p></div>
+<div id="opts" class="choices">[[Hide behind a pillar|Level 1 Hidden]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[It sees you|Skin Stealer Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Skin Stealer Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_darkhall]]</div></div>
+<div class="story-text"><p>It reaches you in two steps.</p><p>When the lights come back on, there are two of you in the hallway. Only one of them is still you.</p><p>Skin stealer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Level 1 Hidden [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You press yourself against the cold concrete and hold your breath.</p><p>It walks right past you. For one second its face looks exactly like Dad's.</p><p>Then it is gone. Further down the hall, you hear music. Party music.</p></div>
+<div class="choices">[[Follow the music|Level Fun]][[Take the stairwell instead|Level 1 Stairwell]]</div>
+
+:: Level 1 Stairwell [flicker]
+<div class="scene"><div class="pos bg">[img[art_level1]]</div></div>
+<div class="story-text"><p>You climb a rusty stairwell. At the top, a familiar voice calls your name.</p></div>
+<div class="choices">[[Go towards the voice|You made it (Q44)]]</div>
+
+:: Level Fun [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>=) Welcome to Level Fun! =)</p><p>Balloons, streamers, and a long table with a cake. Tall yellow partygoers are crowded around it, their drawn-on smiles stretched much too wide.</p><p>They haven't seen you. Partygoers hunt by sound. If they hear you, they will chase you. Stay quiet.</p><p>The music never stops. You can feel your mind slipping faster in here.</p></div>
+<div class="choices">[[Sneak along the wall|Level Fun Exits]][[Grab a slice of cake|Party Cake Ending]][[Say hello|Party Chase]][[Smile back at them|Smile Ending]]</div>
+
+:: Level Fun Exits [fun]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>You make it past the party table without a sound. Behind it there are two doors.</p><p>A bright red door with a glowing EXIT sign, and a plain grey door marked LEVEL 1.</p><p>The note about the almond water said to avoid red things... and the grey door looks old and squeaky.</p></div>
+<div class="choices">[[Take the red EXIT|Red Door Ending]][[Ease the grey door open slowly|Level 1 Stairwell]][[Run for the grey door|Party Chase]]</div>
+
+:: Party Chase [fun]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>The music stops.</p><p>Every smiling face turns toward you at once. They heard you. =)</p></div>
+<div id="opts" class="choices">[[Sprint for the grey door|Level 1 Stairwell]][[Dive under the party table|Under the Party Table]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Under the Party Table [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>You squeeze under the tablecloth and hold your breath.</p><p>Yellow feet shuffle past, inches from your face. Someone giggles. Then the music starts again and they drift back to the cake.</p></div>
+<div class="choices">[[Crawl out the other side, quietly|Level Fun Exits]]</div>
+
+:: Partygoer Caught Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>Long yellow arms wrap around you and lift you off the ground.</p><p>"Why so serious? =)" They carry you back to the party. You are never allowed to leave.</p><p>Partygoer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Party Cake Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
+<div class="story-text"><p>The cake is warm and sweet and full of teeth.</p><p>The partygoers clap as you stop moving. =)</p><p>Party ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Smile Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_lostmind]]</div></div>
+<div class="story-text"><p>You smile back. And you can't stop.</p><p>Your face stretches wider and wider. You are one of them now. =)</p><p>Partygoer ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Red Door Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
+<div class="story-text"><p>The EXIT opens onto nothing but red.</p><p>You fall for a very, very long time.</p><p>Red door ending</p></div>
+<div class="choices">[[Try again|Start]]</div>

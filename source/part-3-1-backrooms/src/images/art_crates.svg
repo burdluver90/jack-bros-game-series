@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2f33"/><stop offset="1" stop-color="#17191c"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a7444"/><stop offset="1" stop-color="#6b4e2b"/></linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e8e2c9" stop-opacity=".55"/><stop offset=".35" stop-color="#fffbe9" stop-opacity=".95"/><stop offset="1" stop-color="#cfc6a5" stop-opacity=".6"/></linearGradient>
+    <radialGradient id="lamp" cx=".5" cy="0" r=".9"><stop offset="0" stop-color="#fff3c0" stop-opacity=".55"/><stop offset="1" stop-color="#fff3c0" stop-opacity="0"/></radialGradient>
+    <g id="bottle">
+      <rect x="-28" y="-150" width="56" height="150" rx="10" fill="url(#glass)" stroke="#8c8466" stroke-width="3"/>
+      <rect x="-14" y="-190" width="28" height="44" rx="4" fill="url(#glass)" stroke="#8c8466" stroke-width="3"/>
+      <rect x="-16" y="-206" width="32" height="18" rx="3" fill="#3b6fb6"/>
+      <rect x="-28" y="-104" width="56" height="44" fill="#f4efe0" opacity=".9"/>
+      <text y="-86" font-family="Arial" font-weight="bold" font-size="12" text-anchor="middle" fill="#3b3a32">ALMOND</text>
+      <text y="-70" font-family="Arial" font-weight="bold" font-size="12" text-anchor="middle" fill="#3b3a32">WATER</text>
+    </g>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#lamp)"/>
+  <rect x="640" y="0" width="320" height="16" fill="#fff6c8"/>
+  <rect y="760" width="1600" height="140" fill="#24272a"/>
+  <!-- open crate -->
+  <g transform="translate(300 330)">
+    <rect width="760" height="430" fill="url(#wood)" stroke="#3f2d17" stroke-width="10"/>
+    <g stroke="#4d3920" stroke-width="6"><line x1="0" y1="140" x2="760" y2="140"/><line x1="0" y1="290" x2="760" y2="290"/></g>
+    <text x="380" y="230" font-family="Arial" font-weight="bold" font-size="54" fill="#2b2012" text-anchor="middle" opacity=".75">ALMOND WATER</text>
+    <text x="380" y="270" font-family="Arial" font-size="26" fill="#2b2012" text-anchor="middle" opacity=".6">DRINK WHEN THE WALLS START TO SMILE</text>
+    <rect x="-20" y="-40" width="800" height="50" fill="#a4804f" stroke="#3f2d17" stroke-width="8" transform="rotate(-6 0 0)"/>
+  </g>
+  <!-- bottles sticking out of crate -->
+  <use href="#bottle" transform="translate(430 350)"/><use href="#bottle" transform="translate(520 345) rotate(-4)"/>
+  <use href="#bottle" transform="translate(610 352)"/><use href="#bottle" transform="translate(700 348) rotate(3)"/>
+  <use href="#bottle" transform="translate(790 352)"/><use href="#bottle" transform="translate(880 346) rotate(-3)"/>
+  <!-- crowbar leaning on the crate -->
+  <g transform="translate(1180 760) rotate(-18)">
+    <rect x="-9" y="-560" width="18" height="560" rx="6" fill="#b3261e"/>
+    <path d="M0 -560 q0 -60 -60 -70" stroke="#b3261e" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M-6 0 l-30 26" stroke="#8d8f92" stroke-width="16" stroke-linecap="round"/>
+  </g>
+  <!-- loose bottle on floor -->
+  <use href="#bottle" transform="translate(1380 830) rotate(80)"/>
+</svg>

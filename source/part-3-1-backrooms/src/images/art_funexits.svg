@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <pattern id="paper" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#cdb755"/>
+      <path d="M0 40 Q20 25 40 40 T80 40" stroke="#b9a244" stroke-width="4" fill="none"/>
+    </pattern>
+    <radialGradient id="redglow"><stop offset="0" stop-color="#ff2d2d" stop-opacity=".55"/><stop offset="1" stop-color="#ff2d2d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#paper)"/>
+  <rect y="700" width="1600" height="200" fill="#6b5a28"/>
+  <!-- red EXIT door -->
+  <ellipse cx="480" cy="380" rx="330" ry="330" fill="url(#redglow)"/>
+  <rect x="330" y="240" width="300" height="460" fill="#b91c1c" stroke="#5f0d0d" stroke-width="12"/>
+  <circle cx="595" cy="480" r="14" fill="#fcd34d"/>
+  <rect x="380" y="150" width="200" height="70" rx="8" fill="#220404"/>
+  <text x="480" y="203" font-family="Arial Black, Arial" font-weight="900" font-size="50" fill="#ff3b3b" text-anchor="middle">EXIT</text>
+  <text x="480" y="420" font-family="Arial" font-size="36" fill="#fecaca" text-anchor="middle">=)</text>
+  <!-- plain grey door -->
+  <rect x="970" y="240" width="300" height="460" fill="#8b9096" stroke="#4b5056" stroke-width="12"/>
+  <rect x="1010" y="290" width="220" height="150" fill="#9ca1a7" stroke="#6b7076" stroke-width="5"/>
+  <rect x="1010" y="480" width="220" height="170" fill="#9ca1a7" stroke="#6b7076" stroke-width="5"/>
+  <circle cx="1005" cy="480" r="13" fill="#d1d5db"/>
+  <rect x="1040" y="170" width="160" height="50" rx="6" fill="#e5e7eb" stroke="#6b7076" stroke-width="4"/>
+  <text x="1120" y="205" font-family="Arial" font-weight="bold" font-size="30" fill="#374151" text-anchor="middle">LEVEL 1</text>
+  <!-- deflated balloons on the floor -->
+  <ellipse cx="760" cy="760" rx="50" ry="18" fill="#3b82f6" opacity=".8"/>
+  <ellipse cx="1420" cy="800" rx="44" ry="16" fill="#a855f7" opacity=".8"/>
+  <path d="M790 760 q60 30 140 10" stroke="#333" stroke-width="3" fill="none"/>
+</svg>

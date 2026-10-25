@@ -1,0 +1,11 @@
+:: StoryTitle
+Part 3.1 The Backrooms Escape
+
+:: StoryData
+{
+  "ifid": "EBD0FACE-5712-40E0-800D-F58C6F932530",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Start",
+  "zoom": 1
+}

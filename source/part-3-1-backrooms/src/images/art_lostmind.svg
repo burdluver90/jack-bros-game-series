@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="room" cx=".5" cy=".5" r=".75"><stop offset="0" stop-color="#14120a"/><stop offset=".55" stop-color="#070604"/><stop offset="1" stop-color="#000"/></radialGradient>
+    <radialGradient id="aura" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f4f1d8" stop-opacity=".22"/><stop offset="1" stop-color="#f4f1d8" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.5"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#room)"/>
+  <!-- barely visible yellow walls and a dead ceiling light -->
+  <g stroke="#2b2610" stroke-width="4" fill="none" opacity=".8">
+    <path d="M0 0 L520 260 L1080 260 L1600 0"/><path d="M0 900 L520 640 L1080 640 L1600 900"/><path d="M520 260 L520 640 M1080 260 L1080 640"/>
+  </g>
+  <rect x="740" y="268" width="120" height="8" fill="#2e2a1a"/>
+  <!-- the Smiler -->
+  <ellipse cx="800" cy="470" rx="420" ry="230" fill="url(#aura)"/>
+  <g filter="url(#glow)" fill="#fbf9ea">
+    <!-- eyes: narrow, slanted, glowing -->
+    <path d="M620 372 Q672 338 724 380 Q672 396 620 372 Z"/>
+    <path d="M876 380 Q928 338 980 372 Q928 396 876 380 Z"/>
+    <!-- the grin: a wide crescent of teeth -->
+    <path d="M520 470 Q800 760 1080 470 Q800 610 520 470 Z"/>
+  </g>
+  <!-- gaps between the teeth -->
+  <g fill="#050403" filter="url(#soft)">
+    <path d="M560 498 L580 540 L596 507 Z"/><path d="M610 520 L632 572 L650 528 Z"/><path d="M664 538 L686 596 L704 544 Z"/>
+    <path d="M718 550 L740 612 L758 554 Z"/><path d="M772 556 L794 620 L812 557 Z"/><path d="M826 555 L848 618 L864 552 Z"/>
+    <path d="M880 548 L902 608 L918 543 Z"/><path d="M934 534 L956 590 L970 527 Z"/><path d="M986 514 L1006 560 L1020 505 Z"/>
+    <path d="M1032 490 L1046 522 L1056 485 Z"/>
+  </g>
+  <!-- dark pupils so the eyes stare -->
+  <g fill="#0a0906"><circle cx="672" cy="372" r="7"/><circle cx="928" cy="372" r="7"/></g>
+</svg>
