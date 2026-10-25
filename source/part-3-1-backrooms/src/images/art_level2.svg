@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1a10"/><stop offset=".5" stop-color="#4a2c18"/><stop offset="1" stop-color="#1a100a"/></linearGradient>
+    <filter id="steam"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#hot)"/>
+  <polygon points="560,380 1040,380 1040,560 560,560" fill="#0d0805"/>
+  <rect x="0" y="120" width="1600" height="46" fill="#7a4a2a"/><rect x="0" y="124" width="1600" height="9" fill="#c98a5a" opacity=".35"/>
+  <rect x="80" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="340" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="600" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="860" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="1120" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="1380" y="114" width="22" height="58" fill="#3b2414"/>
+  <rect x="0" y="200" width="1600" height="30" fill="#5c3a22"/><rect x="0" y="204" width="1600" height="6" fill="#c98a5a" opacity=".35"/>
+  <rect x="117" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="377" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="637" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="897" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="1157" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="1417" y="194" width="22" height="42" fill="#3b2414"/>
+  <rect x="0" y="300" width="1600" height="60" fill="#8a5530"/><rect x="0" y="304" width="1600" height="12" fill="#c98a5a" opacity=".35"/>
+  <rect x="154" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="414" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="674" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="934" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="1194" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="1454" y="294" width="22" height="72" fill="#3b2414"/>
+  <rect x="0" y="700" width="1600" height="54" fill="#6e4426"/><rect x="0" y="704" width="1600" height="10" fill="#c98a5a" opacity=".35"/>
+  <rect x="191" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="451" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="711" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="971" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="1231" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="1491" y="694" width="22" height="66" fill="#3b2414"/>
+  <rect x="0" y="780" width="1600" height="34" fill="#5c3a22"/><rect x="0" y="784" width="1600" height="6" fill="#c98a5a" opacity=".35"/>
+  <rect x="228" y="774" width="22" height="46" fill="#3b2414"/>
+  <rect x="488" y="774" width="22" height="46" fill="#3b2414"/>
+  <rect x="748" y="774" width="22" height="46" fill="#3b2414"/>
+  <rect x="1008" y="774" width="22" height="46" fill="#3b2414"/>
+  <rect x="1268" y="774" width="22" height="46" fill="#3b2414"/>
+  <rect x="1528" y="774" width="22" height="46" fill="#3b2414"/>
+  <!-- vertical pipes and a valve wheel -->
+  <rect x="300" y="0" width="56" height="900" fill="#6e4426"/><rect x="1240" y="0" width="70" height="900" fill="#7a4a2a"/>
+  <g transform="translate(328 520)"><circle r="54" fill="none" stroke="#b91c1c" stroke-width="12"/><path d="M-54 0 H54 M0 -54 V54" stroke="#b91c1c" stroke-width="10"/><circle r="10" fill="#7f1d1d"/></g>
+  <!-- the flashlight hanging on the valve -->
+  <g transform="translate(400 560) rotate(18)"><rect x="-14" y="0" width="28" height="90" rx="6" fill="#1f2937"/><rect x="-20" y="84" width="40" height="26" rx="4" fill="#374151"/><circle cy="106" r="12" fill="#fde68a"/></g>
+  <!-- steam -->
+  <g fill="#f5efe6" opacity=".45" filter="url(#steam)"><ellipse cx="1275" cy="330" rx="120" ry="60"/><ellipse cx="900" cy="330" rx="90" ry="40"/><ellipse cx="180" cy="740" rx="140" ry="60"/></g>
+  <!-- a cold blue pipe going left, a red-hot pipe going right -->
+  <rect x="0" y="600" width="560" height="40" fill="#2563eb"/><rect x="0" y="606" width="560" height="8" fill="#93c5fd" opacity=".6"/>
+  <rect x="1040" y="600" width="560" height="40" fill="#dc2626"/><rect x="1040" y="606" width="560" height="8" fill="#fca5a5" opacity=".7"/>
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

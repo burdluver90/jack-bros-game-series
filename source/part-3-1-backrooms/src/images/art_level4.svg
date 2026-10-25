@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+    <pattern id="tiles" width="100" height="60" patternUnits="userSpaceOnUse"><rect width="100" height="60" fill="#d8d4c4"/><path d="M0 0 H100 M0 0 V60" stroke="#b9b4a2" stroke-width="3"/></pattern>
+    <linearGradient id="officefloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b6f5a"/><stop offset="1" stop-color="#3f4234"/></linearGradient>
+  </defs>
+  <rect width="1600" height="330" fill="url(#tiles)"/>
+  <g fill="#fffbe6" opacity=".9"><rect x="300" y="60" width="200" height="30"/><rect x="700" y="60" width="200" height="30"/><rect x="1100" y="60" width="200" height="30" opacity=".35"/></g>
+  <rect y="330" width="1600" height="570" fill="url(#officefloor)"/>
+  <rect y="300" width="1600" height="60" fill="#c8c2a8"/>
+  <rect x="-90" y="390" width="220" height="130" fill="#8b8f96"/><rect x="-80" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="-30" y="420" width="70" height="46" fill="#1f2937"/><rect x="-26" y="424" width="62" height="38" fill="#334155" opacity=".9"/>
+  <rect x="170" y="390" width="220" height="130" fill="#8b8f96"/><rect x="180" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="230" y="420" width="70" height="46" fill="#1f2937"/><rect x="234" y="424" width="62" height="38" fill="#334155" opacity=".9"/>
+  <rect x="430" y="390" width="220" height="130" fill="#8b8f96"/><rect x="440" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="490" y="420" width="70" height="46" fill="#1f2937"/><rect x="494" y="424" width="62" height="38" fill="#334155" opacity=".9"/>
+  <rect x="950" y="390" width="220" height="130" fill="#8b8f96"/><rect x="960" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="1010" y="420" width="70" height="46" fill="#1f2937"/><rect x="1014" y="424" width="62" height="38" fill="#7dff6b" opacity=".9"/>
+  <rect x="1210" y="390" width="220" height="130" fill="#8b8f96"/><rect x="1220" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="1270" y="420" width="70" height="46" fill="#1f2937"/><rect x="1274" y="424" width="62" height="38" fill="#334155" opacity=".9"/>
+  <rect x="1470" y="390" width="220" height="130" fill="#8b8f96"/><rect x="1480" y="400" width="200" height="20" fill="#a3a7ad"/><rect x="1530" y="420" width="70" height="46" fill="#1f2937"/><rect x="1534" y="424" width="62" height="38" fill="#334155" opacity=".9"/>
+  <rect x="132" y="342" width="165" height="98" fill="#8b8f96"/><rect x="140" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="178" y="365" width="52" height="34" fill="#1f2937"/><rect x="180" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="328" y="342" width="165" height="98" fill="#8b8f96"/><rect x="335" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="372" y="365" width="52" height="34" fill="#1f2937"/><rect x="376" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="522" y="342" width="165" height="98" fill="#8b8f96"/><rect x="530" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="568" y="365" width="52" height="34" fill="#1f2937"/><rect x="570" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="912" y="342" width="165" height="98" fill="#8b8f96"/><rect x="920" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="958" y="365" width="52" height="34" fill="#1f2937"/><rect x="960" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="1108" y="342" width="165" height="98" fill="#8b8f96"/><rect x="1115" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="1152" y="365" width="52" height="34" fill="#1f2937"/><rect x="1156" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="1302" y="342" width="165" height="98" fill="#8b8f96"/><rect x="1310" y="350" width="150" height="15" fill="#a3a7ad"/><rect x="1348" y="365" width="52" height="34" fill="#1f2937"/><rect x="1350" y="368" width="46" height="28" fill="#334155" opacity=".9"/>
+  <rect x="310" y="318" width="121" height="72" fill="#8b8f96"/><rect x="316" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="343" y="335" width="38" height="25" fill="#1f2937"/><rect x="346" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <rect x="454" y="318" width="121" height="72" fill="#8b8f96"/><rect x="459" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="486" y="335" width="38" height="25" fill="#1f2937"/><rect x="489" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <rect x="596" y="318" width="121" height="72" fill="#8b8f96"/><rect x="602" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="630" y="335" width="38" height="25" fill="#1f2937"/><rect x="632" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <rect x="882" y="318" width="121" height="72" fill="#8b8f96"/><rect x="888" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="916" y="335" width="38" height="25" fill="#1f2937"/><rect x="918" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <rect x="1026" y="318" width="121" height="72" fill="#8b8f96"/><rect x="1031" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="1058" y="335" width="38" height="25" fill="#1f2937"/><rect x="1061" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <rect x="1168" y="318" width="121" height="72" fill="#8b8f96"/><rect x="1174" y="324" width="110" height="11" fill="#a3a7ad"/><rect x="1202" y="335" width="38" height="25" fill="#1f2937"/><rect x="1204" y="337" width="34" height="21" fill="#334155" opacity=".9"/>
+  <!-- water cooler full of almond water -->
+  <g transform="translate(170 700)">
+    <rect x="-60" y="-220" width="120" height="220" fill="#e5e7eb"/><rect x="-50" y="-150" width="100" height="10" fill="#9ca3af"/>
+    <path d="M-44 -220 Q-50 -340 0 -350 Q50 -340 44 -220 Z" fill="#bfdbfe" opacity=".85"/><path d="M-30 -230 Q-34 -320 0 -330" stroke="#fff" stroke-width="6" fill="none" opacity=".7"/>
+    <rect x="-14" y="-120" width="28" height="16" fill="#3b82f6"/>
+  </g>
+  <!-- sticky note on the computer -->
+  <rect x="1065" y="372" width="34" height="34" fill="#fde047" transform="rotate(8 1080 390)"/>
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

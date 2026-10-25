@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+    <linearGradient id="redwall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b0a0a"/><stop offset=".5" stop-color="#8b1414"/><stop offset="1" stop-color="#3b0a0a"/></linearGradient>
+    <filter id="glowr" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1600" height="900" fill="#2a0606"/>
+  <polygon points="0,0 1600,0 960,360 640,360" fill="#4a0c0c"/>
+  <polygon points="0,0 640,360 640,540 0,900" fill="url(#redwall)"/>
+  <polygon points="1600,0 960,360 960,540 1600,900" fill="url(#redwall)"/>
+  <polygon points="0,900 640,540 960,540 1600,900" fill="#1a0404"/>
+  <rect x="640" y="360" width="320" height="180" fill="#120202"/>
+  <!-- red emergency lights -->
+  <g fill="#ff2a2a" filter="url(#glowr)"><rect x="200" y="90" width="120" height="16"/><rect x="1280" y="90" width="120" height="16"/><rect x="500" y="250" width="70" height="10"/><rect x="1030" y="250" width="70" height="10"/></g>
+  <!-- scrawled on the wall -->
+  <text x="300" y="470" font-family="Arial Black, Arial" font-weight="900" font-size="64" fill="#fecaca" opacity=".85" transform="rotate(-6 300 470) skewY(14)">RUN FOR</text>
+  <text x="1150" y="470" font-family="Arial Black, Arial" font-weight="900" font-size="64" fill="#fecaca" opacity=".85" text-anchor="middle" transform="rotate(6 1150 470) skewY(-14)">YOUR LIFE</text>
+  <!-- the thing chasing you: a wall of black shapes far down the hall -->
+  <g fill="#000"><ellipse cx="800" cy="470" rx="150" ry="70"/><path d="M660 470 l-30 -80 l40 50 z M940 470 l30 -80 l-40 50 z M740 420 l-6 -70 l26 54 z M860 420 l6 -70 l-26 54 z"/></g>
+  <g fill="#fff" filter="url(#glowr)"><circle cx="760" cy="460" r="6"/><circle cx="840" cy="460" r="6"/><circle cx="720" cy="490" r="4"/><circle cx="880" cy="490" r="4"/></g>
+  <!-- a heavy door slamming down at the end -->
+  <rect x="660" y="360" width="280" height="40" fill="#525252"/><path d="M660 400 h280" stroke="#facc15" stroke-width="10" stroke-dasharray="30 20"/>
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

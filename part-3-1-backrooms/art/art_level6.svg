@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="cone" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#fffbe0" stop-opacity=".35"/><stop offset="1" stop-color="#fffbe0" stop-opacity="0"/></radialGradient>
+    <filter id="glow6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1600" height="900" fill="#020203"/>
+  <!-- barely visible walls -->
+  <path d="M0 0 L600 360 L600 560 L0 900 Z" fill="#07070a"/><path d="M1600 0 L1000 360 L1000 560 L1600 900 Z" fill="#07070a"/>
+  <!-- eyes in the dark, left and right -->
+  <g fill="#f8fafc" filter="url(#glow6)"><circle cx="420" cy="430" r="7"/><circle cx="452" cy="432" r="7"/></g>
+  <g fill="#ef4444" filter="url(#glow6)"><circle cx="1190" cy="400" r="6"/><circle cx="1222" cy="398" r="6"/><circle cx="1130" cy="520" r="5"/><circle cx="1158" cy="522" r="5"/></g>
+  <!-- the faint hum of a light far away -->
+  <rect x="770" y="420" width="60" height="8" fill="#fef9c3" opacity=".25" filter="url(#glow6)"/>
+  <path d="M800 900 L620 430 L980 430 Z" fill="url(#cone)" opacity=".25"/>
+</svg>

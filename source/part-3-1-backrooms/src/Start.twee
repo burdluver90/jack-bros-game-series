@@ -560,6 +560,7 @@ setup.ITEMS = {
   sword:  { name: 'Sword', short: 'Sword', icon: '\u{1F5E1}\u{FE0F}', desc: 'Sharp. Might help in a fight.' },
   code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'Red, blue, green, yellow.' },
   hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F973}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
+  flashlight: { name: 'Flashlight', short: 'Light', icon: '\u{1F526}', desc: 'Some things in the dark hate light.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' }
 };
 setup.SLOTS = 6;      /* inventory size */
@@ -656,7 +657,7 @@ $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr(
 $(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
 $(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
@@ -792,13 +793,13 @@ $(document).on('keydown', function (e) {
 
 :: Party Hat Escape [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.</p></div>
-<div class="choices">[[Through the door|To be continued... (Q83)]]</div>
+<div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.<<set $virusWith to true>></p></div>
+<div class="choices">[[Through the door|Level 2 Pipe Dreams]]</div>
 
 :: The Virus Holds The Door [fun]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.</p></div>
-<div class="choices">[[Keep running|To be continued... (Q83)]]</div>
+<div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.<<set $virusWith to false>></p></div>
+<div class="choices">[[Keep running|Level 2 Pipe Dreams]]</div>
 
 :: Party Forever Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
@@ -813,4 +814,65 @@ $(document).on('keydown', function (e) {
 :: Biggest Partygoer Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_funhold]]</div></div>
 <div class="story-text"><p>You try to duck under its arm.</p><p>Its arm is much, much longer than you thought.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Level 2 Pipe Dreams
+<<if !setup.isTaken("wl2")>><div class="find" id="fwl2"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wl2","almond")>><<replace "#fwl2">><</replace>><</if>><</link>></div><</if>>
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level2]]</div></div><</if>>
+<div class="story-text"><p>You fall through a hatch and land on hot metal. Level 2: Pipe Dreams.</p><p>Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.</p><p><<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>></p><p>A flashlight hangs from a red valve wheel.</p></div>
+<div class="choices"><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>
+
+:: Level 4 Abandoned Office [nodrain]
+<<if !setup.isTaken("wl4")>><div class="find" id="fwl4"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wl4","almond")>><<replace "#fwl4">><</replace>><</if>><</link>></div><</if>>
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
+<div class="story-text"><p>The pipe ends at a vent. You crawl out into a quiet office. Level 4.</p><p>Empty cubicles, humming lights, and a water cooler full of almond water. It feels... safe. Your sanity stops dropping here.</p><p>One computer is still on. A sticky note on it says: "Lights out is next. Bring a light."</p></div>
+<div class="choices"><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>
+
+:: Office Computer [nodrain]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
+<div class="story-text"><p>The screen flickers. Someone typed a message and never sent it:</p><p>"THE LEVELS KEEP GOING DOWN. THE EXIT IS NOT ALWAYS AN EXIT. IF YOU HEAR WHISPERING IN THE DARK, GO THE OTHER WAY. IF THE LIGHTS TURN RED, RUN."</p><p><<if $virusWith>>The virus reads over your shoulder. "Good advice," it mutters.<<else>>Under it, someone has scratched a smiley face into the desk. =)<</if>></p></div>
+<div class="choices">[[Take the stairs down|Level 6 Lights Out]]</div>
+
+:: Level 6 Lights Out
+<div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
+<div class="story-text"><p>The stairs end. The lights go out. Level 6: Lights Out.</p><p>You can't see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.</p><p><<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>></p></div>
+<div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
+
+:: Lights Out Flashlight
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level6]]</div><div class="pos" style="left:20%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level6]]</div></div><</if>>
+<div class="story-text"><p>Click. The beam cuts through the dark.</p><p>The red eyes belong to things that hate light. They scream and scatter.</p><p>In the beam you see a narrow hallway with a door at the end, and the walls of the hallway are red.</p></div>
+<div class="choices">[[Go to the red hallway|Level Run For Your Life]]</div>
+
+:: Level Run For Your Life
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div></div>
+<div class="story-text"><p>The lights snap on. Every single one of them is red. Level !: Run For Your Life.</p><p>Down the hall, the dark is moving. It is coming toward you, fast.</p><p>At the far end, a heavy door is sliding shut.</p></div>
+<div id="opts" class="choices">[[RUN|Run For Your Life 2]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[It catches you|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Run For Your Life 2
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div><div class="pos" style="left:2%;top:8%;width:90.0%;height:90.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You sprint. Your lungs burn. The door is closing faster.</p><p><<if $virusWith>>The virus grabs you with every tendril it has and throws you toward the gap.<<else>>Then the wall next to you splits open. The virus bursts out. "Told you," it says. "I always find you."<</if>></p><p>SLIDE!</p></div>
+<div id="opts" class="choices">[[Slide under the door|Level Run Escape]]</div>
+<div class="timerbar"><span style="animation-duration:2s"></span></div>
+<<timed 2s>><<replace "#opts">><div class="caught">[[The door slams shut|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Level Run Escape
+<div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.</p><p>You are lying on cool carpet. The virus sits down next to you, breathing hard.</p><p><<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."</p></div>
+<div class="choices">[[Next|To be continued... (Q83)]]</div>
+
+:: Steam Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
+<div class="story-text"><p>The red pipe gets hotter and hotter.</p><p>A valve bursts. The steam is the last thing you ever feel.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Whispers Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
+<div class="story-text"><p>The whispering knows your name.</p><p>It says it one more time, right behind your ear. Then the dark closes in.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Run For Your Life Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div></div>
+<div class="story-text"><p>You were not fast enough.</p><p>The lights flicker red one last time. Then nothing.</p></div>
 <div class="choices">[[Try again|Start]]</div>
