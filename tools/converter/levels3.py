@@ -170,7 +170,7 @@ P.append(':: Level Run Escape\n' + scene('art_level4', (30, 10, .85)) + '\n' + s
     'You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.',
     'You are lying on cool carpet. The virus sits down next to you, breathing hard.',
     '<<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."') +
-    "\n<p>Down the hall, the lights are buzzing louder than they should.</p>" + f"\n<div class=\"choices\">[[Check out the buzzing lights|Bacteria Attack]][[Keep going|{END}]]</div>\n")
+    "\n<p>Down the hall, the lights are buzzing louder than they should.</p>" + f"\n<div class=\"choices\">[[Next|Bacteria Attack]]</div>\n")
 P.append(':: Bacteria Attack\n' + scene('art_bacteria', (4, 14, .75)) + '\n' + story(
     'The lights buzz louder. Something is standing at the end of the hall.',
     'It is tall and thin and pitch black, with no face, and its body is made of jagged spikes. The Bacteria. It twitches, then sprints at you and wraps a black tendril around your leg.',
