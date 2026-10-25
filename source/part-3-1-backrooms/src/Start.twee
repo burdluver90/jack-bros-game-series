@@ -1788,7 +1788,7 @@ setup.BEASTS = [
     tip: 'No flashlight? Cup a handful of glow bugs and use them as a light.' },
   { id: 'bellmouse', name: 'The Bellhop Mouse', tag: 'Helpful prey', friend: true, img: 'art_p_bellmouse',
     seen: ['Hotel Lobby'], deaths: [],
-    desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays.',
+    desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays. It is the most protected creature in all of the Backrooms, because it is the favorite of the Concierge, who feeds it little pieces of cheese from the ballroom every night. Nothing dares to touch it.',
     tip: 'Be kind to it and it scratches the first number of the boiler code into the carpet. Share a sip of almond water and it gives you the whole code. It only drinks a quarter of the bottle, so you still get 75 sanity from the rest.' }
 ];
 /* helpful prey: each one offers a little help once per run, in the passage where you meet it */
