@@ -1648,7 +1648,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 setup.BEASTS = [
   { id: 'virus', name: 'The Virus', tag: 'Friend', friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
-    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
+    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even mutated, nobody knows who would win if it fought the Concierge, so it bows and avoids such a risky fight.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
     seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
@@ -1672,7 +1672,7 @@ setup.BEASTS = [
     tip: 'After dark: stay put, hide, and never look out the window.' },
   { id: 'clown', name: 'The Clown', tag: 'Hunter', img: 'img_Qimage75',
     seen: ['Whos him? Maybe the clown? (Q69)', 'You keep your eyes on (Q70)', 'As long as he thinks (Q76)'], deaths: ['You are crushed to death (Q74)'],
-    desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched, he will not attack.',
+    desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched, he will not attack. Nobody knows who would win in a fight between the Clown and the Concierge, so he bows to it and avoids such a risky fight.',
     tip: 'Never take your eyes off him. Let the doll watch him while you fix the coaster.' },
   { id: 'doll', name: 'The Doll', tag: 'Friend', friend: true, img: 'img_Qimage69',
     seen: ['Ok the doll is watching (Q77)'], deaths: [],
