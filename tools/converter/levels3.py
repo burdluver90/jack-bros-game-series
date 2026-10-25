@@ -124,7 +124,7 @@ P.append(':: Level 2 Pipe Dreams\n' + find('wl2') + '\n' + withVirus('art_level2
 P.append(':: Partypoopers\n' + withVirus('art_partypoopers', (2, 14, .7)) + '\n' + story(
     'Behind the last door of Level Fun is a small grey room. A hand-painted sign on the wall says PARTYGOERS NOT WELCOME.',
     'Three figures turn around. They are all smiling... but the smiles are painted on masks they hold up on sticks. One of them lowers its mask a little and waves at you.',
-    '"Oh, a real person! Hi! Welcome!" it says happily. "We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them. We cannot STAND the Partygoers." It holds up an old camera. "Want a picture with us? We love pictures!"') +
+    '"Oh, a real person! Hi! Welcome!" it says happily. "We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them. We are at WAR with the Partygoers. We have been for as long as anyone can remember." It holds up an old camera. "Want a picture with us? We love pictures!"') +
     '\n<div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a picture with the Partypoopers">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you in the middle, three Partypoopers holding their fake smiles up and giving you a thumbs up. Looking at it makes you feel safe. It goes in your gear slot.</p><</replace>><</link>><</if>></span>'
     '[[Wave goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>\n')
 P.append(':: Level 2 Valve\n' + scene('art_level2') + '\n' + story(

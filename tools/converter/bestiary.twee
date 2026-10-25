@@ -139,7 +139,7 @@ setup.BEASTS = [
     tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
   { id: 'poopers', name: 'The Partypoopers', tag: 'Prey', friend: true, img: 'art_partypoopers',
     seen: ['Partypoopers'], deaths: [],
-    desc: 'Very friendly grey party guests who hide behind fake smiling masks on sticks. The disguise lets them sneak through Level Fun, because they HATE the Partygoers and want nothing to do with their party. To a real person they are warm, chatty and always happy to help.',
+    desc: 'Very friendly grey party guests who hide behind fake smiling masks on sticks. The disguise lets them sneak through Level Fun, because the Partypoopers and the Partygoers have been at war for as long as anyone can remember. To a real person they are warm, chatty and always happy to help.',
     tip: 'Say hi and take a picture with them. Carrying the photo makes you feel safe, so you lose 1 less sanity every scene.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
