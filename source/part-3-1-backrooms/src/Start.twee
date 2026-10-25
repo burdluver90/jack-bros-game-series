@@ -1742,7 +1742,7 @@ setup.BEASTS = [
   { id: 'bellmouse', name: 'The Bellhop Mouse', tag: 'Helpful prey', friend: true, img: 'art_p_bellmouse',
     seen: ['Hotel Lobby'], deaths: [],
     desc: 'A mouse in a tiny red bellhop cap who lives under the front desk of the Grand Hotel. It hears everything the band plays.',
-    tip: 'Be kind to it and it scratches the first number of the boiler code into the carpet. Share a sip of almond water and it gives you the whole code, but it drinks three quarters of the bottle.' }
+    tip: 'Be kind to it and it scratches the first number of the boiler code into the carpet. Share a sip of almond water and it gives you the whole code. It only drinks a quarter of the bottle, so you still get 75 sanity from the rest.' }
 ];
 /* helpful prey: each one offers a little help once per run, in the passage where you meet it */
 setup.PREY = {
@@ -1759,8 +1759,8 @@ setup.PREY = {
     use2: function () {
       var v = State.variables, c = setup.boiler();
       v.inv.splice(v.inv.indexOf('almond'), 1);
-      v.sanity = Math.min(100, v.sanity + 25);
-      return 'The mouse squeaks happily and drinks... and drinks... and drinks. It gulps down three quarters of the bottle! You finish the last little bit yourself (<b>+25 sanity</b> instead of a full bottle). '
+      v.sanity = Math.min(100, v.sanity + 75);
+      return 'The mouse squeaks happily and takes a big sip. It only drinks a quarter of the bottle, then hands the rest back to you. You drink what is left (<b>+75 sanity</b> instead of a full bottle). '
         + 'Then the mouse scratches three numbers into the carpet, one after another: <b>' + c.split('').join(' ') + '</b>. The whole boiler code.';
     } }
 };
