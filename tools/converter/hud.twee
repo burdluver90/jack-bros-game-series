@@ -230,7 +230,7 @@ setup.hud = function () {
   }
   h.html('<div class="top"><span class="mode ' + (State.variables.mode || 'normal') + '">' + setup.mode().label + '</span><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') +
-    '<button class="hum' + (setup.hum && setup.hum.on ? ' on' : '') + '" title="Fluorescent light hum">' + (setup.hum && setup.hum.on ? '\u{1F50A} Hum on' : '\u{1F508} Hum off') + '</button></div>' +
+    '<button class="bestbtn" title="Bestiary">\u{1F4D6} Bestiary</button><button class="hum' + (setup.hum && setup.hum.on ? ' on' : '') + '" title="Fluorescent light hum">' + (setup.hum && setup.hum.on ? '\u{1F50A} Hum on' : '\u{1F508} Hum off') + '</button></div>' +
     '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
 };
 $(document).on(':passagedisplay', function (ev) {

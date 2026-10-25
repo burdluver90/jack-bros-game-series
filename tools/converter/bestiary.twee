@@ -1,0 +1,142 @@
+:: Bestiary Styles [stylesheet]
+#bestiary { position: fixed; inset: 0; z-index: 2100; background: rgba(5,5,3,.92); overflow-y: auto; padding: 24px 16px 40px; }
+#bestiary .bwrap { max-width: 1000px; margin: 0 auto; }
+#bestiary h2 { margin: 0 0 4px; font: 900 2rem "Arial Black", Arial, sans-serif; color: #fde68a; letter-spacing: .04em; }
+#bestiary .bsub { color: #c7c2a4; margin: 0 0 18px; }
+#bestiary .bclose { position: sticky; top: 0; float: right; padding: .4em 1em; border-radius: 99px; border: 1px solid #fde68a; background: #2a2610; color: #fde68a; cursor: pointer; }
+#bestiary .bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; clear: both; }
+#bestiary .bcard { background: #16140c; border: 1px solid #4a4528; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+#bestiary .bcard.friend { border-color: #4fd18b; }
+#bestiary .bcard .bimg { aspect-ratio: 4 / 3; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#bestiary .bcard .bimg img { width: 100%; height: 100%; object-fit: contain; }
+#bestiary .bcard.locked .bimg { font: 900 3rem "Arial Black", Arial; color: #3a3520; }
+#bestiary .bcard .bbody { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+#bestiary .bcard h3 { margin: 0; font-size: 1.05rem; color: #f8f6ee; }
+#bestiary .bcard .btag { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #9db8ff; }
+#bestiary .bcard p { margin: 0; font-size: .86rem; line-height: 1.4; color: #d6d3c4; }
+#bestiary .bcard .btip { color: #fde68a; }
+#bestiary .bcard .bstat { font-size: .78rem; color: #fca5a5; }
+#bestiary .bcard .bstat.won { color: #86efac; }
+#hud .bestbtn { border-radius: 99px; border: 1px solid #a16207; background: #2a2610; color: #fde68a; padding: .25em .8em; cursor: pointer; font-size: .8rem; }
+.bestlink { text-align: center; margin: 6px 0 0; }
+
+:: Bestiary Script [script]
+/* the bestiary remembers every creature across all playthroughs (saved in the browser) */
+setup.BEASTS = [
+  { id: 'virus', name: 'The Virus', tag: 'Friend', friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
+    seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
+    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again.',
+    tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
+  { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15',
+    seen: ["What's this Bacteria (Q5)"], deaths: ['You become lost becoming a (Q36)'],
+    desc: 'Bacteriform life studied by the Async Research Institute. Bashful, but it hunts anyone who gets lost on their own.',
+    tip: 'Never wander off alone. Stay with the virus.' },
+  { id: 'lizard', name: 'Poolrooms Lizard', tag: 'Hunter', img: 'img_Qimage40',
+    seen: ['RUN (Q34)', 'Left (Q35)'], deaths: ['You go right and reach (Q39)'],
+    desc: 'A red, scaly thing that chases you through the poolrooms. The black water eats anything dead, including it.',
+    tip: 'Turn around and RUN, and take the way down.' },
+  { id: 'skinstealer', name: 'Skin Stealer', tag: 'Disguised hunter', img: 'img_Qimage54', battle: 'skinstealer',
+    seen: ['The skinstealer almost killed me (Q45)', 'Run (Q49)', 'Level 1 Dark Hall', 'Battle Skin Stealer'], deaths: ['As its teeth sink in (Q52)', 'Skin Stealer Ending'],
+    desc: 'It wears the skin of the people it catches, like the hazmat explorer who said hi. Do not trust anyone.',
+    tip: 'Never walk toward it. Hide, run, or fight it with a crowbar: it rips its stolen skin right off.' },
+  { id: 'smiler', name: 'The Smiler', tag: 'Sanity', img: 'art_lostmind',
+    seen: ['Lost Your Mind'], deaths: ['Lost Your Mind'],
+    desc: 'When your sanity runs out, the walls start smiling back. Then it finds you.',
+    tip: 'Drink almond water before your sanity hits zero, and always carry a spare.' },
+  { id: 'watcher', name: 'The Night Watcher', tag: 'Hunter', img: 'img_Qimage68',
+    seen: ['Wait here (Q63)', 'You hide and you hear (Q64)'], deaths: ['It sees you and it (Q72)', "You don't make it to (Q73)"],
+    desc: 'Level 94 is peaceful in the day. At night, something huge walks between the houses, strong enough to flip a car.',
+    tip: 'After dark: stay put, hide, and never look out the window.' },
+  { id: 'clown', name: 'The Clown', tag: 'Hunter', img: 'img_Qimage75',
+    seen: ['Whos him? Maybe the clown? (Q69)', 'You keep your eyes on (Q70)', 'As long as he thinks (Q76)'], deaths: ['You are crushed to death (Q74)'],
+    desc: 'A huge clown with a giant hammer, inside the castle amusement park. As long as he thinks he is being watched, he will not attack.',
+    tip: 'Never take your eyes off him. Let the doll watch him while you fix the coaster.' },
+  { id: 'doll', name: 'The Doll', tag: 'Friend', friend: true, img: 'img_Qimage69',
+    seen: ['Ok the doll is watching (Q77)'], deaths: [],
+    desc: 'A stitched-up doll with button eyes. It stares at the clown so you do not have to.',
+    tip: 'Put it in front of the clown, then get the roller coaster working.' },
+  { id: 'partygoers', name: 'Partygoers', tag: 'Level Fun', img: 'art_levelfun', battle: 'partygoers',
+    seen: ['Level Fun', 'Fun With The Virus', 'Party Chase', 'Battle Partygoers'], deaths: ['Party Cake Ending', 'Smile Ending', 'Partygoer Caught Ending', 'Party Forever Ending', 'Present Ending'],
+    desc: 'Tall yellow figures with drawn-on smiles. They hunt by sound and the music never stops. =)',
+    tip: 'Be quiet, never eat the cake, never smile back. A baseball bat knocks them flying.' },
+  { id: 'giant', name: 'The Biggest Partygoer', tag: 'Level Fun', img: 'art_funhold',
+    seen: ['The Way Out'], deaths: ['Biggest Partygoer Ending'],
+    desc: 'It guards the way out of Level Fun. Its smile stretches all the way around its head.',
+    tip: 'Partygoers like hats. Wear one and walk right past it.' },
+  { id: 'crawler', name: 'Pipe Crawler', tag: 'Level 2', img: 'art_crawler', battle: 'crawler',
+    seen: ['Level 2 Crawler', 'Battle Pipe Crawler'], deaths: ['Crawler Ending', 'Steam Ending'],
+    desc: 'A knot of rusty metal legs and tiny red lights that lives in the vents of Pipe Dreams.',
+    tip: 'It is held together by bolts. A pipe wrench takes it apart.' },
+  { id: 'redeyes', name: 'Light Haters', tag: 'Level 6', img: 'art_level6',
+    seen: ['Level 6 Lights Out'], deaths: [],
+    desc: 'Pairs of red eyes in the total darkness of Lights Out.',
+    tip: 'They hate light. A flashlight or a swing of your weapon scatters them.' },
+  { id: 'whisperer', name: 'The Whisperer', tag: 'Level 6', img: 'art_level6',
+    seen: ['Level 6 Lights Out'], deaths: ['Whispers Ending'],
+    desc: 'Something on the left side of the dark that knows your name.',
+    tip: 'Whispers in the dark are never friendly. Go the other way.' },
+  { id: 'chaser', name: 'The Red Dark', tag: 'Level !', img: 'art_levelrun',
+    seen: ['Level Run For Your Life'], deaths: ['Run For Your Life Ending'],
+    desc: 'When the lights turn red, the dark itself starts moving down the hallway. Fast.',
+    tip: 'RUN. Do not stop. Slide under the door.' },
+  { id: 'mannequins', name: 'Mannequin Dancers', tag: 'Grand Hotel', img: 'art_h_ballroom',
+    seen: ['Hotel Ballroom', 'Hotel Stage', 'Hotel Dance'], deaths: ['Dance Forever Ending'],
+    desc: 'They waltz in the ballroom without a sound. The band knows the boiler code.',
+    tip: 'Grab the sheet music and run. Dancing costs sanity, but it shows you the code too.' },
+  { id: 'concierge', name: 'The Concierge', tag: 'Grand Hotel boss', img: 'art_h_desk', battle: 'concierge',
+    seen: ['Hotel Concierge', 'Hotel Boiler Room', 'Battle Concierge'], deaths: ['Checkout Ending', 'Bell Ending', 'Housekeeping Ending'],
+    desc: 'Very tall, a red uniform, white gloves, and a smooth porcelain face with a painted smile. Guests never check out.',
+    tip: 'Ring the bell once, ask nicely, hide in the wardrobe. Polite guests may check out. Its cracked face is weak to the sword.' },
+  { id: 'hound', name: 'The Hound', tag: 'Grand Hotel', img: 'art_h_stairs', battle: 'hound',
+    seen: ['Hotel Basement Stairs', 'Battle Hound'], deaths: ['Hound Ending'],
+    desc: 'A long black thing with white eyes that sleeps across the basement stairs, listening.',
+    tip: 'Tiptoe, take the elevator or the shaft, or charge it with the fire axe. Never shine a light at it.' },
+  { id: 'static', name: 'The Static Face', tag: 'Grand Hotel', img: 'art_h_room',
+    seen: ['Hotel Room 211'], deaths: ['Static Ending'],
+    desc: 'A smiling face slowly forming in the static of the TV in Room 211.',
+    tip: 'Turn the TV off. Do not keep watching.' },
+  { id: 'voice', name: 'The Voice in 217', tag: 'Grand Hotel', img: 'art_h_hall2',
+    seen: ['Hotel Room 217'], deaths: ['Knock Ending'],
+    desc: 'It knocks from inside Room 217 using the voice of someone you know.',
+    tip: 'Do not open the door. Knock back three times.' }
+];
+setup.best = function () { var b = recall('bestiary', null); return b && typeof b === 'object' ? b : {}; };
+setup.bestMark = function (id, field) {
+  var b = setup.best(), e = b[id] || {}, first = !e.seen;
+  e.seen = true; if (field === 'died') { e.died = (e.died || 0) + 1; } else if (field) { e[field] = true; }
+  b[id] = e; memorize('bestiary', b);
+  if (first) { var beast = setup.BEASTS.filter(function (x) { return x.id === id; })[0]; setup.toast('\u{1F4D6} New bestiary entry: ' + beast.name); }
+};
+$(document).on(':passagedisplay', function (ev) {
+  var t = ev.passage.title;
+  setup.BEASTS.forEach(function (x) {
+    if (x.deaths.indexOf(t) >= 0) { setup.bestMark(x.id, 'died'); }
+    else if (x.seen.indexOf(t) >= 0) { setup.bestMark(x.id); }
+    if (x.seen2 && x.seen2.indexOf(t) >= 0) { setup.bestMark(x.id, 'form2'); }
+  });
+});
+setup.bestImg = function (name) { var p = Story.get(name); return p && p.text ? p.text.trim() : ''; };
+setup.openBestiary = function () {
+  var b = setup.best(), found = 0, cards = '';
+  setup.BEASTS.forEach(function (x) {
+    var e = b[x.id];
+    if (!e || !e.seen) {
+      cards += '<div class="bcard locked"><div class="bimg">???</div><div class="bbody"><h3>???</h3><p>You have not met this one yet.</p></div></div>';
+      return;
+    }
+    found++;
+    var img = setup.bestImg(e.form2 && x.img2 ? x.img2 : x.img), learned = e.beaten || e.died, stat = '';
+    if (e.beaten) { stat += '<div class="bstat won">\u{2714} Beaten in battle</div>'; }
+    if (e.died) { stat += '<div class="bstat">\u{1F480} ' + (x.friend ? 'Hurt you ' : 'Killed you ') + e.died + (e.died === 1 ? ' time' : ' times') + '</div>'; }
+    cards += '<div class="bcard' + (x.friend ? ' friend' : '') + '"><div class="bimg"><img src="' + img + '" alt=""></div><div class="bbody">' +
+      '<span class="btag">' + x.tag + '</span><h3>' + x.name + '</h3><p>' + x.desc + '</p>' +
+      '<p class="btip">' + (learned || x.friend ? '\u{1F4A1} ' + x.tip : '\u{1F512} Survival tip: beat it or learn the hard way.') + '</p>' + stat + '</div></div>';
+  });
+  $('#bestiary').remove();
+  $('<div id="bestiary"><div class="bwrap"><button class="bclose">Close</button><h2>\u{1F4D6} Bestiary</h2>' +
+    '<p class="bsub">' + found + ' of ' + setup.BEASTS.length + ' creatures found. Tips unlock when you beat a creature or it gets you.</p>' +
+    '<div class="bgrid">' + cards + '</div></div></div>').appendTo('body');
+};
+$(document).on('click', '#bestiary .bclose', function () { $('#bestiary').remove(); });
+$(document).on('click', '#hud .bestbtn, .bestlink a', function (e) { e.preventDefault(); setup.openBestiary(); });
+$(document).on('keydown', function (e) { if (e.key === 'Escape') { $('#bestiary').remove(); } });

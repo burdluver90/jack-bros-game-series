@@ -84,6 +84,7 @@ setup.battleTurn = function (pad, act, w) {
   if (hp <= 0) {
     Object.keys(pad.data('used')).forEach(function (u) { if (setup.WSTATS[u] && setup.WSTATS[u].breaks && setup.has(u)) { v.inv.splice(v.inv.indexOf(u), 1); setup.toast('You won, but your ' + setup.ITEMS[u].name.toLowerCase() + ' snapped!'); } });
     setup.hud(); pad.find('.bacts').remove();
+    setup.BEASTS.forEach(function (x) { if (x.battle === pad.attr('data-b')) { setup.bestMark(x.id, 'beaten'); } });
     pad.find('.blog').html(log + '<br><b>You beat the ' + b.name.replace(/^The /, '') + '!</b>');
     setTimeout(function () { Engine.play(b.win); }, 900);
     return;

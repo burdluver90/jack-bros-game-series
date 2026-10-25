@@ -13,7 +13,7 @@ DEATHS={10,13,26,31,36,39,40,52,71,72,73,74,84}
 MODEPICK=('<div class="modepick">'
   '<div class="mcard"><<link "Play on Normal" "@@T4@@">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div>'
   '<div class="mcard hard"><<link "Play on Hard" "@@T4@@">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and only a few hints. Good luck.</p></div>'
-  '</div>')
+  '</div><p class="bestlink"><a href="#">\U0001F4D6 Open the bestiary</a></p>')
 def KEEP(label, item, to):
     return f'<<link "{label}">><<if setup.addItem("{item}")>><<goto "@@T{to}@@">><</if>><</link>>'
 OVER={
@@ -45,7 +45,7 @@ cfg={'first':1,'fix':fix,'over':OVER,'exact':{1:'Start',83:'To be continued... (
      'actions':{15:{'Drink it':'setup.fill(true)'},27:{'Drink it':'setup.fill(true)'}},
      'on_enter':{1:'<<run setup.reset()>>',54:'<<run setup.useWeapon()>>',51:'<<run setup.addItem("code")>>',**{n:FIND(n) for n in WATER_AT},23:BAT},
      'extra_edges':{1:[4],53:[54],55:[56],82:[83]},
-     'extra':open(os.path.join(GEN,'hud.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels2.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels3.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'hotel.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'battle.twee'),encoding='utf8').read()}
+     'extra':open(os.path.join(GEN,'hud.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels2.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'levels3.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'hotel.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'battle.twee'),encoding='utf8').read()+chr(10)+open(os.path.join(GEN,'bestiary.twee'),encoding='utf8').read()}
 g=build.Game(r'C:\Users\dahaw\Downloads\Part 3.1.pptx','Q',SRC,cfg)
 out,names,order,models=build.generate(g,[1])
 import posters, modes
