@@ -1694,7 +1694,7 @@ setup.BEASTS = [
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'virusyoung', name: 'The Virus (before mutation)', tag: 'Hunter', friend: true, img: 'img_Qimage26',
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: [],
-    desc: 'What the virus looked like when you first met it: smaller, quieter, and nowhere near the top of the food chain. At this stage a virus is almost the same as a bacteria, and the two are close to an even match. The Bacteria is just slightly stronger, because its tendrils are a little harder. But one good hit and they are equal again. Even this young, the virus is smart enough to bow to the Concierge, just like the top hunters do. The Bacteria never learned that lesson.',
+    desc: 'What the virus looked like when you first met it: smaller, quieter, and nowhere near the top of the food chain. At this stage a virus is almost the same as a bacteria, and the two are close to an even match. The Bacteria is just slightly stronger, because its tendrils are a little harder. But one good hit and they are equal again. Even this young, the virus is smart enough to bow to the Concierge, just like the top hunters do. The Bacteria never learned that lesson. At all times, 10 of them stand guard around the hatchlings to protect them.',
     tip: 'It is not the monster it looks like. Stay close to it, and one day it will be strong enough to protect you.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
     seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
@@ -1706,7 +1706,7 @@ setup.BEASTS = [
     tip: 'Turn around and RUN, and take the way down.' },
   { id: 'skinstealer', name: 'Skin Stealer', tag: 'Disguised hunter', img: 'img_Qimage54', battle: 'skinstealer',
     seen: ['The skinstealer almost killed me (Q45)', 'Run (Q49)', 'Level 1 Dark Hall', 'Battle Skin Stealer'], deaths: ['As its teeth sink in (Q52)', 'Skin Stealer Ending'],
-    desc: 'It wears the skin of the people it catches, like the hazmat explorer who said hi. Do not trust anyone.',
+    desc: 'It wears the skin of the people it catches, like the hazmat explorer who said hi. Do not trust anyone. There are only about 10 of them, because Skin Stealers are cannibals: every new one that is born gets eaten by the others.',
     tip: 'Never walk toward it. Hide, run, or fight it with a crowbar: it rips its stolen skin right off.' },
   { id: 'smiler', name: 'The Smiler', tag: 'Sanity', img: 'art_lostmind',
     seen: ['Lost Your Mind'], deaths: ['Lost Your Mind'],
@@ -1868,7 +1868,7 @@ setup.tierClass = function (id) {
 };
 /* IQ badge on a bestiary card (the main virus page uses its mutated IQ) */
 /* how many of each creature live in the Backrooms */
-setup.POP = { virus2: 25, concierge: 1, clown: 1, hound: 340, skinstealer: 900, watcher: 75, chaser: 1, giant: 1,
+setup.POP = { virus2: 25, concierge: 1, clown: 1, hound: 340, skinstealer: 10, watcher: 75, chaser: 1, giant: 1,
   bacteria: 40000, virusyoung: 33000, poopers: 500, lizard: 8000, whisperer: 300, static: 1200, voice: 1, smiler: 5000,
   partygoers: 12000, mannequins: 2500, crawler: 15000, redeyes: 30000,
   hatchlings: 100000, doll: 1, moths: 1000000, mice: 250000, glowbugs: 5000000, bellmouse: 1 };
