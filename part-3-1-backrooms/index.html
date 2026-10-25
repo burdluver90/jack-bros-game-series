@@ -176,6 +176,12 @@ body.fun .scene { animation: partyhue 3s ease-in-out infinite; }
 .codepad .ck.go { background: #14532d; border-color: #4ade80; color: #bbf7d0; }
 .codepad .ck.clr { background: #3a1418; border-color: #ef4444; color: #fecaca; font-size: .8rem; }
 .codepad .cmsg { min-height: 1.2em; margin-top: 8px; text-align: center; font: bold .9rem monospace; color: #fca5a5; }
+.escape { text-align: center; padding: 30px 10px; }
+.escape h2 { margin: 0 0 14px; font: 900 clamp(2rem, 7vw, 3.6rem)/1.05 "Arial Black", Arial, sans-serif; letter-spacing: .04em; color: #4ade80;
+  text-shadow: 0 0 18px rgba(74,222,128,.55), 0 0 2px #052e16; animation: escapeglow 2.4s ease-in-out infinite; }
+.escape .found { font-size: 1.35rem; color: #f8f6ee; margin: 0 0 26px; }
+.escape .tbc { font-style: italic; color: rgba(230,220,170,.7); }
+@keyframes escapeglow { 0%, 100% { text-shadow: 0 0 18px rgba(74,222,128,.55), 0 0 2px #052e16; } 50% { text-shadow: 0 0 34px rgba(74,222,128,.9), 0 0 2px #052e16; } }
 .codepad .chint { color: #fde68a; font-weight: normal; }
 #hud .mode { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding: .15em .6em; border-radius: 99px; border: 1px solid #4fd18b; color: #c9ffe0; }
 #hud .mode.hard { border-color: #ef4444; color: #fecaca; background: #3a1418; }
@@ -814,7 +820,7 @@ Config.passages.transitionOut = 150;</script><tw-passagedata pid="1" name="Start
 &lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;Be quiet or they&#39;ll hear you&lt;/p&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Next|Fun With The Virus]]
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="74" name="To be continued... (Q83)" tags="ending" position="475,975" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;p&gt;To be continued...&lt;/p&gt;&lt;p&gt;Part 4 is coming in a month.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="74" name="To be continued... (Q83)" tags="ending" position="475,975" size="100,100">&lt;div class=&quot;story-text&quot;&gt;&lt;div class=&quot;escape&quot;&gt;&lt;h2&gt;ESCAPE SUCCESSFUL&lt;/h2&gt;&lt;p class=&quot;found&quot;&gt;You have found your way out.&lt;/p&gt;&lt;p class=&quot;tbc&quot;&gt;To be continued... Part 4 is coming in a month.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;choices&quot;&gt;
 [[Back to the title|Start]]
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="75" name="StoryInit" tags="" position="600,975" size="100,100">&lt;&lt;run setup.reset()&gt;&gt;</tw-passagedata><tw-passagedata pid="76" name="Lost Your Mind" tags="ending" position="725,975" size="100,100">&lt;div class=&quot;scene&quot;&gt;&lt;div class=&quot;pos bg&quot;&gt;[img[art_lostmind]]&lt;/div&gt;&lt;/div&gt;

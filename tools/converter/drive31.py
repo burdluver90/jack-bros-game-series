@@ -27,7 +27,7 @@ OVER={
  60:{'drop_text':['Keep walking']},
  63:{'labels':{'Wait here or':'Wait here'}},
  82:{'buttons':[('','[[Next|Fun With The Virus]]')]},
- 83:{'story':['To be continued...','Part 4 is coming in a month.'],'buttons':[('Back to the title',1)]},
+ 83:{'story':[],'raw_story':'<div class="escape"><h2>ESCAPE SUCCESSFUL</h2><p class="found">You have found your way out.</p><p class="tbc">To be continued... Part 4 is coming in a month.</p></div>','buttons':[('Back to the title',1)]},
 }
 for d in DEATHS: OVER.setdefault(d,{}).setdefault('labels',{})['Continue']='Try again'
 # extra almond water bottles to find along the main route (one-time pickups)
@@ -38,7 +38,7 @@ def FIND(n):
             '<<if setup.take("%s","almond")>><<replace "#f%s">><</replace>><</if>><</link>></div><</if>>')%(k,k,k,k)
 BAT=('<<if !setup.isTaken("bat")>><div class="find" id="fbat"><<link "\U0001F3CF A baseball bat is floating in the water. Grab it">>'
      '<<if setup.take("bat","bat")>><<replace "#fbat">><</replace>><</if>><</link>></div><</if>>')
-cfg={'first':1,'fix':fix,'over':OVER,'exact':{1:'Start'},'remap':{2:1,3:1},
+cfg={'first':1,'fix':fix,'over':OVER,'exact':{1:'Start',83:'To be continued... (Q83)'},'remap':{2:1,3:1},
      'endings':DEATHS|{83},
      'timers':{49:{'secs':3.0,'fast':['Run','Approach'],'late':['It catches you'],'late_pics':[]}},
      'inscene':{54:[{'match':'V'}]},

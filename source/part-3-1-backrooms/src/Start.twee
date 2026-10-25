@@ -512,7 +512,7 @@
 </div>
 
 :: To be continued... (Q83) [ending]
-<div class="story-text"><p>To be continued...</p><p>Part 4 is coming in a month.</p></div>
+<div class="story-text"><div class="escape"><h2>ESCAPE SUCCESSFUL</h2><p class="found">You have found your way out.</p><p class="tbc">To be continued... Part 4 is coming in a month.</p></div></div>
 <div class="choices">
 [[Back to the title|Start]]
 </div>
@@ -579,6 +579,12 @@ body.fun .scene { animation: partyhue 3s ease-in-out infinite; }
 .codepad .ck.go { background: #14532d; border-color: #4ade80; color: #bbf7d0; }
 .codepad .ck.clr { background: #3a1418; border-color: #ef4444; color: #fecaca; font-size: .8rem; }
 .codepad .cmsg { min-height: 1.2em; margin-top: 8px; text-align: center; font: bold .9rem monospace; color: #fca5a5; }
+.escape { text-align: center; padding: 30px 10px; }
+.escape h2 { margin: 0 0 14px; font: 900 clamp(2rem, 7vw, 3.6rem)/1.05 "Arial Black", Arial, sans-serif; letter-spacing: .04em; color: #4ade80;
+  text-shadow: 0 0 18px rgba(74,222,128,.55), 0 0 2px #052e16; animation: escapeglow 2.4s ease-in-out infinite; }
+.escape .found { font-size: 1.35rem; color: #f8f6ee; margin: 0 0 26px; }
+.escape .tbc { font-style: italic; color: rgba(230,220,170,.7); }
+@keyframes escapeglow { 0%, 100% { text-shadow: 0 0 18px rgba(74,222,128,.55), 0 0 2px #052e16; } 50% { text-shadow: 0 0 34px rgba(74,222,128,.9), 0 0 2px #052e16; } }
 .codepad .chint { color: #fde68a; font-weight: normal; }
 #hud .mode { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding: .15em .6em; border-radius: 99px; border: 1px solid #4fd18b; color: #c9ffe0; }
 #hud .mode.hard { border-color: #ef4444; color: #fecaca; background: #3a1418; }
