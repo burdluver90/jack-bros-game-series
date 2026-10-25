@@ -266,7 +266,7 @@ setup.FOODCHAIN = [
   { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
 /* how smart each creature is */
-setup.IQ = { virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 60, chaser: 20, giant: 55,
+setup.IQ = { virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 95, chaser: 20, giant: 55,
   bacteria: 70, virusyoung: 150, poopers: 105, lizard: 30, whisperer: 90, static: 80, voice: 100, smiler: 50,
   partygoers: 45, mannequins: 25, crawler: 15, redeyes: 10,
   hatchlings: 60, doll: 75, moths: 5, mice: 20, glowbugs: 3, bellmouse: 85 };
