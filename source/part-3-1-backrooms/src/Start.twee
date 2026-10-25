@@ -1501,7 +1501,7 @@ setup.battleTurn = function (pad, act, w) {
       pad.data('held', true).data('vrest', true);
       log += '<b>The virus wraps every tendril it has around the Concierge and holds it still!</b> It will have to rest next turn. ';
     } else {
-      var vd = v.virusStrong ? 4 : 3; hp -= vd; pad.data('hp', hp);
+      var vd = v.virusStrong ? 4 : 2; hp -= vd; pad.data('hp', hp);
       log += 'The virus whips it with its tendrils for <b>' + vd + '</b>. ';
     }
   }
