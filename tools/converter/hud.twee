@@ -268,10 +268,10 @@ $(document).on('click', '#hud .keep', function () { setup.hud(); });
 setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus', 'level-2': 'Level 2 Pipe Dreams', 'level-4': 'Level 4 Abandoned Office', 'level-6': 'Level 6 Lights Out', 'level-run': 'Level Run For Your Life', 'hotel': 'Hotel Arrival', 'bacteria': 'Bacteria Attack', 'mouse': 'Hotel Lobby' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
-  if (location.hash === '#concierge') {
+  if (location.hash === '#concierge' || location.hash === '#concierge2') {
     setTimeout(function () {
       setup.reset(); var v = State.variables;
-      v.inv = ['sword', 'almond', 'almond', 'almond']; v.virusWith = true;
+      v.inv = location.hash === '#concierge2' ? ['sword', 'almond', 'almond'] : ['sword', 'almond', 'almond', 'almond']; v.virusWith = true;
       Engine.play('Battle Concierge');
     }, 0);
   }
