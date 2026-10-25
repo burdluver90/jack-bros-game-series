@@ -270,7 +270,7 @@
 
 :: Run (Q49)
 <div class="scene"><div class="pos bg">[img[img_Qimage47]]</div><div class="pos" style="left:44.588%;top:24.628%;width:12.508%;height:63.383%"><div class="fx" style="animation:fx-in-zoom 3.000s ease-out 0.000s backwards, fx-out-appear 0.010s steps(1,end) 3.000s forwards">[img[img_Qimage44]]</div></div><div class="pos" style="left:39.853%;top:14.403%;width:25.939%;height:79.051%"><div class="fx" style="animation:fx-in-fade 1.600s ease-out 3.000s backwards">[img[img_Qimage54]]</div></div></div>
-<p class="modehint hardtoo">Remember: if it smiles, RUN.</p>
+<<if setup.mode().hints>><p class="modehint">Remember: if it smiles, RUN.</p><</if>>
 <div id="opts" class="choices">[[Run|You see a door (Q50)]][[Approach|As its teeth sink in (Q52)]]</div>
 <div class="timerbar"><span style="animation-duration:3.0s"></span></div>
 <<timed `setup.t(3.0)`>><<replace "#opts">><div class="caught">[[It catches you|As its teeth sink in (Q52)]]</div><</replace>><<run $(".timerbar").remove(); $(".scene .late").show()>><</timed>>
@@ -297,7 +297,7 @@
 
 :: How can i escape (Q53)
 <div class="story-text"><p>How can i escape</p></div>
-<p class="modehint hardtoo">Fighting only works if you have a weapon. Waiting never works.</p>
+<<if setup.mode().hints>><p class="modehint">Fighting only works if you have a weapon. Waiting never works.</p><</if>>
 <div class="choices">
 <<if setup.hasWeapon()>>[[Fight|Phew (Q54)]]<<else>>[[Fight|Unarmed]]<</if>>
 [[Wait|It breaks down the door (Q84)]]
@@ -1102,7 +1102,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Front Desk [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div><div class="pos" style="left:-6%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_desk]]</div></div><</if>>
 <div class="story-text"><p>Nobody is behind the desk. Behind it, rows and rows of gold key hooks, all empty.</p><p>A little card next to the bell says: RING ONCE FOR SERVICE. ONLY ONCE.</p><p>Someone has scratched words into the wood of the desk: ASK NICELY.</p></div>
-<p class="modehint hardtoo">Ring once. Only once.</p>
+<<if setup.mode().hints>><p class="modehint">Ring once. Only once.</p><</if>>
 <div class="choices">[[Ring the bell|Hotel Concierge]][[Back to the lobby|Hotel Lobby]]</div>
 
 :: Hotel Concierge [hotel]
@@ -1260,7 +1260,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Boiler Room [hotel]
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
 <div class="story-text"><p>BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.</p><p>On the far wall: a plain grey door with a green EXIT sign. The real exit.</p><p>And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"</p></div>
-<p class="modehint hardtoo">Polite guests get to check out.</p>
+<<if setup.mode().hints>><p class="modehint">Polite guests get to check out.</p><</if>>
 <div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Hotel Fight Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>[[Run for the exit|Checkout Ending]]</div>
 
 :: Hotel Checkout Polite [hotel]

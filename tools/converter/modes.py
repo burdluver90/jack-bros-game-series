@@ -35,8 +35,7 @@ HINTS = {
 }
 
 # the few hints Hard mode still shows: the ones that stop a run from being unwinnable or a total guess
-HARD_TOO = {"It's a sword! (Q42)", 'How can i escape (Q53)', 'Left (Q35)', 'Run (Q49)',
-            'Level 6 Lights Out', 'Hotel Front Desk', 'Hotel Floor 3', 'Hotel Boiler Room'}
+HARD_TOO = {"It's a sword! (Q42)", 'Left (Q35)', 'Level 6 Lights Out', 'Hotel Floor 3'}
 
 def apply(text):
     # <<timed 3s>> becomes mode-scaled
