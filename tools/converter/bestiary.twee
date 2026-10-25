@@ -45,7 +45,7 @@
 setup.BEASTS = [
   { id: 'virus', name: 'The Virus', tag: 'Friend', friend: true, img: 'img_Qimage26', img2: 'img_Qimage79', seen2: ['One reason my kind is (Q80)'],
     seen: ['Fight (Q9)', "Wait don't run (Q11)", 'I am a virus basically (Q12)'], deaths: ['You are brutally strangled and (Q10)'],
-    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even mutated, nobody knows who would win if it fought the Concierge, so it bows and avoids such a risky fight.',
+    desc: 'A virus, which is basically a bacteria, but it does not want to hurt you. After its mutation it is about 12 times stronger, and it always finds you again. Even after mutating, the virus has never tested its strength against the Concierge. It could win, or it could be torn apart, so it lowers its tendrils politely and stays out of the Concierge's way.',
     tip: 'Do not fight it and do not run. Listen to it, and follow it.' },
   { id: 'bacteria', name: 'Bacteria', tag: 'Hunter', img: 'img_Qimage15', img2: 'art_bacteria', seen2: ['Bacteria Attack'],
     seen: ["What's this Bacteria (Q5)", 'Bacteria Attack'], deaths: ['You become lost becoming a (Q36)'], beat: ['Bacteria Absorb'],
