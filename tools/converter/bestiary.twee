@@ -233,6 +233,8 @@ setup.tierClass = function (id) {
   (setup.FOODCHAIN || []).forEach(function (t, i) { if (t.list.indexOf(id) >= 0) { cls = names[i]; } });
   return cls;
 };
+/* IQ badge on a bestiary card (the main virus page uses its mutated IQ) */
+setup.iqTag = function (id) { var n = setup.IQ && setup.IQ[id === 'virus' ? 'virus2' : id]; return n === undefined ? '' : '<div class="biq">\u{1F9E0} IQ ' + n + '</div>'; };
 setup.openBestiary = function () {
   var b = setup.bestView(), found = 0, cards = '';
   setup.BEASTS.forEach(function (x) {

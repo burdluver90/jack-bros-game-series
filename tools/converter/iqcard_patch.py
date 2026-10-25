@@ -10,7 +10,7 @@ a2 = "setup.openBestiary = function () {"
 b2 = ("/* IQ badge on a bestiary card (the main virus page uses its mutated IQ) */\n"
       "setup.iqTag = function (id) { var n = setup.IQ && setup.IQ[id === 'virus' ? 'virus2' : id]; return n === undefined ? '' : '<div class=\"biq\">\\u{1F9E0} IQ ' + n + '</div>'; };\n"
       "setup.openBestiary = function () {")
-if 'setup.iqTag' not in s:
+if 'setup.iqTag = ' not in s:
     s = s.replace(a2, b2, 1)
 if '.bcard .biq' not in s:
     s = s.replace("#bestiary .bcard .btip {", "#bestiary .bcard .biq { font: 700 .8rem Arial, sans-serif; color: #9db8ff; letter-spacing: .04em; }\n#bestiary .bcard .btip {", 1)
