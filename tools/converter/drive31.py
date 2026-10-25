@@ -17,7 +17,7 @@ MODEPICK=('<div class="modepick">'
 def KEEP(label, item, to):
     return f'<<link "{label}">><<if setup.addItem("{item}")>><<goto "@@T{to}@@">><</if>><</link>>'
 OVER={
- 1:{'story':['Part 3.1: The Backrooms Escape','A Slide Games production, made by Jack-Bros','This game is most likely M 17+ due to gore and mental horror.','@2026 all rights reserved'],'buttons':[('',MODEPICK)],'tags':['nodrain','nohud']},
+ 1:{'story':['Part 3.1: The Backrooms Escape','RATED M','A Slide Games production, made by Jack-Bros','This game is most likely 17+ due to gore and mental horror.','@2026 all rights reserved'],'buttons':[('',MODEPICK)],'tags':['nodrain','nohud']},
  15:{'story':['What is this?','Drink it if things become distorted or you see smiles. Also avoid red things.'],'buttons':[('Drink it',16),('',KEEP('Save it','almond',17))]},
  27:{'story':['Drink it?'],'buttons':[('Drink it',28),('',KEEP('Store it','almond',28))]},
  42:{'story':["It's a sword!",'Remember the poster: you will have to fight.'],'buttons':[('',KEEP('Take the sword','sword',43)),('Leave it',43)]},

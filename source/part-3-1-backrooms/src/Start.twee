@@ -1,6 +1,6 @@
 :: Start [nodrain nohud]
 <<run setup.reset()>>
-<div class="story-text"><p>Part 3.1: The Backrooms Escape</p><p>A Slide Games production, made by Jack-Bros</p><p>This game is most likely M 17+ due to gore and mental horror.</p><p>@2026 all rights reserved</p></div>
+<div class="story-text"><p>Part 3.1: The Backrooms Escape</p><p>RATED M</p><p>A Slide Games production, made by Jack-Bros</p><p>This game is most likely 17+ due to gore and mental horror.</p><p>@2026 all rights reserved</p></div>
 <div class="choices">
 <div class="modepick"><div class="mcard"><<link "Play on Normal" "What is this place ive (Q4)">><<set $mode to "normal">><</link>><p>Sanity drains slowly, timers give you extra time, 3 tries at codes, and hints show up when you need them.</p></div><div class="mcard hard"><<link "Play on Hard" "What is this place ive (Q4)">><<set $mode to "hard">><</link>><p>Sanity drains twice as fast, timers are short, one wrong code is the end, and only a few hints. Good luck.</p></div></div><p class="bestlink"><a href="#">📖 Open the bestiary</a></p>
 </div>
