@@ -1094,7 +1094,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Partypoopers
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div><div class="pos" style="left:2%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_partypoopers]]</div></div><</if>>
-<div class="story-text"><p>Behind the last door of Level Fun is a small grey room. A hand-painted sign on the wall says PARTYGOERS NOT WELCOME.</p><p>Three figures turn around. They are all smiling... but the smiles are painted on masks they hold up on sticks. One of them lowers its mask a little and waves at you.</p><p>"Oh, a real person! Hi! Welcome!" it says happily. "We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them. We are at WAR with the Partygoers. We have been for as long as anyone can remember." It holds up an old camera. "Want a picture with us? We love pictures!"</p></div>
+<div class="story-text"><p>Behind the last door of Level Fun is a small grey room. A hand-painted sign on the wall says PARTYGOERS NOT WELCOME.</p><p>Three figures turn around. They are all smiling... but the smiles are painted on masks they hold up on sticks. One of them lowers its mask a little and waves at you.</p><p>"Oh, a real person! Hi! Welcome!" it says happily. "We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them. We are at WAR with the Partygoers. We have been for as long as anyone can remember. We hunt them, one by one." It shivers. "Except the big one by the door. Nobody hunts THAT one." It holds up an old camera. "Want a picture with us? We love pictures!"</p></div>
 <div class="choices"><span id="pp"><<if !setup.has("photo")>><<link "Take a picture with the Partypoopers">><<run setup.addItem("photo")>><<replace "#pp">><p>FLASH. The photo slides out of the camera: you in the middle, three Partypoopers holding their fake smiles up and giving you a thumbs up. Looking at it makes you feel safe. It goes in your gear slot.</p><</replace>><</link>><</if>></span>[[Wave goodbye and drop down the hatch|Level 2 Pipe Dreams]]</div>
 
 :: Level 2 Valve
@@ -1677,6 +1677,7 @@ $(document).on('click', '.battle .bbtn', function (e) {
 #bestiary .fmon { width: 96px; text-align: center; font-size: .75rem; color: #e7e4d4; }
 #bestiary .fmon .fimg { width: 96px; height: 72px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; font: 900 1.6rem "Arial Black", Arial; color: #3a3520; }
 #bestiary .fmon .fimg img { width: 100%; height: 100%; object-fit: contain; }
+#bestiary .fmon .fiq { display: block; margin-top: 2px; font: 700 .7rem Arial, sans-serif; color: #9db8ff; letter-spacing: .05em; }
 #bestiary .farrow { font-size: 1.4rem; color: #8a845e; line-height: 1.6; }
 
 :: Bestiary Script [script]
@@ -1766,9 +1767,9 @@ setup.BEASTS = [
     seen: ['Bacteria Absorb'], deaths: [],
     desc: 'Tiny viruses that have not mutated yet, like the virus was when it was small. You never see one: the virus told you about them. They cannot fight back, and the Bacteria eat them easily. Only about 1 in 3 hatchlings ever grows bigger, and only about 1 in 5 survives long enough to mutate. But the ones that do mutate turn the tables: they pick off the Bacteria the same way the Bacteria once picked them off when they were small.',
     tip: 'There is nothing you can do for them. But every Bacteria the virus kills is one less hunting the hatchlings.' },
-  { id: 'poopers', name: 'The Partypoopers', tag: 'Prey', friend: true, img: 'art_partypoopers',
+  { id: 'poopers', name: 'The Partypoopers', tag: 'Hunter', friend: true, img: 'art_partypoopers',
     seen: ['Partypoopers'], deaths: [],
-    desc: 'Very friendly grey party guests who hide behind fake smiling masks on sticks. The disguise lets them sneak through Level Fun, because the Partypoopers and the Partygoers have been at war for as long as anyone can remember. To a real person they are warm, chatty and always happy to help.',
+    desc: 'Very friendly grey party guests who hide behind fake smiling masks on sticks. The Partypoopers and the Partygoers have been at war for as long as anyone can remember, and the Partypoopers are the hunters: the disguise lets them sneak through Level Fun and pick off Partygoers one by one. Only one thing scares them. The Biggest Partygoer is their worst nightmare, and they never go near the door it guards. To a real person they are warm, chatty and always happy to help.',
     tip: 'Say hi and take a picture with them. Carrying the photo makes you feel safe, so you lose 1 less sanity every scene.' },
   { id: 'moths', name: 'Almond Moths', tag: 'Helpful prey', friend: true, img: 'art_p_moths',
     seen: ['Level 1'], deaths: [],
@@ -1886,10 +1887,15 @@ setup.openBestiary = function () {
 setup.FOODCHAIN = [
   { name: 'Apex predators', apex: true, note: 'Nothing hunts these. Everything else runs.', list: ['virus2', 'concierge', 'clown'] },
   { name: 'Top hunters', note: 'They hunt almost anything that wanders alone.', list: ['hound', 'skinstealer', 'watcher', 'chaser', 'giant'] },
-  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
+  { name: 'Hunters', note: 'Dangerous, but they stay out of the apex predators\' way.', list: ['bacteria', 'virusyoung', 'poopers', 'lizard', 'whisperer', 'static', 'voice', 'smiler'] },
   { name: 'Scavengers', note: 'They pick off the weak and the lost.', list: ['partygoers', 'mannequins', 'crawler', 'redeyes'] },
-  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'poopers', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
+  { name: 'Prey', note: 'Small, weak, and hunted by nearly everything. Be kind to them and they help you.', list: ['hatchlings', 'doll', 'moths', 'mice', 'glowbugs', 'bellmouse'] }
 ];
+/* how smart each creature is */
+setup.IQ = { virus2: 170, concierge: 170, clown: 95, hound: 40, skinstealer: 110, watcher: 60, chaser: 20, giant: 55,
+  bacteria: 70, virusyoung: 150, poopers: 105, lizard: 30, whisperer: 90, static: 80, voice: 100, smiler: 50,
+  partygoers: 45, mannequins: 25, crawler: 15, redeyes: 10,
+  hatchlings: 60, doll: 75, moths: 5, mice: 20, glowbugs: 3, bellmouse: 85 };
 setup.openFoodChain = function () {
   var b = setup.bestView(), tiers = '';
   setup.FOODCHAIN.forEach(function (t, i) {
@@ -1901,7 +1907,7 @@ setup.openFoodChain = function () {
         name = id === 'virusyoung' ? x.name : id === 'virus2' ? 'The Virus (after mutation)' : x.name;
         img = '<img src="' + setup.bestImg(id === 'virus2' && x.img2 ? x.img2 : x.img) + '" alt="">';
       }
-      row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + '</div>';
+      row += '<div class="fmon"><div class="fimg">' + (img || '?') + '</div>' + name + (known && setup.IQ[id] !== undefined ? '<span class="fiq">IQ ' + setup.IQ[id] + '</span>' : '') + '</div>';
     });
     tiers += (i ? '<div class="farrow">\u{25B2}</div>' : '') + '<div class="ftier' + (t.apex ? ' apex' : '') + '"><h3>' + t.name + '</h3><p class="fnote">' + t.note + '</p><div class="frow">' + row + '</div></div>';
   });
