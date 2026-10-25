@@ -77,7 +77,7 @@ setup.battleTurn = function (pad, act, w) {
     if (w === b.weak) { dmg *= 2; log = '<b>' + b.weakLine + '</b> '; }
     if (pad.data('guard')) { dmg += 1; pad.data('guard', false); log += 'Your counter-attack lands hard. '; }
     if (Math.random() < .15) { dmg += 1; log += '<b>Critical hit!</b> '; }
-    if (State.variables.virusStrong) { dmg += 1; log += 'The virus lashes it with its new tendrils (+1). '; }
+    if (State.variables.virusStrong) { dmg += 1; log += 'The virus lashes it with its black tendrils (+1). '; }
     hp -= dmg; pad.data('hp', hp);
     log += 'You hit the ' + b.name.toLowerCase().replace(/^the /, '') + ' for <b>' + dmg + '</b>. ';
     if (b.stun && w === b.stun) { pad.data('stun', true); }

@@ -549,7 +549,7 @@ add('Hotel Boiler Room', withVirus('art_h_boiler', (8, 12, .8)) + '\n' + story(
     choices('<<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>>',
             '<<if setup.hasWeapon()>>[[Fight the Concierge|Battle Concierge]]<</if>>',
             '<<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>>',
-            '<<if $virusStrong>><span class="tip">The virus flexes its new tendrils. It will hit harder in a fight now.</span><</if>>',
+            '<<if $virusStrong>><span class="tip">The virus flexes its spiky black tendrils. It will hit harder in a fight now.</span><</if>>',
             '[[Run for the exit|Checkout Ending]]'), 'hotel')
 
 add('Hotel Checkout Polite', scene('art_h_boiler') + '\n' + story(

@@ -1121,24 +1121,24 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Bacteria Attack
 <div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>Something wet slaps against the carpet behind you.</p><p>A giant green bacteria oozes out of the vent, whipping its long tails. It lunges and wraps one around your leg.</p><p>The virus goes very still. "That," it says, "is a bacteria. I am basically one too. But it is not like me."</p></div>
-<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]<<if setup.hasWeapon()>><<link `"Hit the tail with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>
+<div class="story-text"><p>The lights buzz louder. Something is standing at the end of the hall.</p><p>It is tall and thin and pitch black, with no face, and its body is made of jagged spikes. The Bacteria. It twitches, then sprints at you and wraps a black tendril around your leg.</p><p>The virus goes very still. "That," it says, "is a bacteria. I am basically one too. But it is not like me."</p></div>
+<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]<<if setup.hasWeapon()>><<link `"Hit the tendril with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
 <<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[It drags you into the vent|Bacteria Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Bacteria Hit
 <div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>You smash the tail. It lets go of your leg, but it splits into two new tails. Hitting it just makes more of it.<<run setup.useWeapon()>></p><p>The virus pushes you behind it. "My turn."</p></div>
+<div class="story-text"><p>You smash the tendril. It lets go of your leg, but two new spiky tendrils grow out of the stump. Hitting it just makes more of it.<<run setup.useWeapon()>></p><p>The virus pushes you behind it. "My turn."</p></div>
 <div class="choices">[[Let the virus handle it|Bacteria Absorb]]</div>
 
 :: Bacteria Absorb
 <div class="scene"><div class="pos bg">[img[art_absorb]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
-<div class="story-text"><p>The virus shoots its tendrils straight into the bacteria. The green slime starts flowing up them, into the virus.</p><p>The bacteria shrinks... and shrinks... until it is nothing but a puddle on the carpet.</p><p><<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, thicker and longer than the others. "Much better," it says. "Now I can fight with you."</p></div>
+<div class="story-text"><p>The virus shoots its tendrils straight into the Bacteria. Its black tendrils start peeling off, one by one, and get pulled into the virus.</p><p>The Bacteria shrinks... and shrinks... until it is nothing but a black stain on the carpet.</p><p><<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, pitch black and covered in spikes, just like the ones on the Bacteria. "Much better," it says. "Now I can fight with you."</p></div>
 <div class="choices">[[Next|Hotel Arrival]]</div>
 
 :: Bacteria Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_bacteria]]</div></div>
-<div class="story-text"><p>The bacteria pulls you into the vent.</p><p>It is very dark in there, and very, very wet.</p></div>
+<div class="story-text"><p>The Bacteria drags you down the hall.</p><p>The lights buzz. Then they go out.</p></div>
 <div class="choices">[[Try again|Start]]</div>
 
 :: Steam Ending [ending]
@@ -1343,7 +1343,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div><div class="pos" style="left:8%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div><</if>>
 <div class="story-text"><p>BEEP. The door swings open onto a room full of fire and steam. A giant boiler roars in the middle.</p><p>On the far wall: a plain grey door with a green EXIT sign. The real exit.</p><p>And standing next to it, very tall, very patient, is the Concierge. "Checking out, guest? =)"</p></div>
 <<if setup.mode().hints>><p class="modehint">Polite guests get to check out.</p><</if>>
-<div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Battle Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>><<if $virusStrong>><span class="tip">The virus flexes its new tendrils. It will hit harder in a fight now.</span><</if>>[[Run for the exit|Checkout Ending]]</div>
+<div class="choices"><<if setup.has("roomkey")>>[[Hand back your room key|Hotel Checkout Polite]]<</if>><<if setup.hasWeapon()>>[[Fight the Concierge|Battle Concierge]]<</if>><<if $virusWith>>[[Let the virus distract it|Hotel Virus Distracts]]<</if>><<if $virusStrong>><span class="tip">The virus flexes its spiky black tendrils. It will hit harder in a fight now.</span><</if>>[[Run for the exit|Checkout Ending]]</div>
 
 :: Hotel Checkout Polite [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_boiler]]</div></div>
@@ -1489,7 +1489,7 @@ setup.battleTurn = function (pad, act, w) {
     if (w === b.weak) { dmg *= 2; log = '<b>' + b.weakLine + '</b> '; }
     if (pad.data('guard')) { dmg += 1; pad.data('guard', false); log += 'Your counter-attack lands hard. '; }
     if (Math.random() < .15) { dmg += 1; log += '<b>Critical hit!</b> '; }
-    if (State.variables.virusStrong) { dmg += 1; log += 'The virus lashes it with its new tendrils (+1). '; }
+    if (State.variables.virusStrong) { dmg += 1; log += 'The virus lashes it with its black tendrils (+1). '; }
     hp -= dmg; pad.data('hp', hp);
     log += 'You hit the ' + b.name.toLowerCase().replace(/^the /, '') + ' for <b>' + dmg + '</b>. ';
     if (b.stun && w === b.stun) { pad.data('stun', true); }
@@ -1626,8 +1626,8 @@ setup.BEASTS = [
     tip: 'Partygoers like hats. Wear one and walk right past it.' },
   { id: 'bacteria', name: 'The Bacteria', tag: 'After Level !', img: 'art_bacteria',
     seen: ['Bacteria Attack'], deaths: ['Bacteria Ending'], beat: ['Bacteria Absorb'],
-    desc: 'A giant green cell with whipping tails that crawls out of the vents. Cut a tail and two grow back.',
-    tip: 'Weapons only make more tails. Let the virus absorb it, and the virus grows stronger tendrils.' },
+    desc: 'A tall, thin, faceless black figure made of jagged spikes. It twitches, then sprints. Cut a tendril and two grow back.',
+    tip: 'Weapons only make more tendrils. Let the virus absorb it, and the virus grows spiky black tendrils of its own.' },
   { id: 'crawler', name: 'Pipe Crawler', tag: 'Level 2', img: 'art_crawler', battle: 'crawler',
     seen: ['Level 2 Crawler', 'Battle Pipe Crawler'], deaths: ['Crawler Ending', 'Steam Ending'],
     desc: 'A knot of rusty metal legs and tiny red lights that lives in the vents of Pipe Dreams.',
