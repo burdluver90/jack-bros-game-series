@@ -33,7 +33,6 @@
 </div>
 
 :: Hi theo (Q8)
-<<if !setup.isTaken("w8")>><div class="find" id="fw8"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w8","almond")>><<replace "#fw8">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage1]]</div><div class="pos" style="left:46.823%;top:18.333%;width:34.583%;height:46.111%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage7]]</div></div><div class="pos" style="left:50.305%;top:16.682%;width:9.182%;height:14.604%"><div class="fx" style="animation:fx-out-fade 2.000s linear 0.000s forwards">[img[img_Qimage6]]</div></div><div class="pos" style="left:43.386%;top:59.368%;width:23.021%;height:43.224%"><div class="fx" style="animation:fx-out-fade 2.100s linear 0.000s forwards">[img[img_Qimage9]]</div></div><div class="pos clip" style="left:65.534%;top:5.160%;width:17.975%;height:39.537%"><div class="crop" style="left:-93.70%;top:-0.00%;width:304.30%;height:196.75%">[img[img_Qimage3]]</div></div><div class="pos" style="left:44.032%;top:0.000%;width:22.864%;height:100.000%"><div class="fx" style="animation:fx-in-appear 0.010s steps(1,end) 2.100s backwards">[img[img_Qimage26]]</div></div></div>
 <div class="choices">
 [[Hi theo|Fight (Q9)]]
@@ -306,7 +305,6 @@
 </div>
 
 :: Here is the pinpad (Q55)
-<<if !setup.isTaken("w55")>><div class="find" id="fw55"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w55","almond")>><<replace "#fw55">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[img_Qimage53]]</div><div class="pos" style="left:69.871%;top:51.024%;width:23.501%;height:23.563%">[img[img_Qimage62]]</div></div>
 <div class="story-text"><p>Here is the pinpad</p></div>
 <div class="choices">
@@ -379,7 +377,6 @@
 </div>
 
 :: You sit it out until (Q65)
-<<if !setup.isTaken("w65")>><div class="find" id="fw65"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("w65","almond")>><<replace "#fw65">><</replace>><</if>><</link>></div><</if>>
 <div class="story-text"><p>You sit it out until morning the creatures retreat and you live another day</p></div>
 <div class="choices">
 [[Keep driving|You make it to the (Q66)]]
@@ -732,7 +729,6 @@ $(document).on('keydown', function (e) {
 <<timed 2.5s>><<replace "#opts">><div class="caught">[[They catch you|Partygoer Caught Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Under the Party Table [fun]
-<<if !setup.isTaken("wtable")>><div class="find" id="fwtable"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wtable","almond")>><<replace "#fwtable">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[art_levelfun]]</div></div>
 <div class="story-text"><p>You squeeze under the tablecloth and hold your breath.</p><p>Yellow feet shuffle past, inches from your face. Someone giggles. Then the music starts again and they drift back to the cake.</p></div>
 <div class="choices">[[Crawl out the other side, quietly|Level Fun Exits]]</div>
@@ -776,7 +772,6 @@ $(document).on('keydown', function (e) {
 <<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Party Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
 
 :: Present Hallway [fun]
-<<if !setup.isTaken("wv2")>><div class="find" id="fwv2"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wv2","almond")>><<replace "#fwv2">><</replace>><</if>><</link>></div><</if>>
 <div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
 <div class="story-text"><p>A long hallway stacked with wrapped presents.</p><p>One big yellow present has a tag on it: FOR YOU =)</p><p>The virus sniffs it. Its tendrils curl back. "That one smells wrong."</p></div>
 <div class="choices">[[Open your present|Present Ending]][[Let the virus open it|Virus Opens The Present]][[Leave it and keep moving|The Way Out]]</div>
@@ -823,7 +818,6 @@ $(document).on('keydown', function (e) {
 <div class="choices"><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>>[[Follow the cold blue pipe|Level 4 Abandoned Office]][[Follow the hot red pipe|Steam Ending]]</div>
 
 :: Level 4 Abandoned Office [nodrain]
-<<if !setup.isTaken("wl4")>><div class="find" id="fwl4"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wl4","almond")>><<replace "#fwl4">><</replace>><</if>><</link>></div><</if>>
 <<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
 <div class="story-text"><p>The pipe ends at a vent. You crawl out into a quiet office. Level 4.</p><p>Empty cubicles, humming lights, and a water cooler full of almond water. It feels... safe. Your sanity stops dropping here.</p><p>One computer is still on. A sticky note on it says: "Lights out is next. Bring a light."</p></div>
 <div class="choices"><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>
