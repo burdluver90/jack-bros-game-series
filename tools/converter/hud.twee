@@ -136,6 +136,20 @@ setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's';
 setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
+  v.boilerCode = setup.newCode();
+};
+/* the hotel boiler code: three different digits, new every run */
+setup.newCode = function () {
+  var d = [1, 2, 3, 4, 5, 6, 7, 8, 9], out = '';
+  for (var i = 0; i < 3; i++) { out += d.splice(Math.floor(Math.random() * d.length), 1)[0]; }
+  return out;
+};
+setup.boiler = function () { var v = State.variables; if (!v.boilerCode) { v.boilerCode = setup.newCode(); } return v.boilerCode; };
+setup.NUMWORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+setup.codeStr = function () { return setup.boiler().split('').join(' '); };
+setup.codeWords = function () {
+  var w = setup.boiler().split('').map(function (c) { return setup.NUMWORDS[+c]; }).join('... ') + '.';
+  return w.charAt(0).toUpperCase() + w.slice(1);
 };
 setup.drainFor = function (p) {
   var d = setup.mode().drain; if (p.tags.indexOf('fun') >= 0) { d *= 2; }
@@ -269,7 +283,7 @@ $(document).on('keydown', function (e) {
 });
 
 /* code pads: the player has to remember the code and type it in.
-   <div class="codepad" data-kind="digits|colors" data-len="3" data-ok="Passage" data-fail="boiler" data-answer="417"></div> */
+   <div class="codepad" data-kind="digits|colors" data-len="3" data-ok="Passage" data-fail="boiler" data-answer="417 or @boiler"></div> */
 setup.COLORS = { r: ['red', '#dc2626'], b: ['blue', '#2563eb'], g: ['green', '#16a34a'], y: ['yellow', '#eab308'] };
 setup.normCode = function (kind, s) {
   s = String(s || '').toLowerCase();
@@ -296,8 +310,9 @@ setup.buildPad = function (el) {
 };
 setup.submitPad = function (pad) {
   var kind = pad.attr('data-kind') || 'digits', got = setup.normCode(kind, pad.find('.cin').val());
+  var answer = pad.attr('data-answer') === '@boiler' ? setup.boiler() : pad.attr('data-answer');
   if (!got) { return; }
-  if (got === setup.normCode(kind, pad.attr('data-answer'))) {
+  if (got === setup.normCode(kind, answer)) {
     pad.addClass('ok').find('.cmsg').text('ACCEPTED');
     setTimeout(function () { Engine.play(pad.attr('data-ok')); }, 600);
     return;

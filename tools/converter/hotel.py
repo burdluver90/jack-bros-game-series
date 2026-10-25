@@ -386,11 +386,11 @@ add('Hotel Ballroom', withVirus('art_h_ballroom', VR) + '\n' + story(
 add('Hotel Dance', '<<set $sanity to Math.max(1, $sanity - 20)>><<set $knowCode to true>>' + scene('art_h_ballroom') + '\n' + story(
     'A cold hand takes yours. Then you are spinning, round and round, faster and faster.',
     'The music gets inside your head. You feel your mind slipping. (-20 sanity)',
-    'But as you spin you notice something: the dancers only ever step on three numbered tiles. Four... one... seven. Four... one... seven.') + '\n' +
+    'But as you spin you notice something: the dancers only ever step on three numbered tiles. <<print setup.codeWords()>> <<print setup.codeWords()>>') + '\n' +
     choices('[[Pull free and stumble out of the dance|Hotel Ballroom]]'), 'hotel')
 
 add('Hotel Stage', scene('art_h_ballroom') + '\n' + story(
-    'You creep up the steps. The sheet music has three big numbers written at the top: 4 1 7.',
+    'You creep up the steps. The sheet music has three big numbers written at the top: <b><<print setup.codeStr()>></b>.',
     'The moment you touch it, the music STOPS. Every dancer turns its head toward you at exactly the same time.') + '\n' +
     timed(3, ['<<link "Grab the sheet music and run" "Hotel Lobby">><<run setup.addItem("sheet")>><<set $knowCode to true>><</link>>',
               '[[Freeze and pretend to be a mannequin|Dance Forever Ending]]'], 'They grab you', 'Dance Forever Ending'), 'hotel')
@@ -533,7 +533,7 @@ add('Hotel Boiler Door', withVirus('art_h_boilerdoor', (-4, 14, .7)) + '\n' + st
 add('Hotel Keypad', scene('art_h_boilerdoor') + '\n' + story(
     'The brass key turns with a heavy CLUNK. The keypad lights up green: ENTER CODE.',
     'Behind the door, the boiler rumbles like it is waiting.') + '\n' +
-    '<div class="codepad" data-kind="digits" data-len="3" data-ok="Hotel Boiler Room" data-fail="boiler" data-answer="417"></div>\n' +
+    '<div class="codepad" data-kind="digits" data-len="3" data-ok="Hotel Boiler Room" data-fail="boiler" data-answer="@boiler"></div>\n' +
     choices('<<if $power>>[[Step away from the keypad|Hotel Elevator]]<<else>>[[Step away from the keypad|Hotel Staircase]]<</if>>'), 'hotel')
 
 add('Hotel Keypad Wrong', scene('art_h_boilerdoor') + '\n' + story(

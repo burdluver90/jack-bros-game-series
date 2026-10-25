@@ -34,7 +34,7 @@
       // code pads: usually right, sometimes wrong
       const pad = root.querySelector('.codepad');
       if (pad) {
-        const right = Math.random() < .75; pad.querySelector('.cin').value = right ? pad.getAttribute('data-answer') : '999';
+        const right = Math.random() < .75; pad.querySelector('.cin').value = right ? (pad.getAttribute('data-answer') === '@boiler' ? S.setup.boiler() : pad.getAttribute('data-answer')) : '000';
         if (!right) R.codesWrong++;
         pad.querySelector('.go').click(); await wait(right ? 700 : 60); await settle();
         if (S.State.passage === p) { sameClicks++; if (sameClicks > 6) { issue('STUCK PAD', p); break; } }

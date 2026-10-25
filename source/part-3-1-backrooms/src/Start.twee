@@ -656,6 +656,20 @@ setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's';
 setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
+  v.boilerCode = setup.newCode();
+};
+/* the hotel boiler code: three different digits, new every run */
+setup.newCode = function () {
+  var d = [1, 2, 3, 4, 5, 6, 7, 8, 9], out = '';
+  for (var i = 0; i < 3; i++) { out += d.splice(Math.floor(Math.random() * d.length), 1)[0]; }
+  return out;
+};
+setup.boiler = function () { var v = State.variables; if (!v.boilerCode) { v.boilerCode = setup.newCode(); } return v.boilerCode; };
+setup.NUMWORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+setup.codeStr = function () { return setup.boiler().split('').join(' '); };
+setup.codeWords = function () {
+  var w = setup.boiler().split('').map(function (c) { return setup.NUMWORDS[+c]; }).join('... ') + '.';
+  return w.charAt(0).toUpperCase() + w.slice(1);
 };
 setup.drainFor = function (p) {
   var d = setup.mode().drain; if (p.tags.indexOf('fun') >= 0) { d *= 2; }
@@ -789,7 +803,7 @@ $(document).on('keydown', function (e) {
 });
 
 /* code pads: the player has to remember the code and type it in.
-   <div class="codepad" data-kind="digits|colors" data-len="3" data-ok="Passage" data-fail="boiler" data-answer="417"></div> */
+   <div class="codepad" data-kind="digits|colors" data-len="3" data-ok="Passage" data-fail="boiler" data-answer="417 or @boiler"></div> */
 setup.COLORS = { r: ['red', '#dc2626'], b: ['blue', '#2563eb'], g: ['green', '#16a34a'], y: ['yellow', '#eab308'] };
 setup.normCode = function (kind, s) {
   s = String(s || '').toLowerCase();
@@ -816,8 +830,9 @@ setup.buildPad = function (el) {
 };
 setup.submitPad = function (pad) {
   var kind = pad.attr('data-kind') || 'digits', got = setup.normCode(kind, pad.find('.cin').val());
+  var answer = pad.attr('data-answer') === '@boiler' ? setup.boiler() : pad.attr('data-answer');
   if (!got) { return; }
-  if (got === setup.normCode(kind, pad.attr('data-answer'))) {
+  if (got === setup.normCode(kind, answer)) {
     pad.addClass('ok').find('.cmsg').text('ACCEPTED');
     setTimeout(function () { Engine.play(pad.attr('data-ok')); }, 600);
     return;
@@ -1158,12 +1173,12 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 
 :: Hotel Dance [hotel]
 <<set $sanity to Math.max(1, $sanity - 20)>><<set $knowCode to true>><div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div>
-<div class="story-text"><p>A cold hand takes yours. Then you are spinning, round and round, faster and faster.</p><p>The music gets inside your head. You feel your mind slipping. (-20 sanity)</p><p>But as you spin you notice something: the dancers only ever step on three numbered tiles. Four... one... seven. Four... one... seven.</p></div>
+<div class="story-text"><p>A cold hand takes yours. Then you are spinning, round and round, faster and faster.</p><p>The music gets inside your head. You feel your mind slipping. (-20 sanity)</p><p>But as you spin you notice something: the dancers only ever step on three numbered tiles. <<print setup.codeWords()>> <<print setup.codeWords()>></p></div>
 <div class="choices">[[Pull free and stumble out of the dance|Hotel Ballroom]]</div>
 
 :: Hotel Stage [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_ballroom]]</div></div>
-<div class="story-text"><p>You creep up the steps. The sheet music has three big numbers written at the top: 4 1 7.</p><p>The moment you touch it, the music STOPS. Every dancer turns its head toward you at exactly the same time.</p></div>
+<div class="story-text"><p>You creep up the steps. The sheet music has three big numbers written at the top: <b><<print setup.codeStr()>></b>.</p><p>The moment you touch it, the music STOPS. Every dancer turns its head toward you at exactly the same time.</p></div>
 <div id="opts" class="choices"><<link "Grab the sheet music and run" "Hotel Lobby">><<run setup.addItem("sheet")>><<set $knowCode to true>><</link>>[[Freeze and pretend to be a mannequin|Dance Forever Ending]]</div>
 <div class="timerbar"><span style="animation-duration:3s"></span></div>
 <<timed `setup.t(3)`>><<replace "#opts">><div class="caught">[[They grab you|Dance Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
@@ -1294,7 +1309,7 @@ $(document).on('keydown', '.codepad .cin', function (e) { if (e.key === 'Enter')
 :: Hotel Keypad [hotel]
 <div class="scene"><div class="pos bg">[img[art_h_boilerdoor]]</div></div>
 <div class="story-text"><p>The brass key turns with a heavy CLUNK. The keypad lights up green: ENTER CODE.</p><p>Behind the door, the boiler rumbles like it is waiting.</p></div>
-<div class="codepad" data-kind="digits" data-len="3" data-ok="Hotel Boiler Room" data-fail="boiler" data-answer="417"></div>
+<div class="codepad" data-kind="digits" data-len="3" data-ok="Hotel Boiler Room" data-fail="boiler" data-answer="@boiler"></div>
 <div class="choices"><<if $power>>[[Step away from the keypad|Hotel Elevator]]<<else>>[[Step away from the keypad|Hotel Staircase]]<</if>></div>
 
 :: Hotel Keypad Wrong [hotel]
