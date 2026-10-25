@@ -1,0 +1,91 @@
+:: Level 2 Pipe Dreams
+<<if !setup.isTaken("wl2")>><div class="find" id="fwl2"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wl2","almond")>><<replace "#fwl2">><</replace>><</if>><</link>></div><</if>>
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level2]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level2]]</div></div><</if>>
+<div class="story-text"><p>You fall through a hatch and land on hot metal. Level 2: Pipe Dreams.</p><p>Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.</p><p><<if $virusWith>>The virus shakes off the confetti. "Two ways out," it says. "One cold, one hot."<<else>>You are alone now. Somewhere behind you, the party music is still playing.<</if>></p><p>A flashlight hangs from a red valve wheel. A rusty pipe wrench is stuck on the valve next to it.</p></div>
+<div class="choices"><<if !setup.isTaken("wrench")>><span id="pkw"><<link "Take the pipe wrench off the valve">><<if setup.take("wrench","wrench")>><<replace "#pkw">><</replace>><</if>><</link>></span><</if>><<if !setup.isTaken("flashlight")>><span id="pkf"><<link "Take the flashlight">><<if setup.take("flashlight","flashlight")>><<replace "#pkf">><</replace>><</if>><</link>></span><</if>><<if setup.has("wrench")>>[[Use the wrench to shut the hot pipe valve|Level 2 Valve]]<</if>>[[Follow the cold blue pipe|Level 2 Crawler]][[Follow the hot red pipe|Steam Ending]]</div>
+
+:: Level 2 Valve
+<div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
+<div class="story-text"><p>You clamp the pipe wrench onto the big red valve and pull with everything you have.</p><p>SCREEEECH. The valve turns. The hissing stops. The red-hot pipe slowly fades to a dull grey.</p><p>Now you can follow it. It goes straight down, a shortcut.</p></div>
+<div class="choices">[[Follow the cooled pipe down|Level 6 Lights Out]]</div>
+
+:: Level 4 Abandoned Office [nodrain]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
+<div class="story-text"><p>The pipe ends at a vent. You crawl out into a quiet office. Level 4.</p><p>Empty cubicles, humming lights, and a water cooler full of almond water. It feels... safe. Your sanity stops dropping here.</p><p>One computer is still on. A sticky note on it says: "Lights out is next. Bring a light."</p></div>
+<div class="choices"><<if setup.has("wrench")>><<if !setup.isTaken("coolerbottle")>><span id="pkcb"><<link "Unscrew the cooler tap with the wrench and fill a bottle">><<if setup.take("coolerbottle","almond")>><<replace "#pkcb">><</replace>><</if>><</link>></span><</if>><</if>><span id="cool"><<link "Drink from the water cooler">><<run setup.fill(false)>><<replace "#cool">><</replace>><</link>></span>[[Read the computer|Office Computer]][[Take the stairs down|Level 6 Lights Out]]</div>
+
+:: Office Computer [nodrain]
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:55%;top:12%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level4]]</div></div><</if>>
+<div class="story-text"><p>The screen flickers. Someone typed a message and never sent it:</p><p>"THE LEVELS KEEP GOING DOWN. THE EXIT IS NOT ALWAYS AN EXIT. IF YOU HEAR WHISPERING IN THE DARK, GO THE OTHER WAY. IF THE LIGHTS TURN RED, RUN."</p><p><<if $virusWith>>The virus reads over your shoulder. "Good advice," it mutters.<<else>>Under it, someone has scratched a smiley face into the desk. =)<</if>></p></div>
+<div class="choices">[[Take the stairs down|Level 6 Lights Out]]</div>
+
+:: Level 6 Lights Out
+<div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
+<div class="story-text"><p>The stairs end. The lights go out. Level 6: Lights Out.</p><p>You can't see your own hands. On your left, something is whispering. On your right, a pair of red eyes blinks... then another pair.</p><p><<if setup.has("flashlight")>>Your flashlight is in your inventory.<<else>>You wish you had a light.<</if>></p></div>
+<div class="choices"><<if setup.has("flashlight")>>[[Turn on the flashlight|Lights Out Flashlight]]<</if>><<if setup.hasWeapon()>><<link `"Swing your " + setup.weaponName() + " at the red eyes"` "Lights Out Swing">><</link>><</if>>[[Walk toward the whispering|Whispers Ending]][[Walk toward the faint hum of a light|Level Run For Your Life]]</div>
+
+:: Lights Out Swing
+<div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
+<div class="story-text"><p>You swing blindly into the dark. CRACK. Something shrieks.</p><p>The red eyes blink out one pair at a time. Under your feet you feel the floor slope toward a faint red glow.<<run setup.useWeapon()>></p></div>
+<div class="choices">[[Follow the slope|Level Run For Your Life]]</div>
+
+:: Lights Out Flashlight
+<<if $virusWith>><div class="scene"><div class="pos bg">[img[art_level6]]</div><div class="pos" style="left:20%;top:14%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div><<else>><div class="scene"><div class="pos bg">[img[art_level6]]</div></div><</if>>
+<div class="story-text"><p>Click. The beam cuts through the dark.</p><p>The red eyes belong to things that hate light. They scream and scatter.</p><p>In the beam you see a narrow hallway with a door at the end, and the walls of the hallway are red.</p></div>
+<div class="choices">[[Go to the red hallway|Level Run For Your Life]]</div>
+
+:: Level Run For Your Life
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div></div>
+<div class="story-text"><p>The lights snap on. Every single one of them is red. Level !: Run For Your Life.</p><p>Down the hall, the dark is moving. It is coming toward you, fast.</p><p>At the far end, a heavy door is sliding shut.</p></div>
+<div id="opts" class="choices">[[RUN|Run For Your Life 2]]</div>
+<div class="timerbar"><span style="animation-duration:2.5s"></span></div>
+<<timed 2.5s>><<replace "#opts">><div class="caught">[[It catches you|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Run For Your Life 2
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div><div class="pos" style="left:2%;top:8%;width:90.0%;height:90.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You sprint. Your lungs burn. The door is closing faster.</p><p><<if $virusWith>>The virus grabs you with every tendril it has and throws you toward the gap.<<else>>Then the wall next to you splits open. The virus bursts out. "Told you," it says. "I always find you."<</if>></p><p>SLIDE!</p></div>
+<div id="opts" class="choices">[[Slide under the door|Level Run Escape]]</div>
+<div class="timerbar"><span style="animation-duration:2s"></span></div>
+<<timed 2s>><<replace "#opts">><div class="caught">[[The door slams shut|Run For Your Life Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Level Run Escape
+<div class="scene"><div class="pos bg">[img[art_level4]]</div><div class="pos" style="left:30%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.</p><p>You are lying on cool carpet. The virus sits down next to you, breathing hard.</p><p><<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."</p></div>
+<div class="choices">[[Next|Bacteria Attack]]</div>
+
+:: Bacteria Attack
+<div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>Something wet slaps against the carpet behind you.</p><p>A giant green bacteria oozes out of the vent, whipping its long tails. It lunges and wraps one around your leg.</p><p>The virus goes very still. "That," it says, "is a bacteria. I am basically one too. But it is not like me."</p></div>
+<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]<<if setup.hasWeapon()>><<link `"Hit the tail with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[It drags you into the vent|Bacteria Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Bacteria Hit
+<div class="scene"><div class="pos bg">[img[art_bacteria]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You smash the tail. It lets go of your leg, but it splits into two new tails. Hitting it just makes more of it.<<run setup.useWeapon()>></p><p>The virus pushes you behind it. "My turn."</p></div>
+<div class="choices">[[Let the virus handle it|Bacteria Absorb]]</div>
+
+:: Bacteria Absorb
+<div class="scene"><div class="pos bg">[img[art_absorb]]</div><div class="pos" style="left:4%;top:14%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus shoots its tendrils straight into the bacteria. The green slime starts flowing up them, into the virus.</p><p>The bacteria shrinks... and shrinks... until it is nothing but a puddle on the carpet.</p><p><<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, thicker and longer than the others. "Much better," it says. "Now I can fight with you."</p></div>
+<div class="choices">[[Next|Hotel Arrival]]</div>
+
+:: Bacteria Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_bacteria]]</div></div>
+<div class="story-text"><p>The bacteria pulls you into the vent.</p><p>It is very dark in there, and very, very wet.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Steam Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_level2]]</div></div>
+<div class="story-text"><p>The red pipe gets hotter and hotter.</p><p>A valve bursts. The steam is the last thing you ever feel.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Whispers Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_level6]]</div></div>
+<div class="story-text"><p>The whispering knows your name.</p><p>It says it one more time, right behind your ear. Then the dark closes in.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Run For Your Life Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_levelrun]]</div></div>
+<div class="story-text"><p>You were not fast enough.</p><p>The lights flicker red one last time. Then nothing.</p></div>
+<div class="choices">[[Try again|Start]]</div>

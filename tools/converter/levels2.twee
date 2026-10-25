@@ -1,0 +1,57 @@
+:: Fun With The Virus [fun]
+<<if !setup.isTaken("wv1")>><div class="find" id="fwv1"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wv1","almond")>><<replace "#fwv1">><</replace>><</if>><</link>></div><</if>>
+<div class="scene"><div class="pos bg">[img[art_funvirus]]</div><div class="pos" style="left:-14%;top:8%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The music gets louder. Streamers, balloons, the smell of cake. You are back in Level Fun.</p><p>The virus crouches beside you behind a balloon stand. "Since my mutation I can hear their hearts," it whispers. "Seven of them... no. Eight."</p><p>"Stay close to me."</p></div>
+<div class="choices">[[Sneak behind the virus|Present Hallway]][[Pop a balloon to distract them|Balloon Distraction]][[Let the virus fight them|Virus Fight]]</div>
+
+:: Balloon Distraction [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div><div class="pos" style="left:52%;top:10%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You squeeze a balloon until it goes POP.</p><p>Every partygoer turns at the same time, toward the sound. They shuffle over to it, giggling. =)</p><p>The virus grabs your arm with one of its long claws and pulls you the other way.</p></div>
+<div class="choices">[[Slip away|Present Hallway]]</div>
+
+:: Virus Fight [fun]
+<div class="scene"><div class="pos bg">[img[art_funroar]]</div><div class="pos" style="left:6%;top:-2%;width:100.0%;height:100.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus steps out from behind the balloons. Its tendrils flex, twelve times stronger than before.</p><p>It throws three partygoers across the room like party favours.</p><p>Then the music stops. Every smiling face in the room turns to look at YOU.</p></div>
+<div id="opts" class="choices">[[Run while the virus holds them off|Present Hallway]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Party Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Present Hallway [fun]
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>A long hallway stacked with wrapped presents.</p><p>One big yellow present has a tag on it: FOR YOU =)</p><p>The virus sniffs it. Its tendrils curl back. "That one smells wrong."</p></div>
+<div class="choices">[[Open your present|Present Ending]][[Let the virus open it|Virus Opens The Present]][[Leave it and keep moving|The Way Out]]</div>
+
+:: Virus Opens The Present [fun]
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus rips the paper open with one claw.</p><p>A burst of confetti... and a party hat. Underneath is a note: YOU ARE INVITED. FOREVER. =)</p><p>The virus eats the note. "Keep the hat," it says. "They like hats."</p></div>
+<div class="choices"><<link "Take the party hat" "The Way Out">><<run setup.addItem("hat")>><</link>>[[Leave it|The Way Out]]</div>
+
+:: The Way Out [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>At the end of the hallway is a grey door marked WAY OUT.</p><p>In front of it stands the biggest partygoer you have ever seen. Its smile stretches all the way around its head.</p><p>The virus moves in front of you.</p></div>
+<div class="choices"><<if setup.has("hat")>><<link "Put on the party hat and walk past" "Party Hat Escape">><</link>><</if>>[[Let the virus hold it back|The Virus Holds The Door]][[Run past it|Biggest Partygoer Ending]]</div>
+
+:: Party Hat Escape [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.<<set $virusWith to true>></p></div>
+<div class="choices">[[Through the door|Level 2 Pipe Dreams]]</div>
+
+:: The Virus Holds The Door [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.<<set $virusWith to false>></p></div>
+<div class="choices">[[Keep running|Level 2 Pipe Dreams]]</div>
+
+:: Party Forever Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>They pull you into the middle of the room and put a party hat on your head.</p><p>The party never ends. Neither do you. =)</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Present Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div></div>
+<div class="story-text"><p>You pull the ribbon. The box opens by itself.</p><p>Something inside is smiling. Some surprises are not good surprises.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Biggest Partygoer Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div></div>
+<div class="story-text"><p>You try to duck under its arm.</p><p>Its arm is much, much longer than you thought.</p></div>
+<div class="choices">[[Try again|Start]]</div>

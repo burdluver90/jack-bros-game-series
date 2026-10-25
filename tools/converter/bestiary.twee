@@ -63,6 +63,10 @@ setup.BEASTS = [
     seen: ['The Way Out'], deaths: ['Biggest Partygoer Ending'],
     desc: 'It guards the way out of Level Fun. Its smile stretches all the way around its head.',
     tip: 'Partygoers like hats. Wear one and walk right past it.' },
+  { id: 'bacteria', name: 'The Bacteria', tag: 'After Level !', img: 'art_bacteria',
+    seen: ['Bacteria Attack'], deaths: ['Bacteria Ending'], beat: ['Bacteria Absorb'],
+    desc: 'A giant green cell with whipping tails that crawls out of the vents. Cut a tail and two grow back.',
+    tip: 'Weapons only make more tails. Let the virus absorb it, and the virus grows stronger tendrils.' },
   { id: 'crawler', name: 'Pipe Crawler', tag: 'Level 2', img: 'art_crawler', battle: 'crawler',
     seen: ['Level 2 Crawler', 'Battle Pipe Crawler'], deaths: ['Crawler Ending', 'Steam Ending'],
     desc: 'A knot of rusty metal legs and tiny red lights that lives in the vents of Pipe Dreams.',
@@ -112,6 +116,7 @@ $(document).on(':passagedisplay', function (ev) {
   setup.BEASTS.forEach(function (x) {
     if (x.deaths.indexOf(t) >= 0) { setup.bestMark(x.id, 'died'); }
     else if (x.seen.indexOf(t) >= 0) { setup.bestMark(x.id); }
+    if (x.beat && x.beat.indexOf(t) >= 0) { setup.bestMark(x.id, 'beaten'); }
     if (x.seen2 && x.seen2.indexOf(t) >= 0) { setup.bestMark(x.id, 'form2'); }
   });
 });

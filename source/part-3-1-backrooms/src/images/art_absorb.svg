@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="slime" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#b6f06a"/><stop offset=".6" stop-color="#5a9a2a"/><stop offset="1" stop-color="#1f3d0e"/></radialGradient>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="#14180c"/>
+  <!-- carpet and damp walls, like Level 4 gone wrong -->
+  <polygon points="0,620 1600,620 1600,900 0,900" fill="#3a3a22"/>
+  <g fill="#6b8f2a" opacity=".35" filter="url(#blur)"><ellipse cx="300" cy="300" rx="200" ry="120"/><ellipse cx="1300" cy="250" rx="220" ry="140"/><ellipse cx="800" cy="760" rx="500" ry="80"/></g>
+  <!-- the bacteria: a huge pill-shaped cell with whip-like flagella -->
+  <g stroke="#86c43a" stroke-width="8" stroke-linecap="round" fill="none" opacity=".9"><line x1="1030" y1="470" x2="1090" y2="470"/><line x1="1019" y1="523" x2="1076" y2="538"/><line x1="986" y1="570" x2="1035" y2="599"/><line x1="935" y1="608" x2="970" y2="648"/><line x1="871" y1="632" x2="890" y2="679"/><line x1="800" y1="640" x2="800" y2="690"/><line x1="729" y1="632" x2="710" y2="679"/><line x1="665" y1="608" x2="630" y2="648"/><line x1="614" y1="570" x2="565" y2="599"/><line x1="581" y1="523" x2="524" y2="538"/><line x1="570" y1="470" x2="510" y2="470"/><line x1="581" y1="417" x2="524" y2="402"/><line x1="614" y1="370" x2="565" y2="341"/><line x1="665" y1="332" x2="630" y2="292"/><line x1="729" y1="308" x2="710" y2="261"/><line x1="800" y1="300" x2="800" y2="250"/><line x1="871" y1="308" x2="890" y2="261"/><line x1="935" y1="332" x2="970" y2="292"/><line x1="986" y1="370" x2="1035" y2="341"/><line x1="1019" y1="417" x2="1076" y2="402"/>
+    <path d="M1080 470 C1250 380 1300 560 1480 470"/><path d="M1060 560 C1220 660 1320 520 1560 640"/><path d="M540 520 C380 640 260 500 60 600"/></g>
+  <ellipse cx="1100" cy="500" rx="150" ry="110" fill="url(#slime)" opacity=".75"/><!-- the virus tendrils pierce the bacteria and drain it --><g stroke="#7c2d92" stroke-width="16" stroke-linecap="round" fill="none"><path d="M560 300 C760 260 900 420 1060 470"/><path d="M560 420 C760 520 900 560 1080 540"/><path d="M560 560 C740 700 960 640 1120 580"/></g><g fill="#b6f06a" opacity=".9"><circle cx="760" cy="290" r="10"/><circle cx="880" cy="380" r="8"/><circle cx="780" cy="500" r="9"/><circle cx="900" cy="620" r="10"/></g>
+  <g fill="#2d5410" opacity=".7"><ellipse cx="720" cy="420" rx="50" ry="34"/><ellipse cx="880" cy="520" rx="70" ry="40"/><circle cx="860" cy="390" r="18"/><circle cx="690" cy="530" r="14"/></g>
+  <!-- a mouth-like opening -->
+  
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

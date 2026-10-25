@@ -136,7 +136,7 @@ setup.t = function (secs) { return (secs * setup.mode().timer).toFixed(2) + 's';
 setup.reset = function () {
   var v = State.variables; v.sanity = 100; v.inv = []; v.taken = {};
   v.virusWith = false; v.power = false; v.codeTries = 0; v.knowCode = false; v.bell = 0;
-  v.boilerCode = setup.newCode();
+  v.boilerCode = setup.newCode(); v.virusStrong = false;
 };
 /* the hotel boiler code: three different digits, new every run */
 setup.newCode = function () {

@@ -170,8 +170,26 @@ P.append(':: Level Run Escape\n' + scene('art_level4', (30, 10, .85)) + '\n' + s
     'You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.',
     'You are lying on cool carpet. The virus sits down next to you, breathing hard.',
     '<<set $virusWith to true>>"We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is."') +
+    '\n<div class="choices">[[Next|Bacteria Attack]]</div>\n')
+P.append(':: Bacteria Attack\n' + scene('art_bacteria', (4, 14, .75)) + '\n' + story(
+    'Something wet slaps against the carpet behind you.',
+    'A giant green bacteria oozes out of the vent, whipping its long tails. It lunges and wraps one around your leg.',
+    'The virus goes very still. "That," it says, "is a bacteria. I am basically one too. But it is not like me."') +
+    '\n<div id="opts" class="choices">[[Tell the virus to get it|Bacteria Absorb]]'
+    '<<if setup.hasWeapon()>><<link `"Hit the tail with your " + setup.weaponName()` "Bacteria Hit">><</link>><</if>></div>\n'
+    '<div class="timerbar"><span style="animation-duration:3s"></span></div>\n'
+    '<<timed 3s>><<replace "#opts">><div class="caught">[[It drags you into the vent|Bacteria Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>\n')
+P.append(':: Bacteria Hit\n' + scene('art_bacteria', (4, 14, .75)) + '\n' + story(
+    'You smash the tail. It lets go of your leg, but it splits into two new tails. Hitting it just makes more of it.<<run setup.useWeapon()>>',
+    'The virus pushes you behind it. "My turn."') +
+    '\n<div class="choices">[[Let the virus handle it|Bacteria Absorb]]</div>\n')
+P.append(':: Bacteria Absorb\n' + scene('art_absorb', (4, 14, .75)) + '\n' + story(
+    'The virus shoots its tendrils straight into the bacteria. The green slime starts flowing up them, into the virus.',
+    'The bacteria shrinks... and shrinks... until it is nothing but a puddle on the carpet.',
+    '<<set $virusStrong to true>>The virus shudders. Three brand-new tendrils burst out of its back, thicker and longer than the others. "Much better," it says. "Now I can fight with you."') +
     f'\n<div class="choices">[[Next|{END}]]</div>\n')
 for name, bg, lines in (
+        ('Bacteria Ending', 'art_bacteria', ['The bacteria pulls you into the vent.', 'It is very dark in there, and very, very wet.']),
         ('Steam Ending', 'art_level2', ['The red pipe gets hotter and hotter.', 'A valve bursts. The steam is the last thing you ever feel.']),
         ('Whispers Ending', 'art_level6', ['The whispering knows your name.', 'It says it one more time, right behind your ear. Then the dark closes in.']),
         ('Run For Your Life Ending', 'art_levelrun', ['You were not fast enough.', 'The lights flicker red one last time. Then nothing.'])):
