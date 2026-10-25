@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <pattern id="paper" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#d9c45c"/>
+      <path d="M0 40 Q20 25 40 40 T80 40" stroke="#c4ad47" stroke-width="4" fill="none"/>
+      <circle cx="40" cy="12" r="4" fill="#c4ad47"/><circle cx="0" cy="68" r="4" fill="#c4ad47"/><circle cx="80" cy="68" r="4" fill="#c4ad47"/>
+    </pattern>
+    <linearGradient id="carpet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f7a3a"/><stop offset="1" stop-color="#5e4f22"/></linearGradient>
+    <radialGradient id="shine" cx=".35" cy=".3" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <g id="balloon"><ellipse rx="42" ry="52"/><ellipse rx="42" ry="52" fill="url(#shine)"/><path d="M0 52 l-6 10 h12 z"/><path d="M0 62 q14 60 -6 120 q-14 60 8 120" stroke="#333" stroke-width="2" fill="none"/></g>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="3"/></filter>
+    <radialGradient id="vign" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient>
+    <radialGradient id="pgSkin" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#fff3a1"/><stop offset=".35" stop-color="#ffd92e"/><stop offset=".8" stop-color="#d9a90b"/><stop offset="1" stop-color="#9c7605"/></radialGradient>
+    <linearGradient id="pgLimb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b98d06"/><stop offset=".45" stop-color="#ffd92e"/><stop offset=".7" stop-color="#ffe874"/><stop offset="1" stop-color="#c79a07"/></linearGradient>
+    <radialGradient id="pgShadow"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="pgHat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1d4ed8"/><stop offset=".5" stop-color="#60a5fa"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient>
+    <g id="pgHand">
+      <path d="M0 0 q-6 10 -4 22" stroke="url(#pgLimb)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M2 2 q2 14 2 26" stroke="url(#pgLimb)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M5 0 q8 10 10 22" stroke="url(#pgLimb)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M7 -4 q10 2 14 10" stroke="url(#pgLimb)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <ellipse cx="3" cy="-4" rx="11" ry="9" fill="url(#pgSkin)"/>
+    </g>
+    <!-- detailed partygoer, feet at 0,0, about 520 units tall -->
+    <g id="pgDetailed">
+      <ellipse cx="0" cy="4" rx="90" ry="16" fill="url(#pgShadow)"/>
+      <!-- legs: thigh, knee, shin, flat feet -->
+      <path d="M-22 -210 Q-30 -150 -34 -110 Q-36 -60 -40 -8" stroke="url(#pgLimb)" stroke-width="24" fill="none" stroke-linecap="round"/>
+      <path d="M22 -210 Q30 -150 32 -110 Q36 -60 40 -8" stroke="url(#pgLimb)" stroke-width="24" fill="none" stroke-linecap="round"/>
+      <circle cx="-34" cy="-112" r="13" fill="url(#pgSkin)"/><circle cx="33" cy="-112" r="13" fill="url(#pgSkin)"/>
+      <path d="M-58 -2 q20 -16 34 -4 q2 8 -6 8 h-26 q-8 0 -2 -4z" fill="url(#pgSkin)"/><path d="M58 -2 q-20 -16 -34 -4 q-2 8 6 8 h26 q8 0 2 -4z" fill="url(#pgSkin)"/>
+      <!-- torso: long, narrow, slightly hunched -->
+      <path d="M-46 -380 Q-62 -300 -40 -205 Q0 -186 40 -205 Q62 -300 46 -380 Q0 -400 -46 -380 Z" fill="url(#pgSkin)" stroke="#8f6c05" stroke-width="2.5"/>
+      <path d="M-18 -360 Q-26 -300 -14 -230" stroke="#fff6b0" stroke-width="6" fill="none" opacity=".6" stroke-linecap="round"/>
+      <path d="M0 -330 v90" stroke="#b8890a" stroke-width="3" opacity=".5"/>
+      <!-- arms: shoulder, elbow, forearm hanging past the knees -->
+      <circle cx="-48" cy="-372" r="17" fill="url(#pgSkin)"/><circle cx="48" cy="-372" r="17" fill="url(#pgSkin)"/>
+      <path d="M-52 -370 Q-80 -310 -86 -250" stroke="url(#pgLimb)" stroke-width="17" fill="none" stroke-linecap="round"/>
+      <path d="M-86 -250 Q-96 -180 -92 -110" stroke="url(#pgLimb)" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <circle cx="-86" cy="-250" r="10" fill="url(#pgSkin)"/>
+      <path d="M52 -370 Q80 -310 86 -250" stroke="url(#pgLimb)" stroke-width="17" fill="none" stroke-linecap="round"/>
+      <path d="M86 -250 Q96 -180 92 -110" stroke="url(#pgLimb)" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <circle cx="86" cy="-250" r="10" fill="url(#pgSkin)"/>
+      <use href="#pgHand" transform="translate(-94 -104)"/><use href="#pgHand" transform="translate(90 -104) scale(-1 1)"/>
+      <!-- neck and big round head -->
+      <path d="M-14 -392 v-24 h28 v24" fill="url(#pgLimb)"/>
+      <ellipse cx="0" cy="-470" rx="66" ry="64" fill="url(#pgSkin)" stroke="#8f6c05" stroke-width="2.5"/>
+      <ellipse cx="-22" cy="-498" rx="22" ry="12" fill="#fffbe0" opacity=".55" transform="rotate(-20 -22 -498)"/>
+      <!-- the =) face: two tall black eye lines and a wide thin smile -->
+      <path d="M-24 -492 v28 M24 -492 v28" stroke="#0b0b0b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M-46 -446 Q0 -398 46 -446" stroke="#0b0b0b" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- party hat with stripes and pompom -->
+      <path d="M-30 -528 L4 -630 L34 -524 Q2 -514 -30 -528 Z" fill="url(#pgHat)"/>
+      <path d="M-22 -550 Q4 -542 28 -548 M-12 -580 Q6 -574 20 -578 M-4 -606 Q6 -602 12 -604" stroke="#fde047" stroke-width="6" fill="none"/>
+      <circle cx="4" cy="-632" r="12" fill="#ef4444"/><circle cx="0" cy="-636" r="4" fill="#fca5a5"/>
+      <path d="M-30 -528 Q-46 -500 -40 -470" stroke="#e5e7eb" stroke-width="1.5" fill="none" opacity=".7"/>
+    </g>
+  </defs>
+  <!-- a long party hallway shrinking into the distance -->
+  <polygon points="0,0 1600,0 1000,330 600,330" fill="#cbb54f"/>
+  <polygon points="0,0 600,330 600,520 0,900" fill="url(#paper)"/>
+  <polygon points="1600,0 1000,330 1000,520 1600,900" fill="url(#paper)"/>
+  <polygon points="0,900 600,520 1000,520 1600,900" fill="url(#carpet)"/>
+  <rect x="600" y="330" width="400" height="190" fill="#3a3010"/>
+  <rect x="740" y="380" width="120" height="140" fill="#14110a"/>
+  <g stroke-width="8" fill="none" stroke-linecap="round">
+    <path d="M0 60 Q300 160 600 340" stroke="#e8443a"/><path d="M1600 60 Q1300 160 1000 340" stroke="#3b82f6"/>
+  </g>
+  <rect x="220" y="690" width="120" height="110" fill="#e8443a"/><rect x="274" y="690" width="12" height="110" fill="#fff6da"/><rect x="220" y="739" width="120" height="12" fill="#fff6da"/>
+  <rect x="1260" y="701" width="120" height="99" fill="#3b82f6"/><rect x="1314" y="701" width="12" height="99" fill="#fff6da"/><rect x="1260" y="744" width="120" height="12" fill="#fff6da"/>
+  <rect x="278" y="662" width="108" height="104" fill="#22c55e"/><rect x="327" y="662" width="11" height="104" fill="#fff6da"/><rect x="278" y="709" width="108" height="11" fill="#fff6da"/>
+  <rect x="1214" y="648" width="108" height="118" fill="#a855f7"/><rect x="1263" y="648" width="11" height="118" fill="#fff6da"/><rect x="1214" y="702" width="108" height="11" fill="#fff6da"/>
+  <rect x="336" y="658" width="96" height="74" fill="#f59e0b"/><rect x="379" y="658" width="10" height="74" fill="#fff6da"/><rect x="336" y="690" width="96" height="10" fill="#fff6da"/>
+  <rect x="1168" y="657" width="96" height="75" fill="#ec4899"/><rect x="1211" y="657" width="10" height="75" fill="#fff6da"/><rect x="1168" y="690" width="96" height="10" fill="#fff6da"/>
+  <rect x="394" y="611" width="84" height="87" fill="#e8443a"/><rect x="432" y="611" width="8" height="87" fill="#fff6da"/><rect x="394" y="650" width="84" height="8" fill="#fff6da"/>
+  <rect x="1122" y="631" width="84" height="67" fill="#3b82f6"/><rect x="1160" y="631" width="8" height="67" fill="#fff6da"/><rect x="1122" y="660" width="84" height="8" fill="#fff6da"/>
+  <rect x="452" y="596" width="72" height="68" fill="#22c55e"/><rect x="484" y="596" width="7" height="68" fill="#fff6da"/><rect x="452" y="626" width="72" height="7" fill="#fff6da"/>
+  <rect x="1076" y="588" width="72" height="76" fill="#a855f7"/><rect x="1108" y="588" width="7" height="76" fill="#fff6da"/><rect x="1076" y="622" width="72" height="7" fill="#fff6da"/>
+  <rect x="510" y="584" width="60" height="46" fill="#f59e0b"/><rect x="537" y="584" width="6" height="46" fill="#fff6da"/><rect x="510" y="604" width="60" height="6" fill="#fff6da"/>
+  <rect x="1030" y="569" width="60" height="61" fill="#ec4899"/><rect x="1057" y="569" width="6" height="61" fill="#fff6da"/><rect x="1030" y="596" width="60" height="6" fill="#fff6da"/>
+  <rect x="568" y="555" width="48" height="41" fill="#e8443a"/><rect x="590" y="555" width="5" height="41" fill="#fff6da"/><rect x="568" y="573" width="48" height="5" fill="#fff6da"/>
+  <rect x="984" y="559" width="48" height="37" fill="#3b82f6"/><rect x="1006" y="559" width="5" height="37" fill="#fff6da"/><rect x="984" y="575" width="48" height="5" fill="#fff6da"/>
+  <rect x="626" y="534" width="36" height="28" fill="#22c55e"/><rect x="642" y="534" width="4" height="28" fill="#fff6da"/><rect x="626" y="546" width="36" height="4" fill="#fff6da"/>
+  <rect x="938" y="527" width="36" height="35" fill="#a855f7"/><rect x="954" y="527" width="4" height="35" fill="#fff6da"/><rect x="938" y="543" width="36" height="4" fill="#fff6da"/>
+  <rect x="684" y="505" width="24" height="23" fill="#f59e0b"/><rect x="695" y="505" width="2" height="23" fill="#fff6da"/><rect x="684" y="515" width="24" height="2" fill="#fff6da"/>
+  <rect x="892" y="509" width="24" height="19" fill="#ec4899"/><rect x="903" y="509" width="2" height="19" fill="#fff6da"/><rect x="892" y="517" width="24" height="2" fill="#fff6da"/>
+  <!-- the present with your name on it -->
+  <g transform="translate(800 820)">
+    <rect x="-110" y="-170" width="220" height="170" fill="#ffd92e"/>
+    <rect x="-14" y="-170" width="28" height="170" fill="#e8443a"/><rect x="-110" y="-100" width="220" height="28" fill="#e8443a"/>
+    <path d="M0 -170 C-70 -240 -110 -170 -10 -168 M0 -170 C70 -240 110 -170 10 -168" stroke="#e8443a" stroke-width="16" fill="none"/>
+    <rect x="40" y="-150" width="110" height="54" rx="6" fill="#fff6da" transform="rotate(12 40 -150)"/>
+    <text x="96" y="-110" font-family="Arial Black, Arial" font-size="22" text-anchor="middle" fill="#111" transform="rotate(12 40 -150)">FOR YOU =)</text>
+  </g>
+  <!-- the virus leaning in to sniff it -->
+  <rect width="1600" height="900" fill="url(#vign)"/>
+</svg>

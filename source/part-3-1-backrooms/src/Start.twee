@@ -494,7 +494,7 @@
 <div class="scene"><div class="pos bg">[img[img_Qimage77]]</div><div class="pos" style="left:60.479%;top:24.897%;width:29.878%;height:70.412%">[img[img_Qimage30]]</div><div class="pos" style="left:61.593%;top:50.000%;width:11.461%;height:42.455%">[img[img_Qimage44]]</div><div class="pos" style="left:77.761%;top:75.600%;width:11.461%;height:16.855%">[img[img_Qimage58]]</div><div class="pos clip" style="left:67.772%;top:28.450%;width:7.565%;height:15.094%;transform:rotate(-114.28deg)"><div class="crop" style="left:-36.94%;top:-0.00%;width:136.94%;height:121.76%">[img[img_Qimage28]]</div></div></div>
 <div class="story-text"><p>Be quiet or they'll hear you</p></div>
 <div class="choices">
-[[Next|To be continued... (Q83)]]
+[[Next|Fun With The Virus]]
 </div>
 
 :: To be continued... (Q83) [ending]
@@ -522,6 +522,8 @@
 #hud .slot { position: relative; width: 60px; height: 60px; padding: 4px 2px 0; border-radius: 12px; border: 1px solid #3a4a73; background: #121a30; color: #fff;
   font-size: 24px; line-height: 1.2; text-align: center; cursor: default; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 #hud .slot small { display: block; font-size: 9.5px; line-height: 1.1; color: #c7d2f0; margin-top: 2px; }
+#hud .slot .x { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #3a1418; border: 1px solid #ff6b6b; color: #ffd0d0; font-size: 10px; line-height: 16px; text-align: center; opacity: .75; }
+#hud .slot .x:hover { opacity: 1; background: #7a1d24; }
 #hud .slot .key { position: absolute; top: 2px; left: 5px; font-size: 9px; color: #6c7899; }
 #hud .slot.full { cursor: pointer; border-color: #5b8cff; background: #17233f; }
 #hud .slot.full:hover { background: #24366a; transform: translateY(-2px); }
@@ -557,6 +559,7 @@ setup.ITEMS = {
   almond: { name: 'Almond water', short: 'Water', icon: '\u{1F4A7}', desc: 'Drink it if things become distorted or you see smiles.' },
   sword:  { name: 'Sword', short: 'Sword', icon: '\u{1F5E1}\u{FE0F}', desc: 'Sharp. Might help in a fight.' },
   code:   { name: 'Code note', short: 'Code', icon: '\u{1F4DD}', desc: 'Red, blue, green, yellow.' },
+  hat:    { name: 'Party hat', short: 'Hat', icon: '\u{1F973}', desc: 'Partygoers like hats. Maybe they will think you are one of them.' },
   crowbar:{ name: 'Crowbar', short: 'Crowbar', icon: '\u{1F527}', desc: 'Heavy and red. Good for prying doors, or hitting things.' }
 };
 setup.SLOTS = 6;      /* inventory size */
@@ -592,7 +595,15 @@ setup.useSlot = function (i) {
   $('#hud .slot').removeClass('sel'); $('#hud .slot[data-i="' + i + '"]').addClass('sel');
   $('#hud .info').html('<b>' + it.name + '</b> &mdash; ' + it.desc + '<span class="acts">' +
     (id === 'almond' ? '<button class="act drinkit" data-i="' + i + '">Drink</button>' : '') +
-    '<button class="act drop" data-i="' + i + '">Discard</button></span>');
+    '<button class="act ask" data-i="' + i + '">Discard</button></span>');
+};
+/* dropping always asks first so nothing gets dropped by accident */
+setup.askDiscard = function (i) {
+  var id = (State.variables.inv || [])[i], it = setup.ITEMS[id];
+  if (!it) { return; }
+  $('#hud .slot').removeClass('sel'); $('#hud .slot[data-i="' + i + '"]').addClass('sel');
+  $('#hud .info').html('Drop the <b>' + it.name + '</b>? You can' + "'" + 't get it back.<span class="acts">' +
+    '<button class="act drop" data-i="' + i + '">Yes, drop it</button><button class="act keep">Keep it</button></span>');
 };
 setup.discard = function (i) {
   var v = State.variables, id = (v.inv || [])[i], it = setup.ITEMS[id];
@@ -625,7 +636,7 @@ setup.hud = function () {
   }
   h.html('<div class="top"><span class="lbl">Sanity</span><div class="bar"><span style="width:' + s + '%;background:' + col + '"></span></div><span class="num">' + Math.round(s) + '</span>' +
     (waters ? '<button class="quick">\u{1F4A7} Drink almond water (' + waters + ')</button>' : '') + '</div>' +
-    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6. Ctrl or Shift + number discards it' : 'Your inventory is empty') + '</div>');
+    '<div class="slots">' + slots + '</div><div class="info">' + (inv.length ? 'Click an item or press 1-6 to use or drop it' : 'Your inventory is empty') + '</div>');
 };
 $(document).on(':passagedisplay', function (ev) {
   var t = ev.passage.tags, show = !(t.indexOf('nohud') >= 0 || t.indexOf('ending') >= 0);
@@ -633,12 +644,19 @@ $(document).on(':passagedisplay', function (ev) {
   $('#hud').toggleClass('on', show); $('body').toggleClass('hud-on', show);
   if (!show) { $('body').removeClass('low critical'); }
 });
-$(document).on('click', '#hud .slot.full', function () { setup.useSlot(+$(this).attr('data-i')); });
+$(document).on('click', '#hud .slot.full', function (e) {
+  var i = +$(this).attr('data-i');
+  if (e.ctrlKey || e.metaKey) { setup.askDiscard(i); return; }
+  setup.useSlot(i);
+});
+
 $(document).on('click', '#hud .quick', function () { setup.drink(); });
 $(document).on('click', '#hud .drinkit', function () { var v = State.variables, i = +$(this).attr('data-i'); v.inv.splice(i, 1); setup.fill(false); });
 $(document).on('click', '#hud .drop', function () { setup.discard(+$(this).attr('data-i')); });
+$(document).on('click', '#hud .ask', function () { setup.askDiscard(+$(this).attr('data-i')); });
+$(document).on('click', '#hud .keep', function () { setup.hud(); });
 /* direct links: index.html#level-fun etc. jump straight into the new levels */
-setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall' };
+setup.JUMPS = { 'level-1': 'Level 1', 'level-fun': 'Level Fun', 'party-chase': 'Party Chase', 'fun-exits': 'Level Fun Exits', 'dark-hall': 'Level 1 Dark Hall', 'virus-fun': 'Fun With The Virus' };
 $(document).one(':storyready', function () {
   var dest = setup.JUMPS[location.hash.slice(1)];
   if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
@@ -649,7 +667,7 @@ $(document).on('keydown', function (e) {
   var m = /^(?:Digit|Numpad)(\d)$/.exec(e.code || ''), n = m ? +m[1] : parseInt(e.key, 10);
   if (!(n >= 1 && n <= setup.SLOTS)) { return; }
   /* Ctrl+number discards (most browsers keep Ctrl+1-6 for tabs, so Shift+number does too) */
-  if (e.ctrlKey || e.shiftKey) { e.preventDefault(); setup.discard(n - 1); return; }
+  if (e.ctrlKey || e.shiftKey) { e.preventDefault(); setup.askDiscard(n - 1); return; }
   setup.useSlot(n - 1);
 });
 
@@ -736,4 +754,63 @@ $(document).on('keydown', function (e) {
 :: Red Door Ending [ending]
 <div class="scene"><div class="pos bg">[img[art_funexits]]</div></div>
 <div class="story-text"><p>The EXIT opens onto nothing but red.</p><p>You fall for a very, very long time.</p><p>Red door ending</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Fun With The Virus [fun]
+<<if !setup.isTaken("wv1")>><div class="find" id="fwv1"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wv1","almond")>><<replace "#fwv1">><</replace>><</if>><</link>></div><</if>>
+<div class="scene"><div class="pos bg">[img[art_funvirus]]</div><div class="pos" style="left:-14%;top:8%;width:75.0%;height:75.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The music gets louder. Streamers, balloons, the smell of cake. You are back in Level Fun.</p><p>The virus crouches beside you behind a balloon stand. "Since my mutation I can hear their hearts," it whispers. "Seven of them... no. Eight."</p><p>"Stay close to me."</p></div>
+<div class="choices">[[Sneak behind the virus|Present Hallway]][[Pop a balloon to distract them|Balloon Distraction]][[Let the virus fight them|Virus Fight]]</div>
+
+:: Balloon Distraction [fun]
+<div class="scene"><div class="pos bg">[img[art_levelfun]]</div><div class="pos" style="left:52%;top:10%;width:70.0%;height:70.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You squeeze a balloon until it goes POP.</p><p>Every partygoer turns at the same time, toward the sound. They shuffle over to it, giggling. =)</p><p>The virus grabs your arm with one of its long claws and pulls you the other way.</p></div>
+<div class="choices">[[Slip away|Present Hallway]]</div>
+
+:: Virus Fight [fun]
+<div class="scene"><div class="pos bg">[img[art_funroar]]</div><div class="pos" style="left:6%;top:-2%;width:100.0%;height:100.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus steps out from behind the balloons. Its tendrils flex, twelve times stronger than before.</p><p>It throws three partygoers across the room like party favours.</p><p>Then the music stops. Every smiling face in the room turns to look at YOU.</p></div>
+<div id="opts" class="choices">[[Run while the virus holds them off|Present Hallway]]</div>
+<div class="timerbar"><span style="animation-duration:3s"></span></div>
+<<timed 3s>><<replace "#opts">><div class="caught">[[They grab you|Party Forever Ending]]</div><</replace>><<run $(".timerbar").remove()>><</timed>>
+
+:: Present Hallway [fun]
+<<if !setup.isTaken("wv2")>><div class="find" id="fwv2"><<link "💧 There's a bottle of almond water here. Take it">><<if setup.take("wv2","almond")>><<replace "#fwv2">><</replace>><</if>><</link>></div><</if>>
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>A long hallway stacked with wrapped presents.</p><p>One big yellow present has a tag on it: FOR YOU =)</p><p>The virus sniffs it. Its tendrils curl back. "That one smells wrong."</p></div>
+<div class="choices">[[Open your present|Present Ending]][[Let the virus open it|Virus Opens The Present]][[Leave it and keep moving|The Way Out]]</div>
+
+:: Virus Opens The Present [fun]
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div><div class="pos" style="left:45%;top:14%;width:80.0%;height:80.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus rips the paper open with one claw.</p><p>A burst of confetti... and a party hat. Underneath is a note: YOU ARE INVITED. FOREVER. =)</p><p>The virus eats the note. "Keep the hat," it says. "They like hats."</p></div>
+<div class="choices"><<link "Take the party hat" "The Way Out">><<run setup.addItem("hat")>><</link>>[[Leave it|The Way Out]]</div>
+
+:: The Way Out [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>At the end of the hallway is a grey door marked WAY OUT.</p><p>In front of it stands the biggest partygoer you have ever seen. Its smile stretches all the way around its head.</p><p>The virus moves in front of you.</p></div>
+<div class="choices"><<if setup.has("hat")>><<link "Put on the party hat and walk past" "Party Hat Escape">><</link>><</if>>[[Let the virus hold it back|The Virus Holds The Door]][[Run past it|Biggest Partygoer Ending]]</div>
+
+:: Party Hat Escape [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>You put on the party hat and smile the widest smile you can.</p><p>The giant partygoer looks at you for a long time. Then it waves. =)</p><p>You walk right past it. The virus follows, trying very hard to look like a balloon.</p></div>
+<div class="choices">[[Through the door|To be continued... (Q83)]]</div>
+
+:: The Virus Holds The Door [fun]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div><div class="pos" style="left:22%;top:10%;width:85.0%;height:85.0%"><div class="pos clip" style="left:33.930%;top:17.297%;width:21.175%;height:80.481%"><div class="crop" style="left:-44.01%;top:-17.29%;width:190.37%;height:118.73%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:25.454%;top:18.477%;width:6.622%;height:50.690%;transform:rotate(63.30deg)"><div class="crop" style="left:-130.83%;top:-61.77%;width:608.68%;height:188.50%">[img[img_Qimage79]]</div></div><div class="pos clip" style="left:57.587%;top:28.067%;width:5.439%;height:49.521%;transform:rotate(-47.66deg)"><div class="crop" style="left:-431.55%;top:-80.61%;width:741.07%;height:221.97%">[img[img_Qimage79]]</div></div></div></div>
+<div class="story-text"><p>The virus wraps every tendril it has around the giant partygoer and holds on.</p><p>"GO!" it shouts. "I always find you. I will find you again."</p><p>You run through the door. Behind you the music starts again.</p></div>
+<div class="choices">[[Keep running|To be continued... (Q83)]]</div>
+
+:: Party Forever Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_partychase]]</div></div>
+<div class="story-text"><p>They pull you into the middle of the room and put a party hat on your head.</p><p>The party never ends. Neither do you. =)</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Present Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funhall]]</div></div>
+<div class="story-text"><p>You pull the ribbon. The box opens by itself.</p><p>Something inside is smiling. Some surprises are not good surprises.</p></div>
+<div class="choices">[[Try again|Start]]</div>
+
+:: Biggest Partygoer Ending [ending]
+<div class="scene"><div class="pos bg">[img[art_funhold]]</div></div>
+<div class="story-text"><p>You try to duck under its arm.</p><p>Its arm is much, much longer than you thought.</p></div>
 <div class="choices">[[Try again|Start]]</div>
