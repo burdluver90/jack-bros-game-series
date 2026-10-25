@@ -275,7 +275,7 @@ $(document).one(':storyready', function () {
       Engine.play('Battle Concierge');
     }, 0);
   }
-  else if (dest) { setTimeout(function () { Engine.play(dest); setup.reset(); setup.addItem('almond'); }, 0); }
+  else if (dest) { setTimeout(function () { setup.reset(); State.variables.inv = ['almond']; Engine.play(dest); }, 0); }
   /* opening or refreshing the game always starts at the title screen, not wherever you left off */
   else if (State.passage !== 'Start') { setTimeout(function () { Engine.play('Start'); }, 0); }
 });
