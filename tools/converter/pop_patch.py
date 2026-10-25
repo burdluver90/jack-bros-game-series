@@ -4,7 +4,7 @@ GEN = os.path.dirname(os.path.abspath(__file__))
 p = os.path.join(GEN, 'bestiary.twee'); s = open(p, encoding='utf8').read()
 
 pop = ("/* how many of each creature live in the Backrooms */\n"
-       "setup.POP = { virus2: 6600, concierge: 1, clown: 1, hound: 340, skinstealer: 900, watcher: 75, chaser: 1, giant: 1,\n"
+       "setup.POP = { virus2: 25, concierge: 1, clown: 1, hound: 340, skinstealer: 900, watcher: 75, chaser: 1, giant: 1,\n"
        "  bacteria: 40000, virusyoung: 33000, poopers: 500, lizard: 8000, whisperer: 300, static: 1200, voice: 1, smiler: 5000,\n"
        "  partygoers: 12000, mannequins: 2500, crawler: 15000, redeyes: 30000,\n"
        "  hatchlings: 100000, doll: 1, moths: 1000000, mice: 250000, glowbugs: 5000000, bellmouse: 1 };\n"
