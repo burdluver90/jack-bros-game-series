@@ -225,17 +225,31 @@ function claws(at, dir, n, len, group) {   // little splayed claws, pointing alo
     c.position.copy(at).addScaledVector(d, len / 2); c.quaternion.setFromUnitVectors(V(0, 1, 0), d); group.add(c);
   }
 }
+// a limb made of 3 tendrils wrapped around each other like a rope, following the path through the given joints
+function braid(joints, r, thick, turns, group) {
+  const path = new THREE.CatmullRomCurve3(joints), up = V(0, 1, 0), side = V(1, 0, 0);
+  for (let s = 0; s < 3; s++) {
+    const pts = [];
+    for (let i = 0; i <= 36; i++) {
+      const k = i / 36, c = path.getPointAt(k), t = path.getTangentAt(k);
+      const n = V(0, 0, 0).crossVectors(t, Math.abs(t.y) > .9 ? side : up).normalize(), b = V(0, 0, 0).crossVectors(t, n);
+      const a = s / 3 * Math.PI * 2 + k * turns * Math.PI * 2, rr = r * (1 - k * .35);
+      pts.push(c.clone().addScaledVector(n, Math.cos(a) * rr).addScaledVector(b, Math.sin(a) * rr));
+    }
+    const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 60, thick, 6, false);
+    group.add(new THREE.Mesh(g, vMat));
+  }
+}
 const legs = [];
 [-1, 1].forEach(side => {
-  const leg = new THREE.Group();   // legs: thin, a little bent at the knee, ending in clawed toes
-  const hip = V(side * .1, HIP, 0), knee = V(side * .16, .55, .06), foot = V(side * .2, .03, 0);
-  leg.add(tendril(hip, knee, .1, .032, 5)); leg.add(tendril(knee, foot, .1, .026, 5));
-  leg.add(tendril(hip.clone().add(V(0, 0, .03)), knee.clone().add(V(.02, .05, 0)), .14, .012, 5));   // a strand wound around the thigh
+  const leg = new THREE.Group();   // legs: 3 tendrils wound together, a little bent at the knee, ending in clawed toes
+  const hip = V(side * .1, HIP, 0), knee = V(side * .16, .55, .06), foot = V(side * .2, .05, 0);
+  braid([hip, knee, foot], .028, .022, 3, leg);
   claws(foot, V(0, -.25, 1), 3, .14, leg);
   virus.add(leg); legs.push(leg);
-  const arm = new THREE.Group();   // arms: long and thin, hanging almost to the knees, with long finger-claws
+  const arm = new THREE.Group();   // arms: 3 tendrils wound together, hanging almost to the knees, with long finger-claws
   const sh = V(side * .17, SHOULDER, 0), elbow = V(side * .3, SHOULDER - .5, .08), hand = V(side * .34, HIP - .25, .14);
-  arm.add(tendril(sh, elbow, .08, .024, 5)); arm.add(tendril(elbow, hand, .08, .02, 5));
+  braid([sh, elbow, hand], .024, .018, 3, arm);
   claws(hand, V(side * .2, -1, .25), 4, .2, arm);
   virus.add(arm); legs.push(arm);
 });
