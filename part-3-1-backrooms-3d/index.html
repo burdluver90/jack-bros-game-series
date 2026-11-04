@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backrooms 3D: Level 1</title>
+<title>Backrooms 3D</title>
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: Arial, sans-serif; color: #f4ecc2; }
   canvas { display: block; }
@@ -21,181 +21,293 @@
   .bar { width: 150px; height: 6px; margin: 3px 0 4px; background: #3b3520; border-radius: 3px; overflow: hidden; }
   .bar div { height: 100%; width: 100%; background: #8fe3b0; }
   #san.low { color: #f87171; font-weight: bold; }
+  .slot { display: inline-block; padding: 1px 6px; margin-right: 4px; border: 1px solid #6b6040; border-radius: 4px; }
+  .slot.on { border-color: #fde68a; background: rgba(253, 230, 138, .18); }
+  #dark { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, transparent 30%, rgba(40, 0, 0, .9) 100%); }
+  #fade { position: fixed; inset: 0; pointer-events: none; background: #000; opacity: 0; transition: opacity 1.2s; }
+  #lvlcard { position: fixed; left: 0; right: 0; top: 34%; text-align: center; pointer-events: none; opacity: 0; transition: opacity 1s; text-shadow: 0 2px 8px #000; }
+  #lvlcard h2 { margin: 0; font-size: 40px; color: #fde68a; letter-spacing: .08em; }
+  #lvlcard div { font-size: 20px; }
   .keys { display: inline-block; padding: 2px 7px; border: 1px solid #fde68a; border-radius: 4px; margin: 0 2px; }
 </style>
 </head>
 <body>
 <div id="hud">
-  <div><b>Level 1</b> (3D test)</div>
+  <div><b id="lvl">Level 0</b> <span id="lsub">The Lobby</span></div>
   <div>🧠 Sanity: <span id="san">100</span></div>
   <div class="bar"><div id="stam"></div></div>
-  <div>Posters found: <span id="pc">0</span> / 5</div>
-  <div>Gear: 🗡️ sword, 💧 almond water x<span id="aw">2</span></div>
-  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink</div>
+  <div>Posters found: <span id="pc">0</span> / <span id="ptot">8</span></div>
+  <div><span id="slot" class="slot">1 🗡️ sword</span> 💧 almond water x<span id="aw">2</span></div>
+  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink · 1 sword · click swing</div>
 </div>
+<div id="dark"></div>
 <div id="poster"><h2 id="pt"></h2><div id="pl"></div></div>
 <div id="msg"></div>
+<div id="lvlcard"><h2 id="lch"></h2><div id="lcs"></div></div>
+<div id="fade"></div>
 <div id="title">
   <h1>The Backrooms Escape</h1>
-  <p><b>RATED M</b> · 3D test of Level 1</p>
-  <p>You woke up somewhere you should not be. Explore the yellow halls, read the posters on the walls, and find out what is waiting at the end.</p>
+  <p><b>RATED M</b> · 3D test</p>
+  <p>You woke up somewhere you should not be. Explore the yellow halls of Level 0, read the posters, and find out what is waiting at the end. Then get through the Habitable Zone alive.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> turn left <span class="keys">D</span> turn right<br>
-     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water</p>
+     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your sword <span class="keys">Click</span> swing it</p>
   <p>Your sanity drops by 1 every 6 seconds. If it hits 0, you lose your mind.</p>
   <button class="btn" id="go">Start</button>
 </div>
 <div id="end">
   <h1 id="eh">To be continued...</h1>
-  <p id="ep">That is all of the 3D test for now. You found <span id="ef">0</span> of 5 posters.</p>
+  <p id="ep"></p>
   <a class="btn" href="../part-3-1-backrooms/index.html">Play the full game</a>
-  <button class="btn" id="again" style="background:#b8a55e">Explore again</button>
+  <button class="btn" id="again" style="background:#b8a55e">Play again</button>
 </div>
 
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 <script type="module">
 import * as THREE from 'three';
 
-// # = wall, . = floor, S = start, V = where the virus waits
-// wide open rooms with pillars and broken walls, like Level 0; the virus waits in the closed-off corner room
-const MAP = [
-  '#########################',
-  '#S......................#',
-  '#...#.....#.....#.....#.#',
-  '#.......................#',
-  '#..###.......#.......#..#',
-  '#......#..........#.....#',
-  '#...#.....#####.........#',
-  '#.........#...#....#....#',
-  '#..#......#.......###...#',
-  '#.......#.....#.........#',
-  '#...#...............#...#',
-  '#.......###.......#.....#',
-  '#..#..........#.........#',
-  '#.......#..........##...#',
-  '#...#.......#...........#',
-  '#..........###..........#',
-  '#..##...#.........#######',
-  '#.................#.....#',
-  '#.....#.....#.....#..V..#',
-  '#.......................#',
-  '#########################'
-];
-const CELL = 2, H = 2.6;
-const wall = (r, c) => !MAP[r] || MAP[r][c] === undefined || MAP[r][c] === '#';
+const CELL = 2;
+const DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]];
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;   // fixed random, same shapes every time
 
-// the same posters as the 2D game's first level, each on a floor cell [row, col]
-const POSTERS = [
-  { at: [1, 10], title: 'ALMOND WATER', lines: ['Seeing smiles?', 'Feeling strange?', 'DRINK IT.', 'Then find more.'] },
-  { at: [5, 8], title: 'NO CAKE =)', lines: ['Never eat food', 'you find here.', 'Especially cake.'] },
-  { at: [7, 11], title: 'AVOID RED', lines: ['Red water.', 'Red doors.', 'Red lights.'] },
-  { at: [12, 4], title: 'STAY ARMED', lines: ['You WILL have', 'to fight.', 'Take the weapon.'] },
-  { at: [17, 17], title: 'LOST?', lines: ['Hallway splits?', 'The way DOWN', 'is the way out.'] }
+// ---------- the two levels ----------
+// # = wall, P = concrete pillar, C = stack of crates, . = floor
+// S = start, V = where the virus waits, H = the hazmat explorer (a Skin Stealer), X = the exit
+const LEVELS = [
+  {
+    name: 'Level 0', sub: 'The Lobby',
+    map: [
+      '#########################',
+      '#S......................#',
+      '#...#.....#.....#.....#.#',
+      '#.......................#',
+      '#..###.......#.......#..#',
+      '#......#..........#.....#',
+      '#...#.....#####.........#',
+      '#.........#...#....#....#',
+      '#..#......#.......###...#',
+      '#.......#.....#.........#',
+      '#...#...............#...#',
+      '#.......###.......#.....#',
+      '#..#..........#.........#',
+      '#.......#..........##...#',
+      '#...#.......#...........#',
+      '#..........###..........#',
+      '#..##...#.........#######',
+      '#.................#.....#',
+      '#.....#.....#.....#..V..#',
+      '#.......................#',
+      '#########################'
+    ],
+    H: 2.6, tall: { r: 16, c: 19, h: 5.6 },   // the virus room has a tall ceiling so the virus fits
+    fog: [0x2b2510, 3, 24], ambient: [0xfff2b0, .55], lampColor: 0xfffbe0, lightColor: 0xfff0b0, lightPower: 10,
+    walls: g => { g.fillStyle = '#c9b458'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9a447'; for (let x = 0; x < 128; x += 16) g.fillRect(x, 0, 6, 128); g.fillStyle = '#8f7d32'; g.fillRect(0, 118, 128, 10); },
+    floor: g => { g.fillStyle = '#7d6a33'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 400; i++) { g.fillStyle = Math.random() < .5 ? '#73612d' : '#86733a'; g.fillRect(Math.random() * 128, Math.random() * 128, 3, 3); } },
+    ceil: g => { g.fillStyle = '#d8cfa6'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#a99f78'; g.lineWidth = 4; g.strokeRect(0, 0, 128, 128); },
+    posters: [
+      { at: [1, 10], title: 'ALMOND WATER', lines: ['Seeing smiles?', 'Feeling strange?', 'DRINK IT.', 'Then find more.'] },
+      { at: [5, 8], title: 'NO CAKE =)', lines: ['Never eat food', 'you find here.', 'Especially cake.'] },
+      { at: [7, 11], title: 'AVOID RED', lines: ['Red water.', 'Red doors.', 'Red lights.'] },
+      { at: [12, 4], title: 'STAY ARMED', lines: ['You WILL have', 'to fight.', 'Take the weapon.'] },
+      { at: [17, 17], title: 'LOST?', lines: ['Hallway splits?', 'The way DOWN', 'is the way out.'] },
+      { at: [2, 11], title: 'IF IT SMILES', lines: ['RUN.', 'Never walk', 'toward it.', 'Never say', 'hi back.'] },
+      { at: [9, 13], title: 'BRING A LIGHT', lines: ['Some levels', 'have no lights.', 'Things live', 'in the dark.'] },
+      { at: [14, 13], title: 'PARTY TONIGHT', lines: ['Everyone is', 'invited =)', 'Wear a hat.'] }
+    ],
+    bottles: [[3, 20], [9, 3], [14, 9], [17, 10]],
+    intro: 'You wake up on damp carpet. The lights buzz. Where are you?'
+  },
+  {
+    name: 'Level 1', sub: 'The Habitable Zone',
+    map: [
+      '#########################',
+      '#S........CC...........C#',
+      '#...P.....CC..P.....P..C#',
+      '#.......................#',
+      '#CC....#######.....CC...#',
+      '#CC.P..#.....#..P..CC.P.#',
+      '#......#..H..#..........#',
+      '#....C.#.....#....C.....#',
+      '#..P.C...........PC..P..#',
+      '#.......####.###........#',
+      '#CCC.......#.#.....CCC..#',
+      '#...P......#.#..P.......#',
+      '#..........#.#..........#',
+      '#...CC..P.......P...CC..#',
+      '#...CC..........#...CC..#',
+      '#.......P..#....#..P....#',
+      '#..........#....#.......#',
+      '#..P...CC..#..P.###.....#',
+      '#......CC..#.........P..#',
+      '#..........#...........X#',
+      '#########################'
+    ],
+    H: 3.4,
+    fog: [0x15181b, 2, 19], ambient: [0x9aa6b4, .32], lampColor: 0xe9f1ff, lightColor: 0xdbe6ff, lightPower: 9,
+    walls: g => {   // stained concrete
+      g.fillStyle = '#7d7f7c'; g.fillRect(0, 0, 128, 128);
+      for (let i = 0; i < 300; i++) { g.fillStyle = Math.random() < .5 ? '#737572' : '#878985'; g.fillRect(Math.random() * 128, Math.random() * 128, 2, 2); }
+      g.fillStyle = 'rgba(60, 50, 35, .35)'; g.fillRect(0, 96, 128, 32); g.fillRect(40, 0, 10, 100);
+      g.strokeStyle = '#666864'; g.lineWidth = 2; g.strokeRect(0, 0, 128, 128);
+    },
+    floor: g => {   // dark concrete with damp patches
+      g.fillStyle = '#4a4c4b'; g.fillRect(0, 0, 128, 128);
+      for (let i = 0; i < 500; i++) { g.fillStyle = Math.random() < .5 ? '#424443' : '#535554'; g.fillRect(Math.random() * 128, Math.random() * 128, 2, 2); }
+      g.strokeStyle = '#3a3c3b'; g.lineWidth = 2; g.strokeRect(0, 0, 128, 128);
+    },
+    ceil: g => { g.fillStyle = '#3c3e40'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#2f3133'; g.fillRect(0, 56, 128, 16); },
+    posters: [
+      { at: [3, 9], title: "DON'T TRUST", lines: ['ANYONE.', 'Not even people.', 'ESPECIALLY people', 'who wave.'] },
+      { at: [12, 12], title: 'SKIN STEALERS', lines: ['They wear', 'what they catch.', 'They are fast.', 'You are faster.'] },
+      { at: [18, 10], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Do not stop.'] }
+    ],
+    bottles: [[3, 12], [16, 5], [10, 16]],
+    puddles: [[3, 6], [8, 10], [12, 4], [16, 14], [14, 9], [19, 18]],
+    intro: 'You land hard on cold concrete. It is darker here, and it smells like rain. Find the exit.'
+  }
 ];
 
+// ---------- renderer ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x2b2510);
-scene.fog = new THREE.Fog(0x2b2510, 3, 24);
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 60);
+scene.add(camera);
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 
-// simple drawn textures so it looks like Level 0/1: stripy yellow wallpaper, damp carpet, ceiling tiles
 function tex(draw, rep) {
   const c = document.createElement('canvas'); c.width = c.height = 128;
   draw(c.getContext('2d'));
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]);
   t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-const wallTex = tex(g => { g.fillStyle = '#c9b458'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9a447'; for (let x = 0; x < 128; x += 16) g.fillRect(x, 0, 6, 128); g.fillStyle = '#8f7d32'; g.fillRect(0, 118, 128, 10); }, [1, 1]);
-const floorTex = tex(g => { g.fillStyle = '#7d6a33'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 400; i++) { g.fillStyle = Math.random() < .5 ? '#73612d' : '#86733a'; g.fillRect(Math.random() * 128, Math.random() * 128, 3, 3); } }, [MAP[0].length, MAP.length]);
-const ceilTex = tex(g => { g.fillStyle = '#d8cfa6'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#a99f78'; g.lineWidth = 4; g.strokeRect(0, 0, 128, 128); }, [MAP[0].length, MAP.length]);
-
-scene.add(new THREE.AmbientLight(0xfff2b0, 0.55));
-const W = MAP[0].length * CELL, D = MAP.length * CELL;
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: floorTex }));
-floor.rotation.x = -Math.PI / 2; floor.position.set(W / 2, 0, D / 2); scene.add(floor);
-// the virus room (bottom-right corner, from row 16 and column 19) has a tall ceiling so the virus fits
-const H2 = 5.6, TR = 16, TC = 19;
-const tall = (r, c) => r >= TR && c >= TC;
-function ceiling(x0, z0, x1, z1, y) {
-  const t = ceilTex.clone(); t.repeat.set((x1 - x0) / CELL, (z1 - z0) / CELL); t.needsUpdate = true;
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshLambertMaterial({ map: t }));
-  m.rotation.x = Math.PI / 2; m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2); scene.add(m);
-}
-ceiling(0, 0, W, TR * CELL, H); ceiling(0, TR * CELL, TC * CELL, D, H); ceiling(TC * CELL, TR * CELL, W, D, H2);
-
-const wallGeo = new THREE.BoxGeometry(CELL, H, CELL), wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
-const tallGeo = new THREE.BoxGeometry(CELL, H2, CELL);
-// the strip of wall above the doorway, closing off the tall room above the normal ceiling
-const upper = new THREE.Mesh(new THREE.BoxGeometry(0.1, H2 - H, (MAP.length - TR) * CELL), wallMat);
-upper.position.set(TC * CELL, (H + H2) / 2, (TR + (MAP.length - TR) / 2) * CELL); scene.add(upper);
-const lampGeo = new THREE.PlaneGeometry(0.9, 0.4), lampMat = new THREE.MeshBasicMaterial({ color: 0xfffbe0 });
-const lights = [];
-let start = [1, 1], virusAt = [13, 9];
-MAP.forEach((row, r) => [...row].forEach((ch, c) => {
-  const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2;
-  const hh = tall(r, c) ? H2 : H;
-  if (ch === '#') { const m = new THREE.Mesh(tall(r, c) ? tallGeo : wallGeo, wallMat); m.position.set(x, hh / 2, z); scene.add(m); return; }
-  if (ch === 'S') start = [r, c];
-  if (ch === 'V') virusAt = [r, c];
-  // a buzzing ceiling light every couple of tiles; only some of them cast real light, to keep it fast
-  if (r % 2 === 1 && c % 2 === 1) {
-    const lamp = new THREE.Mesh(lampGeo, lampMat.clone()); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, hh - 0.01, z); scene.add(lamp);
-    if ((r % 6 === 1 && c % 6 === 1) || (tall(r, c) && c === 21)) { const p = new THREE.PointLight(0xfff0b0, tall(r, c) ? 18 : 10, 14, 2); p.position.set(x, hh - 0.3, z); scene.add(p); lights.push({ p, lamp, base: tall(r, c) ? 18 : 10 }); }
-  }
-}));
-
 // posters: notebook paper with a red title, pinned to whichever wall is next to its floor tile
 function posterTexture(p) {
   const c = document.createElement('canvas'); c.width = 256; c.height = 340; const g = c.getContext('2d');
   g.fillStyle = '#fbfaf2'; g.fillRect(0, 0, 256, 340);
   g.strokeStyle = '#b9d3ee'; for (let y = 60; y < 340; y += 26) { g.beginPath(); g.moveTo(0, y); g.lineTo(256, y); g.stroke(); }
   g.fillStyle = '#dc2626'; g.beginPath(); g.arc(128, 16, 9, 0, 7); g.fill();
-  g.fillStyle = '#b91c1c'; g.font = 'bold 30px Comic Sans MS, cursive'; g.textAlign = 'center'; g.fillText(p.title, 128, 64);
+  g.fillStyle = '#b91c1c'; g.font = 'bold 28px Comic Sans MS, cursive'; g.textAlign = 'center'; g.fillText(p.title, 128, 64);
   g.fillStyle = '#1a1a1a'; g.font = '22px Comic Sans MS, cursive'; p.lines.forEach((l, i) => g.fillText(l, 128, 118 + i * 34));
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-const DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]];
-POSTERS.forEach(p => {
-  const [r, c] = p.at, d = DIRS.find(([dr, dc]) => wall(r + dr, c + dc));
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1), new THREE.MeshLambertMaterial({ map: posterTexture(p) }));
-  m.position.set(c * CELL + CELL / 2 + d[1] * (CELL / 2 - 0.02), 1.5, r * CELL + CELL / 2 + d[0] * (CELL / 2 - 0.02));
-  m.lookAt(c * CELL + CELL / 2, 1.5, r * CELL + CELL / 2);
-  scene.add(m); p.mesh = m; p.found = false;
-});
+const crateTex = tex(g => {
+  g.fillStyle = '#8a6a3c'; g.fillRect(0, 0, 128, 128);
+  g.fillStyle = '#74572f'; for (let y = 0; y < 128; y += 21) g.fillRect(0, y, 128, 3);
+  g.strokeStyle = '#5b4324'; g.lineWidth = 10; g.strokeRect(5, 5, 118, 118); g.beginPath(); g.moveTo(8, 8); g.lineTo(120, 120); g.stroke();
+}, [1, 1]);
 
-// the virus, built like the picture in the 2D game: a glossy black, lumpy crown with petal-like folds,
-// held up high on long, thin, twisting tendril legs that split and end in little claws. It has no face.
+// ---------- building a level ----------
+function buildLevel(L) {
+  const map = L.map, rows = map.length, cols = map[0].length, W = cols * CELL, D = rows * CELL;
+  L.wall = (r, c) => !map[r] || map[r][c] === undefined || '#PC'.includes(map[r][c]);
+  const tall = (r, c) => L.tall && r >= L.tall.r && c >= L.tall.c, hOf = (r, c) => tall(r, c) ? L.tall.h : L.H;
+  const g = new THREE.Group(); L.group = g; L.lights = []; scene.add(g);
+  g.add(new THREE.AmbientLight(L.ambient[0], L.ambient[1]));
+  const wallTex = tex(L.walls, [1, 1]), floorTex = tex(L.floor, [cols, rows]), ceilTex = tex(L.ceil, [cols, rows]);
+  const wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: floorTex }));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(W / 2, 0, D / 2); g.add(floor);
+  const ceiling = (x0, z0, x1, z1, y) => {
+    const t = ceilTex.clone(); t.repeat.set((x1 - x0) / CELL, (z1 - z0) / CELL); t.needsUpdate = true;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshLambertMaterial({ map: t }));
+    m.rotation.x = Math.PI / 2; m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2); g.add(m);
+  };
+  if (L.tall) {
+    const { r: TR, c: TC, h: H2 } = L.tall;
+    ceiling(0, 0, W, TR * CELL, L.H); ceiling(0, TR * CELL, TC * CELL, D, L.H); ceiling(TC * CELL, TR * CELL, W, D, H2);
+    const upper = new THREE.Mesh(new THREE.BoxGeometry(.1, H2 - L.H, (rows - TR) * CELL), wallMat);   // closes the tall room off above the normal ceiling
+    upper.position.set(TC * CELL, (L.H + H2) / 2, (TR + (rows - TR) / 2) * CELL); g.add(upper);
+  } else ceiling(0, 0, W, D, L.H);
+  const lampGeo = new THREE.PlaneGeometry(.9, .4), boxes = {};
+  const box = (w, h, d) => boxes[w + ',' + h + ',' + d] || (boxes[w + ',' + h + ',' + d] = new THREE.BoxGeometry(w, h, d));
+  const crateMat = new THREE.MeshLambertMaterial({ map: crateTex });
+  map.forEach((row, r) => [...row].forEach((ch, c) => {
+    const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2, hh = hOf(r, c);
+    if (ch === '#') { const m = new THREE.Mesh(box(CELL, hh, CELL), wallMat); m.position.set(x, hh / 2, z); g.add(m); return; }
+    if (ch === 'P') { const m = new THREE.Mesh(box(.8, hh, .8), wallMat); m.position.set(x, hh / 2, z); g.add(m); return; }
+    if (ch === 'C') {   // a stack of crates, the top one smaller and turned a little
+      const a = new THREE.Mesh(box(1.8, 1.2, 1.8), crateMat); a.position.set(x, .6, z); g.add(a);
+      if ((r + c) % 2) { const b = new THREE.Mesh(box(1.2, 1, 1.2), crateMat); b.position.set(x + .1, 1.7, z - .1); b.rotation.y = .3; g.add(b); }
+      return;
+    }
+    if (ch === 'S') L.start = [r, c];
+    if (ch === 'V') L.virusAt = [r, c];
+    if (ch === 'H') L.hazAt = [r, c];
+    if (ch === 'X') L.exitAt = [r, c];
+    // ceiling lights; only some of them cast real light, to keep it fast
+    if (r % 2 === 1 && c % 2 === 1) {
+      const lamp = new THREE.Mesh(lampGeo, new THREE.MeshBasicMaterial({ color: L.lampColor })); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, hh - .01, z); g.add(lamp);
+      if ((r % 6 === 1 && c % 6 === 1) || (tall(r, c) && c === 21)) {
+        const power = tall(r, c) ? 18 : L.lightPower, p = new THREE.PointLight(L.lightColor, power, 14, 2);
+        p.position.set(x, hh - .3, z); g.add(p); L.lights.push({ p, lamp, base: power });
+      }
+    }
+  }));
+  (L.puddles || []).forEach(([r, c]) => {   // shiny puddles of water on the concrete
+    const m = new THREE.Mesh(new THREE.CircleGeometry(.5 + rnd() * .4, 20), new THREE.MeshStandardMaterial({ color: 0x1c2328, roughness: .05, metalness: .6 }));
+    m.rotation.x = -Math.PI / 2; m.scale.set(1.4, 1, 1); m.position.set(c * CELL + CELL / 2, .005, r * CELL + CELL / 2); g.add(m);
+  });
+  L.posters.forEach(p => {
+    const [r, c] = p.at, d = DIRS.find(([dr, dc]) => L.wall(r + dr, c + dc));
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(.75, 1), new THREE.MeshLambertMaterial({ map: posterTexture(p) }));
+    m.position.set(c * CELL + CELL / 2 + d[1] * (CELL / 2 - .02), 1.5, r * CELL + CELL / 2 + d[0] * (CELL / 2 - .02));
+    m.lookAt(c * CELL + CELL / 2, 1.5, r * CELL + CELL / 2); g.add(m); p.mesh = m;
+  });
+  L.bottleObjs = L.bottles.map(([r, c]) => {   // almond water: walk over a bottle to pick it up
+    const b = new THREE.Group();
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(.09, .1, .32, 12), new THREE.MeshStandardMaterial({ color: 0xcfe9ff, roughness: .1, transparent: true, opacity: .75, emissive: 0x335566, emissiveIntensity: .6 }));
+    const label = new THREE.Mesh(new THREE.CylinderGeometry(.101, .101, .1, 12), new THREE.MeshLambertMaterial({ color: 0xf5e6c8 }));
+    const capM = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .06, 10), new THREE.MeshLambertMaterial({ color: 0xffffff }));
+    glass.position.y = .2; label.position.y = .2; capM.position.y = .39; b.add(glass, label, capM);
+    b.position.set(c * CELL + CELL / 2, 0, r * CELL + CELL / 2); g.add(b);
+    return { g: b, taken: false };
+  });
+  if (L.exitAt) {   // the exit: a metal door in the wall with a glowing green EXIT sign over it
+    const [r, c] = L.exitAt, x = c * CELL + CELL / 2, z = r * CELL + CELL / 2, d = DIRS.find(([dr, dc]) => L.wall(r + dr, c + dc));
+    const door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, .08), new THREE.MeshStandardMaterial({ color: 0x55606a, metalness: .5, roughness: .5 }));
+    door.position.set(x + d[1] * (CELL / 2 - .05), 1.05, z + d[0] * (CELL / 2 - .05)); door.lookAt(x, 1.05, z); g.add(door);
+    const sc = document.createElement('canvas'); sc.width = 128; sc.height = 48; const sg = sc.getContext('2d');
+    sg.fillStyle = '#0b3d1a'; sg.fillRect(0, 0, 128, 48); sg.fillStyle = '#5dff8f'; sg.font = 'bold 34px Arial'; sg.textAlign = 'center'; sg.fillText('EXIT', 64, 37);
+    const st = new THREE.CanvasTexture(sc); st.colorSpace = THREE.SRGBColorSpace;
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(.7, .26), new THREE.MeshBasicMaterial({ map: st }));
+    sign.position.set(x + d[1] * (CELL / 2 - .06), 2.4, z + d[0] * (CELL / 2 - .06)); sign.lookAt(x, 2.4, z); g.add(sign);
+    const glow = new THREE.PointLight(0x5dff8f, 6, 8, 2); glow.position.set(x, 2.2, z); g.add(glow);
+    L.exitPos = V(x, 0, z);
+  }
+  g.visible = false;
+  return L;
+}
+LEVELS.forEach(buildLevel);
+
+// ---------- the virus ----------
+// built like the picture in the 2D game: a glossy black, lumpy crown with petal-like folds on a slender body of
+// twisting tendrils, 2 legs and 2 arms. It has no face.
 const virus = new THREE.Group();
 const vMat = new THREE.MeshStandardMaterial({ color: 0x0b0a0d, roughness: 0.22, metalness: 0.15 });
-let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;   // fixed random, same shape every time
-// lumpy blob: a sphere with its points pushed in and out
-function lump(rad, bump) {
+function lump(rad, bump) {   // lumpy blob: a sphere with its points pushed in and out
   const g = new THREE.SphereGeometry(rad, 18, 14), p = g.attributes.position, v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); v.multiplyScalar(1 + (Math.sin(v.x * 23) * Math.cos(v.y * 19) * Math.sin(v.z * 17)) * bump); p.setXYZ(i, v.x, v.y, v.z); }
   g.computeVertexNormals(); return new THREE.Mesh(g, vMat);
 }
-// a twisting tendril from a to b that tapers to a point
-function tendril(a, b, wob, thick, parts) {
+function tendril(a, b, wob, thick, parts) {   // a twisting tendril from a to b that tapers to a point
   const pts = [];
   for (let i = 0; i <= parts; i++) {
     const k = i / parts, p = a.clone().lerp(b, k);
-    if (i && i < parts) p.add(new THREE.Vector3((rnd() - .5) * wob, (rnd() - .5) * wob * .4, (rnd() - .5) * wob));
+    if (i && i < parts) p.add(V((rnd() - .5) * wob, (rnd() - .5) * wob * .4, (rnd() - .5) * wob));
     pts.push(p);
   }
-  const curve = new THREE.CatmullRomCurve3(pts), g = new THREE.TubeGeometry(curve, 40, thick * 1.5, 6, false);   // 1.5x: thicker tendrils
+  const curve = new THREE.CatmullRomCurve3(pts), g = new THREE.TubeGeometry(curve, 40, thick * 1.5, 6, false);
   const p = g.attributes.position, v = new THREE.Vector3(), segs = 41;
-  for (let i = 0; i < p.count; i++) {   // taper toward the tip
+  for (let i = 0; i < p.count; i++) {
     const k = Math.floor(i / 7) / segs, c = curve.getPointAt(Math.min(1, k));
     v.fromBufferAttribute(p, i).sub(c).multiplyScalar(1 - k * 0.75).add(c); p.setXYZ(i, v.x, v.y, v.z);
   }
   g.computeVertexNormals(); return new THREE.Mesh(g, vMat);
 }
 const TOP = 1.95;
-// the crown: a cluster of knotted lumps, folded petals and a tall stump
 const crown = new THREE.Group(); crown.position.y = TOP; crown.scale.setScalar(.7); virus.add(crown);
 [[0, 0, 0, .32], [.22, .1, .05, .2], [-.24, .06, -.04, .22], [.05, .12, -.2, .18], [-.05, .08, .22, .17]].forEach(([x, y, z, s]) => { const m = lump(s, .18); m.position.set(x, y, z); m.scale.y = .7; crown.add(m); });
 const stump = new THREE.Mesh(new THREE.CylinderGeometry(.09, .14, .4, 10), vMat); stump.position.set(.18, .3, -.05); stump.rotation.z = -.25; crown.add(stump);
@@ -204,13 +316,10 @@ for (let i = 0; i < 6; i++) {   // petal-like folds (in the 2D picture they sens
   const pet = lump(.2, .15), a = i / 6 * Math.PI * 2 + .3;
   pet.scale.set(.35, .9, .7); pet.position.set(Math.cos(a) * .3, .12, Math.sin(a) * .3); pet.rotation.set(Math.sin(a) * .6, -a, Math.cos(a) * .6 - .3); crown.add(pet);
 }
-// a ragged rim under the crown, with a few loose strands curling off it
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 10; i++) {   // a ragged rim under the crown, with loose strands curling off it
   const a = i / 10 * Math.PI * 2;
-  crown.add(tendril(new THREE.Vector3(Math.cos(a) * .25, -.05, Math.sin(a) * .25), new THREE.Vector3(Math.cos(a) * .6, -.1 - rnd() * .15, Math.sin(a) * .6), .12, .025, 4));
+  crown.add(tendril(V(Math.cos(a) * .25, -.05, Math.sin(a) * .25), V(Math.cos(a) * .6, -.1 - rnd() * .15, Math.sin(a) * .6), .12, .025, 4));
 }
-// a slender body: a thin torso of twisted strands, 2 long legs and 2 long arms, all tendrils
-const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const NECK = TOP - .05, HIP = 1.05, SHOULDER = TOP - .25;
 for (let s = 0; s < 4; s++) {   // torso: four thin strands wound around each other from the hips to the crown
   const a = s / 4 * Math.PI * 2;
@@ -218,19 +327,9 @@ for (let s = 0; s < 4; s++) {   // torso: four thin strands wound around each ot
 }
 virus.add(tendril(V(-.16, SHOULDER, 0), V(.16, SHOULDER, 0), .06, .025, 4));   // shoulders
 virus.add(tendril(V(-.1, HIP, 0), V(.1, HIP, 0), .04, .03, 3));               // hips
-function claws(at, dir, n, len, group) {   // little splayed claws, pointing along dir
-  for (let f = 0; f < n; f++) {
-    const spread = (f - (n - 1) / 2) * .35, d = dir.clone().applyAxisAngle(V(0, 1, 0), spread).normalize();
-    const c = new THREE.Mesh(new THREE.ConeGeometry(.012, len, 5), vMat);
-    c.position.copy(at).addScaledVector(d, len / 2); c.quaternion.setFromUnitVectors(V(0, 1, 0), d); group.add(c);
-  }
-}
-// a limb made of 3 tendrils loosely wound together like in the 2D picture: not a neat rope, but lumpy, knotted
-// strands that twist unevenly, drift apart and squeeze back together, getting thicker and thinner as they go
-// At the end the 3 strands untwist and fan out along `tipDir`, tapering into claws, so hands and feet grow
-// smoothly out of the limb instead of stopping in a cut-off.
+// a limb made of 3 tendrils loosely wound together like in the 2D picture: lumpy, knotted strands that twist
+// unevenly, drift apart and squeeze back together. At the end the strands fan out and taper into claws.
 function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
-  // wobble the path itself a little between the joints so the limb is not perfectly smooth
   const wob = [];
   for (let j = 0; j < joints.length - 1; j++) {
     wob.push(joints[j]);
@@ -244,16 +343,15 @@ function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
     for (let i = 0; i <= 40; i++) {
       const k = i / 40, c = path.getPointAt(k), t = path.getTangentAt(k);
       const n = V(0, 0, 0).crossVectors(t, Math.abs(t.y) > .9 ? side : up).normalize(), b = V(0, 0, 0).crossVectors(t, n);
-      const a = s / 3 * Math.PI * 2 + k * turns * Math.PI * 2 + Math.sin(k * f3 + ph2) * .9;   // uneven twist
-      const rr = r * (.35 + .9 * Math.abs(Math.sin(k * f1 + ph)) + .4 * Math.sin(k * f2)) * (1 - k * .3);   // drifts apart and back
+      const a = s / 3 * Math.PI * 2 + k * turns * Math.PI * 2 + Math.sin(k * f3 + ph2) * .9;
+      const rr = r * (.35 + .9 * Math.abs(Math.sin(k * f1 + ph)) + .4 * Math.sin(k * f2)) * (1 - k * .3);
       pts.push(c.clone().addScaledVector(n, Math.cos(a) * rr).addScaledVector(b, Math.sin(a) * rr));
-      sizes.push((1 + .45 * Math.sin(k * 13 + ph3) * Math.sin(k * 7 + ph)) * (1 - Math.max(0, k - .8) * 1.5));   // knots and thin spots, narrowing near the end
+      sizes.push((1 + .45 * Math.sin(k * 13 + ph3) * Math.sin(k * 7 + ph)) * (1 - Math.max(0, k - .8) * 1.5));
     }
-    // the claw: this strand curls out from the hand or foot, fanned away from the other two, and tapers to a point
     const fan = tipDir.clone().applyAxisAngle(fanAxis, (s - 1) * .55).normalize(), last = pts[pts.length - 1];
     for (let i = 1; i <= 6; i++) {
       const q = i / 6, p2 = last.clone().addScaledVector(fan, tipLen * q);
-      p2.y = Math.max(.02, p2.y - tipLen * .35 * q * q);   // claws curl down toward the floor, but never through it
+      p2.y = Math.max(.02, p2.y - tipLen * .35 * q * q);
       pts.push(p2); sizes.push(.7 * (1 - q) + .06);
     }
     const curve = new THREE.CatmullRomCurve3(pts), segs = 80, g = new THREE.TubeGeometry(curve, segs, strandThick, 7, false);
@@ -265,157 +363,283 @@ function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
     g.computeVertexNormals(); group.add(new THREE.Mesh(g, vMat));
   }
 }
-const legs = [];
+const limbs = [];
 [-1, 1].forEach(side => {
-  const leg = new THREE.Group();   // legs: 3 tendrils wound together, a little bent at the knee, ending in clawed toes
-  const hip = V(side * .1, HIP, 0), knee = V(side * .16, .55, .06), foot = V(side * .2, .05, 0);
-  braid([hip, knee, foot], .03, .022, 1.3, leg, V(0, 0, 1), .2, V(0, 1, 0));   // toes fan out forward along the floor
-  virus.add(leg); legs.push(leg);
-  const arm = new THREE.Group();   // arms: 3 tendrils wound together, hanging almost to the knees, with long finger-claws
-  const sh = V(side * .17, SHOULDER, 0), elbow = V(side * .3, SHOULDER - .5, .08), hand = V(side * .34, HIP - .25, .14);
-  braid([sh, elbow, hand], .026, .018, 1.1, arm, V(side * .15, -1, .3), .26, V(0, 0, 1));   // long fingers hang down from the hand
-  virus.add(arm); legs.push(arm);
+  const leg = new THREE.Group();
+  braid([V(side * .1, HIP, 0), V(side * .16, .55, .06), V(side * .2, .05, 0)], .03, .022, 1.3, leg, V(0, 0, 1), .2, V(0, 1, 0));
+  virus.add(leg); limbs.push(leg);
+  const arm = new THREE.Group();
+  braid([V(side * .17, SHOULDER, 0), V(side * .3, SHOULDER - .5, .08), V(side * .34, HIP - .25, .14)], .026, .018, 1.1, arm, V(side * .15, -1, .3), .26, V(0, 0, 1));
+  virus.add(arm); limbs.push(arm);
 });
-// thin sensory hairs that drift around the crown
-const tendrils = [];
-for (let i = 0; i < 8; i++) {
-  const a = i / 8 * Math.PI * 2, h = tendril(new THREE.Vector3(0, 0, 0), new THREE.Vector3(Math.cos(a) * .35, .25 + rnd() * .2, Math.sin(a) * .35), .1, .008, 4);
-  h.position.y = .15; crown.add(h); tendrils.push(h);
+const hairs = [];
+for (let i = 0; i < 8; i++) {   // thin sensory hairs that drift around the crown
+  const a = i / 8 * Math.PI * 2, h = tendril(V(0, 0, 0), V(Math.cos(a) * .35, .25 + rnd() * .2, Math.sin(a) * .35), .1, .008, 4);
+  h.position.y = .15; crown.add(h); hairs.push(h);
 }
-// a dim glow above it so the glossy black catches the light
 const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
-virus.scale.setScalar(2);   // twice as big as a person: it towers over you
-virus.position.set(virusAt[1] * CELL + CELL / 2, 0, virusAt[0] * CELL + CELL / 2);
-virus.visible = false; scene.add(virus);
+virus.scale.setScalar(2);   // twice as big as a person
+const L0 = LEVELS[0], L1 = LEVELS[1];
+virus.position.set(L0.virusAt[1] * CELL + CELL / 2, 0, L0.virusAt[0] * CELL + CELL / 2);
+L0.group.add(virus);
 
-// player
-const player = { x: start[1] * CELL + CELL / 2, z: start[0] * CELL + CELL / 2, yaw: Math.PI, r: 0.3 };
+// ---------- the Skin Stealer (Level 1) ----------
+// it looks like a lost explorer in a yellow hazmat suit who waves at you... until it gets close
+const ss = new THREE.Group();
+const suitMat = new THREE.MeshLambertMaterial({ color: 0xf5b301 }), visorMat = new THREE.MeshStandardMaterial({ color: 0x1f5f5a, roughness: .2 });
+const ssBody = new THREE.Mesh(new THREE.CapsuleGeometry(.24, .62, 6, 12), suitMat); ssBody.position.y = 1.02; ss.add(ssBody);
+const ssHood = new THREE.Mesh(new THREE.SphereGeometry(.22, 16, 12), suitMat); ssHood.position.y = 1.66; ss.add(ssHood);
+const ssVisor = new THREE.Mesh(new THREE.BoxGeometry(.26, .13, .08), visorMat); ssVisor.position.set(0, 1.68, .18); ss.add(ssVisor);
+const ssTank = new THREE.Mesh(new THREE.CylinderGeometry(.08, .08, .42, 10), new THREE.MeshLambertMaterial({ color: 0x9ca3af })); ssTank.position.set(0, 1.12, -.24); ss.add(ssTank);
+const ssLegs = [-.11, .11].map(x => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.08, .5, 4, 8), suitMat); l.position.set(x, .38, 0); ss.add(l); return l; });
+const ssArms = [-1, 1].map(s => { const a = new THREE.Mesh(new THREE.CapsuleGeometry(.065, .55, 4, 8), suitMat); a.position.set(s * .32, 1.05, 0); ss.add(a); return a; });
+const stealer = { state: 'idle', timer: 0 };
+L1.group.add(ss);
+// shortest path through the halls, one cell at a time, so it chases you around corners and crates
+function nextCell(fr, fc, tr, tc) {
+  const key = (r, c) => r * 100 + c, prev = new Map([[key(fr, fc), null]]), q = [[fr, fc]];
+  while (q.length) {
+    const [r, c] = q.shift();
+    if (r === tr && c === tc) break;
+    for (const [dr, dc] of DIRS) { const nr = r + dr, nc = c + dc, k = key(nr, nc); if (!L.wall(nr, nc) && !prev.has(k)) { prev.set(k, [r, c]); q.push([nr, nc]); } }
+  }
+  if (!prev.has(key(tr, tc))) return [fr, fc];
+  let cur = [tr, tc];
+  while (true) { const p = prev.get(key(cur[0], cur[1])); if (!p || (p[0] === fr && p[1] === fc)) return cur; cur = p; }
+}
+
+// ---------- your sword (weapon slot 1) ----------
+// a steel blade with a pointed tip and a groove down the middle, a curved brass crossguard,
+// a leather-wrapped grip and a round pommel
+const sword = new THREE.Group();
+const steel = new THREE.MeshStandardMaterial({ color: 0xdfe3e8, metalness: .55, roughness: .28, emissive: 0x1a1c20 });
+const brass = new THREE.MeshStandardMaterial({ color: 0xb98a3a, metalness: .6, roughness: .35, emissive: 0x1a1206 });
+const leather = new THREE.MeshLambertMaterial({ color: 0x3b2414 });
+const bladeShape = new THREE.Shape();
+bladeShape.moveTo(-.022, 0); bladeShape.lineTo(-.02, .46); bladeShape.lineTo(0, .56); bladeShape.lineTo(.02, .46); bladeShape.lineTo(.022, 0); bladeShape.lineTo(-.022, 0);
+const bladeGeo = new THREE.ExtrudeGeometry(bladeShape, { depth: .006, bevelEnabled: true, bevelThickness: .004, bevelSize: .004, bevelSegments: 2 });
+bladeGeo.translate(0, 0, -.003);
+const blade = new THREE.Mesh(bladeGeo, steel); blade.position.y = .06; sword.add(blade);
+const fullerMat = new THREE.MeshStandardMaterial({ color: 0x9aa1aa, metalness: .6, roughness: .35 });
+[-1, 1].forEach(s => { const f = new THREE.Mesh(new THREE.BoxGeometry(.008, .36, .002), fullerMat); f.position.set(0, .27, s * .0075); sword.add(f); });   // the groove on both faces
+const guardBar = new THREE.Mesh(new THREE.BoxGeometry(.16, .02, .028), brass); guardBar.position.y = .05; sword.add(guardBar);
+[-1, 1].forEach(s => {   // the crossguard curls up at both ends into little knobs
+  const tip = new THREE.Mesh(new THREE.TorusGeometry(.018, .008, 6, 10, Math.PI), brass); tip.position.set(s * .08, .068, 0); tip.rotation.z = s > 0 ? -Math.PI / 2 : Math.PI / 2; sword.add(tip);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(.011, 8, 6), brass); knob.position.set(s * .098, .085, 0); sword.add(knob);
+});
+const gem = new THREE.Mesh(new THREE.OctahedronGeometry(.012), new THREE.MeshStandardMaterial({ color: 0x7f1d1d, emissive: 0x3b0707, roughness: .2 })); gem.position.set(0, .05, .016); sword.add(gem);
+const grip = new THREE.Mesh(new THREE.CylinderGeometry(.014, .016, .13, 10), leather); grip.position.y = -.02; sword.add(grip);
+for (let i = 0; i < 6; i++) { const w = new THREE.Mesh(new THREE.TorusGeometry(.016, .003, 5, 12), new THREE.MeshLambertMaterial({ color: 0x2a190d })); w.rotation.x = Math.PI / 2; w.position.y = .035 - i * .02; sword.add(w); }   // the leather wrap
+const pommel = new THREE.Mesh(new THREE.SphereGeometry(.022, 12, 10), brass); pommel.position.y = -.095; sword.add(pommel);
+const swordLight = new THREE.PointLight(0xfff4dc, .8, 1.5, 2); swordLight.position.set(.1, .3, .3); sword.add(swordLight);   // so you can always see your sword
+sword.position.set(.3, -.3, -.55); sword.rotation.set(-.3, 0, -.35); camera.add(sword);
+let swing = 0;
+
+// ---------- game state ----------
+const $ = id => document.getElementById(id);
+const player = { x: 0, z: 0, yaw: Math.PI, r: .3 };
+let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 2, stamina = 1, armed = false, stepClock = 0;
+let meetStep = -1, meetTimer = 0, moving = false;
 const keys = {};
 addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
 addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-const blocked = (x, z) => {
-  for (const [ox, oz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    const c = Math.floor((x + ox * player.r) / CELL), r = Math.floor((z + oz * player.r) / CELL);
-    if (wall(r, c)) return true;
-  }
-  return false;
-};
-
-const $ = id => document.getElementById(id);
-let playing = false, found = 0, msgTimer = 0, posterTimer = 0;
-// sanity drops by 1 every 6 seconds; almond water (E) brings it back to 100. Sprinting uses stamina.
-let sanity = 100, sanClock = 0, water = 2, stamina = 1;
-function setSanity(v) { sanity = Math.max(0, Math.min(100, v)); $('san').textContent = sanity; $('san').classList.toggle('low', sanity <= 25); }
-addEventListener('keydown', e => {
-  if (e.key.toLowerCase() !== 'e' || e.repeat || !playing || meetStep >= 0) return;
-  if (!water) { say('You are out of almond water.', 2); return; }
-  water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
-});
+const blocked = (x, z) => [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([ox, oz]) => L.wall(Math.floor((z + oz * player.r) / CELL), Math.floor((x + ox * player.r) / CELL)));
 function say(text, secs) { $('msg').innerHTML = text; $('msg').style.display = 'block'; msgTimer = secs; }
 function showPoster(p) { $('pt').textContent = p.title; $('pl').innerHTML = p.lines.join('<br>'); $('poster').style.display = 'block'; posterTimer = 3; }
+function setSanity(v) { sanity = Math.max(0, Math.min(100, v)); $('san').textContent = sanity; $('san').classList.toggle('low', sanity <= 25); }
+function setArmed(on) { armed = on; sword.visible = on; $('slot').classList.toggle('on', on); }
+const totalFound = () => LEVELS.reduce((n, l) => n + l.posters.filter(p => p.found).length, 0);
+const totalPosters = () => LEVELS.reduce((n, l) => n + l.posters.length, 0);
+function ending(title, text) { playing = false; $('msg').style.display = 'none'; $('eh').textContent = title; $('ep').textContent = text; $('end').style.display = 'flex'; }
 
-// the meeting, line by line (from the start of the 2D game)
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (e.repeat || !playing || meetStep >= 0) return;
+  if (k === 'e') {
+    if (!water) { say('You are out of almond water.', 2); return; }
+    water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
+  }
+  if (k === '1') { setArmed(!armed); if (armed) say('You take out your <b>sword</b>. Click to swing.', 2); }
+});
+addEventListener('mousedown', e => {
+  if (e.button !== 0 || !playing || meetStep >= 0 || swing > 0) return;
+  if (!armed) { say('Press <b>1</b> to take out your sword first.', 2); return; }
+  swing = .35; whoosh();
+  if (L === L1 && stealer.state === 'chase' && Math.hypot(ss.position.x - player.x, ss.position.z - player.z) < 2.4) {
+    stealer.state = 'gone'; ss.visible = false; screech();
+    say('You swing the sword and hit it! The Skin Stealer screeches and scuttles away into the dark.', 4);
+  }
+});
+
+// show one level and hide the other, and put you at its start
+function enterLevel(next) {
+  LEVELS.forEach(l => l.group.visible = l === next);
+  L = next;
+  scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
+  player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI;
+  $('lvl').textContent = L.name; $('lsub').textContent = L.sub;
+  $('pc').textContent = L.posters.filter(p => p.found).length; $('ptot').textContent = L.posters.length;
+  $('lch').textContent = L.name; $('lcs').textContent = L.sub; $('lvlcard').style.opacity = 1;
+  setTimeout(() => $('lvlcard').style.opacity = 0, 2600);
+  say(L.intro, 4);
+}
+// the meeting with the virus, line by line (from the start of the 2D game), then you sink into Level 1
 const MEET = [
-  'Something is standing in the dark at the end of the hall.',
+  'Something is standing at the end of the hall.',
   'It is tall and black, standing on long twisting tendrils. It has no face, but it turns toward you.',
   '"Wait. Don\'t run."',
   '"I am a virus, basically. But I do not want to hurt you."',
-  '"Stay close to me. I know the way out."'
+  '"There is something down there that looks like a person. Do not trust it. I will find you again."',
+  'The carpet under your feet turns soft... and you sink right through the floor.'
 ];
-let meetStep = -1, meetTimer = 0;
-
 function reset() {
-  player.x = start[1] * CELL + CELL / 2; player.z = start[0] * CELL + CELL / 2; player.yaw = Math.PI;
-  found = 0; $('pc').textContent = 0; POSTERS.forEach(p => p.found = false);
-  meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none';
-  setSanity(100); sanClock = 0; water = 2; $('aw').textContent = 2; stamina = 1;
-  $('eh').textContent = 'To be continued...';
-  $('ep').innerHTML = 'That is all of the 3D test for now. You found <span id="ef">0</span> of 5 posters.';
-  playing = true; say('You wake up on damp carpet. The lights buzz. Where are you?', 4);
+  LEVELS.forEach(l => { l.posters.forEach(p => p.found = false); l.bottleObjs.forEach(b => { b.taken = false; b.g.visible = true; }); });
+  meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
+  setSanity(100); sanClock = 0; water = 2; $('aw').textContent = 2; stamina = 1; setArmed(false);
+  stealer.state = 'idle'; stealer.timer = 0; ss.visible = true; ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0);
+  suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a);
+  ss.position.set(L1.hazAt[1] * CELL + CELL / 2, 0, L1.hazAt[0] * CELL + CELL / 2);
+  playing = true; enterLevel(L0);
 }
-// the Backrooms hum: a low 60 Hz mains drone, its buzzy harmonic, and a faint fluorescent hiss.
-// Built from the browser's own sound engine, so there are no sound files.
+
+// ---------- sound: the hum plus small effects, made by the browser (no sound files) ----------
 let audio = null, buzzGain = null;
 function startHum() {
   if (audio) { audio.resume(); return; }
   audio = new (window.AudioContext || window.webkitAudioContext)();
-  const master = audio.createGain(); master.gain.value = 0.5; master.connect(audio.destination);
+  const master = audio.createGain(); master.gain.value = .5; master.connect(audio.destination);
   const drone = audio.createOscillator(); drone.frequency.value = 60;
-  const droneGain = audio.createGain(); droneGain.gain.value = 0.25; drone.connect(droneGain).connect(master);
+  const droneGain = audio.createGain(); droneGain.gain.value = .25; drone.connect(droneGain).connect(master);
   const buzz = audio.createOscillator(); buzz.type = 'sawtooth'; buzz.frequency.value = 120;
   const soft = audio.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 380;
-  buzzGain = audio.createGain(); buzzGain.gain.value = 0.07; buzz.connect(soft).connect(buzzGain).connect(master);
+  buzzGain = audio.createGain(); buzzGain.gain.value = .07; buzz.connect(soft).connect(buzzGain).connect(master);
   const noise = audio.createBuffer(1, audio.sampleRate * 2, audio.sampleRate), d = noise.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   const hiss = audio.createBufferSource(); hiss.buffer = noise; hiss.loop = true;
   const band = audio.createBiquadFilter(); band.type = 'bandpass'; band.frequency.value = 4200; band.Q.value = 1.5;
-  const hissGain = audio.createGain(); hissGain.gain.value = 0.02; hiss.connect(band).connect(hissGain).connect(master);
+  const hissGain = audio.createGain(); hissGain.gain.value = .02; hiss.connect(band).connect(hissGain).connect(master);
   drone.start(); buzz.start(); hiss.start();
+}
+function burst(freq, q, secs, vol, type) {
+  if (!audio) return;
+  const n = audio.createBuffer(1, Math.floor(audio.sampleRate * secs), audio.sampleRate), d = n.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = audio.createBufferSource(); s.buffer = n;
+  const f = audio.createBiquadFilter(); f.type = type || 'lowpass'; f.frequency.value = freq; f.Q.value = q;
+  const g = audio.createGain(); g.gain.value = vol; s.connect(f).connect(g).connect(audio.destination); s.start();
+}
+const footstep = () => L === L0 ? burst(300 + Math.random() * 120, 1, .09, .5) : burst(900 + Math.random() * 300, 2, .07, .45, 'bandpass');   // soft carpet, hard concrete
+const whoosh = () => burst(1800, .8, .25, .35, 'bandpass');
+function screech() {
+  if (!audio) return;
+  const o = audio.createOscillator(), g = audio.createGain(); o.type = 'sawtooth';
+  o.frequency.setValueAtTime(900, audio.currentTime); o.frequency.exponentialRampToValueAtTime(260, audio.currentTime + .7);
+  g.gain.setValueAtTime(.15, audio.currentTime); g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .8);
+  o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + .8);
 }
 $('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); };
 $('again').onclick = reset;
+window.__game = { player, virus, ss, stealer, LEVELS, setSanity, enterLevel, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 
-window.__game = { player, POSTERS, virus, setSanity, get sanity() { return sanity; } };   // handy for testing in the browser console
+// ---------- each frame ----------
+function updateStealer(dt, t) {
+  const ds = Math.hypot(ss.position.x - player.x, ss.position.z - player.z);
+  if (stealer.state === 'gone') return;
+  ss.lookAt(player.x, 0, player.z);
+  if (stealer.state === 'idle' || stealer.state === 'talk') {
+    ssArms[1].rotation.z = 2.4 + Math.sin(t * 8) * .4; ssArms[1].position.y = 1.35;   // it waves at you
+    if (stealer.state === 'idle' && ds < 5) { stealer.state = 'talk'; stealer.timer = 0; say('A person in a yellow hazmat suit waves at you. <b>"Hi! Who are you?"</b>', 3); }
+    if (stealer.state === 'talk' && (stealer.timer += dt) > 2.5) {
+      stealer.state = 'chase'; stealer.timer = 0; screech();
+      suitMat.color.setHex(0xcbb8a0); visorMat.color.setHex(0x7a0f0f); ss.scale.set(1, 1.25, 1);   // the skin stretches and the visor goes red
+      ssArms[1].rotation.z = 0; ssArms[1].position.y = 1.05;
+      say('The suit stretches... its skin slides. It is a <b>SKIN STEALER!</b> RUN (Shift), or press 1 and click to swing your sword!', 4);
+    }
+    return;
+  }
+  // chase: it shudders for a moment first, giving you a head start
+  stealer.timer += dt;
+  if (stealer.timer < 1.2) { ss.rotation.z = Math.sin(t * 40) * .05; return; }
+  const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL), sr = Math.floor(ss.position.z / CELL), sc = Math.floor(ss.position.x / CELL);
+  const nxt = nextCell(sr, sc, pr, pc), same = sr === pr && sc === pc;
+  const tx = same ? player.x : nxt[1] * CELL + CELL / 2, tz = same ? player.z : nxt[0] * CELL + CELL / 2;
+  const dx = tx - ss.position.x, dz = tz - ss.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 4.2 * dt);   // faster than walking, slower than sprinting
+  ss.position.x += dx / dd * step; ss.position.z += dz / dd * step;
+  ssLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 14 + i * Math.PI) * .6; });
+  if (ds < .9) ending('The Skin Stealer got you', 'Never say hi back. Next time, sprint away with Shift, or press 1 for your sword and click to swing when it gets close.');
+  else if (stealer.timer > 16) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
+}
+
 const clock = new THREE.Clock();
 function tick() {
-  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+  const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+  moving = false;
   if (playing && meetStep < 0) {
     if (keys['a']) player.yaw += 2.2 * dt;
     if (keys['d']) player.yaw -= 2.2 * dt;
     const mv = (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0);
-    const sprint = keys['shift'] && mv > 0 && stamina > 0.02;
+    const sprint = keys['shift'] && mv > 0 && stamina > .02;
     stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
     $('stam').style.width = (stamina * 100) + '%';
-    sanClock += dt;
-    if (sanClock >= 6) { sanClock -= 6; setSanity(sanity - 1); }
-    if (sanity <= 0) {
-      playing = false; $('msg').style.display = 'none';
-      $('eh').textContent = 'You lost your mind';
-      $('ep').textContent = 'The hum got louder and louder until it was the only thing left. Drink almond water before your sanity runs out.';
-      $('end').style.display = 'flex';
-    }
+    if ((sanClock += dt) >= 6) { sanClock -= 6; setSanity(sanity - 1); }
+    if (sanity <= 0) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left. Drink almond water before your sanity runs out.');
     if (mv) {
+      moving = true;
       const sp = (sprint ? 5.5 : 3) * dt * mv, nx = player.x - Math.sin(player.yaw) * sp, nz = player.z - Math.cos(player.yaw) * sp;
       if (!blocked(nx, player.z)) player.x = nx;
       if (!blocked(player.x, nz)) player.z = nz;
+      if ((stepClock += dt) > (sprint ? .28 : .45)) { stepClock = 0; footstep(); }
     }
-    // read posters you walk up to
-    POSTERS.forEach(p => {
-      if (!p.found && Math.hypot(p.mesh.position.x - player.x, p.mesh.position.z - player.z) < 1.3) {
-        p.found = true; found++; $('pc').textContent = found; showPoster(p);
+    L.bottleObjs.forEach(b => {
+      if (!b.taken && Math.hypot(b.g.position.x - player.x, b.g.position.z - player.z) < .8) {
+        b.taken = true; b.g.visible = false; water++; $('aw').textContent = water; say('You found a bottle of <b>almond water</b>! Press E to drink it.', 3);
       }
     });
-    // the virus waits in the last room
-    const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
-    if (dv < 9) virus.visible = true;
-    if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
+    L.posters.forEach(p => {
+      if (!p.found && Math.hypot(p.mesh.position.x - player.x, p.mesh.position.z - player.z) < 1.3) {
+        p.found = true; $('pc').textContent = L.posters.filter(q => q.found).length; showPoster(p);
+      }
+    });
+    $('dark').style.opacity = sanity < 40 ? ((40 - sanity) / 40 * .9).toFixed(2) : 0;   // your vision darkens as sanity runs low
+    if (L === L0) {
+      const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
+      if (dv < 9) virus.visible = true;
+      if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
+    } else {
+      updateStealer(dt, t);
+      if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
+        ending('You made it out!', 'You escaped the Habitable Zone and found ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+    }
   }
-  if (meetStep >= 0) {
-    // turn to face the virus and play the meeting
+  if (meetStep >= 0) {   // face the virus and play the meeting, then drop into Level 1
     const want = Math.atan2(player.x - virus.position.x, player.z - virus.position.z);
-    let diff = want - player.yaw;
-    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    let diff = want - player.yaw; diff = Math.atan2(Math.sin(diff), Math.cos(diff));
     player.yaw += Math.max(-2 * dt, Math.min(2 * dt, diff));
     virus.lookAt(player.x, 0, player.z);
-    meetTimer += dt;
-    if (meetTimer > 3) {
+    if ((meetTimer += dt) > 3.2) {
       meetTimer = 0; meetStep++;
       if (meetStep < MEET.length) say(MEET[meetStep], 99);
-      else if (playing) { playing = false; $('msg').style.display = 'none'; $('ef').textContent = found; $('end').style.display = 'flex'; }
+      if (meetStep === MEET.length - 1) $('fade').style.opacity = 1;
+      if (meetStep === MEET.length) { meetStep = -1; $('msg').style.display = 'none'; enterLevel(L1); $('fade').style.opacity = 0; }
     }
   }
   if (msgTimer > 0 && meetStep < 0) { msgTimer -= dt; if (msgTimer <= 0) $('msg').style.display = 'none'; }
   if (posterTimer > 0) { posterTimer -= dt; if (posterTimer <= 0) $('poster').style.display = 'none'; }
 
-  // flickering lights and a slow sway for the tendrils
+  // flickering lights (Level 1's are worse), the virus breathing, bottles bobbing, the sword swing
   let flick = false;
-  lights.forEach((l, i) => { const on = Math.sin(t * 13 + i * 7) > -0.97 || i % 4; if (!on) flick = true; l.p.intensity = on ? l.base : 0.5; l.lamp.material.color.setHex(on ? 0xfffbe0 : 0x6b6550); });
-  if (buzzGain) buzzGain.gain.value = flick ? 0.12 : 0.07;   // the buzz crackles when a light flickers
-  tendrils.forEach((tn, i) => { tn.rotation.y = Math.sin(t * 1.5 + i) * 0.4; tn.rotation.x = Math.sin(t * 1.1 + i * 2) * 0.25; });
-  crown.rotation.z = Math.sin(t * .7) * .04; crown.position.y = TOP + Math.sin(t * 1.3) * .03;   // it breathes
-  legs.forEach((l, i) => { l.rotation.y = Math.sin(t * .6 + i) * .02; });
-  const bob = playing && meetStep < 0 && (keys['w'] || keys['s']) ? Math.sin(t * 9) * 0.03 : 0;
-  camera.position.set(player.x, 1.6 + bob, player.z);
+  L.lights.forEach((l, i) => {
+    const on = L === L1 ? (Math.sin(t * 9 + i * 5) > -0.85 || i % 3) : (Math.sin(t * 13 + i * 7) > -0.97 || i % 4);
+    if (!on) flick = true; l.p.intensity = on ? l.base : .4; l.lamp.material.color.setHex(on ? L.lampColor : 0x4b4b48);
+  });
+  if (buzzGain) buzzGain.gain.value = flick ? .12 : .07;
+  hairs.forEach((h, i) => { h.rotation.y = Math.sin(t * 1.5 + i) * .4; h.rotation.x = Math.sin(t * 1.1 + i * 2) * .25; });
+  crown.rotation.z = Math.sin(t * .7) * .04; crown.position.y = TOP + Math.sin(t * 1.3) * .03;
+  limbs.forEach((l, i) => { l.rotation.y = Math.sin(t * .6 + i) * .02; });
+  L.bottleObjs.forEach((b, i) => { b.g.rotation.y = t * 1.5 + i; b.g.position.y = .05 + Math.sin(t * 2 + i) * .04; });
+  if (swing > 0) { swing -= dt; const k = 1 - Math.max(0, swing) / .35; sword.rotation.set(-.3 - Math.sin(k * Math.PI) * 1.4, 0, -.35 + Math.sin(k * Math.PI) * .9); }
+  else sword.rotation.set(-.3 + (moving ? Math.sin(t * 9) * .03 : 0), 0, -.35);
+  camera.position.set(player.x, 1.6 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
   camera.rotation.set(0, player.yaw, 0);
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
