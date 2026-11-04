@@ -33,7 +33,6 @@
 </head>
 <body>
 <div id="hud">
-  <div><b id="lvl">Level 0</b> <span id="lsub">The Lobby</span></div>
   <div>🧠 Sanity: <span id="san">100</span></div>
   <div class="bar"><div id="stam"></div></div>
   <div>Posters found: <span id="pc">0</span> / <span id="ptot">8</span></div>
@@ -43,12 +42,11 @@
 <div id="dark"></div>
 <div id="poster"><h2 id="pt"></h2><div id="pl"></div></div>
 <div id="msg"></div>
-<div id="lvlcard"><h2 id="lch"></h2><div id="lcs"></div></div>
 <div id="fade"></div>
 <div id="title">
   <h1>The Backrooms Escape</h1>
   <p><b>RATED M</b> · 3D test</p>
-  <p>You woke up somewhere you should not be. Explore the yellow halls of Level 0, read the posters, and find out what is waiting at the end. Then get through the Habitable Zone alive.</p>
+  <p>You woke up somewhere you should not be. You do not know where you are. Explore, read the posters on the walls, and find out what is waiting at the end.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> turn left <span class="keys">D</span> turn right<br>
      <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your sword <span class="keys">Click</span> swing it</p>
   <p>Your sanity drops by 1 every 6 seconds. If it hits 0, you lose your mind.</p>
@@ -477,10 +475,10 @@ function enterLevel(next) {
   L = next;
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
   player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI;
-  $('lvl').textContent = L.name; $('lsub').textContent = L.sub;
+  // no level names on screen: you are not told where you are
   $('pc').textContent = L.posters.filter(p => p.found).length; $('ptot').textContent = L.posters.length;
-  $('lch').textContent = L.name; $('lcs').textContent = L.sub; $('lvlcard').style.opacity = 1;
-  setTimeout(() => $('lvlcard').style.opacity = 0, 2600);
+  fake.mesh.visible = false; fake.next = 25 + Math.random() * 20; phantom.on = false; phantom.next = 18 + Math.random() * 15;
+  [figure, smile, farSuit].forEach(o => o.visible = false); Object.assign(glimpse, { obj: null, next: 35 + Math.random() * 20, blackout: 0 });
   say(L.intro, 4);
 }
 // the meeting with the virus, line by line (from the start of the 2D game), then you sink into Level 1
@@ -520,13 +518,26 @@ function startHum() {
   const hissGain = audio.createGain(); hissGain.gain.value = .02; hiss.connect(band).connect(hissGain).connect(master);
   drone.start(); buzz.start(); hiss.start();
 }
-function burst(freq, q, secs, vol, type) {
+function burst(freq, q, secs, vol, type, dest) {
   if (!audio) return;
   const n = audio.createBuffer(1, Math.floor(audio.sampleRate * secs), audio.sampleRate), d = n.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
   const s = audio.createBufferSource(); s.buffer = n;
   const f = audio.createBiquadFilter(); f.type = type || 'lowpass'; f.frequency.value = freq; f.Q.value = q;
-  const g = audio.createGain(); g.gain.value = vol; s.connect(f).connect(g).connect(audio.destination); s.start();
+  const g = audio.createGain(); g.gain.value = vol; s.connect(f).connect(g).connect(dest || audio.destination); s.start();
+}
+// a sound placed at a spot in the world: the browser makes it sound like it comes from there (behind you, to the left...)
+function soundAt(x, z, play) {
+  if (!audio) return;
+  const p = audio.createPanner(); p.panningModel = 'HRTF'; p.distanceModel = 'inverse'; p.refDistance = 1.5; p.rolloffFactor = 1.2;
+  if (p.positionX) { p.positionX.value = x; p.positionY.value = .1; p.positionZ.value = z; } else p.setPosition(x, .1, z);
+  p.connect(audio.destination); play(p);
+}
+function placeListener() {   // your ears follow the camera
+  if (!audio) return;
+  const l = audio.listener, fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+  if (l.positionX) { l.positionX.value = player.x; l.positionY.value = 1.6; l.positionZ.value = player.z; l.forwardX.value = fx; l.forwardY.value = 0; l.forwardZ.value = fz; l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0; }
+  else { l.setPosition(player.x, 1.6, player.z); l.setOrientation(fx, 0, fz, 0, 1, 0); }
 }
 const footstep = () => L === L0 ? burst(300 + Math.random() * 120, 1, .09, .5) : burst(900 + Math.random() * 300, 2, .07, .45, 'bandpass');   // soft carpet, hard concrete
 const whoosh = () => burst(1800, .8, .25, .35, 'bandpass');
@@ -539,7 +550,114 @@ function screech() {
 }
 $('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); };
 $('again').onclick = reset;
-window.__game = { player, virus, ss, stealer, LEVELS, setSanity, enterLevel, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+
+// ---------- things that are not really there ----------
+// footsteps that follow a few steps behind you. They stop the moment you turn around, and nothing is there.
+const phantom = { on: false, next: 25, steps: 0, clock: 0, yaw0: 0, dist: 4 };
+function updatePhantom(dt) {
+  if (!phantom.on) {
+    if ((phantom.next -= dt) > 0 || !moving) return;   // they only start while you are walking
+    Object.assign(phantom, { on: true, steps: 4 + Math.floor(Math.random() * 5), clock: 0, yaw0: player.yaw, dist: 4.5 });
+  }
+  let turned = player.yaw - phantom.yaw0; turned = Math.abs(Math.atan2(Math.sin(turned), Math.cos(turned)));
+  if (turned > 1.5 || phantom.steps <= 0) {   // you looked back (or it gave up): silence
+    phantom.on = false; phantom.next = (L === L1 ? 20 : 32) + Math.random() * 25; return;
+  }
+  if ((phantom.clock += dt) < .5) return;
+  phantom.clock = 0; phantom.steps--; phantom.dist = Math.max(2.2, phantom.dist - .3);   // getting a little closer each step
+  const bx = player.x + Math.sin(phantom.yaw0) * phantom.dist, bz = player.z + Math.cos(phantom.yaw0) * phantom.dist;
+  soundAt(bx, bz, p => L === L0 ? burst(280 + Math.random() * 80, 1, .09, .35, 'lowpass', p) : burst(820 + Math.random() * 200, 2, .07, .3, 'bandpass', p));
+}
+// a crate that was not there before, sitting behind you. Walk up to it or stare at it and it is gone.
+// The lower your sanity, the more often you see one.
+const fake = { mesh: new THREE.Group(), next: 30, look: 0 };
+{
+  const a = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1, 1.4), new THREE.MeshLambertMaterial({ map: crateTex })); a.position.y = .5; fake.mesh.add(a);
+  const b = new THREE.Mesh(new THREE.BoxGeometry(.9, .8, .9), new THREE.MeshLambertMaterial({ map: crateTex })); b.position.set(.15, 1.4, -.1); b.rotation.y = .4; fake.mesh.add(b);
+  fake.mesh.visible = false; scene.add(fake.mesh);
+}
+function updateFake(dt) {
+  const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+  if (!fake.mesh.visible) {
+    if ((fake.next -= dt * (1 + (100 - sanity) / 40)) > 0) return;   // low sanity makes them come faster
+    for (const back of [5, 6.5, 4, 8]) {   // find an empty floor spot behind you, out of sight
+      const r = Math.floor((player.z - fz * back) / CELL), c = Math.floor((player.x - fx * back) / CELL);
+      if (L.wall(r, c) || (L === L0 && Math.hypot(virus.position.x - (c * CELL + 1), virus.position.z - (r * CELL + 1)) < 8)) continue;
+      fake.mesh.position.set(c * CELL + CELL / 2, 0, r * CELL + CELL / 2); fake.mesh.rotation.y = Math.random() * 3;
+      fake.mesh.visible = true; fake.look = 0; return;
+    }
+    fake.next = 5; return;
+  }
+  const dx = fake.mesh.position.x - player.x, dz = fake.mesh.position.z - player.z, d = Math.hypot(dx, dz);
+  if ((dx * fx + dz * fz) / d > .93 && d < 14) fake.look += dt;   // you are looking right at it
+  if (d < 1.8 || fake.look > 2.2) { fake.mesh.visible = false; fake.next = 35 + Math.random() * 35; }
+}
+
+// other glimpses, different on each level. Every so often (more often as your sanity drops) one happens:
+//   Level 0: a tall dark figure far down the hall, a faint smile glowing in the distance, knocking, the lights cutting out
+//   Level 1: a hazmat explorer standing far away, dripping water, a heavy thud in the dark, the lights cutting out
+// Figures and smiles vanish the moment you look straight at them or walk toward them.
+const glimpse = { next: 40, what: null, obj: null, life: 0, look: 0, blackout: 0 };
+const shadowMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+const figure = new THREE.Group();
+{ const body = new THREE.Mesh(new THREE.CapsuleGeometry(.17, 1.5, 4, 8), shadowMat); body.position.y = 1.05; figure.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.15, 10, 8), shadowMat); head.position.y = 2.05; figure.add(head);
+  [-1, 1].forEach(s => { const a = new THREE.Mesh(new THREE.CapsuleGeometry(.05, 1.1, 4, 6), shadowMat); a.position.set(s * .22, 1.15, 0); figure.add(a); }); }
+const smile = (() => {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 128; const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(80, 40, 14, 9, 0, 0, 7); g.ellipse(176, 40, 14, 9, 0, 0, 7); g.fill();
+  g.beginPath(); g.moveTo(40, 70); g.quadraticCurveTo(128, 130, 216, 70); g.quadraticCurveTo(128, 104, 40, 70); g.fill();
+  g.strokeStyle = '#000'; g.lineWidth = 3; for (let x = 60; x < 200; x += 14) { g.beginPath(); g.moveTo(x, 72); g.lineTo(x, 100); g.stroke(); }   // teeth
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return new THREE.Mesh(new THREE.PlaneGeometry(1, .5), new THREE.MeshBasicMaterial({ map: t, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+})();
+const farSuit = new THREE.Group();
+{ const m = new THREE.MeshLambertMaterial({ color: 0xc99a10 });
+  const b = new THREE.Mesh(new THREE.CapsuleGeometry(.24, .62, 6, 10), m); b.position.y = 1.02; farSuit.add(b);
+  const h = new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 10), m); h.position.y = 1.66; farSuit.add(h);
+  [-.11, .11].forEach(x => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.08, .5, 4, 8), m); l.position.set(x, .38, 0); farSuit.add(l); }); }
+[figure, smile, farSuit].forEach(o => { o.visible = false; scene.add(o); });
+// is the floor clear in a straight line in front of you, out to this distance?
+function clearAhead(dist) {
+  const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+  for (let s = 1; s <= dist; s += .5) if (L.wall(Math.floor((player.z + fz * s) / CELL), Math.floor((player.x + fx * s) / CELL))) return false;
+  return true;
+}
+function placeAhead(o, dist, y) {
+  const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw), side = (Math.random() - .5) * 1.2;
+  o.position.set(player.x + fx * dist - fz * side, y, player.z + fz * dist + fx * side); o.lookAt(player.x, y, player.z);
+}
+function startGlimpse() {
+  const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw), pick = a => a[Math.floor(Math.random() * a.length)];
+  const kinds = L === L0 ? ['figure', 'smile', 'knock', 'lightsout'] : ['suit', 'drip', 'thud', 'lightsout'];
+  const what = pick(kinds), far = 10 + Math.random() * 4;
+  if ((what === 'figure' || what === 'smile' || what === 'suit') && !clearAhead(far)) return false;   // needs a long view down a hall
+  if (what === 'suit' && stealer.state === 'chase') return false;
+  glimpse.what = what; glimpse.life = 0; glimpse.look = 0; glimpse.obj = null;
+  const bx = player.x + fz * (Math.random() < .5 ? 6 : -6) - fx * 3, bz = player.z - fx * (Math.random() < .5 ? 6 : -6) - fz * 3;   // a spot off to your side, a bit behind
+  if (what === 'figure') { placeAhead(figure, far, 0); glimpse.obj = figure; }
+  if (what === 'smile') { placeAhead(smile, far, 1.5); glimpse.obj = smile; }
+  if (what === 'suit') { placeAhead(farSuit, far, 0); glimpse.obj = farSuit; }
+  if (glimpse.obj) glimpse.obj.visible = true;
+  if (what === 'knock') [0, .35, .7].forEach(d => setTimeout(() => soundAt(bx, bz, p => burst(120, 1, .12, 1.1, 'lowpass', p)), d * 1000));
+  if (what === 'thud') soundAt(bx, bz, p => burst(70, 1, .4, 1.6, 'lowpass', p));
+  if (what === 'drip') [0, .9, 1.7, 2.4].forEach(d => setTimeout(() => soundAt(bx, bz, p => burst(2600 + Math.random() * 600, 8, .04, .5, 'bandpass', p)), d * 1000));
+  if (what === 'lightsout') glimpse.blackout = .5;
+  return true;
+}
+function updateGlimpse(dt) {
+  if (glimpse.blackout > 0) glimpse.blackout -= dt;
+  if (glimpse.obj) {
+    const o = glimpse.obj, dx = o.position.x - player.x, dz = o.position.z - player.z, d = Math.hypot(dx, dz);
+    const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+    if ((dx * fx + dz * fz) / d > .97) glimpse.look += dt;   // you are looking straight at it
+    if (o === smile) o.material.opacity = .55 * (1 - glimpse.look / .5);
+    if ((glimpse.life += dt) > 6 || glimpse.look > (o === smile ? .5 : .8) || d < 7) { o.visible = false; glimpse.obj = null; }
+    return;
+  }
+  if ((glimpse.next -= dt * (1 + (100 - sanity) / 50)) > 0) return;
+  glimpse.next = startGlimpse() ? 30 + Math.random() * 30 : 4;
+}
 
 // ---------- each frame ----------
 function updateStealer(dt, t) {
@@ -570,6 +688,7 @@ function updateStealer(dt, t) {
   else if (stealer.timer > 16) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
 }
 
+window.__game = { player, virus, ss, stealer, LEVELS, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -601,6 +720,7 @@ function tick() {
       }
     });
     $('dark').style.opacity = sanity < 40 ? ((40 - sanity) / 40 * .9).toFixed(2) : 0;   // your vision darkens as sanity runs low
+    updatePhantom(dt); updateFake(dt); updateGlimpse(dt);
     if (L === L0) {
       const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
       if (dv < 9) virus.visible = true;
@@ -608,7 +728,7 @@ function tick() {
     } else {
       updateStealer(dt, t);
       if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
-        ending('You made it out!', 'You escaped the Habitable Zone and found ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+        ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
     }
   }
   if (meetStep >= 0) {   // face the virus and play the meeting, then drop into Level 1
@@ -629,7 +749,7 @@ function tick() {
   // flickering lights (Level 1's are worse), the virus breathing, bottles bobbing, the sword swing
   let flick = false;
   L.lights.forEach((l, i) => {
-    const on = L === L1 ? (Math.sin(t * 9 + i * 5) > -0.85 || i % 3) : (Math.sin(t * 13 + i * 7) > -0.97 || i % 4);
+    const on = glimpse.blackout <= 0 && (L === L1 ? (Math.sin(t * 9 + i * 5) > -0.85 || i % 3) : (Math.sin(t * 13 + i * 7) > -0.97 || i % 4));
     if (!on) flick = true; l.p.intensity = on ? l.base : .4; l.lamp.material.color.setHex(on ? L.lampColor : 0x4b4b48);
   });
   if (buzzGain) buzzGain.gain.value = flick ? .12 : .07;
@@ -641,6 +761,7 @@ function tick() {
   else sword.rotation.set(-.3 + (moving ? Math.sin(t * 9) * .03 : 0), 0, -.35);
   camera.position.set(player.x, 1.6 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
   camera.rotation.set(0, player.yaw, 0);
+  placeListener();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
