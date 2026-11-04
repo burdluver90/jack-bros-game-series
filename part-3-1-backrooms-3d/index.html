@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backrooms 3D: Level 1</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: Arial, sans-serif; color: #f4ecc2; }
+  canvas { display: block; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,.55); padding: 8px 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+  #hud b { color: #fde68a; }
+  #msg { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); max-width: 640px; width: calc(100% - 32px); background: rgba(10,8,2,.85); border: 2px solid #b8a55e; border-radius: 10px; padding: 14px 18px; font-size: 17px; display: none; text-align: center; }
+  #poster { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 260px; padding: 22px 20px 26px; background: #fbfaf2 repeating-linear-gradient(#fbfaf2 0 26px, #b9d3ee 26px 27px); color: #1a1a1a; border-radius: 4px; box-shadow: 0 8px 30px rgba(0,0,0,.7); display: none; text-align: center; font: 18px "Comic Sans MS", "Segoe Print", cursive; }
+  #poster h2 { margin: 0 0 10px; color: #b91c1c; font-size: 24px; }
+  #poster::before { content: ""; position: absolute; top: -8px; left: 50%; width: 16px; height: 16px; margin-left: -8px; background: #dc2626; border-radius: 50%; box-shadow: 0 2px 3px rgba(0,0,0,.5); }
+  #title, #end { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(0,0,0,.82); padding: 16px; }
+  #title h1, #end h1 { margin: 0 0 8px; color: #fde68a; font-size: 32px; }
+  #title p, #end p { max-width: 520px; line-height: 1.5; }
+  .btn { margin-top: 14px; padding: 12px 26px; font-size: 18px; font-weight: bold; color: #1a1408; background: #fde68a; border: 0; border-radius: 10px; cursor: pointer; text-decoration: none; }
+  #end { display: none; }
+  .bar { width: 150px; height: 6px; margin: 3px 0 4px; background: #3b3520; border-radius: 3px; overflow: hidden; }
+  .bar div { height: 100%; width: 100%; background: #8fe3b0; }
+  #san.low { color: #f87171; font-weight: bold; }
+  .keys { display: inline-block; padding: 2px 7px; border: 1px solid #fde68a; border-radius: 4px; margin: 0 2px; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div><b>Level 1</b> (3D test)</div>
+  <div>🧠 Sanity: <span id="san">100</span></div>
+  <div class="bar"><div id="stam"></div></div>
+  <div>Posters found: <span id="pc">0</span> / 5</div>
+  <div>Gear: 🗡️ sword, 💧 almond water x<span id="aw">2</span></div>
+  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink</div>
+</div>
+<div id="poster"><h2 id="pt"></h2><div id="pl"></div></div>
+<div id="msg"></div>
+<div id="title">
+  <h1>The Backrooms Escape</h1>
+  <p><b>RATED M</b> · 3D test of Level 1</p>
+  <p>You woke up somewhere you should not be. Explore the yellow halls, read the posters on the walls, and find out what is waiting at the end.</p>
+  <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> turn left <span class="keys">D</span> turn right<br>
+     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water</p>
+  <p>Your sanity drops by 1 every 6 seconds. If it hits 0, you lose your mind.</p>
+  <button class="btn" id="go">Start</button>
+</div>
+<div id="end">
+  <h1 id="eh">To be continued...</h1>
+  <p id="ep">That is all of the 3D test for now. You found <span id="ef">0</span> of 5 posters.</p>
+  <a class="btn" href="../part-3-1-backrooms/index.html">Play the full game</a>
+  <button class="btn" id="again" style="background:#b8a55e">Explore again</button>
+</div>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+
+// # = wall, . = floor, S = start, V = where the virus waits
+// wide open rooms with pillars and broken walls, like Level 0; the virus waits in the closed-off corner room
+const MAP = [
+  '#########################',
+  '#S......................#',
+  '#...#.....#.....#.....#.#',
+  '#.......................#',
+  '#..###.......#.......#..#',
+  '#......#..........#.....#',
+  '#...#.....#####.........#',
+  '#.........#...#....#....#',
+  '#..#......#.......###...#',
+  '#.......#.....#.........#',
+  '#...#...............#...#',
+  '#.......###.......#.....#',
+  '#..#..........#.........#',
+  '#.......#..........##...#',
+  '#...#.......#...........#',
+  '#..........###..........#',
+  '#..##...#.........#######',
+  '#.................#.....#',
+  '#.....#.....#.....#..V..#',
+  '#.......................#',
+  '#########################'
+];
+const CELL = 2, H = 2.6;
+const wall = (r, c) => !MAP[r] || MAP[r][c] === undefined || MAP[r][c] === '#';
+
+// the same posters as the 2D game's first level, each on a floor cell [row, col]
+const POSTERS = [
+  { at: [1, 10], title: 'ALMOND WATER', lines: ['Seeing smiles?', 'Feeling strange?', 'DRINK IT.', 'Then find more.'] },
+  { at: [5, 8], title: 'NO CAKE =)', lines: ['Never eat food', 'you find here.', 'Especially cake.'] },
+  { at: [7, 11], title: 'AVOID RED', lines: ['Red water.', 'Red doors.', 'Red lights.'] },
+  { at: [12, 4], title: 'STAY ARMED', lines: ['You WILL have', 'to fight.', 'Take the weapon.'] },
+  { at: [17, 17], title: 'LOST?', lines: ['Hallway splits?', 'The way DOWN', 'is the way out.'] }
+];
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+document.body.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x2b2510);
+scene.fog = new THREE.Fog(0x2b2510, 3, 24);
+const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 60);
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+
+// simple drawn textures so it looks like Level 0/1: stripy yellow wallpaper, damp carpet, ceiling tiles
+function tex(draw, rep) {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  draw(c.getContext('2d'));
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]);
+  t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const wallTex = tex(g => { g.fillStyle = '#c9b458'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9a447'; for (let x = 0; x < 128; x += 16) g.fillRect(x, 0, 6, 128); g.fillStyle = '#8f7d32'; g.fillRect(0, 118, 128, 10); }, [1, 1]);
+const floorTex = tex(g => { g.fillStyle = '#7d6a33'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 400; i++) { g.fillStyle = Math.random() < .5 ? '#73612d' : '#86733a'; g.fillRect(Math.random() * 128, Math.random() * 128, 3, 3); } }, [MAP[0].length, MAP.length]);
+const ceilTex = tex(g => { g.fillStyle = '#d8cfa6'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#a99f78'; g.lineWidth = 4; g.strokeRect(0, 0, 128, 128); }, [MAP[0].length, MAP.length]);
+
+scene.add(new THREE.AmbientLight(0xfff2b0, 0.55));
+const W = MAP[0].length * CELL, D = MAP.length * CELL;
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: floorTex }));
+floor.rotation.x = -Math.PI / 2; floor.position.set(W / 2, 0, D / 2); scene.add(floor);
+const ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: ceilTex }));
+ceil.rotation.x = Math.PI / 2; ceil.position.set(W / 2, H, D / 2); scene.add(ceil);
+
+const wallGeo = new THREE.BoxGeometry(CELL, H, CELL), wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
+const lampGeo = new THREE.PlaneGeometry(0.9, 0.4), lampMat = new THREE.MeshBasicMaterial({ color: 0xfffbe0 });
+const lights = [];
+let start = [1, 1], virusAt = [13, 9];
+MAP.forEach((row, r) => [...row].forEach((ch, c) => {
+  const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2;
+  if (ch === '#') { const m = new THREE.Mesh(wallGeo, wallMat); m.position.set(x, H / 2, z); scene.add(m); return; }
+  if (ch === 'S') start = [r, c];
+  if (ch === 'V') virusAt = [r, c];
+  // a buzzing ceiling light every couple of tiles; only some of them cast real light, to keep it fast
+  if (r % 2 === 1 && c % 2 === 1) {
+    const lamp = new THREE.Mesh(lampGeo, lampMat.clone()); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, H - 0.01, z); scene.add(lamp);
+    if (r % 6 === 1 && c % 6 === 1) { const p = new THREE.PointLight(0xfff0b0, 10, 12, 2); p.position.set(x, H - 0.3, z); scene.add(p); lights.push({ p, lamp, base: 10 }); }
+  }
+}));
+
+// posters: notebook paper with a red title, pinned to whichever wall is next to its floor tile
+function posterTexture(p) {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 340; const g = c.getContext('2d');
+  g.fillStyle = '#fbfaf2'; g.fillRect(0, 0, 256, 340);
+  g.strokeStyle = '#b9d3ee'; for (let y = 60; y < 340; y += 26) { g.beginPath(); g.moveTo(0, y); g.lineTo(256, y); g.stroke(); }
+  g.fillStyle = '#dc2626'; g.beginPath(); g.arc(128, 16, 9, 0, 7); g.fill();
+  g.fillStyle = '#b91c1c'; g.font = 'bold 30px Comic Sans MS, cursive'; g.textAlign = 'center'; g.fillText(p.title, 128, 64);
+  g.fillStyle = '#1a1a1a'; g.font = '22px Comic Sans MS, cursive'; p.lines.forEach((l, i) => g.fillText(l, 128, 118 + i * 34));
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]];
+POSTERS.forEach(p => {
+  const [r, c] = p.at, d = DIRS.find(([dr, dc]) => wall(r + dr, c + dc));
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1), new THREE.MeshLambertMaterial({ map: posterTexture(p) }));
+  m.position.set(c * CELL + CELL / 2 + d[1] * (CELL / 2 - 0.02), 1.5, r * CELL + CELL / 2 + d[0] * (CELL / 2 - 0.02));
+  m.lookAt(c * CELL + CELL / 2, 1.5, r * CELL + CELL / 2);
+  scene.add(m); p.mesh = m; p.found = false;
+});
+
+// the virus, built like the picture in the 2D game: a glossy black, lumpy crown with petal-like folds,
+// held up high on long, thin, twisting tendril legs that split and end in little claws. It has no face.
+const virus = new THREE.Group();
+const vMat = new THREE.MeshStandardMaterial({ color: 0x0b0a0d, roughness: 0.22, metalness: 0.15 });
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;   // fixed random, same shape every time
+// lumpy blob: a sphere with its points pushed in and out
+function lump(rad, bump) {
+  const g = new THREE.SphereGeometry(rad, 18, 14), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); v.multiplyScalar(1 + (Math.sin(v.x * 23) * Math.cos(v.y * 19) * Math.sin(v.z * 17)) * bump); p.setXYZ(i, v.x, v.y, v.z); }
+  g.computeVertexNormals(); return new THREE.Mesh(g, vMat);
+}
+// a twisting tendril from a to b that tapers to a point
+function tendril(a, b, wob, thick, parts) {
+  const pts = [];
+  for (let i = 0; i <= parts; i++) {
+    const k = i / parts, p = a.clone().lerp(b, k);
+    if (i && i < parts) p.add(new THREE.Vector3((rnd() - .5) * wob, (rnd() - .5) * wob * .4, (rnd() - .5) * wob));
+    pts.push(p);
+  }
+  const curve = new THREE.CatmullRomCurve3(pts), g = new THREE.TubeGeometry(curve, 40, thick, 6, false);
+  const p = g.attributes.position, v = new THREE.Vector3(), segs = 41;
+  for (let i = 0; i < p.count; i++) {   // taper toward the tip
+    const k = Math.floor(i / 7) / segs, c = curve.getPointAt(Math.min(1, k));
+    v.fromBufferAttribute(p, i).sub(c).multiplyScalar(1 - k * 0.75).add(c); p.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals(); return new THREE.Mesh(g, vMat);
+}
+const TOP = 1.95;
+// the crown: a cluster of knotted lumps, folded petals and a tall stump
+const crown = new THREE.Group(); crown.position.y = TOP; crown.scale.setScalar(.7); virus.add(crown);
+[[0, 0, 0, .32], [.22, .1, .05, .2], [-.24, .06, -.04, .22], [.05, .12, -.2, .18], [-.05, .08, .22, .17]].forEach(([x, y, z, s]) => { const m = lump(s, .18); m.position.set(x, y, z); m.scale.y = .7; crown.add(m); });
+const stump = new THREE.Mesh(new THREE.CylinderGeometry(.09, .14, .4, 10), vMat); stump.position.set(.18, .3, -.05); stump.rotation.z = -.25; crown.add(stump);
+const cap = lump(.13, .2); cap.scale.set(1.3, .45, 1.1); cap.position.set(.24, .5, -.05); crown.add(cap);
+for (let i = 0; i < 6; i++) {   // petal-like folds (in the 2D picture they sense heat and light)
+  const pet = lump(.2, .15), a = i / 6 * Math.PI * 2 + .3;
+  pet.scale.set(.35, .9, .7); pet.position.set(Math.cos(a) * .3, .12, Math.sin(a) * .3); pet.rotation.set(Math.sin(a) * .6, -a, Math.cos(a) * .6 - .3); crown.add(pet);
+}
+// a ragged rim under the crown, with a few loose strands curling off it
+for (let i = 0; i < 10; i++) {
+  const a = i / 10 * Math.PI * 2;
+  crown.add(tendril(new THREE.Vector3(Math.cos(a) * .25, -.05, Math.sin(a) * .25), new THREE.Vector3(Math.cos(a) * .6, -.1 - rnd() * .15, Math.sin(a) * .6), .12, .025, 4));
+}
+// a slender body: a thin torso of twisted strands, 2 long legs and 2 long arms, all tendrils
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const NECK = TOP - .05, HIP = 1.05, SHOULDER = TOP - .25;
+for (let s = 0; s < 4; s++) {   // torso: four thin strands wound around each other from the hips to the crown
+  const a = s / 4 * Math.PI * 2;
+  virus.add(tendril(V(Math.cos(a) * .05, HIP, Math.sin(a) * .05), V(Math.cos(a + 2) * .04, NECK, Math.sin(a + 2) * .04), .12, .028, 7));
+}
+virus.add(tendril(V(-.16, SHOULDER, 0), V(.16, SHOULDER, 0), .06, .025, 4));   // shoulders
+virus.add(tendril(V(-.1, HIP, 0), V(.1, HIP, 0), .04, .03, 3));               // hips
+function claws(at, dir, n, len, group) {   // little splayed claws, pointing along dir
+  for (let f = 0; f < n; f++) {
+    const spread = (f - (n - 1) / 2) * .35, d = dir.clone().applyAxisAngle(V(0, 1, 0), spread).normalize();
+    const c = new THREE.Mesh(new THREE.ConeGeometry(.012, len, 5), vMat);
+    c.position.copy(at).addScaledVector(d, len / 2); c.quaternion.setFromUnitVectors(V(0, 1, 0), d); group.add(c);
+  }
+}
+const legs = [];
+[-1, 1].forEach(side => {
+  const leg = new THREE.Group();   // legs: thin, a little bent at the knee, ending in clawed toes
+  const hip = V(side * .1, HIP, 0), knee = V(side * .16, .55, .06), foot = V(side * .2, .03, 0);
+  leg.add(tendril(hip, knee, .1, .032, 5)); leg.add(tendril(knee, foot, .1, .026, 5));
+  leg.add(tendril(hip.clone().add(V(0, 0, .03)), knee.clone().add(V(.02, .05, 0)), .14, .012, 5));   // a strand wound around the thigh
+  claws(foot, V(0, -.25, 1), 3, .14, leg);
+  virus.add(leg); legs.push(leg);
+  const arm = new THREE.Group();   // arms: long and thin, hanging almost to the knees, with long finger-claws
+  const sh = V(side * .17, SHOULDER, 0), elbow = V(side * .3, SHOULDER - .5, .08), hand = V(side * .34, HIP - .25, .14);
+  arm.add(tendril(sh, elbow, .08, .024, 5)); arm.add(tendril(elbow, hand, .08, .02, 5));
+  claws(hand, V(side * .2, -1, .25), 4, .2, arm);
+  virus.add(arm); legs.push(arm);
+});
+// thin sensory hairs that drift around the crown
+const tendrils = [];
+for (let i = 0; i < 8; i++) {
+  const a = i / 8 * Math.PI * 2, h = tendril(new THREE.Vector3(0, 0, 0), new THREE.Vector3(Math.cos(a) * .35, .25 + rnd() * .2, Math.sin(a) * .35), .1, .008, 4);
+  h.position.y = .15; crown.add(h); tendrils.push(h);
+}
+// a dim glow above it so the glossy black catches the light
+const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
+virus.position.set(virusAt[1] * CELL + CELL / 2, 0, virusAt[0] * CELL + CELL / 2);
+virus.visible = false; scene.add(virus);
+
+// player
+const player = { x: start[1] * CELL + CELL / 2, z: start[0] * CELL + CELL / 2, yaw: Math.PI, r: 0.3 };
+const keys = {};
+addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
+addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+const blocked = (x, z) => {
+  for (const [ox, oz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const c = Math.floor((x + ox * player.r) / CELL), r = Math.floor((z + oz * player.r) / CELL);
+    if (wall(r, c)) return true;
+  }
+  return false;
+};
+
+const $ = id => document.getElementById(id);
+let playing = false, found = 0, msgTimer = 0, posterTimer = 0;
+// sanity drops by 1 every 6 seconds; almond water (E) brings it back to 100. Sprinting uses stamina.
+let sanity = 100, sanClock = 0, water = 2, stamina = 1;
+function setSanity(v) { sanity = Math.max(0, Math.min(100, v)); $('san').textContent = sanity; $('san').classList.toggle('low', sanity <= 25); }
+addEventListener('keydown', e => {
+  if (e.key.toLowerCase() !== 'e' || e.repeat || !playing || meetStep >= 0) return;
+  if (!water) { say('You are out of almond water.', 2); return; }
+  water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
+});
+function say(text, secs) { $('msg').innerHTML = text; $('msg').style.display = 'block'; msgTimer = secs; }
+function showPoster(p) { $('pt').textContent = p.title; $('pl').innerHTML = p.lines.join('<br>'); $('poster').style.display = 'block'; posterTimer = 3; }
+
+// the meeting, line by line (from the start of the 2D game)
+const MEET = [
+  'Something is standing in the dark at the end of the hall.',
+  'It is tall and black, standing on long twisting tendrils. It has no face, but it turns toward you.',
+  '"Wait. Don\'t run."',
+  '"I am a virus, basically. But I do not want to hurt you."',
+  '"Stay close to me. I know the way out."'
+];
+let meetStep = -1, meetTimer = 0;
+
+function reset() {
+  player.x = start[1] * CELL + CELL / 2; player.z = start[0] * CELL + CELL / 2; player.yaw = Math.PI;
+  found = 0; $('pc').textContent = 0; POSTERS.forEach(p => p.found = false);
+  meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none';
+  setSanity(100); sanClock = 0; water = 2; $('aw').textContent = 2; stamina = 1;
+  $('eh').textContent = 'To be continued...';
+  $('ep').innerHTML = 'That is all of the 3D test for now. You found <span id="ef">0</span> of 5 posters.';
+  playing = true; say('You wake up on damp carpet. The lights buzz. Where are you?', 4);
+}
+// the Backrooms hum: a low 60 Hz mains drone, its buzzy harmonic, and a faint fluorescent hiss.
+// Built from the browser's own sound engine, so there are no sound files.
+let audio = null, buzzGain = null;
+function startHum() {
+  if (audio) { audio.resume(); return; }
+  audio = new (window.AudioContext || window.webkitAudioContext)();
+  const master = audio.createGain(); master.gain.value = 0.5; master.connect(audio.destination);
+  const drone = audio.createOscillator(); drone.frequency.value = 60;
+  const droneGain = audio.createGain(); droneGain.gain.value = 0.25; drone.connect(droneGain).connect(master);
+  const buzz = audio.createOscillator(); buzz.type = 'sawtooth'; buzz.frequency.value = 120;
+  const soft = audio.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 380;
+  buzzGain = audio.createGain(); buzzGain.gain.value = 0.07; buzz.connect(soft).connect(buzzGain).connect(master);
+  const noise = audio.createBuffer(1, audio.sampleRate * 2, audio.sampleRate), d = noise.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const hiss = audio.createBufferSource(); hiss.buffer = noise; hiss.loop = true;
+  const band = audio.createBiquadFilter(); band.type = 'bandpass'; band.frequency.value = 4200; band.Q.value = 1.5;
+  const hissGain = audio.createGain(); hissGain.gain.value = 0.02; hiss.connect(band).connect(hissGain).connect(master);
+  drone.start(); buzz.start(); hiss.start();
+}
+$('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); };
+$('again').onclick = reset;
+
+window.__game = { player, POSTERS, virus, setSanity, get sanity() { return sanity; } };   // handy for testing in the browser console
+const clock = new THREE.Clock();
+function tick() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+  if (playing && meetStep < 0) {
+    if (keys['a']) player.yaw += 2.2 * dt;
+    if (keys['d']) player.yaw -= 2.2 * dt;
+    const mv = (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0);
+    const sprint = keys['shift'] && mv > 0 && stamina > 0.02;
+    stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
+    $('stam').style.width = (stamina * 100) + '%';
+    sanClock += dt;
+    if (sanClock >= 6) { sanClock -= 6; setSanity(sanity - 1); }
+    if (sanity <= 0) {
+      playing = false; $('msg').style.display = 'none';
+      $('eh').textContent = 'You lost your mind';
+      $('ep').textContent = 'The hum got louder and louder until it was the only thing left. Drink almond water before your sanity runs out.';
+      $('end').style.display = 'flex';
+    }
+    if (mv) {
+      const sp = (sprint ? 5.5 : 3) * dt * mv, nx = player.x - Math.sin(player.yaw) * sp, nz = player.z - Math.cos(player.yaw) * sp;
+      if (!blocked(nx, player.z)) player.x = nx;
+      if (!blocked(player.x, nz)) player.z = nz;
+    }
+    // read posters you walk up to
+    POSTERS.forEach(p => {
+      if (!p.found && Math.hypot(p.mesh.position.x - player.x, p.mesh.position.z - player.z) < 1.3) {
+        p.found = true; found++; $('pc').textContent = found; showPoster(p);
+      }
+    });
+    // the virus waits in the last room
+    const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
+    if (dv < 7) virus.visible = true;
+    if (dv < 2.6) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
+  }
+  if (meetStep >= 0) {
+    // turn to face the virus and play the meeting
+    const want = Math.atan2(player.x - virus.position.x, player.z - virus.position.z);
+    let diff = want - player.yaw;
+    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    player.yaw += Math.max(-2 * dt, Math.min(2 * dt, diff));
+    virus.lookAt(player.x, 0, player.z);
+    meetTimer += dt;
+    if (meetTimer > 3) {
+      meetTimer = 0; meetStep++;
+      if (meetStep < MEET.length) say(MEET[meetStep], 99);
+      else if (playing) { playing = false; $('msg').style.display = 'none'; $('ef').textContent = found; $('end').style.display = 'flex'; }
+    }
+  }
+  if (msgTimer > 0 && meetStep < 0) { msgTimer -= dt; if (msgTimer <= 0) $('msg').style.display = 'none'; }
+  if (posterTimer > 0) { posterTimer -= dt; if (posterTimer <= 0) $('poster').style.display = 'none'; }
+
+  // flickering lights and a slow sway for the tendrils
+  let flick = false;
+  lights.forEach((l, i) => { const on = Math.sin(t * 13 + i * 7) > -0.97 || i % 4; if (!on) flick = true; l.p.intensity = on ? l.base : 0.5; l.lamp.material.color.setHex(on ? 0xfffbe0 : 0x6b6550); });
+  if (buzzGain) buzzGain.gain.value = flick ? 0.12 : 0.07;   // the buzz crackles when a light flickers
+  tendrils.forEach((tn, i) => { tn.rotation.y = Math.sin(t * 1.5 + i) * 0.4; tn.rotation.x = Math.sin(t * 1.1 + i * 2) * 0.25; });
+  crown.rotation.z = Math.sin(t * .7) * .04; crown.position.y = TOP + Math.sin(t * 1.3) * .03;   // it breathes
+  legs.forEach((l, i) => { l.rotation.y = Math.sin(t * .6 + i) * .02; });
+  const bob = playing && meetStep < 0 && (keys['w'] || keys['s']) ? Math.sin(t * 9) * 0.03 : 0;
+  camera.position.set(player.x, 1.6 + bob, player.z);
+  camera.rotation.set(0, player.yaw, 0);
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>
