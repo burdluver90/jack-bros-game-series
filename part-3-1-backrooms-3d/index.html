@@ -117,22 +117,34 @@ scene.add(new THREE.AmbientLight(0xfff2b0, 0.55));
 const W = MAP[0].length * CELL, D = MAP.length * CELL;
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: floorTex }));
 floor.rotation.x = -Math.PI / 2; floor.position.set(W / 2, 0, D / 2); scene.add(floor);
-const ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: ceilTex }));
-ceil.rotation.x = Math.PI / 2; ceil.position.set(W / 2, H, D / 2); scene.add(ceil);
+// the virus room (bottom-right corner, from row 16 and column 19) has a tall ceiling so the virus fits
+const H2 = 5.6, TR = 16, TC = 19;
+const tall = (r, c) => r >= TR && c >= TC;
+function ceiling(x0, z0, x1, z1, y) {
+  const t = ceilTex.clone(); t.repeat.set((x1 - x0) / CELL, (z1 - z0) / CELL); t.needsUpdate = true;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshLambertMaterial({ map: t }));
+  m.rotation.x = Math.PI / 2; m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2); scene.add(m);
+}
+ceiling(0, 0, W, TR * CELL, H); ceiling(0, TR * CELL, TC * CELL, D, H); ceiling(TC * CELL, TR * CELL, W, D, H2);
 
 const wallGeo = new THREE.BoxGeometry(CELL, H, CELL), wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
+const tallGeo = new THREE.BoxGeometry(CELL, H2, CELL);
+// the strip of wall above the doorway, closing off the tall room above the normal ceiling
+const upper = new THREE.Mesh(new THREE.BoxGeometry(0.1, H2 - H, (MAP.length - TR) * CELL), wallMat);
+upper.position.set(TC * CELL, (H + H2) / 2, (TR + (MAP.length - TR) / 2) * CELL); scene.add(upper);
 const lampGeo = new THREE.PlaneGeometry(0.9, 0.4), lampMat = new THREE.MeshBasicMaterial({ color: 0xfffbe0 });
 const lights = [];
 let start = [1, 1], virusAt = [13, 9];
 MAP.forEach((row, r) => [...row].forEach((ch, c) => {
   const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2;
-  if (ch === '#') { const m = new THREE.Mesh(wallGeo, wallMat); m.position.set(x, H / 2, z); scene.add(m); return; }
+  const hh = tall(r, c) ? H2 : H;
+  if (ch === '#') { const m = new THREE.Mesh(tall(r, c) ? tallGeo : wallGeo, wallMat); m.position.set(x, hh / 2, z); scene.add(m); return; }
   if (ch === 'S') start = [r, c];
   if (ch === 'V') virusAt = [r, c];
   // a buzzing ceiling light every couple of tiles; only some of them cast real light, to keep it fast
   if (r % 2 === 1 && c % 2 === 1) {
-    const lamp = new THREE.Mesh(lampGeo, lampMat.clone()); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, H - 0.01, z); scene.add(lamp);
-    if (r % 6 === 1 && c % 6 === 1) { const p = new THREE.PointLight(0xfff0b0, 10, 12, 2); p.position.set(x, H - 0.3, z); scene.add(p); lights.push({ p, lamp, base: 10 }); }
+    const lamp = new THREE.Mesh(lampGeo, lampMat.clone()); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, hh - 0.01, z); scene.add(lamp);
+    if ((r % 6 === 1 && c % 6 === 1) || (tall(r, c) && c === 21)) { const p = new THREE.PointLight(0xfff0b0, tall(r, c) ? 18 : 10, 14, 2); p.position.set(x, hh - 0.3, z); scene.add(p); lights.push({ p, lamp, base: tall(r, c) ? 18 : 10 }); }
   }
 }));
 
@@ -174,7 +186,7 @@ function tendril(a, b, wob, thick, parts) {
     if (i && i < parts) p.add(new THREE.Vector3((rnd() - .5) * wob, (rnd() - .5) * wob * .4, (rnd() - .5) * wob));
     pts.push(p);
   }
-  const curve = new THREE.CatmullRomCurve3(pts), g = new THREE.TubeGeometry(curve, 40, thick, 6, false);
+  const curve = new THREE.CatmullRomCurve3(pts), g = new THREE.TubeGeometry(curve, 40, thick * 1.5, 6, false);   // 1.5x: thicker tendrils
   const p = g.attributes.position, v = new THREE.Vector3(), segs = 41;
   for (let i = 0; i < p.count; i++) {   // taper toward the tip
     const k = Math.floor(i / 7) / segs, c = curve.getPointAt(Math.min(1, k));
@@ -235,6 +247,7 @@ for (let i = 0; i < 8; i++) {
 }
 // a dim glow above it so the glossy black catches the light
 const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
+virus.scale.setScalar(2);   // twice as big as a person: it towers over you
 virus.position.set(virusAt[1] * CELL + CELL / 2, 0, virusAt[0] * CELL + CELL / 2);
 virus.visible = false; scene.add(virus);
 
@@ -337,8 +350,8 @@ function tick() {
     });
     // the virus waits in the last room
     const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
-    if (dv < 7) virus.visible = true;
-    if (dv < 2.6) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
+    if (dv < 9) virus.visible = true;
+    if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
   }
   if (meetStep >= 0) {
     // turn to face the virus and play the meeting
