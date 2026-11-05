@@ -126,7 +126,7 @@ const LEVELS = [
       { at: [14, 13], title: 'PARTY TONIGHT', lines: ['Everyone is', 'invited =)', 'Wear a hat.'] }
     ],
     bottles: [[3, 20], [9, 3], [14, 9], [17, 10]],
-    weapons: [{ at: [13, 4], kind: 'sword' }],   // next to the STAY ARMED poster
+    weapons: [],
     step: 'carpet', flicker: .97, glimpses: ['figure', 'smile', 'knock', 'lightsout'],
     intro: 'You wake up on damp carpet. The lights buzz. Where are you?'
   },
@@ -217,7 +217,7 @@ const LEVELS = [
       { at: [19, 12], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
     ],
     bottles: [[5, 12], [15, 20], [11, 20]],
-    weapons: [],
+    weapons: [{ at: [11, 5], kind: 'sword' }],   // you find it while the lizard chases you
     step: 'tile', flicker: 0, glimpses: [], noFake: true,
     intro: 'You land with a splash in warm, shallow water. White tiles everywhere, and somewhere water is dripping. Some of the pools are black. Find the exit.'
   }
@@ -458,12 +458,12 @@ const ssArms = [-1, 1].map(s => { const a = new THREE.Mesh(new THREE.CapsuleGeom
 const stealer = { state: 'idle', timer: 0 };
 L1.group.add(ss);
 // shortest path through the halls, one cell at a time, so it chases you around corners and crates
-function nextCell(fr, fc, tr, tc) {
+function nextCell(fr, fc, tr, tc, bad = L.wall) {
   const key = (r, c) => r * 100 + c, prev = new Map([[key(fr, fc), null]]), q = [[fr, fc]];
   while (q.length) {
     const [r, c] = q.shift();
     if (r === tr && c === tc) break;
-    for (const [dr, dc] of DIRS) { const nr = r + dr, nc = c + dc, k = key(nr, nc); if (!L.wall(nr, nc) && !prev.has(k)) { prev.set(k, [r, c]); q.push([nr, nc]); } }
+    for (const [dr, dc] of DIRS) { const nr = r + dr, nc = c + dc, k = key(nr, nc); if (!bad(nr, nc) && !prev.has(k)) { prev.set(k, [r, c]); q.push([nr, nc]); } }
   }
   if (!prev.has(key(tr, tc))) return [fr, fc];
   let cur = [tr, tc];
@@ -533,7 +533,8 @@ function setArmed(on) {
   $('slot').textContent = '1 ' + (weapon ? WEAPONS[weapon].icon + ' ' + WEAPONS[weapon].name : '✊ empty'); $('slot').classList.toggle('on', armed);
 }
 // you can only fight when something is attacking you and it is close enough to hit
-const foeClose = () => L === L1 && stealer.state === 'chase' && stealer.timer > 1.2 && Math.hypot(ss.position.x - player.x, ss.position.z - player.z) < 2.4;
+const foeClose = () => (L === L1 && stealer.state === 'chase' && stealer.timer > 1.2 && Math.hypot(ss.position.x - player.x, ss.position.z - player.z) < 2.4) ||
+  (L === L2 && lizard.state === 'chase' && Math.hypot(liz.position.x - player.x, liz.position.z - player.z) < 2.6);
 const totalFound = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.filter(p => p.found).length, 0);
 const totalPosters = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.length, 0);
 function ending(title, text) { playing = false; $('msg').style.display = 'none'; $('eh').textContent = title; $('ep').textContent = text; $('end').style.display = 'flex'; }
@@ -558,6 +559,7 @@ addEventListener('mousedown', e => {
   if (!foe) { if (armed) say('There is nothing to fight. You can only fight when something attacks you.', 2.5); return; }
   if (!armed) setArmed(true);
   swing = .35; whoosh();
+  if (L === L2) { killLizard(); return; }
   stealer.state = 'gone'; ss.visible = false; screech();
   if (weapon === 'bat') {   // the bat wins the fight, then snaps
     weapon = null; setTimeout(() => setArmed(false), 350);
@@ -603,6 +605,7 @@ function reset() {
   meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
   setSanity(100); sanClock = 0; water = 0; $('aw').textContent = 0; stamina = 1; weapon = null; setArmed(false);
   chosen = null; warned = false; $('choice').style.display = 'none'; $('fight').style.display = 'none';
+  Object.assign(lizard, { state: 'wait', timer: 0 }); liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false);
   stealer.state = 'idle'; stealer.timer = 0; ss.visible = true; ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0);
   suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a);
   ss.position.set(L1.hazAt[1] * CELL + CELL / 2, 0, L1.hazAt[0] * CELL + CELL / 2);
@@ -835,7 +838,115 @@ function updateVapor(dt) {
   }
   return Math.min(1, vapor / 1.1);   // how far you have fallen
 }
-window.__game = { vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+// ---------- the Poolrooms Lizard ----------
+// a red, scaly thing that crawls out of the water and chases you (from the 2D game). It will not go in the black water.
+// Grab the sword on the way and kill it, and the black water swallows the body: it eats anything dead.
+const scaleTex = tex(g => {
+  g.fillStyle = '#8f1d14'; g.fillRect(0, 0, 128, 128);
+  for (let y = 0; y < 128; y += 10) for (let x = (y / 10 % 2) * 6; x < 128; x += 12) {
+    g.fillStyle = Math.random() < .5 ? '#a8261a' : '#7a160f'; g.beginPath(); g.arc(x, y, 6, 0, Math.PI); g.fill();
+    g.strokeStyle = '#4d0c07'; g.lineWidth = 1; g.stroke();
+  }
+}, [3, 3]);
+const lizMat = new THREE.MeshStandardMaterial({ map: scaleTex, roughness: .45, metalness: .1 });
+const lizDark = new THREE.MeshStandardMaterial({ color: 0x4d0c07, roughness: .6 });
+const liz = new THREE.Group(), lizBody = new THREE.Group(); liz.add(lizBody);
+{
+  const body = new THREE.Mesh(new THREE.SphereGeometry(.35, 20, 14), lizMat); body.scale.set(.85, .55, 1.7); body.position.y = .42; lizBody.add(body);
+  const neck = new THREE.Mesh(new THREE.SphereGeometry(.2, 14, 10), lizMat); neck.scale.set(1, .8, 1.2); neck.position.set(0, .48, .55); lizBody.add(neck);
+  const head = new THREE.Group(); head.position.set(0, .5, .78); lizBody.add(head); liz.userData.head = head;
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(.2, 16, 12), lizMat); skull.scale.set(1, .65, 1.5); head.add(skull);
+  const jaw = new THREE.Mesh(new THREE.BoxGeometry(.24, .05, .32), lizDark); jaw.position.set(0, -.1, .1); head.add(jaw); liz.userData.jaw = jaw;
+  const mouth = new THREE.Mesh(new THREE.BoxGeometry(.22, .04, .3), new THREE.MeshBasicMaterial({ color: 0x2a0303 })); mouth.position.set(0, -.07, .1); head.add(mouth);
+  const toothMat = new THREE.MeshLambertMaterial({ color: 0xfff7e0 });
+  for (let i = 0; i < 6; i++) [-1, 1].forEach(sd => { const tth = new THREE.Mesh(new THREE.ConeGeometry(.012, .05, 4), toothMat); tth.rotation.x = Math.PI; tth.position.set(sd * .1, -.06, .22 - i * .045); head.add(tth); });
+  [-1, 1].forEach(sd => {   // yellow eyes with black slits, on the sides of the head
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.045, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffd21f })); eye.position.set(sd * .14, .06, .06); head.add(eye);
+    const slit = new THREE.Mesh(new THREE.BoxGeometry(.006, .06, .01), new THREE.MeshBasicMaterial({ color: 0x000000 })); slit.position.set(sd * .18, .06, .07); head.add(slit);
+  });
+  for (let i = 0; i < 9; i++) {   // dark spines down its back
+    const sp = new THREE.Mesh(new THREE.ConeGeometry(.04, .14 - i * .008, 5), lizDark); sp.position.set(0, .64 - Math.abs(i - 3) * .015, .45 - i * .14); sp.rotation.x = -.4; lizBody.add(sp);
+  }
+  const tail = tendril(V(0, .4, -.5), V(.15, .12, -2.1), .25, .11, 5); tail.material = lizMat; lizBody.add(tail); liz.userData.tail = tail;
+  liz.userData.legs = [[-1, .35], [1, .35], [-1, -.35], [1, -.35]].map(([sd, z]) => {   // sprawled legs that bend down to clawed feet
+    const leg = new THREE.Group(); leg.position.set(sd * .26, .42, z); lizBody.add(leg);
+    const up = new THREE.Mesh(new THREE.CapsuleGeometry(.06, .25, 4, 8), lizMat); up.rotation.z = sd * 1.1; up.position.set(sd * .14, -.04, 0); leg.add(up);
+    const low = new THREE.Mesh(new THREE.CapsuleGeometry(.05, .26, 4, 8), lizMat); low.position.set(sd * .3, -.24, 0); leg.add(low);
+    for (let c = -1; c <= 1; c++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(.018, .1, 4), lizDark); cl.rotation.x = Math.PI / 2; cl.position.set(sd * .3 + c * .035, -.4, .06); leg.add(cl); }
+    return leg;
+  });
+}
+liz.scale.setScalar(1.25); liz.visible = false; L2.group.add(liz);
+const lizPool = new THREE.Mesh(new THREE.CircleGeometry(1, 28), blackWater); lizPool.rotation.x = -Math.PI / 2; lizPool.visible = false; L2.group.add(lizPool);
+const lizSteam = Array.from({ length: 18 }, () => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: steamTex, transparent: true, depthWrite: false })); m.visible = false; L2.group.add(m); return m; });
+const lizard = { state: 'wait', timer: 0 };
+const lizBad = (r, c) => L.wall(r, c) || L.map[r][c] === 'B';
+function growl() {
+  if (!audio) return;
+  const o = audio.createOscillator(), f = audio.createBiquadFilter(), g = audio.createGain(); o.type = 'sawtooth';
+  o.frequency.setValueAtTime(95, audio.currentTime); o.frequency.linearRampToValueAtTime(55, audio.currentTime + 1.2);
+  f.type = 'lowpass'; f.frequency.value = 400; g.gain.setValueAtTime(.35, audio.currentTime); g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + 1.3);
+  o.connect(f).connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + 1.3);
+  burst(500, 1, .6, .5, 'lowpass');
+}
+// it crawls out of a pool a few steps behind you (away from the sword), so you have to run toward the sword
+function spawnLizard() {
+  const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL), sw = L2.weapons[0].at;
+  const dist = new Map([[pr * 100 + pc, 0]]), q = [[pr, pc]], spots = [];
+  while (q.length) {
+    const [r, c] = q.shift(), d = dist.get(r * 100 + c);
+    if (d >= 4 && d <= 6 && Math.hypot(r - sw[0], c - sw[1]) > Math.hypot(pr - sw[0], pc - sw[1]) + 2) spots.push([r, c]);
+    if (d < 8) for (const [dr, dc] of DIRS) { const nr = r + dr, nc = c + dc; if (!lizBad(nr, nc) && !dist.has(nr * 100 + nc)) { dist.set(nr * 100 + nc, d + 1); q.push([nr, nc]); } }
+  }
+  const wet = spots.filter(([r, c]) => L.map[r][c] === '~'), pick = (wet.length ? wet : spots)[0] || [1, 23];
+  liz.position.set(pick[1] * CELL + CELL / 2, -.9, pick[0] * CELL + CELL / 2); liz.rotation.set(0, 0, 0); liz.visible = true;
+  lizard.state = 'rise'; lizard.timer = 0; growl();
+  say('Something red and scaly crawls up out of the water behind you. A <b>LIZARD!</b> RUN (Shift)! Something is shining down the hall...', 4);
+}
+function killLizard() {
+  lizard.state = 'dead'; lizard.timer = 0; screech(); growl();
+  lizPool.position.set(liz.position.x, .035, liz.position.z); lizPool.scale.setScalar(.01); lizPool.visible = true;
+  lizSteam.forEach((p, i) => p.userData = { at: 1 + i * .12, x: (Math.random() - .5) * 1.4, z: (Math.random() - .5) * 1.4, up: .5 + Math.random() * .6 });
+  say('You swing the sword and hit it! The lizard thrashes... and falls dead.', 3);
+}
+function updateLizard(dt, t) {
+  const ud = liz.userData, d = Math.hypot(liz.position.x - player.x, liz.position.z - player.z);
+  if (lizard.state === 'wait') { if (Math.floor(player.z / CELL) >= 5) spawnLizard(); return; }
+  lizard.timer += dt;
+  if (lizard.state === 'rise') {   // climbing out of the pool
+    liz.position.y = Math.min(0, -.9 + lizard.timer * .8); liz.lookAt(player.x, liz.position.y, player.z);
+    ud.jaw.rotation.x = .3 + Math.sin(t * 20) * .1;
+    if (lizard.timer > 1.2) { lizard.state = 'chase'; lizard.timer = 0; }
+    return;
+  }
+  if (lizard.state === 'chase') {
+    const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL), sr = Math.floor(liz.position.z / CELL), sc = Math.floor(liz.position.x / CELL);
+    const nxt = nextCell(sr, sc, pr, pc, lizBad), same = sr === pr && sc === pc;
+    const tx = same ? player.x : nxt[1] * CELL + CELL / 2, tz = same ? player.z : nxt[0] * CELL + CELL / 2;
+    const dx = tx - liz.position.x, dz = tz - liz.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 4.3 * dt);   // faster than walking, slower than sprinting
+    liz.position.x += dx / dd * step; liz.position.z += dz / dd * step;
+    liz.lookAt(player.x, 0, player.z);
+    ud.legs.forEach((l, i) => { l.rotation.y = Math.sin(t * 16 + (i === 0 || i === 3 ? 0 : Math.PI)) * .6; });   // scuttling
+    lizBody.rotation.y = Math.sin(t * 16) * .12; ud.tail.rotation.y = Math.sin(t * 8) * .3; ud.jaw.rotation.x = .25 + Math.sin(t * 10) * .15;
+    if (d < 1.1) ending('The lizard got you', weapon ? 'It caught you. Next time, turn around and click to fight it when it gets close.' : 'It was too fast. Next time, RUN (Shift) and grab the shining sword down the hall, then turn around and kill it.');
+    else if (lizard.timer > 22) { lizard.state = 'leave'; lizard.timer = 0; say('The lizard gives up and slides back into the water.', 3); }
+    return;
+  }
+  if (lizard.state === 'leave') { liz.position.y -= dt * .6; if (lizard.timer > 1.6) { liz.visible = false; lizard.state = 'gone'; } return; }
+  if (lizard.state === 'dead') {   // it rolls over, black water spreads under it, and it sinks away in a cloud of steam
+    liz.rotation.z = Math.min(Math.PI, lizard.timer * 6); liz.position.y = Math.min(.5, lizard.timer * 2) - Math.max(0, lizard.timer - 1.2) * .5;
+    ud.legs.forEach((l, i) => { l.rotation.y = Math.sin(t * 30 + i) * Math.max(0, .5 - lizard.timer * .4); });
+    lizPool.scale.setScalar(Math.min(1.8, Math.max(.01, (lizard.timer - .6) * 1.5)) * (lizard.timer > 4.2 ? Math.max(.01, 1 - (lizard.timer - 4.2)) : 1));
+    lizSteam.forEach(p => {
+      const u = p.userData, life = lizard.timer - u.at;
+      p.visible = life > 0 && life < 2.4; if (!p.visible) return;
+      p.position.set(lizPool.position.x + u.x * (1 + life * .5), .1 + life * u.up, lizPool.position.z + u.z * (1 + life * .5)); p.scale.setScalar(.5 + life); p.material.opacity = Math.max(0, .8 - life * .35);
+    });
+    if (lizard.timer > 1.3 && lizard.timer - dt <= 1.3) { say('Black water seeps up out of the tiles and swallows the body. <b>I guess the water eats anything dead.</b>', 4); burst(4800, .5, 2.2, .45, 'highpass'); }
+    if (lizard.timer > 5.2) { liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false); lizard.state = 'gone'; }
+  }
+}
+window.__game = { lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -865,6 +976,7 @@ function tick() {
       if (w.taken || Math.hypot(w.g.position.x - player.x, w.g.position.z - player.z) > .9) return;
       if (weapon === 'sword') { if (!w.told) { w.told = true; say('A ' + WEAPONS[w.kind].name + '. Your sword is better, so you leave it.', 2.5); } return; }
       w.taken = true; w.g.visible = false; weapon = w.kind; setArmed(false);
+      if (L === L2 && lizard.state === 'chase') { setArmed(true); say('<b>It\'s a sword!</b> You grab it as you run. Turn around and fight! Click when the lizard gets close.', 4); return; }
       say(w.kind === 'sword' ? '<b>It\'s a sword!</b> Remember the poster: you will have to fight. Press 1 to take it out.' : 'You found a <b>baseball bat</b>! It will only last one fight. Press 1 to take it out.', 4);
     });
     L.posters.forEach(p => {
@@ -880,6 +992,7 @@ function tick() {
       if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
     } else {
       if (L === L1) updateStealer(dt, t);
+      if (L === L2) updateLizard(dt, t);
       if (L === L2) {
         const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
         if (L.map[pr][pc] === 'B') vaporize();
