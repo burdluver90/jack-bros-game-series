@@ -666,7 +666,15 @@ function screech() {
   g.gain.setValueAtTime(.15, audio.currentTime); g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .8);
   o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + .8);
 }
-$('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); };
+// test links: #poolrooms or #habitable jumps straight to that level, water=N gives you almond water, sword gives you the sword
+function jump() {
+  const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
+  const w = h.find(x => x.startsWith('water='));
+  if (lvl) enterLevel(lvl);
+  if (w) { water = Math.max(0, parseInt(w.slice(6)) || 0); $('aw').textContent = water; }
+  if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
+}
+$('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); jump(); };
 $('again').onclick = reset;
 
 // ---------- things that are not really there ----------
