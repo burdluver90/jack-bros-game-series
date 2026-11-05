@@ -215,13 +215,13 @@ const LEVELS = [
       '###...............................BBBBBB#',
       '###.##########....................BBBBBB#',
       '###.################.############.BBBBBB#',
-      '###.##.......#######.############.BBBBBB#',
-      '###.##.#####.#######.############.BBBBBB#',
-      '###.##.#####.#######.############.BBBBBB#',
-      '###.##Z#####.###...........##############',
-      '###.########.###..~~.......##############',
-      '###..........###P.~~.......##############',
-      '################.........X.##############',
+      '###.##.......#######...........##.BBBBBB#',
+      '###.##.#####.#################.##.BBBBBB#',
+      '###.##.#####.#################.##.BBBBBB#',
+      '###.##Z#####.###...........###.##########',
+      '###.########.###..~~.......###.##########',
+      '###..........###P.~~.......###.##########',
+      '################.X.............##########',
       '#########################################',
       '#########################################'
     ],
@@ -235,10 +235,10 @@ const LEVELS = [
       { at: [15, 2], title: 'NO SWIMMING', lines: ['The clear water', 'is safe.', 'The dark water', 'is hungry.'] },
       { at: [12, 33], title: 'AVOID RED', lines: ['Red slide?', 'NO.', 'Blue or black', 'will take you down.'] },
       { at: [26, 4], title: "DON'T GET LOST", lines: ['Never wander', 'off alone.', 'Something eats', 'lost people.'] },
-      { at: [32, 17], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
+      { at: [32, 19], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
     ],
     bottles: [[5, 1], [15, 20], [11, 39], [23, 24], [34, 25]],
-    weapons: [{ at: [30, 20], kind: 'sword' }],   // down the middle path, while the lizard chases you
+    weapons: [{ at: [34, 30], kind: 'sword' }],   // at the end of the long winding hall down the middle path
     slides: { r: { color: 0xd62828, name: 'RED', kill: true, out: 28 }, u: { color: 0x2a6fdb, name: 'BLUE', out: 19 }, k: { color: 0x1a1a1a, name: 'BLACK', out: 21 } },
     step: 'tile', flicker: 0, glimpses: [], noFake: true,
     intro: 'You land with a splash in warm water up to your knees. White tiles everywhere, and somewhere water is dripping. Some of the water is black. Find a way down.'
@@ -1076,7 +1076,7 @@ function updateLizard(dt, t) {
     const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL), sr = Math.floor(liz.position.z / CELL), sc = Math.floor(liz.position.x / CELL);
     const nxt = nextCell(sr, sc, pr, pc, lizBad), same = sr === pr && sc === pc;
     const tx = same ? player.x : nxt[1] * CELL + CELL / 2, tz = same ? player.z : nxt[0] * CELL + CELL / 2;
-    const dx = tx - liz.position.x, dz = tz - liz.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, (L.allWet ? 3.4 : 4.3) * dt);   // faster than wading, slower than sprinting through the water
+    const dx = tx - liz.position.x, dz = tz - liz.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, (L.allWet ? 3 : 4.3) * dt);   // faster than wading, slower than sprinting through the water
     liz.position.x += dx / dd * step; liz.position.z += dz / dd * step;
     liz.lookAt(player.x, 0, player.z);
     if (isWet(cellAt(liz.position.x, liz.position.z)) && (lizard.splash = (lizard.splash || 0) + dt) > .25) { lizard.splash = 0; splash(liz.position.x, liz.position.z, 6, .9); ripple(liz.position.x, liz.position.z, 2.6); }
@@ -1086,7 +1086,7 @@ function updateLizard(dt, t) {
       lizard.state = 'grab'; lizard.timer = 0; growl();
       say('<b>IT GRABS YOUR LEG!</b> ' + (weapon ? 'Face it and click to fight NOW!' : 'Sprint (Shift) to tear free!'), 99);
     }
-    else if (lizard.timer > 22) { lizard.state = 'leave'; lizard.timer = 0; say('The lizard gives up and slides back into the water.', 3); }
+    else if (lizard.timer > (L.allWet ? 32 : 22)) { lizard.state = 'leave'; lizard.timer = 0; say('The lizard gives up and slides back into the water.', 3); }
     return;
   }
   if (lizard.state === 'grab') {   // 2 seconds to react: fight it (click) or tear free by running
