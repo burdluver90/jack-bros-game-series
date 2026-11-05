@@ -96,9 +96,15 @@
   <button class="btn" id="again" style="background:#b8a55e">Play again</button>
 </div>
 
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const CELL = 2;
 const DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]];
@@ -250,7 +256,7 @@ const LEVELS = [
       '#########################################'
     ],
     H: 3.6, waterDepth: .6, allWet: true, lightStep: 8,   // the whole level is under 2 feet of water
-    fog: [0xd6ecf0, 5, 32], ambient: [0xffffff, 1.5], lampColor: 0xffffff, lightColor: 0xe8fbff, lightPower: 14,
+    fog: [0xc4dde2, 6, 34], ambient: [0xffffff, .95], lampColor: 0xffffff, lightColor: 0xe8fbff, lightPower: 11,
     walls: g => { g.fillStyle = '#e9eef0'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9c6cc'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } g.fillStyle = '#8fc7d6'; g.fillRect(0, 112, 128, 6); },
     floor: g => { g.fillStyle = '#dfe8ea'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#a9bbc1'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
     ceil: g => { g.fillStyle = '#f2f5f5'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#c9d3d6'; for (let x = 0; x < 128; x += 32) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
@@ -277,13 +283,45 @@ document.body.prepend(renderer.domElement);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 60);
 scene.add(camera); camera.rotation.order = 'YXZ';   // turn first, then look up and down
-addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;   // film-like colours
+// after drawing the scene: bright things glow (lights, signs, eyes), then a camera look on top:
+// darker edges, a little film grain, and colours that pull apart as your sanity drops
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .55, .55, .88); composer.addPass(bloom);
+const fx = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uSan: { value: 1 } },
+  vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime, uSan; varying vec2 vUv;
+    float rand(vec2 c) { return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main() {
+      vec2 d = vUv - .5; float ab = (1. - uSan) * .008 + .0007;
+      vec3 col = vec3(texture2D(tDiffuse, vUv + d * ab).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - d * ab).b);
+      col *= 1. - dot(d, d) * .85;                                     // darker at the edges
+      col += (rand(vUv * 1000. + fract(uTime) * 91.) - .5) * .03;     // film grain
+      gl_FragColor = vec4(col, 1.);
+    }`
+});
+composer.addPass(fx); composer.addPass(new OutputPass());
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight); });
 
-function tex(draw, rep) {
-  const c = document.createElement('canvas'); c.width = c.height = 128;
-  draw(c.getContext('2d'));
+// every texture is drawn at 256 x 256, then gets fine grain and a few grimy stains; its brightness is also used
+// as a bump map so walls and floors catch the light instead of looking flat
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+function tex(draw, rep, grime = 0) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.save(); g.scale(2, 2); draw(g); g.restore();
+  for (let i = 0; i < grime; i++) {   // soft dark stains
+    const x = Math.random() * 256, y = Math.random() * 256, r = 10 + Math.random() * 40, gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, 'rgba(40,30,10,.16)'); gr.addColorStop(1, 'rgba(40,30,10,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  const img = g.getImageData(0, 0, 256, 256), d = img.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - .5) * 12; d[i] += n; d[i + 1] += n; d[i + 2] += n; }   // fine grain
+  g.putImageData(img, 0, 0);
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]);
-  t.colorSpace = THREE.SRGBColorSpace; return t;
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso;
+  t.bump = new THREE.CanvasTexture(c); t.bump.wrapS = t.bump.wrapT = THREE.RepeatWrapping; t.bump.repeat.set(rep[0], rep[1]); t.bump.anisotropy = maxAniso;
+  return t;
 }
 // posters: notebook paper with a red title, pinned to whichever wall is next to its floor tile
 function posterTexture(p) {
@@ -302,7 +340,7 @@ const crateTex = tex(g => {
 }, [1, 1]);
 
 // ---------- building a level ----------
-const waterGeo = new THREE.PlaneGeometry(CELL, CELL), sideGeo = new THREE.PlaneGeometry(CELL, .3);
+const waterGeo = new THREE.PlaneGeometry(CELL, CELL, 10, 10), sideGeo = new THREE.PlaneGeometry(CELL, .3);   // split into small squares so it can bend into waves
 // little waves on the water: a bumpy normal map that slowly drifts
 const waveTex = (() => {
   const N = 128, h = new Float32Array(N * N);
@@ -317,6 +355,55 @@ const waveTex = (() => {
 })();
 const clearWater = new THREE.MeshStandardMaterial({ color: 0x8fdcec, roughness: .08, metalness: .15, transparent: true, opacity: .5, side: THREE.DoubleSide, depthWrite: false, normalMap: waveTex, normalScale: new THREE.Vector2(.6, .6) });
 const blackWater = new THREE.MeshStandardMaterial({ color: 0x030405, roughness: .02, metalness: .9, side: THREE.DoubleSide, normalMap: waveTex, normalScale: new THREE.Vector2(.25, .25) });
+const clearSide = clearWater.clone();   // the see-through edges of the water stay flat
+// the waves: the same height formula runs on the graphics card (to bend the water) and here (to bob things on it)
+const RIPS = 24, waterU = { uTime: { value: 0 }, uRip: { value: Array.from({ length: RIPS }, () => new THREE.Vector4(0, 0, -99, 0)) } };
+let ripSlot = 0;
+function wave(x, z, amp) { waterU.uRip.value[ripSlot++ % RIPS].set(x, z, waterU.uTime.value, Math.min(.09, amp)); }
+const WAVE_GLSL = `
+uniform float uTime; uniform vec4 uRip[${RIPS}];
+float wh(vec2 p) {
+  float h = sin(p.x * 1.3 + uTime * 1.1) * .012 + sin(p.y * 1.7 - uTime * 1.3) * .01 + sin((p.x + p.y) * 2.3 + uTime * 2.) * .006;
+  for (int i = 0; i < ${RIPS}; i++) {
+    vec4 r = uRip[i]; float age = uTime - r.z;
+    if (age < 0. || age > 3.5) continue;
+    float d = distance(p, r.xy), k = d - age * 2.2;   // a ring that spreads out at 2.2 m/s and fades
+    h += r.w * sin(k * 9.) * exp(-k * k * 2.5) * exp(-age * 1.1) / (1. + d * .8);
+  }
+  return h;
+}
+`;
+function waveHeight(x, z) {   // the same waves, worked out here so bottles can float on them
+  const T = waterU.uTime.value;
+  let h = Math.sin(x * 1.3 + T * 1.1) * .012 + Math.sin(z * 1.7 - T * 1.3) * .01 + Math.sin((x + z) * 2.3 + T * 2) * .006;
+  waterU.uRip.value.forEach(r => { const age = T - r.z; if (age < 0 || age > 3.5) return; const d = Math.hypot(x - r.x, z - r.y), k = d - age * 2.2; h += r.w * Math.sin(k * 9) * Math.exp(-k * k * 2.5) * Math.exp(-age * 1.1) / (1 + d * .8); });
+  return h;
+}
+clearWater.onBeforeCompile = sh => {
+  Object.assign(sh.uniforms, waterU);
+  sh.vertexShader = WAVE_GLSL + sh.vertexShader
+    .replace('#include <beginnormal_vertex>', `vec2 wp = (modelMatrix * vec4(position, 1.)).xz; float e = .05;
+      float hx = (wh(wp + vec2(e, 0.)) - wh(wp - vec2(e, 0.))) / (2. * e), hz = (wh(wp + vec2(0., e)) - wh(wp - vec2(0., e))) / (2. * e);
+      vec3 objectNormal = normalize(vec3(-hx, hz, 1.));   // the plane lies flat, so its own z points up`)
+    .replace('#include <begin_vertex>', 'vec3 transformed = vec3(position); transformed.z += wh(wp);');
+};
+// something shiny to reflect, so the water and the black pools gleam
+const envTex = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture;
+[clearWater, clearSide].forEach(m => { m.envMap = envTex; m.envMapIntensity = .9; });
+blackWater.envMap = envTex; blackWater.envMapIntensity = 1.2;
+// caustics: the wobbly net of light that water throws on the bottom of a pool
+const causticTex = (() => {
+  const N = 128, pts = Array.from({ length: 22 }, () => [Math.random() * N, Math.random() * N]);
+  const c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), img = g.createImageData(N, N);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    let f1 = 1e9, f2 = 1e9;
+    pts.forEach(([px, py]) => { let dx = Math.abs(x - px), dy = Math.abs(y - py); dx = Math.min(dx, N - dx); dy = Math.min(dy, N - dy); const d = Math.sqrt(dx * dx + dy * dy); if (d < f1) { f2 = f1; f1 = d; } else if (d < f2) f2 = d; });
+    const v = Math.exp(-(f2 - f1) * .45) * 255, i = (y * N + x) * 4;
+    img.data[i] = v * .75; img.data[i + 1] = v * .95; img.data[i + 2] = v; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const caustics = [];
 const brassKnob = new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: .7, roughness: .3 });
 function buildLevel(L) {
   const map = L.map, rows = map.length, cols = map[0].length, W = cols * CELL, D = rows * CELL;
@@ -324,9 +411,9 @@ function buildLevel(L) {
   const tall = (r, c) => L.tall && r >= L.tall.r && c >= L.tall.c, hOf = (r, c) => tall(r, c) ? L.tall.h : L.H;
   const g = new THREE.Group(); L.group = g; L.lights = []; scene.add(g);
   g.add(new THREE.AmbientLight(L.ambient[0], L.ambient[1]));
-  const wallTex = tex(L.walls, [1, 1]), floorTex = tex(L.floor, [cols, rows]), ceilTex = tex(L.ceil, [cols, rows]);
-  const wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({ map: floorTex }));
+  const dirty = L.allWet ? 2 : 6, wallTex = tex(L.walls, [1, 1], dirty), floorTex = tex(L.floor, [cols, rows], dirty), ceilTex = tex(L.ceil, [cols, rows], dirty);
+  const wallMat = new THREE.MeshLambertMaterial({ map: wallTex, bumpMap: wallTex.bump, bumpScale: 2 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshStandardMaterial({ map: floorTex, bumpMap: floorTex.bump, bumpScale: 2, roughness: L.allWet ? .35 : .85, metalness: 0, envMap: L.allWet ? envTex : null, envMapIntensity: .4 }));
   floor.rotation.x = -Math.PI / 2; floor.position.set(W / 2, 0, D / 2); g.add(floor);
   const ceiling = (x0, z0, x1, z1, y) => {
     const t = ceilTex.clone(); t.repeat.set((x1 - x0) / CELL, (z1 - z0) / CELL); t.needsUpdate = true;
@@ -378,7 +465,7 @@ function buildLevel(L) {
       if (L.waterDepth) DIRS.forEach(([dr, dc]) => {
         const n = (map[r + dr] || '')[c + dc];
         if (!n || wet(n) || L.wall(r + dr, c + dc)) return;
-        const side = new THREE.Mesh(L.sideGeo || (L.sideGeo = new THREE.PlaneGeometry(CELL, dep)), mat); side.position.set(x + dc * CELL / 2, dep / 2, z + dr * CELL / 2); side.rotation.y = dc ? Math.PI / 2 : 0; g.add(side);
+        const side = new THREE.Mesh(L.sideGeo || (L.sideGeo = new THREE.PlaneGeometry(CELL, dep)), mat === clearWater ? clearSide : mat); side.position.set(x + dc * CELL / 2, dep / 2, z + dr * CELL / 2); side.rotation.y = dc ? Math.PI / 2 : 0; g.add(side);
       });
     }
     if (ch === 'S') L.start = [r, c];
@@ -430,6 +517,11 @@ function buildLevel(L) {
     const glow = new THREE.PointLight(0x5dff8f, 6, 8, 2); glow.position.set(x, 2.2, z); g.add(glow);
     L.exitPos = V(x, 0, z);
   }
+  if (L.allWet) [[.2, 1], [.14, -1]].forEach(([op, dir]) => {   // two layers of caustic light on the pool floor, drifting different ways
+    const t = causticTex.clone(); t.needsUpdate = true; t.repeat.set(cols / 1.6, rows / 1.6);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshBasicMaterial({ map: t, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.set(W / 2, .012 + (dir > 0 ? 0 : .002), D / 2); g.add(m); caustics.push({ t, dir });
+  });
   g.visible = false;
   return L;
 }
@@ -439,7 +531,7 @@ LEVELS.forEach(buildLevel);
 // built like the picture in the 2D game: a glossy black, lumpy crown with petal-like folds on a slender body of
 // twisting tendrils, 2 legs and 2 arms. It has no face.
 const virus = new THREE.Group();
-const vMat = new THREE.MeshStandardMaterial({ color: 0x0b0a0d, roughness: 0.22, metalness: 0.15 });
+const vMat = new THREE.MeshPhysicalMaterial({ color: 0x0b0a0d, roughness: .2, metalness: .15, clearcoat: 1, clearcoatRoughness: .12, iridescence: .7, iridescenceIOR: 1.35, envMap: envTex, envMapIntensity: .8 });   // glossy and oily, with a faint rainbow sheen
 function lump(rad, bump) {   // lumpy blob: a sphere with its points pushed in and out
   const g = new THREE.SphereGeometry(rad, 18, 14), p = g.attributes.position, v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); v.multiplyScalar(1 + (Math.sin(v.x * 23) * Math.cos(v.y * 19) * Math.sin(v.z * 17)) * bump); p.setXYZ(i, v.x, v.y, v.z); }
@@ -550,7 +642,17 @@ const ssArms = [-1, 1].map(s => { const a = new THREE.Mesh(new THREE.CapsuleGeom
 // its real form, under the stolen suit: tall and hunched, stretched pale skin, long arms with claws,
 // a huge mouth of teeth and glowing red eyes, with torn yellow scraps of the suit still hanging off it
 const monster = new THREE.Group(); ss.add(monster);
-const skinMat = new THREE.MeshStandardMaterial({ color: 0xc79a8f, roughness: .7, emissive: 0x2a0a08 });
+const skinTex = tex(g => {   // pale, blotchy skin with dark veins running through it
+  g.fillStyle = '#c99d92'; g.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(${150 + Math.random() * 60},${90 + Math.random() * 40},${90 + Math.random() * 40},.25)`; g.beginPath(); g.arc(Math.random() * 128, Math.random() * 128, 3 + Math.random() * 10, 0, 7); g.fill(); }
+  g.lineCap = 'round';
+  for (let i = 0; i < 14; i++) {
+    let x = Math.random() * 128, y = Math.random() * 128; g.strokeStyle = Math.random() < .5 ? 'rgba(110,20,40,.55)' : 'rgba(70,40,110,.45)'; g.lineWidth = .6 + Math.random() * 1.2; g.beginPath(); g.moveTo(x, y);
+    for (let j = 0; j < 8; j++) { x += (Math.random() - .5) * 18; y += 6 + Math.random() * 8; g.lineTo(x, y); }
+    g.stroke();
+  }
+}, [2, 2], 4);
+const skinMat = new THREE.MeshPhysicalMaterial({ map: skinTex, bumpMap: skinTex.bump, bumpScale: 2.5, roughness: .55, sheen: 1, sheenColor: 0xff8f8f, sheenRoughness: .5, clearcoat: .35, clearcoatRoughness: .4, emissive: 0x2a0a08 });   // a slimy sheen
 const mLegs = [], mArms = [];
 {
   const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.2, .8, 6, 12), skinMat); torso.position.set(0, 1.4, .08); torso.rotation.x = .35; monster.add(torso);
@@ -566,7 +668,8 @@ const mLegs = [], mArms = [];
   });
   const eyeM = new THREE.MeshBasicMaterial({ color: 0xff1a1a });
   [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), eyeM); e.position.set(sd * .08, .07, .18); head.add(e); });
-  const eyeGlow = new THREE.PointLight(0xff2020, 2, 3, 2); eyeGlow.position.set(0, .07, .4); head.add(eyeGlow);
+  const eyeGlow = new THREE.PointLight(0xff2020, .5, 1.5, 2); eyeGlow.position.set(0, .07, .4); head.add(eyeGlow);
+  const fill = new THREE.PointLight(0xffe2d4, 1.6, 4, 2); fill.position.set(0, 2.3, 1.3); monster.add(fill);   // a faint light on its body so you can see what it is
   [-1, 1].forEach(sd => {   // long arms down past its knees, ending in claws
     const arm = new THREE.Group(); arm.position.set(sd * .26, 1.72, .2); monster.add(arm); mArms.push(arm);
     const up = new THREE.Mesh(new THREE.CapsuleGeometry(.045, .5, 4, 8), skinMat); up.position.set(sd * .06, -.3, .05); up.rotation.z = sd * .15; arm.add(up);
@@ -577,6 +680,27 @@ const mLegs = [], mArms = [];
   const scrapM = new THREE.MeshLambertMaterial({ color: 0xd9a200, side: THREE.DoubleSide });
   [[-.18, 1.55, .1, .4], [.2, 1.25, .05, -.5], [0, .95, .16, .2], [-.12, .9, -.12, -.3]].forEach(([x, y, z, r]) => {   // torn bits of the hazmat suit
     const sc = new THREE.Mesh(new THREE.PlaneGeometry(.22, .3), scrapM); sc.position.set(x, y, z); sc.rotation.set(.2, r * 2, r); monster.add(sc);
+  });
+  // extra detail
+  const bone = new THREE.MeshStandardMaterial({ color: 0xead6c6, roughness: .6 }), sinew = new THREE.MeshStandardMaterial({ color: 0x9a4a48, roughness: .5 });
+  const ribs = new THREE.Group(); ribs.position.copy(torso.position); ribs.rotation.copy(torso.rotation); monster.add(ribs);
+  for (let i = 0; i < 5; i++) {   // ribs showing through the skin
+    const rb = new THREE.Mesh(new THREE.TorusGeometry(.205 - Math.abs(i - 1) * .01, .016, 6, 18, Math.PI), bone);
+    rb.rotation.x = Math.PI / 2; rb.scale.set(1, .75, 1); rb.position.y = .25 - i * .11; ribs.add(rb);
+  }
+  mArms.forEach((arm, ai) => {
+    const sd = ai ? 1 : -1;
+    [0, 1].forEach(j => { const sn = tendril(V(sd * (.02 + j * .04), -.08, .04), V(sd * (.1 + j * .03), -1.08, .2), .06, .009, 5); sn.material = sinew; arm.add(sn); });   // stringy sinews down the arm
+    for (let f = 0; f < 4; f++) {   // four long bony fingers with claws on the ends
+      const fg = new THREE.Group(); fg.position.set(sd * .1 + (f - 1.5) * .025, -1.12, .2); fg.rotation.set(.35 + f * .05, 0, sd * (f - 1.5) * .12); arm.add(fg);
+      const ph = new THREE.Mesh(new THREE.CapsuleGeometry(.011, .16, 3, 6), skinMat); ph.position.y = -.09; fg.add(ph);
+      const cl = new THREE.Mesh(new THREE.ConeGeometry(.01, .09, 4), bone); cl.position.y = -.22; cl.rotation.x = Math.PI; fg.add(cl);
+    }
+  });
+  const droolM = new THREE.MeshPhysicalMaterial({ color: 0xdfe9e4, roughness: .05, transparent: true, opacity: .55, clearcoat: 1 });
+  [-1, 1].forEach(sd => { const dr = new THREE.Mesh(new THREE.CylinderGeometry(.005, .002, .32, 5), droolM); dr.position.set(sd * .05, -.32, .2); head.add(dr); });   // drool hanging from its mouth
+  [[.15, 1.62, .2, .5], [-.17, 1.2, .16, -.7], [.08, .98, .2, .3]].forEach(([x, y, z, r]) => {   // loose flaps of stretched skin
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(.14, .26), skinMat); fl.material = skinMat.clone(); fl.material.side = THREE.DoubleSide; fl.position.set(x, y, z); fl.rotation.set(.3, r, r * .4); monster.add(fl);
   });
   monster.visible = false;
 }
@@ -655,7 +779,7 @@ LEVELS.forEach(L => {
 
 // ---------- game state ----------
 const $ = id => document.getElementById(id);
-const player = { x: 0, z: 0, yaw: Math.PI, r: .3 };
+const player = { x: 0, z: 0, yaw: Math.PI, r: .3, vx: 0, vz: 0 };
 let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 0, stamina = 1, armed = false, weapon = null, stepClock = 0;
 let shake = 0, drawing = 0, meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false, vapor = 0;
 const keys = {};
@@ -718,7 +842,7 @@ function enterLevel(next) {
   L = next; L.visited = true;
   if (next === L1) startHello();
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
-  player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI;
+  player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI; player.vx = player.vz = 0;
   // no level names on screen: you are not told where you are
   $('pc').textContent = L.posters.filter(p => p.found).length; $('ptot').textContent = L.posters.length;
   fake.mesh.visible = false; fake.next = 25 + Math.random() * 20; phantom.on = false; phantom.next = 18 + Math.random() * 15;
@@ -1035,8 +1159,9 @@ const ripples = Array.from({ length: 30 }, () => {
   m.rotation.x = -Math.PI / 2; m.visible = false; m.userData = { life: 0, size: 1 }; scene.add(m); return m;
 });
 let dropNext = 0, rippleNext = 0;
+const wake = { t: 0 };
 const waterY = () => L.waterDepth || .02;
-function ripple(x, z, size) { const m = ripples[rippleNext++ % ripples.length]; m.position.set(x, waterY() + .01, z); m.userData = { life: 0, size }; m.visible = true; }
+function ripple(x, z, size) { const m = ripples[rippleNext++ % ripples.length]; m.position.set(x, waterY() + .03, z); m.userData = { life: 0, size }; m.visible = true; wave(x, z, .014 * size); }
 function splash(x, z, n, power, dirX = 0, dirZ = 0, dark = false) {
   for (let i = 0; i < n; i++) {
     const m = drops[dropNext++ % drops.length]; m.visible = true; m.material = dark ? darkDrop : dropMat; m.position.set(x + (Math.random() - .5) * .3, waterY() + .02, z + (Math.random() - .5) * .3);
@@ -1045,10 +1170,12 @@ function splash(x, z, n, power, dirX = 0, dirZ = 0, dark = false) {
   ripple(x, z, 1 + power * 1.2);
 }
 function updateWater(dt) {
-  waveTex.offset.x += dt * .03; waveTex.offset.y += dt * .017;
+  waveTex.offset.x += dt * .03; waveTex.offset.y += dt * .017; waterU.uTime.value += dt;
+  caustics.forEach(c => { c.t.offset.x += dt * .05 * c.dir; c.t.offset.y += dt * .035; });
+  if (L.waterDepth && inWater() && Math.hypot(player.vx, player.vz) > .6 && (wake.t -= dt) <= 0) { wake.t = .14; wave(player.x - player.vx * .12, player.z - player.vz * .12, .02); }   // a wake behind you as you wade
   drops.forEach(m => {
     if (!m.visible) return;
-    const v = m.userData.v; v.y -= 9.8 * dt; m.position.addScaledVector(v, dt);
+    const v = m.userData.v; v.y -= 9.8 * dt; v.multiplyScalar(1 - dt * .6); m.position.addScaledVector(v, dt);   // gravity and a little air drag
     if (m.position.y < waterY() && v.y < 0) { m.visible = false; if (Math.random() < .25 && isWet(cellAt(m.position.x, m.position.z))) ripple(m.position.x, m.position.z, .35); }
   });
   ripples.forEach(m => {
@@ -1354,7 +1481,7 @@ const scaleTex = tex(g => {
     g.strokeStyle = '#4d0c07'; g.lineWidth = 1; g.stroke();
   }
 }, [3, 3]);
-const lizMat = new THREE.MeshStandardMaterial({ map: scaleTex, roughness: .45, metalness: .1, emissive: 0x5a0a05, emissiveIntensity: .8 });
+const lizMat = new THREE.MeshPhysicalMaterial({ map: scaleTex, bumpMap: scaleTex.bump, bumpScale: 3, roughness: .4, clearcoat: .8, clearcoatRoughness: .25, emissive: 0x5a0a05, emissiveIntensity: .6, envMap: envTex, envMapIntensity: .5 });   // wet, bumpy scales
 const lizDark = new THREE.MeshStandardMaterial({ color: 0x4d0c07, roughness: .6 });
 const liz = new THREE.Group(), lizBody = new THREE.Group(); liz.add(lizBody);
 {
@@ -1381,6 +1508,25 @@ const liz = new THREE.Group(), lizBody = new THREE.Group(); liz.add(lizBody);
     for (let c = -1; c <= 1; c++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(.018, .1, 4), lizDark); cl.rotation.x = Math.PI / 2; cl.position.set(sd * .3 + c * .035, -.4, .06); leg.add(cl); }
     return leg;
   });
+}
+{
+  const ud = liz.userData, head = ud.head;
+  const belly = new THREE.Mesh(new THREE.SphereGeometry(.35, 20, 14), new THREE.MeshPhysicalMaterial({ color: 0xe8936e, roughness: .5, clearcoat: .5 }));
+  belly.scale.set(.72, .38, 1.55); belly.position.set(0, .33, 0); lizBody.add(belly);   // a paler belly underneath
+  const dark = new THREE.MeshStandardMaterial({ color: 0x2a0503, roughness: .6 });
+  [-1, 1].forEach(sd => {
+    const brow = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), lizMat); brow.scale.set(1.2, .5, 1.4); brow.position.set(sd * .12, .11, .05); head.add(brow);   // heavy brow ridges
+    const nos = new THREE.Mesh(new THREE.SphereGeometry(.018, 8, 6), dark); nos.position.set(sd * .05, .04, .29); head.add(nos);   // nostrils
+  });
+  const tongue = new THREE.Group(); tongue.position.set(0, -.07, .24); head.add(tongue); ud.tongue = tongue;   // a long forked tongue
+  const tMat = new THREE.MeshStandardMaterial({ color: 0x8a1b3a, roughness: .3 });
+  const stem = new THREE.Mesh(new THREE.BoxGeometry(.02, .008, .22), tMat); stem.position.z = .11; tongue.add(stem);
+  [-1, 1].forEach(sd => { const fork = new THREE.Mesh(new THREE.BoxGeometry(.012, .007, .08), tMat); fork.position.set(sd * .02, 0, .25); fork.rotation.y = sd * .35; tongue.add(fork); });
+  tongue.scale.z = .01;
+  for (let i = 0; i < 10; i++) {   // a row of small spikes down the tail
+    const k = i / 10, sp = new THREE.Mesh(new THREE.ConeGeometry(.025 * (1 - k * .6), .08 * (1 - k * .5), 5), lizDark);
+    sp.position.set(.02 + k * .13, .5 - k * .35, -.55 - k * 1.45); sp.rotation.x = -.6; lizBody.add(sp);
+  }
 }
 const lizGlow = new THREE.PointLight(0xff3a20, 4, 6, 2); lizGlow.position.set(0, 1.4, .3); liz.add(lizGlow);   // a red glow so you can see it coming
 liz.scale.setScalar(1.5); liz.visible = false; L2.group.add(liz);
@@ -1444,6 +1590,7 @@ function updateLizard(dt, t) {
     if (isWet(cellAt(liz.position.x, liz.position.z)) && (lizard.splash = (lizard.splash || 0) + dt) > .25) { lizard.splash = 0; splash(liz.position.x, liz.position.z, 6, .9); ripple(liz.position.x, liz.position.z, 2.6); }
     ud.legs.forEach((l, i) => { l.rotation.y = Math.sin(t * 16 + (i === 0 || i === 3 ? 0 : Math.PI)) * .6; });   // scuttling
     lizBody.rotation.y = Math.sin(t * 16) * .12; ud.tail.rotation.y = Math.sin(t * 8) * .3; ud.jaw.rotation.x = .25 + Math.sin(t * 10) * .15;
+    ud.tongue.scale.z = Math.max(.01, Math.sin(t * 7)) * (Math.sin(t * 1.7) > .2 ? 1 : .01);   // it flicks its tongue as it hunts you
     if (d < 1.1 && lizard.timer > .8) {
       lizard.state = 'grab'; lizard.timer = 0; growl();
       say('<b>IT GRABS YOUR LEG!</b> ' + (weapon ? 'Face it and click to fight NOW!' : 'Sprint (Shift) to tear free!'), 99);
@@ -1491,12 +1638,16 @@ function tick() {
     $('stam').style.width = (stamina * 100) + '%';
     if ((sanClock += dt) >= 6) { sanClock -= 6; setSanity(sanity - 1); }
     if (sanity <= 0) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left. Drink almond water before your sanity runs out.');
-    if (mv || st) {
+    // where you want to go, and how fast; in deep water you push against it, so you speed up and slow down slowly
+    const sp = (mv || st) ? (sprint ? 5.5 : 3) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) / Math.hypot(mv, st) : 0;
+    const tvx = (-Math.sin(player.yaw) * mv + Math.cos(player.yaw) * st) * sp, tvz = (-Math.cos(player.yaw) * mv - Math.sin(player.yaw) * st) * sp;
+    const grip = inWater() ? (L.allWet ? 3 : 5) : 14;
+    player.vx += (tvx - player.vx) * Math.min(1, dt * grip); player.vz += (tvz - player.vz) * Math.min(1, dt * grip);
+    const nx = player.x + player.vx * dt, nz = player.z + player.vz * dt;
+    if (!blocked(nx, player.z)) player.x = nx; else player.vx = 0;
+    if (!blocked(player.x, nz)) player.z = nz; else player.vz = 0;
+    if (Math.hypot(player.vx, player.vz) > .5) {
       moving = true;
-      const sp = (sprint ? 5.5 : 3) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) * dt / Math.hypot(mv, st);
-      const nx = player.x + (-Math.sin(player.yaw) * mv + Math.cos(player.yaw) * st) * sp, nz = player.z + (-Math.cos(player.yaw) * mv - Math.sin(player.yaw) * st) * sp;   // forward/back plus side steps
-      if (!blocked(nx, player.z)) player.x = nx;
-      if (!blocked(player.x, nz)) player.z = nz;
       if ((stepClock += dt) > (sprint ? .28 : .45)) { stepClock = 0; footstep(); if (L.waterDepth && inWater()) waterStep(sprint); }
     }
     L.bottleObjs.forEach(b => {
@@ -1564,7 +1715,9 @@ function tick() {
   hairs.forEach((h, i) => { h.rotation.y = Math.sin(t * 1.5 + i) * .4; h.rotation.x = Math.sin(t * 1.1 + i * 2) * .25; });
   crown.rotation.z = Math.sin(t * .7) * .04; crown.position.y = TOP + Math.sin(t * 1.3) * .03;
   limbs.forEach((l, i) => { l.rotation.y = Math.sin(t * .6 + i) * .02; });
-  L.bottleObjs.forEach((b, i) => { b.g.rotation.y = t * 1.5 + i; b.g.position.y = (L.allWet ? L.waterDepth - .15 : .05) + Math.sin(t * 2 + i) * .04; });   // bottles float in deep water
+  L.bottleObjs.forEach((b, i) => { b.g.rotation.y = t * 1.5 + i; if (L.allWet) { const x = b.g.position.x, z = b.g.position.z, h = waveHeight(x, z);   // bottles float, riding the waves and tipping with them
+    b.g.position.y = L.waterDepth - .17 + h; b.g.rotation.x = (waveHeight(x, z + .2) - h) * 4; b.g.rotation.z = -(waveHeight(x + .2, z) - h) * 4; }
+  else b.g.position.y = .05 + Math.sin(t * 2 + i) * .04; });
   const foe = playing && foeClose(); $('fight').style.display = foe ? 'block' : 'none';
   if (foe && lizard.state !== 'grab') $('fight').textContent = L === L2 && weapon && !facingLiz() ? '↩️ Turn and face it!' : weapon ? '⚔️ Click to fight!' : 'Nothing to fight with: RUN!';
   const k = swing > 0 ? 1 - Math.max(0, swing -= dt) / .35 : 0;
@@ -1575,7 +1728,8 @@ function tick() {
   camera.rotation.set(fall * .9 + ride.pitch + look.pitch, player.yaw, fall * .5);
   if (shake > 0) { shake -= dt; camera.position.x += (Math.random() - .5) * shake * .25; camera.position.y += (Math.random() - .5) * shake * .25; }   // the blast shakes you
   placeListener();
-  renderer.render(scene, camera);
+  fx.uniforms.uTime.value = t; fx.uniforms.uSan.value = sanity / 100;
+  composer.render();
   requestAnimationFrame(tick);
 }
 tick();
