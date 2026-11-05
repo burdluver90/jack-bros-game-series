@@ -28,6 +28,12 @@
   #lvlcard { position: fixed; left: 0; right: 0; top: 34%; text-align: center; pointer-events: none; opacity: 0; transition: opacity 1s; text-shadow: 0 2px 8px #000; }
   #lvlcard h2 { margin: 0; font-size: 40px; color: #fde68a; letter-spacing: .08em; }
   #lvlcard div { font-size: 20px; }
+  #choice { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(0,0,0,.6); padding: 16px; }
+  #choice h2 { color: #fde68a; margin: 0 0 14px; }
+  #choice .opt { display: block; width: min(460px, 100%); margin: 8px 0; padding: 14px 18px; text-align: left; font-size: 16px; line-height: 1.4; color: #f4ecc2; background: rgba(20,16,4,.92); border: 2px solid #b8a55e; border-radius: 10px; cursor: pointer; }
+  #choice .opt:hover { border-color: #fde68a; background: rgba(60,50,10,.95); }
+  #choice .opt b { color: #fde68a; font-size: 18px; }
+  #fight { position: fixed; left: 50%; top: 58%; transform: translateX(-50%); display: none; padding: 8px 16px; border-radius: 8px; background: rgba(120,10,10,.85); border: 2px solid #f87171; font-weight: bold; font-size: 18px; pointer-events: none; }
   .keys { display: inline-block; padding: 2px 7px; border: 1px solid #fde68a; border-radius: 4px; margin: 0 2px; }
 </style>
 </head>
@@ -36,19 +42,26 @@
   <div>🧠 Sanity: <span id="san">100</span></div>
   <div class="bar"><div id="stam"></div></div>
   <div>Posters found: <span id="pc">0</span> / <span id="ptot">8</span></div>
-  <div><span id="slot" class="slot">1 🗡️ sword</span> 💧 almond water x<span id="aw">2</span></div>
-  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink · 1 sword · click swing</div>
+  <div><span id="slot" class="slot">1 ✊ empty</span> 💧 almond water x<span id="aw">0</span></div>
+  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink · 1 weapon · click fight</div>
 </div>
 <div id="dark"></div>
 <div id="poster"><h2 id="pt"></h2><div id="pl"></div></div>
 <div id="msg"></div>
 <div id="fade"></div>
+<div id="fight"></div>
+<div id="choice">
+  <h2>"Which way do you want to go?"</h2>
+  <button class="opt" id="goPool"><b>1 · The Poolrooms</b><br>White tiles and warm, shallow water everywhere. Bright and quiet... but some of the water is black.</button>
+  <button class="opt" id="goHab"><b>2 · The Habitable Zone</b><br>Dark concrete halls and crates. Other people live down there. Or something that looks like people.</button>
+</div>
 <div id="title">
   <h1>The Backrooms Escape</h1>
   <p><b>RATED M</b> · 3D test</p>
   <p>You woke up somewhere you should not be. You do not know where you are. Explore, read the posters on the walls, and find out what is waiting at the end.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> turn left <span class="keys">D</span> turn right<br>
-     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your sword <span class="keys">Click</span> swing it</p>
+     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your weapon <span class="keys">Click</span> fight</p>
+  <p>You start with nothing. Find almond water and a weapon. You can only fight when something attacks you.</p>
   <p>Your sanity drops by 1 every 6 seconds. If it hits 0, you lose your mind.</p>
   <button class="btn" id="go">Start</button>
 </div>
@@ -113,6 +126,8 @@ const LEVELS = [
       { at: [14, 13], title: 'PARTY TONIGHT', lines: ['Everyone is', 'invited =)', 'Wear a hat.'] }
     ],
     bottles: [[3, 20], [9, 3], [14, 9], [17, 10]],
+    weapons: [{ at: [13, 4], kind: 'sword' }],   // next to the STAY ARMED poster
+    step: 'carpet', flicker: .97, glimpses: ['figure', 'smile', 'knock', 'lightsout'],
     intro: 'You wake up on damp carpet. The lights buzz. Where are you?'
   },
   {
@@ -161,7 +176,50 @@ const LEVELS = [
     ],
     bottles: [[3, 12], [16, 5], [10, 16]],
     puddles: [[3, 6], [8, 10], [12, 4], [16, 14], [14, 9], [19, 18]],
+    weapons: [{ at: [3, 2], kind: 'bat' }],
+    step: 'concrete', flicker: .85, glimpses: ['suit', 'drip', 'thud', 'lightsout'],
     intro: 'You land hard on cold concrete. It is darker here, and it smells like rain. Find the exit.'
+  },
+  {
+    name: 'Level 37', sub: 'The Poolrooms',
+    // ~ = shallow clear water (slows you down), B = black water (touch it and you die)
+    map: [
+      '#########################',
+      '#S...~~~~~.....~~~~~....#',
+      '#....~~~~~..P..~~BB~..P.#',
+      '#..P.~~BB~.....~~BB~....#',
+      '#....~~BB~~~~~~~~~~~....#',
+      '#.......................#',
+      '#~~~~..P....BBB....P..~~#',
+      '#~~~~.......BBB.......~~#',
+      '#~BB~..~~~~~.....~~~~.~~#',
+      '#~BB~..~BBB~..P..~BB~...#',
+      '#~~~~..~~~~~.....~~~~...#',
+      '#.........P....P........#',
+      '#..~~~~~~.....~~~~~~~~..#',
+      '#..~BBBB~..B..~BBBBBB~..#',
+      '#..~~~~~~..B..~~~~~~~~..#',
+      '#....P.....B.....P......#',
+      '#~~~.....~~~~~.....~~~~~#',
+      '#BB~..P..~BBB~..P..~BBB~#',
+      '#~~~.....~~~~~.....~~~~~#',
+      '#.....................X.#',
+      '#########################'
+    ],
+    H: 3.6,
+    fog: [0xcfe6ea, 4, 30], ambient: [0xffffff, .85], lampColor: 0xffffff, lightColor: 0xe8fbff, lightPower: 9,
+    walls: g => { g.fillStyle = '#e9eef0'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9c6cc'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } g.fillStyle = '#8fc7d6'; g.fillRect(0, 112, 128, 6); },
+    floor: g => { g.fillStyle = '#dfe8ea'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#a9bbc1'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
+    ceil: g => { g.fillStyle = '#f2f5f5'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#c9d3d6'; for (let x = 0; x < 128; x += 32) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
+    posters: [
+      { at: [1, 11], title: 'BLACK WATER', lines: ['Do NOT touch it.', 'Not even a toe.', 'It is not water.'] },
+      { at: [11, 1], title: 'NO SWIMMING', lines: ['The clear water', 'is safe.', 'The dark water', 'is hungry.'] },
+      { at: [19, 12], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
+    ],
+    bottles: [[5, 12], [15, 20], [11, 20]],
+    weapons: [],
+    step: 'tile', flicker: 0, glimpses: [], noFake: true,
+    intro: 'You land with a splash in warm, shallow water. White tiles everywhere, and somewhere water is dripping. Some of the pools are black. Find the exit.'
   }
 ];
 
@@ -198,6 +256,9 @@ const crateTex = tex(g => {
 }, [1, 1]);
 
 // ---------- building a level ----------
+const waterGeo = new THREE.PlaneGeometry(CELL, CELL);
+const clearWater = new THREE.MeshStandardMaterial({ color: 0x7fd3e6, roughness: .05, metalness: .2, transparent: true, opacity: .6 });
+const blackWater = new THREE.MeshStandardMaterial({ color: 0x020304, roughness: 0, metalness: .9 });
 function buildLevel(L) {
   const map = L.map, rows = map.length, cols = map[0].length, W = cols * CELL, D = rows * CELL;
   L.wall = (r, c) => !map[r] || map[r][c] === undefined || '#PC'.includes(map[r][c]);
@@ -230,6 +291,9 @@ function buildLevel(L) {
       const a = new THREE.Mesh(box(1.8, 1.2, 1.8), crateMat); a.position.set(x, .6, z); g.add(a);
       if ((r + c) % 2) { const b = new THREE.Mesh(box(1.2, 1, 1.2), crateMat); b.position.set(x + .1, 1.7, z - .1); b.rotation.y = .3; g.add(b); }
       return;
+    }
+    if (ch === '~' || ch === 'B') {   // clear pool water you can wade through, or black water that kills you
+      const m = new THREE.Mesh(waterGeo, ch === 'B' ? blackWater : clearWater); m.rotation.x = -Math.PI / 2; m.position.set(x, ch === 'B' ? .03 : .02, z); g.add(m);
     }
     if (ch === 'S') L.start = [r, c];
     if (ch === 'V') L.virusAt = [r, c];
@@ -377,7 +441,7 @@ for (let i = 0; i < 8; i++) {   // thin sensory hairs that drift around the crow
 }
 const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
 virus.scale.setScalar(2);   // twice as big as a person
-const L0 = LEVELS[0], L1 = LEVELS[1];
+const L0 = LEVELS[0], L1 = LEVELS[1], L2 = LEVELS[2];
 virus.position.set(L0.virusAt[1] * CELL + CELL / 2, 0, L0.virusAt[0] * CELL + CELL / 2);
 L0.group.add(virus);
 
@@ -430,14 +494,32 @@ const grip = new THREE.Mesh(new THREE.CylinderGeometry(.014, .016, .13, 10), lea
 for (let i = 0; i < 6; i++) { const w = new THREE.Mesh(new THREE.TorusGeometry(.016, .003, 5, 12), new THREE.MeshLambertMaterial({ color: 0x2a190d })); w.rotation.x = Math.PI / 2; w.position.y = .035 - i * .02; sword.add(w); }   // the leather wrap
 const pommel = new THREE.Mesh(new THREE.SphereGeometry(.022, 12, 10), brass); pommel.position.y = -.095; sword.add(pommel);
 const swordLight = new THREE.PointLight(0xfff4dc, .8, 1.5, 2); swordLight.position.set(.1, .3, .3); sword.add(swordLight);   // so you can always see your sword
-sword.position.set(.3, -.3, -.55); sword.rotation.set(-.3, 0, -.35); camera.add(sword);
+// a wooden baseball bat with black tape on the handle (like in the 2D game, it snaps after one fight)
+const bat = new THREE.Group();
+const wood = new THREE.MeshStandardMaterial({ color: 0xb07a45, roughness: .55, emissive: 0x1a1006 });
+const batBody = new THREE.Mesh(new THREE.CylinderGeometry(.03, .012, .5, 14), wood); batBody.position.y = .2; bat.add(batBody);
+const batEnd = new THREE.Mesh(new THREE.SphereGeometry(.03, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), wood); batEnd.position.y = .45; bat.add(batEnd);
+const tape = new THREE.Mesh(new THREE.CylinderGeometry(.0135, .0135, .12, 10), new THREE.MeshLambertMaterial({ color: 0x151515 })); bat.add(tape);
+const batKnob = new THREE.Mesh(new THREE.CylinderGeometry(.02, .02, .015, 12), wood); batKnob.position.y = -.065; bat.add(batKnob);
+const batLight = new THREE.PointLight(0xfff4dc, .8, 1.5, 2); batLight.position.set(.1, .3, .3); bat.add(batLight);
+// weapon slot 1 holds whichever weapon you found
+const WEAPONS = { sword: { model: sword, name: 'sword', icon: '⚔️' }, bat: { model: bat, name: 'baseball bat', icon: '🏏' } };
+Object.values(WEAPONS).forEach(w => { w.model.position.set(.3, -.3, -.55); w.model.rotation.set(-.3, 0, -.35); w.model.visible = false; camera.add(w.model); });
 let swing = 0;
+// weapons lying around a level: walk over one to pick it up. They float and turn so you can spot them.
+LEVELS.forEach(L => {
+  L.weaponObjs = (L.weapons || []).map(w => {
+    const m = WEAPONS[w.kind].model.clone(); m.visible = true; m.position.set(0, 0, 0); m.scale.setScalar(2.2); m.rotation.set(0, 0, Math.PI / 2.4);
+    const g = new THREE.Group(); g.add(m); g.position.set(w.at[1] * CELL + CELL / 2, .7, w.at[0] * CELL + CELL / 2); L.group.add(g);
+    return { g, kind: w.kind, taken: false, told: false };
+  });
+});
 
 // ---------- game state ----------
 const $ = id => document.getElementById(id);
 const player = { x: 0, z: 0, yaw: Math.PI, r: .3 };
-let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 2, stamina = 1, armed = false, stepClock = 0;
-let meetStep = -1, meetTimer = 0, moving = false;
+let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 0, stamina = 1, armed = false, weapon = null, stepClock = 0;
+let meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false;
 const keys = {};
 addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
 addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -445,34 +527,48 @@ const blocked = (x, z) => [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([ox, oz]) =
 function say(text, secs) { $('msg').innerHTML = text; $('msg').style.display = 'block'; msgTimer = secs; }
 function showPoster(p) { $('pt').textContent = p.title; $('pl').innerHTML = p.lines.join('<br>'); $('poster').style.display = 'block'; posterTimer = 3; }
 function setSanity(v) { sanity = Math.max(0, Math.min(100, v)); $('san').textContent = sanity; $('san').classList.toggle('low', sanity <= 25); }
-function setArmed(on) { armed = on; sword.visible = on; $('slot').classList.toggle('on', on); }
-const totalFound = () => LEVELS.reduce((n, l) => n + l.posters.filter(p => p.found).length, 0);
-const totalPosters = () => LEVELS.reduce((n, l) => n + l.posters.length, 0);
+function setArmed(on) {
+  armed = on && !!weapon;
+  Object.entries(WEAPONS).forEach(([k, w]) => w.model.visible = armed && weapon === k);
+  $('slot').textContent = '1 ' + (weapon ? WEAPONS[weapon].icon + ' ' + WEAPONS[weapon].name : '✊ empty'); $('slot').classList.toggle('on', armed);
+}
+// you can only fight when something is attacking you and it is close enough to hit
+const foeClose = () => L === L1 && stealer.state === 'chase' && stealer.timer > 1.2 && Math.hypot(ss.position.x - player.x, ss.position.z - player.z) < 2.4;
+const totalFound = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.filter(p => p.found).length, 0);
+const totalPosters = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.length, 0);
 function ending(title, text) { playing = false; $('msg').style.display = 'none'; $('eh').textContent = title; $('ep').textContent = text; $('end').style.display = 'flex'; }
 
 addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
-  if (e.repeat || !playing || meetStep >= 0) return;
+  if (e.repeat || !playing) return;
+  if (meetStep >= 0) { if ($('choice').style.display === 'flex' && (k === '1' || k === '2')) choose(k === '1' ? 'pool' : 'hab'); return; }
   if (k === 'e') {
     if (!water) { say('You are out of almond water.', 2); return; }
     water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
   }
-  if (k === '1') { setArmed(!armed); if (armed) say('You take out your <b>sword</b>. Click to swing.', 2); }
+  if (k === '1') {
+    if (!weapon) { say('Your weapon slot is empty. Find a weapon first.', 2); return; }
+    setArmed(!armed); if (armed) say('You take out your <b>' + WEAPONS[weapon].name + '</b>. You can only fight when something attacks you.', 2.5);
+  }
 });
 addEventListener('mousedown', e => {
   if (e.button !== 0 || !playing || meetStep >= 0 || swing > 0) return;
-  if (!armed) { say('Press <b>1</b> to take out your sword first.', 2); return; }
+  const foe = foeClose();
+  if (!weapon) { if (foe) say('You have nothing to fight with! <b>RUN!</b>', 2); return; }
+  if (!foe) { if (armed) say('There is nothing to fight. You can only fight when something attacks you.', 2.5); return; }
+  if (!armed) setArmed(true);
   swing = .35; whoosh();
-  if (L === L1 && stealer.state === 'chase' && Math.hypot(ss.position.x - player.x, ss.position.z - player.z) < 2.4) {
-    stealer.state = 'gone'; ss.visible = false; screech();
-    say('You swing the sword and hit it! The Skin Stealer screeches and scuttles away into the dark.', 4);
-  }
+  stealer.state = 'gone'; ss.visible = false; screech();
+  if (weapon === 'bat') {   // the bat wins the fight, then snaps
+    weapon = null; setTimeout(() => setArmed(false), 350);
+    say('You swing the bat and hit it! The Skin Stealer screeches and scuttles away... and your <b>bat snapped</b> in half.', 4);
+  } else say('You swing the sword and hit it! The Skin Stealer screeches and scuttles away into the dark.', 4);
 });
 
 // show one level and hide the other, and put you at its start
 function enterLevel(next) {
   LEVELS.forEach(l => l.group.visible = l === next);
-  L = next;
+  L = next; L.visited = true;
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
   player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI;
   // no level names on screen: you are not told where you are
@@ -481,19 +577,31 @@ function enterLevel(next) {
   [figure, smile, farSuit].forEach(o => o.visible = false); Object.assign(glimpse, { obj: null, next: 35 + Math.random() * 20, blackout: 0 });
   say(L.intro, 4);
 }
-// the meeting with the virus, line by line (from the start of the 2D game), then you sink into Level 1
+// the meeting with the virus, line by line (from the start of the 2D game). It lets you pick where to go next,
+// then you sink through the floor into that level.
 const MEET = [
   'Something is standing at the end of the hall.',
   'It is tall and black, standing on long twisting tendrils. It has no face, but it turns toward you.',
   '"Wait. Don\'t run."',
   '"I am a virus, basically. But I do not want to hurt you."',
-  '"There is something down there that looks like a person. Do not trust it. I will find you again."',
-  'The carpet under your feet turns soft... and you sink right through the floor.'
+  '"There are two ways down from here. You have to pick one."'
 ];
+const AFTER = {
+  pool: ['"The Poolrooms. Listen to me: avoid the black water. Do not even test it."', '"I will find you again."', 'The carpet under your feet turns soft and wet... and you sink right through the floor.'],
+  hab: ['"The Habitable Zone. There is something down there that looks like a person. Do not trust it."', '"I will find you again."', 'The carpet under your feet turns soft... and you sink right through the floor.']
+};
+const meetLines = () => chosen ? MEET.concat(AFTER[chosen]) : MEET;
+function choose(which) {
+  if (chosen || meetStep !== MEET.length) return;
+  chosen = which; $('choice').style.display = 'none'; meetTimer = 0; say(meetLines()[meetStep], 99);
+}
+$('goPool').onclick = () => choose('pool');
+$('goHab').onclick = () => choose('hab');
 function reset() {
-  LEVELS.forEach(l => { l.posters.forEach(p => p.found = false); l.bottleObjs.forEach(b => { b.taken = false; b.g.visible = true; }); });
+  LEVELS.forEach(l => { l.visited = false; l.posters.forEach(p => p.found = false); l.bottleObjs.concat(l.weaponObjs).forEach(b => { b.taken = false; b.told = false; b.g.visible = true; }); });
   meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
-  setSanity(100); sanClock = 0; water = 2; $('aw').textContent = 2; stamina = 1; setArmed(false);
+  setSanity(100); sanClock = 0; water = 0; $('aw').textContent = 0; stamina = 1; weapon = null; setArmed(false);
+  chosen = null; warned = false; $('choice').style.display = 'none'; $('fight').style.display = 'none';
   stealer.state = 'idle'; stealer.timer = 0; ss.visible = true; ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0);
   suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a);
   ss.position.set(L1.hazAt[1] * CELL + CELL / 2, 0, L1.hazAt[0] * CELL + CELL / 2);
@@ -539,7 +647,13 @@ function placeListener() {   // your ears follow the camera
   if (l.positionX) { l.positionX.value = player.x; l.positionY.value = 1.6; l.positionZ.value = player.z; l.forwardX.value = fx; l.forwardY.value = 0; l.forwardZ.value = fz; l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0; }
   else { l.setPosition(player.x, 1.6, player.z); l.setOrientation(fx, 0, fz, 0, 1, 0); }
 }
-const footstep = () => L === L0 ? burst(300 + Math.random() * 120, 1, .09, .5) : burst(900 + Math.random() * 300, 2, .07, .45, 'bandpass');   // soft carpet, hard concrete
+const inWater = () => (L.map[Math.floor(player.z / CELL)] || '')[Math.floor(player.x / CELL)] === '~';
+const STEPS = {   // soft carpet, hard concrete, wet tiles (splashing when you wade through water)
+  carpet: d => burst(300 + Math.random() * 120, 1, .09, .5, 'lowpass', d),
+  concrete: d => burst(900 + Math.random() * 300, 2, .07, .45, 'bandpass', d),
+  tile: (d, wet) => wet ? burst(1300 + Math.random() * 500, .7, .18, .4, 'bandpass', d) : burst(1600 + Math.random() * 300, 3, .05, .35, 'bandpass', d)
+};
+const footstep = () => STEPS[L.step](undefined, inWater());
 const whoosh = () => burst(1800, .8, .25, .35, 'bandpass');
 function screech() {
   if (!audio) return;
@@ -561,12 +675,12 @@ function updatePhantom(dt) {
   }
   let turned = player.yaw - phantom.yaw0; turned = Math.abs(Math.atan2(Math.sin(turned), Math.cos(turned)));
   if (turned > 1.5 || phantom.steps <= 0) {   // you looked back (or it gave up): silence
-    phantom.on = false; phantom.next = (L === L1 ? 20 : 32) + Math.random() * 25; return;
+    phantom.on = false; phantom.next = (L === L0 ? 32 : 20) + Math.random() * 25; return;
   }
   if ((phantom.clock += dt) < .5) return;
   phantom.clock = 0; phantom.steps--; phantom.dist = Math.max(2.2, phantom.dist - .3);   // getting a little closer each step
   const bx = player.x + Math.sin(phantom.yaw0) * phantom.dist, bz = player.z + Math.cos(phantom.yaw0) * phantom.dist;
-  soundAt(bx, bz, p => L === L0 ? burst(280 + Math.random() * 80, 1, .09, .35, 'lowpass', p) : burst(820 + Math.random() * 200, 2, .07, .3, 'bandpass', p));
+  soundAt(bx, bz, p => STEPS[L.step](p, L.step === 'tile'));
 }
 // a crate that was not there before, sitting behind you. Walk up to it or stare at it and it is gone.
 // The lower your sanity, the more often you see one.
@@ -579,6 +693,7 @@ const fake = { mesh: new THREE.Group(), next: 30, look: 0 };
 function updateFake(dt) {
   const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
   if (!fake.mesh.visible) {
+    if (L.noFake) return;
     if ((fake.next -= dt * (1 + (100 - sanity) / 40)) > 0) return;   // low sanity makes them come faster
     for (const back of [5, 6.5, 4, 8]) {   // find an empty floor spot behind you, out of sight
       const r = Math.floor((player.z - fz * back) / CELL), c = Math.floor((player.x - fx * back) / CELL);
@@ -629,8 +744,8 @@ function placeAhead(o, dist, y) {
 }
 function startGlimpse() {
   const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw), pick = a => a[Math.floor(Math.random() * a.length)];
-  const kinds = L === L0 ? ['figure', 'smile', 'knock', 'lightsout'] : ['suit', 'drip', 'thud', 'lightsout'];
-  const what = pick(kinds), far = 10 + Math.random() * 4;
+  if (!L.glimpses.length) return false;
+  const what = pick(L.glimpses), far = 10 + Math.random() * 4;
   if ((what === 'figure' || what === 'smile' || what === 'suit') && !clearAhead(far)) return false;   // needs a long view down a hall
   if (what === 'suit' && stealer.state === 'chase') return false;
   glimpse.what = what; glimpse.life = 0; glimpse.look = 0; glimpse.obj = null;
@@ -656,7 +771,7 @@ function updateGlimpse(dt) {
     return;
   }
   if ((glimpse.next -= dt * (1 + (100 - sanity) / 50)) > 0) return;
-  glimpse.next = startGlimpse() ? 30 + Math.random() * 30 : 4;
+  glimpse.next = startGlimpse() ? 30 + Math.random() * 30 : (L.glimpses.length ? 4 : 60);
 }
 
 // ---------- each frame ----------
@@ -671,7 +786,7 @@ function updateStealer(dt, t) {
       stealer.state = 'chase'; stealer.timer = 0; screech();
       suitMat.color.setHex(0xcbb8a0); visorMat.color.setHex(0x7a0f0f); ss.scale.set(1, 1.25, 1);   // the skin stretches and the visor goes red
       ssArms[1].rotation.z = 0; ssArms[1].position.y = 1.05;
-      say('The suit stretches... its skin slides. It is a <b>SKIN STEALER!</b> RUN (Shift), or press 1 and click to swing your sword!', 4);
+      say('The suit stretches... its skin slides. It is a <b>SKIN STEALER!</b> ' + (weapon ? 'RUN (Shift), or take out your ' + WEAPONS[weapon].name + ' (1) and fight it when it gets close!' : 'RUN (Shift)! You have nothing to fight it with!'), 4);
     }
     return;
   }
@@ -684,11 +799,11 @@ function updateStealer(dt, t) {
   const dx = tx - ss.position.x, dz = tz - ss.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 4.2 * dt);   // faster than walking, slower than sprinting
   ss.position.x += dx / dd * step; ss.position.z += dz / dd * step;
   ssLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 14 + i * Math.PI) * .6; });
-  if (ds < .9) ending('The Skin Stealer got you', 'Never say hi back. Next time, sprint away with Shift, or press 1 for your sword and click to swing when it gets close.');
+  if (ds < .9) ending('The Skin Stealer got you', 'Never say hi back. Next time, sprint away with Shift' + (weapon ? ', or press 1 for your ' + WEAPONS[weapon].name + ' and click when it gets close.' : '. Or find a weapon first: the STAY ARMED poster was right.'));
   else if (stealer.timer > 16) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
 }
 
-window.__game = { player, virus, ss, stealer, LEVELS, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -704,7 +819,7 @@ function tick() {
     if (sanity <= 0) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left. Drink almond water before your sanity runs out.');
     if (mv) {
       moving = true;
-      const sp = (sprint ? 5.5 : 3) * dt * mv, nx = player.x - Math.sin(player.yaw) * sp, nz = player.z - Math.cos(player.yaw) * sp;
+      const sp = (sprint ? 5.5 : 3) * (inWater() ? .65 : 1) * dt * mv, nx = player.x - Math.sin(player.yaw) * sp, nz = player.z - Math.cos(player.yaw) * sp;
       if (!blocked(nx, player.z)) player.x = nx;
       if (!blocked(player.x, nz)) player.z = nz;
       if ((stepClock += dt) > (sprint ? .28 : .45)) { stepClock = 0; footstep(); }
@@ -713,6 +828,12 @@ function tick() {
       if (!b.taken && Math.hypot(b.g.position.x - player.x, b.g.position.z - player.z) < .8) {
         b.taken = true; b.g.visible = false; water++; $('aw').textContent = water; say('You found a bottle of <b>almond water</b>! Press E to drink it.', 3);
       }
+    });
+    L.weaponObjs.forEach(w => {
+      if (w.taken || Math.hypot(w.g.position.x - player.x, w.g.position.z - player.z) > .9) return;
+      if (weapon === 'sword') { if (!w.told) { w.told = true; say('A ' + WEAPONS[w.kind].name + '. Your sword is better, so you leave it.', 2.5); } return; }
+      w.taken = true; w.g.visible = false; weapon = w.kind; setArmed(false);
+      say(w.kind === 'sword' ? '<b>It\'s a sword!</b> Remember the poster: you will have to fight. Press 1 to take it out.' : 'You found a <b>baseball bat</b>! It will only last one fight. Press 1 to take it out.', 4);
     });
     L.posters.forEach(p => {
       if (!p.found && Math.hypot(p.mesh.position.x - player.x, p.mesh.position.z - player.z) < 1.3) {
@@ -726,7 +847,12 @@ function tick() {
       if (dv < 9) virus.visible = true;
       if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
     } else {
-      updateStealer(dt, t);
+      if (L === L1) updateStealer(dt, t);
+      if (L === L2) {
+        const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
+        if (L.map[pr][pc] === 'B') ending('Vaporized', 'You stepped into the black water and were instantly vaporized. The virus told you to avoid it.');
+        else if (!warned && DIRS.some(([dr, dc]) => L.map[pr + dr][pc + dc] === 'B')) { warned = true; say('The water here is black and perfectly still. You remember the virus: <b>"Avoid the black water."</b>', 3.5); }
+      }
       if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
         ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
     }
@@ -736,11 +862,13 @@ function tick() {
     let diff = want - player.yaw; diff = Math.atan2(Math.sin(diff), Math.cos(diff));
     player.yaw += Math.max(-2 * dt, Math.min(2 * dt, diff));
     virus.lookAt(player.x, 0, player.z);
-    if ((meetTimer += dt) > 3.2) {
+    const lines = meetLines();
+    if (!chosen && meetStep === lines.length) $('choice').style.display = 'flex';   // wait for you to pick a way down
+    else if ((meetTimer += dt) > 3.2) {
       meetTimer = 0; meetStep++;
-      if (meetStep < MEET.length) say(MEET[meetStep], 99);
-      if (meetStep === MEET.length - 1) $('fade').style.opacity = 1;
-      if (meetStep === MEET.length) { meetStep = -1; $('msg').style.display = 'none'; enterLevel(L1); $('fade').style.opacity = 0; }
+      if (meetStep < lines.length) say(lines[meetStep], 99);
+      if (chosen && meetStep === lines.length - 1) $('fade').style.opacity = 1;
+      if (chosen && meetStep === lines.length) { meetStep = -1; $('msg').style.display = 'none'; enterLevel(chosen === 'pool' ? L2 : L1); $('fade').style.opacity = 0; }
     }
   }
   if (msgTimer > 0 && meetStep < 0) { msgTimer -= dt; if (msgTimer <= 0) $('msg').style.display = 'none'; }
@@ -749,7 +877,7 @@ function tick() {
   // flickering lights (Level 1's are worse), the virus breathing, bottles bobbing, the sword swing
   let flick = false;
   L.lights.forEach((l, i) => {
-    const on = glimpse.blackout <= 0 && (L === L1 ? (Math.sin(t * 9 + i * 5) > -0.85 || i % 3) : (Math.sin(t * 13 + i * 7) > -0.97 || i % 4));
+    const on = glimpse.blackout <= 0 && (!L.flicker || (L === L1 ? (Math.sin(t * 9 + i * 5) > -L.flicker || i % 3) : (Math.sin(t * 13 + i * 7) > -L.flicker || i % 4)));
     if (!on) flick = true; l.p.intensity = on ? l.base : .4; l.lamp.material.color.setHex(on ? L.lampColor : 0x4b4b48);
   });
   if (buzzGain) buzzGain.gain.value = flick ? .12 : .07;
@@ -757,8 +885,11 @@ function tick() {
   crown.rotation.z = Math.sin(t * .7) * .04; crown.position.y = TOP + Math.sin(t * 1.3) * .03;
   limbs.forEach((l, i) => { l.rotation.y = Math.sin(t * .6 + i) * .02; });
   L.bottleObjs.forEach((b, i) => { b.g.rotation.y = t * 1.5 + i; b.g.position.y = .05 + Math.sin(t * 2 + i) * .04; });
-  if (swing > 0) { swing -= dt; const k = 1 - Math.max(0, swing) / .35; sword.rotation.set(-.3 - Math.sin(k * Math.PI) * 1.4, 0, -.35 + Math.sin(k * Math.PI) * .9); }
-  else sword.rotation.set(-.3 + (moving ? Math.sin(t * 9) * .03 : 0), 0, -.35);
+  L.weaponObjs.forEach((w, i) => { w.g.rotation.y = t * 1.2 + i; w.g.position.y = .7 + Math.sin(t * 2 + i) * .06; });
+  const foe = playing && foeClose(); $('fight').style.display = foe ? 'block' : 'none';
+  if (foe) $('fight').textContent = weapon ? '⚔️ Click to fight!' : 'Nothing to fight with: RUN!';
+  const k = swing > 0 ? 1 - Math.max(0, swing -= dt) / .35 : 0;
+  Object.values(WEAPONS).forEach(w => w.model.rotation.set(-.3 - Math.sin(k * Math.PI) * 1.4 + (moving && !k ? Math.sin(t * 9) * .03 : 0), 0, -.35 + Math.sin(k * Math.PI) * .9));
   camera.position.set(player.x, 1.6 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
   camera.rotation.set(0, player.yaw, 0);
   placeListener();
