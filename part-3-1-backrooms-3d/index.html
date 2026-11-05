@@ -875,7 +875,7 @@ function setArmed(on) {
 const foeClose = () => (L === L2 && (lizard.state === 'chase' || lizard.state === 'grab') && Math.hypot(liz.position.x - player.x, liz.position.z - player.z) < 2.6);
 const totalFound = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.filter(p => p.found).length, 0);
 const totalPosters = () => LEVELS.filter(l => l.visited).reduce((n, l) => n + l.posters.length, 0);
-function ending(title, text) { playing = false; $('msg').style.display = 'none'; $('eh').textContent = title; $('ep').textContent = text; $('end').style.display = 'flex'; }
+function ending(title, text) { playing = false; $('hint').style.display = 'none'; $('fight').style.display = 'none'; $('dark').style.opacity = 0; $('msg').style.display = 'none'; $('eh').textContent = title; $('ep').textContent = text; $('end').style.display = 'flex'; }
 
 addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
@@ -923,7 +923,7 @@ function enterLevel(next) {
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
   player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI; player.vx = player.vz = 0;
   // no level names on screen: you are not told where you are
-  $('pc').textContent = L.posters.filter(p => p.found).length; $('ptot').textContent = L.posters.length;
+  $('pc').textContent = L.posters.filter(p => p.found).length; $('ptot').textContent = L.posters.length; $('pc').parentElement.style.display = L.posters.length ? '' : 'none';
   fake.mesh.visible = false; fake.next = 25 + Math.random() * 20; phantom.on = false; phantom.next = 18 + Math.random() * 15;
   [figure, smile, farSuit].forEach(o => o.visible = false); Object.assign(glimpse, { obj: null, next: 35 + Math.random() * 20, blackout: 0 });
   say(L.intro, 4);
@@ -1880,14 +1880,14 @@ const sky = { dome: null, sun: null, dir: null, stars: null, win: null, c: new T
   town.beam = new THREE.SpotLight(0xfff0d0, 0, 90, .55, .5, 1.1); town.beam.position.set(0, 1.1, 2.7); town.beam.target.position.set(0, .2, 30); van.add(town.beam, town.beam.target);
   van.position.set(roadX(42), 0, 42); g.add(van);
   // the Night Watchers: something huge walks between the houses after dark
-  const wm = new THREE.MeshLambertMaterial({ color: 0x14161f }), em = new THREE.MeshBasicMaterial({ color: 0xdfe8ff, fog: false });
+  const wm = new THREE.MeshLambertMaterial({ color: 0x2c303f, emissive: 0x0d0f18, fog: false }), em = new THREE.MeshBasicMaterial({ color: 0xf2f6ff, fog: false });
   const taper = (len, r0, rMid, r1) => { const pts = [new THREE.Vector2(.01, -len)]; for (let i = 12; i >= 0; i--) { const k = i / 12; pts.push(new THREE.Vector2(r0 + (r1 - r0) * k + (rMid - (r0 + r1) / 2) * Math.sin(Math.PI * k), -len * k)); } pts.push(new THREE.Vector2(.01, 0)); return new THREE.LatheGeometry(pts, 16); };
   for (let i = 0; i < 3; i++) {
     const w = new THREE.Group(), lg = [], ar = [];
     const torso = new THREE.Mesh(taper(6.2, 1.5, 1.15, .55), wm); torso.position.set(0, 13.2, 0); torso.rotation.x = -.14; w.add(torso);
     const nk = new THREE.Mesh(taper(1.4, .55, .42, .4), wm); nk.position.set(0, 14.2, .55); nk.rotation.x = -.55; w.add(nk);
     const skull = new THREE.Mesh(new THREE.SphereGeometry(.95, 22, 16), wm); skull.scale.set(.85, 1.35, 1.05); skull.position.set(0, 14.7, 1.0); w.add(skull);
-    [-1, 1].forEach(sd => add(w, new THREE.SphereGeometry(.15, 12, 10), em, sd * .34, 14.85, 1.92));
+    [-1, 1].forEach(sd => add(w, new THREE.SphereGeometry(.22, 14, 10), em, sd * .36, 14.85, 1.9));
     [-1, 1].forEach(sd => {
       const l = new THREE.Group(); l.position.set(sd * .62, 7.3, 0); w.add(l); lg.push(l); const up = new THREE.Mesh(taper(3.8, .62, .68, .34), wm); l.add(up); const kn = new THREE.Group(); kn.position.y = -3.7; kn.rotation.x = .28; l.add(kn); kn.add(new THREE.Mesh(taper(3.7, .36, .42, .18), wm));
       const a = new THREE.Group(); a.position.set(sd * 1.5, 12.6, 0); a.rotation.z = sd * .1; w.add(a); ar.push(a); a.add(new THREE.Mesh(taper(4.4, .42, .5, .22), wm)); const fa = new THREE.Group(); fa.position.y = -4.3; fa.rotation.x = -.35; a.add(fa); fa.add(new THREE.Mesh(taper(4.6, .24, .28, .12), wm));
@@ -1986,14 +1986,14 @@ function updateTown(dt, t) {
       c.watchers.forEach((w, i) => { w.w.visible = true; w.a = c.vanYaw + 2.2 + i * 1.2; });
     }
   } else if (c.phase === 'night') {
-    hintText = '🙈 Look down (mouse). Do not look out the window. R = run for a house';
+    hintText = '🙈 Look down (mouse or ↓ key). Do not look out the window. R = run for a house';
     actR = () => ending('You did not make it', 'You did not make it to a house in time. Something huge was already standing there. After dark: stay put and hide.');
     c.watchers.forEach((w, i) => {
       w.a += dt * (.09 + i * .02); const x = c.vanX + Math.sin(w.a) * w.r, z = c.vanZ + Math.cos(w.a) * w.r;
       w.w.position.set(x, terrainH(x, z), z); w.w.rotation.y = w.a + Math.PI / 2;
       const sw = Math.sin(t * 1.6 + i) * .32; w.lg[0].rotation.x = sw; w.lg[1].rotation.x = -sw; w.ar[0].rotation.x = -sw * .8; w.ar[1].rotation.x = sw * .8;
     });
-    if (c.t > 3) { let any = false; c.watchers.forEach(w => { if (lookingAt(w.w.position.x, w.w.position.y + 12, w.w.position.z, .86)) any = true; }); c.seen = any ? c.seen + dt : Math.max(0, c.seen - dt * .5); $('dark').style.opacity = (c.seen / 1.4 * .8).toFixed(2); }
+    if (c.t > 5) { let any = false; c.watchers.forEach(w => { if (lookingAt(w.w.position.x, w.w.position.y + 12, w.w.position.z, .86)) any = true; }); c.seen = any ? c.seen + dt : Math.max(0, c.seen - dt * .5); $('dark').style.opacity = (c.seen / 1.4 * .8).toFixed(2); }
     if ((c.thud -= dt) <= 0) { c.thud = 1.1 + Math.random() * .6; const w = c.watchers[Math.floor(Math.random() * 3)]; soundAt(w.w.position.x, w.w.position.z, p => burst(55, 1, .5, 2.4, 'lowpass', p)); shake = .25; }
     if (c.seen > 1.4) { $('dark').style.opacity = 0; burst(55, 1, .7, 2.5, 'lowpass'); ending('It sees you', 'You looked out the window. It looked back. It tipped the van over like a toy. After dark: stay put, hide, and never look out the window.'); return; }
     if (c.t > 20) { c.phase = 'dawn'; c.t = 0; $('dark').style.opacity = 0; say('You sit it out until morning. The creatures retreat, and you live another day.', 5); }
@@ -2126,7 +2126,7 @@ function updatePark(dt, t) {
   if (!p.built) buildClown();
   if (p.phase === 'ride') {
     p.rideT += dt; const k = Math.min(.999, p.rideT < 3 ? p.rideT * p.rideT / 3 * .03 : .03 + (p.rideT - 3) / 9 * .97), q = p.curve.getPointAt(k), tg = p.curve.getTangentAt(k);
-    p.car.position.copy(q); p.car.rotation.y = Math.atan2(tg.x, tg.z); player.x = q.x; player.z = q.z; ride.y = q.y - .85; player.yaw = Math.atan2(-tg.x, -tg.z); look.pitch = Math.max(-.6, Math.min(.6, tg.y * 1.1));
+    p.car.position.copy(q); p.car.rotation.y = Math.atan2(tg.x, tg.z); player.x = q.x; player.z = q.z; ride.y = q.y - .45; player.yaw = Math.atan2(-tg.x, -tg.z); look.pitch = Math.max(-.6, Math.min(.6, tg.y * 1.1));
     if (Math.random() < dt * 9) burst(420 + Math.random() * 300, 3, .04, .28, 'bandpass');
     if (k > .9 && !p.black) { p.black = true; $('fade').style.transition = 'opacity .7s'; $('fade').style.opacity = 1; }
     if (p.rideT > 12) goLevel(L5, startFunHello);
@@ -2218,17 +2218,25 @@ const fun = { grace: 0, pg: [], heard: 0, hide: 0, music: 0, note: 0, chase: fal
   // the partygoers: tall yellow figures with drawn-on smiles
   const face = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const f = c.getContext('2d'); f.fillStyle = '#ffd92e'; f.fillRect(0, 0, 128, 128); f.fillStyle = '#111'; f.beginPath(); f.arc(44, 46, 9, 0, 7); f.arc(84, 46, 9, 0, 7); f.fill(); f.strokeStyle = '#111'; f.lineWidth = 6; f.lineCap = 'round'; f.beginPath(); f.arc(64, 54, 36, .2, Math.PI - .2); f.stroke(); f.lineWidth = 3; for (let x = 36; x <= 92; x += 8) { f.beginPath(); f.moveTo(x, 80); f.lineTo(x, 92); f.stroke(); } const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
   const fLimb = (len, r0, rMid, r1) => { const pts = [new THREE.Vector2(.003, -len)]; for (let i = 10; i >= 0; i--) { const k = i / 10; pts.push(new THREE.Vector2(r0 + (r1 - r0) * k + (rMid - (r0 + r1) / 2) * Math.sin(Math.PI * k), -len * k)); } pts.push(new THREE.Vector2(.003, 0)); return new THREE.LatheGeometry(pts, 14); };
+  // grow a smooth body once from overlapping blobs, then keep a copy of the shape to share
+  const bake = (pts, size, cy) => {
+    const mc = new MarchingCubes(58, new THREE.MeshBasicMaterial(), false, false, 80000), span = 2 * size; mc.isolation = 80; mc.reset();
+    pts.forEach(([x, y, z, r]) => { const rn = r / span; mc.addBall(x / span + .5, (y - cy) / span + .5, z / span + .5, rn * rn * 125, 45); }); mc.update();
+    const n = mc.count, geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(mc.positionArray.slice(0, n * 3), 3)); geo.setAttribute('normal', new THREE.BufferAttribute(mc.normalArray.slice(0, n * 3), 3));
+    geo.scale(size, size, size); geo.translate(0, cy, 0); return geo;
+  };
+  const pgBody = bake([[0, .95, 0, .19], [-.1, .92, 0, .13], [.1, .92, 0, .13], [0, 1.12, .01, .145], [0, 1.3, .01, .135], [0, 1.5, .01, .165], [-.12, 1.62, 0, .145], [.12, 1.62, 0, .145], [0, 1.72, 0, .165], [-.27, 1.85, 0, .09], [.27, 1.85, 0, .09], [-.15, 1.84, 0, .11], [.15, 1.84, 0, .11], [0, 1.96, .01, .08], [0, 2.1, .01, .065], [-.07, 1.5, .1, .08], [.07, 1.5, .1, .08], [-.08, .85, -.08, .1], [.08, .85, -.08, .1]], 1.3, 1.4);
   const yellow = new THREE.MeshStandardMaterial({ color: 0xffd92e, roughness: .42, envMap: envTex, envMapIntensity: .25 }), head = new THREE.MeshStandardMaterial({ map: face, roughness: .55 });
   [[6, 10], [10, 17], [14, 10], [18, 18], [22, 10], [26, 16], [28, 11], [9, 11]].forEach(([c, r], i) => {
     const m = new THREE.Group(), arms = [], legs = [];
-    const prof = [[.01, .72], [.17, .8], [.2, .95], [.16, 1.12], [.135, 1.3], [.17, 1.52], [.24, 1.74], [.25, 1.86], [.15, 1.97], [.075, 2.02], [.065, 2.12], [.01, 2.14]].map(([a, b]) => new THREE.Vector2(a, b));
-    const body = new THREE.Mesh(new THREE.LatheGeometry(prof, 26), yellow); body.scale.z = .72; m.add(body);
+    m.add(new THREE.Mesh(pgBody, yellow));   // one smooth baked body, hips to neck
     const hd = add(m, new THREE.SphereGeometry(.27, 28, 22), head, 0, 2.34, 0); hd.rotation.y = -Math.PI / 2; hd.scale.y = 1.1;
     [-1, 1].forEach(sd => {
-      const a = new THREE.Group(); a.position.set(sd * .3, 1.85, 0); m.add(a); arms.push(a); add(a, new THREE.SphereGeometry(.075, 14, 10), yellow, 0, 0, 0);
-      a.add(new THREE.Mesh(fLimb(.62, .062, .065, .042), yellow)); const fore = new THREE.Group(); fore.position.y = -.62; fore.rotation.x = -.15; a.add(fore); fore.add(new THREE.Mesh(fLimb(.66, .042, .046, .03), yellow));
+      const a = new THREE.Group(); a.position.set(sd * .3, 1.85, 0); m.add(a); arms.push(a); 
+      a.add(new THREE.Mesh(fLimb(.62, .062, .065, .042), yellow)); const fore = new THREE.Group(); fore.position.y = -.62; fore.rotation.x = -.15; a.add(fore); fore.add(new THREE.Mesh(fLimb(.66, .042, .046, .03), yellow)); add(fore, new THREE.SphereGeometry(.046, 16, 12), yellow, 0, 0, 0);   // a smooth elbow
       for (let k = 0; k < 4; k++) { const fi = new THREE.Mesh(fLimb(.2, .012, .013, .005), yellow); fi.position.set((k - 1.5) * .017, -.65, 0); fi.rotation.z = (k - 1.5) * .22; fore.add(fi); }   // long thin fingers
-      const l = new THREE.Group(); l.position.set(sd * .12, .9, 0); m.add(l); legs.push(l); l.add(new THREE.Mesh(fLimb(.46, .085, .088, .05), yellow)); const sh = new THREE.Group(); sh.position.y = -.45; l.add(sh); sh.add(new THREE.Mesh(fLimb(.42, .05, .056, .032), yellow));
+      const l = new THREE.Group(); l.position.set(sd * .12, .9, 0); m.add(l); legs.push(l); l.add(new THREE.Mesh(fLimb(.46, .085, .088, .05), yellow)); const sh = new THREE.Group(); sh.position.y = -.45; l.add(sh); sh.add(new THREE.Mesh(fLimb(.42, .05, .056, .032), yellow)); add(sh, new THREE.SphereGeometry(.054, 16, 12), yellow, 0, 0, 0);   // a smooth knee
       const ft = add(sh, new THREE.SphereGeometry(.07, 14, 10), yellow, 0, -.42, .08); ft.scale.set(.8, .42, 2);
     });
     if (i % 2 === 0) { const h = add(m, new THREE.ConeGeometry(.15, .36, 18), lm(cols[i % 6]), 0, 2.72, 0); void h; add(m, new THREE.SphereGeometry(.045, 10, 8), lm(0xffffff), 0, 2.91, 0); }
