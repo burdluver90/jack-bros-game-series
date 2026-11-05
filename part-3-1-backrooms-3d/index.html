@@ -182,44 +182,66 @@ const LEVELS = [
   },
   {
     name: 'Level 37', sub: 'The Poolrooms',
-    // ~ = shallow clear water (slows you down), B = black water (touch it and you die)
+    // ~ = clear water a foot deep (slows you down, you splash through it), B = black water (touch it and you die)
+    // r / u / k = the red, blue and black slides, L = where the slides drop you, Z = where you get lost, X = the exit
+    // The upper maze and the lower maze are not joined: the only way down is a slide.
     map: [
-      '#########################',
-      '#S...~~~~~.....~~~~~....#',
-      '#....~~~~~..P..~~BB~..P.#',
-      '#..P.~~BB~.....~~BB~....#',
-      '#....~~BB~~~~~~~~~~~....#',
-      '#.......................#',
-      '#~~~~..P....BBB....P..~~#',
-      '#~~~~.......BBB.......~~#',
-      '#~BB~..~~~~~.....~~~~.~~#',
-      '#~BB~..~BBB~..P..~BB~...#',
-      '#~~~~..~~~~~.....~~~~...#',
-      '#.........P....P........#',
-      '#..~~~~~~.....~~~~~~~~..#',
-      '#..~BBBB~..B..~BBBBBB~..#',
-      '#..~~~~~~..B..~~~~~~~~..#',
-      '#....P.....B.....P......#',
-      '#~~~.....~~~~~.....~~~~~#',
-      '#BB~..P..~BBB~..P..~BBB~#',
-      '#~~~.....~~~~~.....~~~~~#',
-      '#.....................X.#',
-      '#########################'
+      '#########################################',
+      '#S........####.........#........P.......#',
+      '#....~~~~.####..P.........~~~~~~~~~~~~..#',
+      '#....~~~~.......~~~~...#..~~~BBB~~~~~~..#',
+      '#....~~~~.####..~BB~...#..~~~BBB~~~~~~..#',
+      '#.........####..~BB~...#..~~~~~~~~BB~~..#',
+      '###.##########..~~~~.P.#..~~~~~~~~BB~~..#',
+      '###.##########.........#..~~~~~~~~~~~~..#',
+      '###.##############.#####...P............#',
+      '###.#######....................########.#',
+      '###.#######.........BBB........########.#',
+      '#...........##.#########.##############.#',
+      '#...~~~~~..###.#########.##.............#',
+      '#.P.~BB~~..###.#########.##......P......#',
+      '#...~~~~~..###.#########................#',
+      '#..........###.......######.............#',
+      '###########################...r...u...k.#',
+      '#########################################',
+      '#########################################',
+      '################P.......P#BBBBBB#########',
+      '###.........####..~~~~~..#BBBBBB#########',
+      '###.#######.####..~~L~~..#BBBBBB#########',
+      '###.#######.####..~~~~~..#BBBBBB#.BBBBBB#',
+      '###.##....#.####.........########.BBBBBB#',
+      '###.##.####.########.############.BBBBBB#',
+      '###.##.#############.############.BBBBBB#',
+      '###...............................BBBBBB#',
+      '###.##########....................BBBBBB#',
+      '###.################.############.BBBBBB#',
+      '###.##.......#######.############.BBBBBB#',
+      '###.##.#####.#######.############.BBBBBB#',
+      '###.##.#####.#######.############.BBBBBB#',
+      '###.##Z#####.###...........##############',
+      '###.########.###..~~.......##############',
+      '###..........###P.~~.......##############',
+      '################.........X.##############',
+      '#########################################',
+      '#########################################'
     ],
-    H: 3.6,
-    fog: [0xcfe6ea, 4, 30], ambient: [0xffffff, .85], lampColor: 0xffffff, lightColor: 0xe8fbff, lightPower: 9,
+    H: 3.6, waterDepth: .3, lightStep: 8,
+    fog: [0xd6ecf0, 5, 32], ambient: [0xffffff, 1.5], lampColor: 0xffffff, lightColor: 0xe8fbff, lightPower: 14,
     walls: g => { g.fillStyle = '#e9eef0'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#b9c6cc'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } g.fillStyle = '#8fc7d6'; g.fillRect(0, 112, 128, 6); },
     floor: g => { g.fillStyle = '#dfe8ea'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#a9bbc1'; for (let x = 0; x < 128; x += 16) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
     ceil: g => { g.fillStyle = '#f2f5f5'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#c9d3d6'; for (let x = 0; x < 128; x += 32) { g.fillRect(x, 0, 1, 128); g.fillRect(0, x, 128, 1); } },
     posters: [
-      { at: [1, 11], title: 'BLACK WATER', lines: ['Do NOT touch it.', 'Not even a toe.', 'It is not water.'] },
-      { at: [11, 1], title: 'NO SWIMMING', lines: ['The clear water', 'is safe.', 'The dark water', 'is hungry.'] },
-      { at: [19, 12], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
+      { at: [1, 9], title: 'BLACK WATER', lines: ['Do NOT touch it.', 'Not even a toe.', 'It is not water.'] },
+      { at: [15, 2], title: 'NO SWIMMING', lines: ['The clear water', 'is safe.', 'The dark water', 'is hungry.'] },
+      { at: [12, 33], title: 'AVOID RED', lines: ['Red slide?', 'NO.', 'Blue or black', 'will take you down.'] },
+      { at: [26, 4], title: "DON'T GET LOST", lines: ['Never wander', 'off alone.', 'Something eats', 'lost people.'] },
+      { at: [32, 17], title: 'FIND THE EXIT', lines: ['Follow the', 'green sign.', 'Watch your feet.'] }
     ],
-    bottles: [[5, 12], [15, 20], [11, 20]],
-    weapons: [{ at: [11, 5], kind: 'sword' }],   // you find it while the lizard chases you
+    bottles: [[5, 1], [15, 20], [11, 39], [23, 24], [34, 25]],
+    weapons: [{ at: [30, 20], kind: 'sword' }],   // down the middle path, while the lizard chases you
+    slides: { r: { color: 0xd62828, name: 'RED', kill: true, out: 28 }, u: { color: 0x2a6fdb, name: 'BLUE', out: 19 }, k: { color: 0x1a1a1a, name: 'BLACK', out: 21 } },
     step: 'tile', flicker: 0, glimpses: [], noFake: true,
-    intro: 'You land with a splash in warm, shallow water. White tiles everywhere, and somewhere water is dripping. Some of the pools are black. Find the exit.'
+    intro: 'You land with a splash in warm water up to your ankles. White tiles everywhere, and somewhere water is dripping. Some of the water is black. Find a way down.'
   }
 ];
 
@@ -256,9 +278,21 @@ const crateTex = tex(g => {
 }, [1, 1]);
 
 // ---------- building a level ----------
-const waterGeo = new THREE.PlaneGeometry(CELL, CELL);
-const clearWater = new THREE.MeshStandardMaterial({ color: 0x7fd3e6, roughness: .05, metalness: .2, transparent: true, opacity: .6 });
-const blackWater = new THREE.MeshStandardMaterial({ color: 0x020304, roughness: 0, metalness: .9 });
+const waterGeo = new THREE.PlaneGeometry(CELL, CELL), sideGeo = new THREE.PlaneGeometry(CELL, .3);
+// little waves on the water: a bumpy normal map that slowly drifts
+const waveTex = (() => {
+  const N = 128, h = new Float32Array(N * N);
+  for (let i = 0; i < 40; i++) { const cx = Math.random() * N, cy = Math.random() * N, rr = 6 + Math.random() * 14;
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const dx = Math.min(Math.abs(x - cx), N - Math.abs(x - cx)), dy = Math.min(Math.abs(y - cy), N - Math.abs(y - cy)); h[y * N + x] += Math.exp(-(dx * dx + dy * dy) / (rr * rr)); } }
+  const c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), img = g.createImageData(N, N);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const nx = h[y * N + (x + 1) % N] - h[y * N + (x + N - 1) % N], ny = h[((y + 1) % N) * N + x] - h[((y + N - 1) % N) * N + x], i = (y * N + x) * 4;
+    img.data[i] = 128 - nx * 90; img.data[i + 1] = 128 - ny * 90; img.data[i + 2] = 255; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+})();
+const clearWater = new THREE.MeshStandardMaterial({ color: 0x8fdcec, roughness: .08, metalness: .15, transparent: true, opacity: .5, side: THREE.DoubleSide, depthWrite: false, normalMap: waveTex, normalScale: new THREE.Vector2(.6, .6) });
+const blackWater = new THREE.MeshStandardMaterial({ color: 0x030405, roughness: .02, metalness: .9, side: THREE.DoubleSide, normalMap: waveTex, normalScale: new THREE.Vector2(.25, .25) });
 function buildLevel(L) {
   const map = L.map, rows = map.length, cols = map[0].length, W = cols * CELL, D = rows * CELL;
   L.wall = (r, c) => !map[r] || map[r][c] === undefined || '#PC'.includes(map[r][c]);
@@ -292,8 +326,15 @@ function buildLevel(L) {
       if ((r + c) % 2) { const b = new THREE.Mesh(box(1.2, 1, 1.2), crateMat); b.position.set(x + .1, 1.7, z - .1); b.rotation.y = .3; g.add(b); }
       return;
     }
-    if (ch === '~' || ch === 'B') {   // clear pool water you can wade through, or black water that kills you
-      const m = new THREE.Mesh(waterGeo, ch === 'B' ? blackWater : clearWater); m.rotation.x = -Math.PI / 2; m.position.set(x, ch === 'B' ? .03 : .02, z); g.add(m);
+    const wet = ch2 => '~BL'.includes(ch2);
+    if (wet(ch)) {   // clear water you wade through, or black water that kills you, a foot deep, with see-through sides at the edges
+      const dep = L.waterDepth || .02, mat = ch === 'B' ? blackWater : clearWater;
+      const m = new THREE.Mesh(waterGeo, mat); m.rotation.x = -Math.PI / 2; m.position.set(x, dep + (ch === 'B' ? .003 : 0), z); g.add(m);
+      if (L.waterDepth) DIRS.forEach(([dr, dc]) => {
+        const n = (map[r + dr] || '')[c + dc];
+        if (!n || wet(n) || L.wall(r + dr, c + dc)) return;
+        const side = new THREE.Mesh(sideGeo, mat); side.position.set(x + dc * CELL / 2, dep / 2, z + dr * CELL / 2); side.rotation.y = dc ? Math.PI / 2 : 0; g.add(side);
+      });
     }
     if (ch === 'S') L.start = [r, c];
     if (ch === 'V') L.virusAt = [r, c];
@@ -302,7 +343,8 @@ function buildLevel(L) {
     // ceiling lights; only some of them cast real light, to keep it fast
     if (r % 2 === 1 && c % 2 === 1) {
       const lamp = new THREE.Mesh(lampGeo, new THREE.MeshBasicMaterial({ color: L.lampColor })); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, hh - .01, z); g.add(lamp);
-      if ((r % 6 === 1 && c % 6 === 1) || (tall(r, c) && c === 21)) {
+      const ls = L.lightStep || 6;
+      if ((r % ls === 1 && c % ls === 1) || (tall(r, c) && c === 21)) {
         const power = tall(r, c) ? 18 : L.lightPower, p = new THREE.PointLight(L.lightColor, power, 14, 2);
         p.position.set(x, hh - .3, z); g.add(p); L.lights.push({ p, lamp, base: power });
       }
@@ -600,12 +642,13 @@ function choose(which) {
 $('goPool').onclick = () => choose('pool');
 $('goHab').onclick = () => choose('hab');
 function reset() {
+  Object.assign(ride, { on: false, y: 0, pitch: 0 }); $('fade').style.transition = '';
   vapor = 0; steam.forEach(p => p.visible = false); $('fade').style.background = '#000'; $('fade').style.opacity = 0;
   LEVELS.forEach(l => { l.visited = false; l.posters.forEach(p => p.found = false); l.bottleObjs.concat(l.weaponObjs).forEach(b => { b.taken = false; b.told = false; b.g.visible = true; }); });
   meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
   setSanity(100); sanClock = 0; water = 0; $('aw').textContent = 0; stamina = 1; weapon = null; setArmed(false);
   chosen = null; warned = false; $('choice').style.display = 'none'; $('fight').style.display = 'none';
-  Object.assign(lizard, { state: 'wait', timer: 0 }); liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false);
+  Object.assign(lizard, { state: 'wait', timer: 0, splash: 0 }); drops.forEach(m => m.visible = false); ripples.forEach(m => m.visible = false); liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false);
   stealer.state = 'idle'; stealer.timer = 0; ss.visible = true; ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0);
   suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a);
   ss.position.set(L1.hazAt[1] * CELL + CELL / 2, 0, L1.hazAt[0] * CELL + CELL / 2);
@@ -651,7 +694,8 @@ function placeListener() {   // your ears follow the camera
   if (l.positionX) { l.positionX.value = player.x; l.positionY.value = 1.6; l.positionZ.value = player.z; l.forwardX.value = fx; l.forwardY.value = 0; l.forwardZ.value = fz; l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0; }
   else { l.setPosition(player.x, 1.6, player.z); l.setOrientation(fx, 0, fz, 0, 1, 0); }
 }
-const inWater = () => (L.map[Math.floor(player.z / CELL)] || '')[Math.floor(player.x / CELL)] === '~';
+const cellAt = (x, z) => (L.map[Math.floor(z / CELL)] || '')[Math.floor(x / CELL)];
+const inWater = () => '~L'.includes(cellAt(player.x, player.z) || '#');
 const STEPS = {   // soft carpet, hard concrete, wet tiles (splashing when you wade through water)
   carpet: d => burst(300 + Math.random() * 120, 1, .09, .5, 'lowpass', d),
   concrete: d => burst(900 + Math.random() * 300, 2, .07, .45, 'bandpass', d),
@@ -822,9 +866,10 @@ const steamTex = (() => {
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 })();
 const steam = Array.from({ length: 60 }, () => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: steamTex, transparent: true, depthWrite: false })); m.visible = false; scene.add(m); return m; });
-function vaporize() {
-  playing = false; vapor = .001; $('fight').style.display = 'none';
-  say('The black water grabs your legs and pulls you down. It is boiling...', 99);
+let vaporEnd = null;
+function vaporize(title, text, first) {
+  playing = false; vapor = .001; $('fight').style.display = 'none'; vaporEnd = [title || 'Vaporized', text || 'You stepped into the black water and boiled away into steam. The virus told you to avoid it.'];
+  say(first || 'The black water grabs your legs and pulls you down. It is boiling...', 99);
   burst(5200, .5, 3, .6, 'highpass');   // a long hiss
   steam.forEach((p, i) => { p.visible = false; p.userData = { at: .3 + (i / steam.length) * 1.6, x: (Math.random() - .5) * 1.6, z: (Math.random() - .5) * 1.6, up: .6 + Math.random() * .8 }; });
 }
@@ -841,11 +886,101 @@ function updateVapor(dt) {
   if (vapor > 1.4 && $('fade').style.opacity !== '1') { $('fade').style.background = '#eef3f4'; $('fade').style.opacity = 1; say('...and you turn into steam.', 99); }
   if (vapor > 3.4) {
     vapor = -1; steam.forEach(p => p.visible = false); $('fade').style.opacity = 0;
-    ending('Vaporized', 'You stepped into the black water and boiled away into steam. The virus told you to avoid it.');
+    ending(vaporEnd[0], vaporEnd[1]);
     return 1;
   }
   return Math.min(1, vapor / 1.1);   // how far you have fallen
 }
+// ---------- water physics: droplets that fly up and fall back, and ripples that spread out ----------
+const dropGeo = new THREE.SphereGeometry(.028, 6, 4), dropMat = new THREE.MeshBasicMaterial({ color: 0xdff6ff, transparent: true, opacity: .85 }), darkDrop = new THREE.MeshBasicMaterial({ color: 0x050505 });
+const drops = Array.from({ length: 120 }, () => { const m = new THREE.Mesh(dropGeo, dropMat); m.visible = false; m.userData.v = V(0, 0, 0); scene.add(m); return m; });
+const ripples = Array.from({ length: 30 }, () => {
+  const m = new THREE.Mesh(new THREE.RingGeometry(.9, 1, 40), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
+  m.rotation.x = -Math.PI / 2; m.visible = false; m.userData = { life: 0, size: 1 }; scene.add(m); return m;
+});
+let dropNext = 0, rippleNext = 0;
+const waterY = () => L.waterDepth || .02;
+function ripple(x, z, size) { const m = ripples[rippleNext++ % ripples.length]; m.position.set(x, waterY() + .01, z); m.userData = { life: 0, size }; m.visible = true; }
+function splash(x, z, n, power, dirX = 0, dirZ = 0, dark = false) {
+  for (let i = 0; i < n; i++) {
+    const m = drops[dropNext++ % drops.length]; m.visible = true; m.material = dark ? darkDrop : dropMat; m.position.set(x + (Math.random() - .5) * .3, waterY() + .02, z + (Math.random() - .5) * .3);
+    m.userData.v.set((Math.random() - .5) * 1.6 * power + dirX * 1.5, (1.2 + Math.random() * 2) * power, (Math.random() - .5) * 1.6 * power + dirZ * 1.5);
+  }
+  ripple(x, z, 1 + power * 1.2);
+}
+function updateWater(dt) {
+  waveTex.offset.x += dt * .03; waveTex.offset.y += dt * .017;
+  drops.forEach(m => {
+    if (!m.visible) return;
+    const v = m.userData.v; v.y -= 9.8 * dt; m.position.addScaledVector(v, dt);
+    if (m.position.y < waterY() && v.y < 0) { m.visible = false; if (Math.random() < .25 && '~BL'.includes(cellAt(m.position.x, m.position.z) || '#')) ripple(m.position.x, m.position.z, .35); }
+  });
+  ripples.forEach(m => {
+    if (!m.visible) return;
+    const u = m.userData; u.life += dt; const k = u.life / 1.4;
+    m.scale.setScalar(.15 + k * u.size); m.material.opacity = Math.max(0, .45 * (1 - k)); if (k >= 1) m.visible = false;
+  });
+}
+function waterStep(sprint) {   // every step you take in the water kicks up a splash in front of your feet
+  const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+  splash(player.x + fx * 1.3, player.z + fz * 1.3, sprint ? 10 : 6, sprint ? 1.5 : 1.15, fx * .6, fz * .6);
+  ripple(player.x, player.z, sprint ? 3 : 2.2);
+}
+
+// ---------- the slides (Poolrooms) ----------
+// three tube slides go down through the floor: RED, BLUE and BLACK. Like in the 2D game, red kills you,
+// and blue and black drop you into the lower maze, shooting you out of a spout into a pool.
+const slideMeshes = [];
+const ride = { on: false, t: 0, kind: null, x: 0, z0: 0, y: 0, pitch: 0, flags: {} };
+{
+  const tileMat = new THREE.MeshLambertMaterial({ color: 0xe3ecee });
+  L2.map.forEach((row, r) => [...row].forEach((ch, c) => {
+    const S = L2.slides[ch]; if (!S) return;
+    const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2, mat = new THREE.MeshStandardMaterial({ color: S.color, roughness: .3, metalness: .1, side: THREE.DoubleSide });
+    S.x = x; S.z = z;
+    [[.3, .5, -.6], [.6, .6, -.05], [1, .7, .55]].forEach(([h, d, dz]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(1.4, h, d), tileMat); b.position.set(x, h / 2, z + dz); L2.group.add(b); });   // steps up to the top
+    const curve = new THREE.CatmullRomCurve3([V(x, 1.5, z + .5), V(x, 1.2, z + 1), V(x - .2, .6, z + 1.6), V(x, .1, z + 2.2)]);
+    L2.group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 20, .48, 16, false), mat));
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(.5, .07, 8, 20), mat); rim.position.set(x, 1.5, z + .5); L2.group.add(rim);
+    const sc = document.createElement('canvas'); sc.width = 128; sc.height = 48; const sg = sc.getContext('2d');
+    sg.fillStyle = '#' + S.color.toString(16).padStart(6, '0'); sg.fillRect(0, 0, 128, 48); sg.fillStyle = '#fff'; sg.font = 'bold 30px Arial'; sg.textAlign = 'center'; sg.fillText(S.name, 64, 35);
+    const st = new THREE.CanvasTexture(sc); st.colorSpace = THREE.SRGBColorSpace;
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(.9, .34), new THREE.MeshBasicMaterial({ map: st })); sign.position.set(x, 2.6, (r + 1) * CELL - .02); sign.rotation.y = Math.PI; L2.group.add(sign);
+    if (S.out) {   // where it comes out in the lower maze: a spout in the wall over the landing pool
+      const ox = S.out * CELL + CELL / 2, wz = 19 * CELL, sp = new THREE.CatmullRomCurve3([V(ox, 1.9, wz - .4), V(ox, 1.6, wz + .5), V(ox, .7, wz + 1.6)]);
+      L2.group.add(new THREE.Mesh(new THREE.TubeGeometry(sp, 12, .45, 16, false), mat));
+      const end = new THREE.Mesh(new THREE.TorusGeometry(.47, .06, 8, 20), mat); end.position.set(ox, .7, wz + 1.6); end.rotation.x = -1; L2.group.add(end);
+    }
+  }));
+}
+function startRide(kind) {
+  const S = L2.slides[kind];
+  Object.assign(ride, { on: true, t: 0, kind, flags: {} }); player.x = S.x; player.z = S.z - 1; player.yaw = Math.PI;   // face down the slide
+  $('fade').style.transition = 'opacity .5s'; $('fight').style.display = 'none';
+  say('You climb the steps of the <b>' + S.name.toLowerCase() + ' slide</b> and push off...', 3);
+}
+function updateRide(dt) {
+  const S = L2.slides[ride.kind], f = ride.flags, t = (ride.t += dt);
+  if (t < .7) { ride.y = t / .7 * .5; ride.pitch = -.2; player.z = S.z - 1 + t / .7 * 1.2; return; }   // up the steps
+  if (t < 1.5) { const k = (t - .7) / .8; ride.y = .5 - k * .9; ride.pitch = -.5; player.z = S.z + .2 + k * .6;   // down into the tube
+    if (!f.dark) { f.dark = true; $('fade').style.opacity = 1; whoosh(); } return; }
+  if (t < 3) { if (t > 2 && !f.w2) { f.w2 = true; whoosh(); burst(700, .7, .8, .5, 'bandpass'); }   // in the dark tube, spinning down
+    return; }
+  const ox = S.out * CELL + CELL / 2, wz = 19 * CELL;
+  if (t < 3.8) { const k = (t - 3) / .8; if (!f.out) { f.out = true; player.x = ox; $('fade').style.opacity = 0; } player.z = wz + .2 + k * 2.4; ride.y = .4 - k * 1.15; ride.pitch = -.35; return; }   // shooting out of the spout
+  if (S.kill) {   // the red slide ends in a pit of black water
+    ride.on = false; ride.y = ride.pitch = 0; $('fade').style.transition = '';
+    splash(player.x, player.z, 40, 1.8, 0, 0, true); ripple(player.x, player.z, 4.5); burst(900, .5, .5, .9, 'lowpass');
+    vaporize('Disintegrated', 'The red slide dropped you into black water. You were slowly disintegrated, screaming for help, until everything faded to black. Remember the poster: AVOID RED.',
+      'You shoot out of the red slide... straight into a pool of <b>BLACK WATER</b>. It pulls you under...');
+    return;
+  }
+  if (!f.splash) { f.splash = true; splash(player.x, player.z, 40, 1.8); ripple(player.x, player.z, 4.5); ripple(player.x, player.z, 3); burst(900, .5, .5, .9, 'lowpass'); }
+  if (t < 4.6) { const k = (t - 3.8) / .8; ride.y = -.75 * (1 - k); ride.pitch = -.35 * (1 - k); return; }   // standing back up
+  ride.on = false; ride.y = ride.pitch = 0; $('fade').style.transition = '';
+  say('You shoot out of the slide and splash down into a pool. It is darker down here, and very quiet...', 3.5);
+}
+
 // ---------- the Poolrooms Lizard ----------
 // a red, scaly thing that crawls out of the water and chases you (from the 2D game). It will not go in the black water.
 // Grab the sword on the way and kill it, and the black water swallows the body: it eats anything dead.
@@ -909,13 +1044,13 @@ function spawnLizard() {
   const dist = new Map([[pr * 100 + pc, 0]]), q = [[pr, pc]], spots = [];
   while (q.length) {
     const [r, c] = q.shift(), d = dist.get(r * 100 + c);
-    if (d >= 4 && d <= 6 && Math.hypot(r - sw[0], c - sw[1]) > Math.hypot(pr - sw[0], pc - sw[1]) + 2) spots.push([r, c]);
+    if (d >= 3 && d <= 6 && Math.hypot(r - sw[0], c - sw[1]) > Math.hypot(pr - sw[0], pc - sw[1]) + 2) spots.push([r, c]);
     if (d < 8) for (const [dr, dc] of DIRS) { const nr = r + dr, nc = c + dc; if (!lizBad(nr, nc) && !dist.has(nr * 100 + nc)) { dist.set(nr * 100 + nc, d + 1); q.push([nr, nc]); } }
   }
   const wet = spots.filter(([r, c]) => L.map[r][c] === '~'), pick = (wet.length ? wet : spots)[0] || [1, 23];
   liz.position.set(pick[1] * CELL + CELL / 2, -.9, pick[0] * CELL + CELL / 2); liz.rotation.set(0, 0, 0); liz.visible = true;
-  lizard.state = 'rise'; lizard.timer = 0; growl();
-  say('Something red and scaly crawls up out of the water behind you. A <b>LIZARD!</b> RUN (Shift)! Something is shining down the hall...', 4);
+  lizard.state = 'rise'; lizard.timer = 0; growl(); splash(liz.position.x, liz.position.z, 30, 1.5); ripple(liz.position.x, liz.position.z, 4);
+  say('You hear a splash behind you. Turn around... something red and scaly crawls up out of the water. A <b>LIZARD!</b> RUN (Shift)!', 4);
 }
 function killLizard() {
   $('dark').style.opacity = 0;
@@ -926,7 +1061,7 @@ function killLizard() {
 }
 function updateLizard(dt, t) {
   const ud = liz.userData, d = Math.hypot(liz.position.x - player.x, liz.position.z - player.z);
-  if (lizard.state === 'wait') { if (Math.floor(player.z / CELL) >= 5) spawnLizard(); return; }
+  if (lizard.state === 'wait') { if (!ride.on && Math.floor(player.z / CELL) >= 19 && (lizard.timer += dt) > 2.5) spawnLizard(); return; }
   lizard.timer += dt;
   if (lizard.state === 'rise') {   // climbing out of the pool
     liz.position.y = Math.min(0, -.9 + lizard.timer * .8); liz.lookAt(player.x, liz.position.y, player.z);
@@ -941,6 +1076,7 @@ function updateLizard(dt, t) {
     const dx = tx - liz.position.x, dz = tz - liz.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 4.3 * dt);   // faster than walking, slower than sprinting
     liz.position.x += dx / dd * step; liz.position.z += dz / dd * step;
     liz.lookAt(player.x, 0, player.z);
+    if ('~L'.includes(cellAt(liz.position.x, liz.position.z) || '#') && (lizard.splash = (lizard.splash || 0) + dt) > .25) { lizard.splash = 0; splash(liz.position.x, liz.position.z, 6, .9); ripple(liz.position.x, liz.position.z, 2.6); }
     ud.legs.forEach((l, i) => { l.rotation.y = Math.sin(t * 16 + (i === 0 || i === 3 ? 0 : Math.PI)) * .6; });   // scuttling
     lizBody.rotation.y = Math.sin(t * 16) * .12; ud.tail.rotation.y = Math.sin(t * 8) * .3; ud.jaw.rotation.x = .25 + Math.sin(t * 10) * .15;
     if (d < 1.1 && lizard.timer > .8) {
@@ -972,12 +1108,13 @@ function updateLizard(dt, t) {
     if (lizard.timer > 5.2) { liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false); lizard.state = 'gone'; }
   }
 }
-window.__game = { lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   moving = false;
-  if (playing && meetStep < 0) {
+  if (ride.on && playing) updateRide(dt);
+  if (playing && meetStep < 0 && !ride.on) {
     if (keys['a']) player.yaw += 2.2 * dt;
     if (keys['d']) player.yaw -= 2.2 * dt;
     const mv = (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0);
@@ -991,7 +1128,7 @@ function tick() {
       const sp = (sprint ? 5.5 : 3) * (inWater() ? .65 : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) * dt * mv, nx = player.x - Math.sin(player.yaw) * sp, nz = player.z - Math.cos(player.yaw) * sp;
       if (!blocked(nx, player.z)) player.x = nx;
       if (!blocked(player.x, nz)) player.z = nz;
-      if ((stepClock += dt) > (sprint ? .28 : .45)) { stepClock = 0; footstep(); }
+      if ((stepClock += dt) > (sprint ? .28 : .45)) { stepClock = 0; footstep(); if (L.waterDepth && inWater()) waterStep(sprint); }
     }
     L.bottleObjs.forEach(b => {
       if (!b.taken && Math.hypot(b.g.position.x - player.x, b.g.position.z - player.z) < .8) {
@@ -1022,6 +1159,8 @@ function tick() {
       if (L === L2) {
         const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
         if (L.map[pr][pc] === 'B') vaporize();
+        else if (L.slides[L.map[pr][pc]]) startRide(L.map[pr][pc]);
+        else if (L.map[pr][pc] === 'Z') ending('You became lost', 'You went a different way and got lost in the dark tunnels... and became a bacteria\'s lunch. Never wander off alone.');
         else if (!warned && DIRS.some(([dr, dc]) => L.map[pr + dr][pc + dc] === 'B')) { warned = true; say('The water here is black and perfectly still. You remember the virus: <b>"Avoid the black water."</b>', 3.5); }
       }
       if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
@@ -1061,9 +1200,10 @@ function tick() {
   if (foe && lizard.state !== 'grab') $('fight').textContent = L === L2 && weapon && !facingLiz() ? '↩️ Turn and face it!' : weapon ? '⚔️ Click to fight!' : 'Nothing to fight with: RUN!';
   const k = swing > 0 ? 1 - Math.max(0, swing -= dt) / .35 : 0;
   Object.values(WEAPONS).forEach(w => w.model.rotation.set(-.3 - Math.sin(k * Math.PI) * 1.4 + (moving && !k ? Math.sin(t * 9) * .03 : 0), 0, -.35 + Math.sin(k * Math.PI) * .9));
+  updateWater(dt);
   const fall = updateVapor(dt);   // falling into the black water: you drop, tip over and look up as you sink
-  camera.position.set(player.x, 1.6 - fall * fall * 1.5 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
-  camera.rotation.set(fall * .9, player.yaw, fall * .5);
+  camera.position.set(player.x, 1.6 - fall * fall * 1.5 + ride.y + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
+  camera.rotation.set(fall * .9 + ride.pitch, player.yaw, fall * .5);
   placeListener();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
