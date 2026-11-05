@@ -519,7 +519,7 @@ LEVELS.forEach(L => {
 const $ = id => document.getElementById(id);
 const player = { x: 0, z: 0, yaw: Math.PI, r: .3 };
 let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 0, stamina = 1, armed = false, weapon = null, stepClock = 0;
-let meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false;
+let meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false, vapor = 0;
 const keys = {};
 addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
 addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -598,6 +598,7 @@ function choose(which) {
 $('goPool').onclick = () => choose('pool');
 $('goHab').onclick = () => choose('hab');
 function reset() {
+  vapor = 0; steam.forEach(p => p.visible = false); $('fade').style.background = '#000'; $('fade').style.opacity = 0;
   LEVELS.forEach(l => { l.visited = false; l.posters.forEach(p => p.found = false); l.bottleObjs.concat(l.weaponObjs).forEach(b => { b.taken = false; b.told = false; b.g.visible = true; }); });
   meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
   setSanity(100); sanClock = 0; water = 0; $('aw').textContent = 0; stamina = 1; weapon = null; setArmed(false);
@@ -803,7 +804,38 @@ function updateStealer(dt, t) {
   else if (stealer.timer > 16) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
 }
 
-window.__game = { player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+// stepping in the black water: you fall in, your body boils away into steam, and then the menu
+const steamTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,.9)'); gr.addColorStop(.5, 'rgba(235,240,242,.4)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const steam = Array.from({ length: 60 }, () => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: steamTex, transparent: true, depthWrite: false })); m.visible = false; scene.add(m); return m; });
+function vaporize() {
+  playing = false; vapor = .001; $('fight').style.display = 'none';
+  say('The black water grabs your legs and pulls you down. It is boiling...', 99);
+  burst(5200, .5, 3, .6, 'highpass');   // a long hiss
+  steam.forEach((p, i) => { p.visible = false; p.userData = { at: .3 + (i / steam.length) * 1.6, x: (Math.random() - .5) * 1.6, z: (Math.random() - .5) * 1.6, up: .6 + Math.random() * .8 }; });
+}
+function updateVapor(dt) {
+  if (!vapor) return 0;
+  if (vapor < 0) return 1;   // stay down in the water behind the menu
+  vapor += dt;
+  steam.forEach(p => {   // puffs of steam rise up from where you fell, growing and fading
+    const u = p.userData, life = vapor - u.at;
+    if (life < 0) return;
+    p.visible = true; p.position.set(player.x + u.x * (1 + life), .05 + life * u.up, player.z + u.z * (1 + life));
+    p.scale.setScalar(.6 + life * 1.4); p.material.opacity = Math.max(0, .85 - life * .35);
+  });
+  if (vapor > 1.4 && $('fade').style.opacity !== '1') { $('fade').style.background = '#eef3f4'; $('fade').style.opacity = 1; say('...and you turn into steam.', 99); }
+  if (vapor > 3.4) {
+    vapor = -1; steam.forEach(p => p.visible = false); $('fade').style.opacity = 0;
+    ending('Vaporized', 'You stepped into the black water and boiled away into steam. The virus told you to avoid it.');
+    return 1;
+  }
+  return Math.min(1, vapor / 1.1);   // how far you have fallen
+}
+window.__game = { vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -850,7 +882,7 @@ function tick() {
       if (L === L1) updateStealer(dt, t);
       if (L === L2) {
         const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
-        if (L.map[pr][pc] === 'B') ending('Vaporized', 'You stepped into the black water and were instantly vaporized. The virus told you to avoid it.');
+        if (L.map[pr][pc] === 'B') vaporize();
         else if (!warned && DIRS.some(([dr, dc]) => L.map[pr + dr][pc + dc] === 'B')) { warned = true; say('The water here is black and perfectly still. You remember the virus: <b>"Avoid the black water."</b>', 3.5); }
       }
       if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
@@ -890,8 +922,9 @@ function tick() {
   if (foe) $('fight').textContent = weapon ? '⚔️ Click to fight!' : 'Nothing to fight with: RUN!';
   const k = swing > 0 ? 1 - Math.max(0, swing -= dt) / .35 : 0;
   Object.values(WEAPONS).forEach(w => w.model.rotation.set(-.3 - Math.sin(k * Math.PI) * 1.4 + (moving && !k ? Math.sin(t * 9) * .03 : 0), 0, -.35 + Math.sin(k * Math.PI) * .9));
-  camera.position.set(player.x, 1.6 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
-  camera.rotation.set(0, player.yaw, 0);
+  const fall = updateVapor(dt);   // falling into the black water: you drop, tip over and look up as you sink
+  camera.position.set(player.x, 1.6 - fall * fall * 1.5 + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
+  camera.rotation.set(fall * .9, player.yaw, fall * .5);
   placeListener();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
