@@ -980,7 +980,7 @@ function jump() {
   if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
 }
 const look = { pitch: 0 };
-const canvas = renderer.domElement;
+const canvas = document.body;   // lock the cursor to the whole page, so a click anywhere works
 const menuOpen = () => ['choice', 'siege', 'pad', 'end', 'title'].some(id => $(id).style.display === 'flex');
 document.addEventListener('pointerlockchange', () => { $('lockhint').style.display = document.pointerLockElement === canvas || !playing ? 'none' : 'block'; });
 function lockMouse() { if (playing && !menuOpen() && document.pointerLockElement !== canvas) { try { const r = canvas.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch (e) {} } }
@@ -990,7 +990,7 @@ addEventListener('mousemove', e => {   // moving the mouse turns you, locked or 
   player.yaw -= e.movementX * .0025;
   look.pitch = Math.max(-1.1, Math.min(1.1, look.pitch - e.movementY * .0025));
 });
-canvas.addEventListener('click', lockMouse);
+document.addEventListener('mousedown', () => setTimeout(lockMouse, 0));
 setInterval(() => { if (menuOpen()) freeMouse(); }, 200);   // when a menu pops up you get your cursor back to click it
 $('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); jump(); look.pitch = 0; $('lockhint').style.display = 'block'; lockMouse(); };
 $('again').onclick = () => { reset(); look.pitch = 0; setTimeout(lockMouse, 50); };
