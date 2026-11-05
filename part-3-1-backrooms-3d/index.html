@@ -41,6 +41,7 @@
   #choice .opt { display: block; width: min(460px, 100%); margin: 8px 0; padding: 14px 18px; text-align: left; font-size: 16px; line-height: 1.4; color: #f4ecc2; background: rgba(20,16,4,.92); border: 2px solid #b8a55e; border-radius: 10px; cursor: pointer; }
   #choice .opt:hover { border-color: #fde68a; background: rgba(60,50,10,.95); }
   #choice .opt b { color: #fde68a; font-size: 18px; }
+  #lockhint { position: fixed; top: 12px; right: 12px; max-width: 260px; display: none; padding: 6px 10px; border-radius: 8px; background: rgba(0,0,0,.6); font-size: 13px; pointer-events: none; }
   #hint { position: fixed; left: 50%; top: 58%; transform: translateX(-50%); display: none; padding: 8px 16px; border-radius: 8px; background: rgba(10,30,15,.85); border: 2px solid #5dff8f; color: #d9ffe6; font-weight: bold; font-size: 18px; pointer-events: none; }
   #fight { position: fixed; left: 50%; top: 58%; transform: translateX(-50%); display: none; padding: 8px 16px; border-radius: 8px; background: rgba(120,10,10,.85); border: 2px solid #f87171; font-weight: bold; font-size: 18px; pointer-events: none; }
   .keys { display: inline-block; padding: 2px 7px; border: 1px solid #fde68a; border-radius: 4px; margin: 0 2px; }
@@ -60,6 +61,7 @@
 <div id="fade"></div>
 <div id="fight"></div>
 <div id="hint"></div>
+<div id="lockhint">🖱️ Move the mouse to look around. Click the screen to lock the mouse in (Esc to unlock).</div>
 <div id="siege" class="overlay">
   <h2>"How can I escape?"</h2>
   <button class="opt" id="sFight"><b>1 · Fight</b><br>Throw the door open and fight it.</button>
@@ -393,9 +395,15 @@ function buildLevel(L) {
       }
     }
   }));
-  (L.puddles || []).forEach(([r, c]) => {   // shiny puddles of water on the concrete
-    const m = new THREE.Mesh(new THREE.CircleGeometry(.5 + rnd() * .4, 20), new THREE.MeshStandardMaterial({ color: 0x1c2328, roughness: .05, metalness: .6 }));
-    m.rotation.x = -Math.PI / 2; m.scale.set(1.4, 1, 1); m.position.set(c * CELL + CELL / 2, .005, r * CELL + CELL / 2); g.add(m);
+  const bloodMat = new THREE.MeshStandardMaterial({ color: 0x5c0606, roughness: .12, metalness: .25, emissive: 0x1a0000 });
+  (L.puddles || []).forEach(([r, c]) => {   // puddles of blood on the concrete, with splatters around them
+    const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2;
+    const m = new THREE.Mesh(new THREE.CircleGeometry(.5 + rnd() * .4, 20), bloodMat);
+    m.rotation.x = -Math.PI / 2; m.scale.set(1.4, 1, 1); m.position.set(x, .005, z); g.add(m);
+    for (let i = 0; i < 6; i++) {
+      const a = rnd() * Math.PI * 2, d = .8 + rnd() * .6, sp = new THREE.Mesh(new THREE.CircleGeometry(.05 + rnd() * .1, 10), bloodMat);
+      sp.rotation.x = -Math.PI / 2; sp.position.set(x + Math.cos(a) * d, .006, z + Math.sin(a) * d * .8); g.add(sp);
+    }
   });
   L.posters.forEach(p => {
     const [r, c] = p.at, d = DIRS.find(([dr, dc]) => L.wall(r + dr, c + dc));
@@ -509,13 +517,14 @@ function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
   }
 }
 const limbs = [];
+function hinge(g, x, y) { const p = new THREE.Group(); p.position.set(x, y, 0); g.position.set(-x, -y, 0); p.add(g); virus.add(p); return p; }   // so a limb swings from its hip or shoulder
 [-1, 1].forEach(side => {
   const leg = new THREE.Group();
   braid([V(side * .1, HIP, 0), V(side * .16, .55, .06), V(side * .2, .05, 0)], .03, .022, 1.3, leg, V(0, 0, 1), .2, V(0, 1, 0));
-  virus.add(leg); limbs.push(leg);
+  limbs.push(hinge(leg, side * .1, HIP));
   const arm = new THREE.Group();
   braid([V(side * .17, SHOULDER, 0), V(side * .3, SHOULDER - .5, .08), V(side * .34, HIP - .25, .14)], .026, .018, 1.1, arm, V(side * .15, -1, .3), .26, V(0, 0, 1));
-  virus.add(arm); limbs.push(arm);
+  limbs.push(hinge(arm, side * .17, SHOULDER));
 });
 const hairs = [];
 for (let i = 0; i < 8; i++) {   // thin sensory hairs that drift around the crown
@@ -538,6 +547,42 @@ const ssVisor = new THREE.Mesh(new THREE.BoxGeometry(.26, .13, .08), visorMat); 
 const ssTank = new THREE.Mesh(new THREE.CylinderGeometry(.08, .08, .42, 10), new THREE.MeshLambertMaterial({ color: 0x9ca3af })); ssTank.position.set(0, 1.12, -.24); ss.add(ssTank);
 const ssLegs = [-.11, .11].map(x => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.08, .5, 4, 8), suitMat); l.position.set(x, .38, 0); ss.add(l); return l; });
 const ssArms = [-1, 1].map(s => { const a = new THREE.Mesh(new THREE.CapsuleGeometry(.065, .55, 4, 8), suitMat); a.position.set(s * .32, 1.05, 0); ss.add(a); return a; });
+// its real form, under the stolen suit: tall and hunched, stretched pale skin, long arms with claws,
+// a huge mouth of teeth and glowing red eyes, with torn yellow scraps of the suit still hanging off it
+const monster = new THREE.Group(); ss.add(monster);
+const skinMat = new THREE.MeshStandardMaterial({ color: 0xc79a8f, roughness: .7, emissive: 0x2a0a08 });
+const mLegs = [], mArms = [];
+{
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.2, .8, 6, 12), skinMat); torso.position.set(0, 1.4, .08); torso.rotation.x = .35; monster.add(torso);
+  for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(.045, 8, 6), skinMat); b.position.set(0, 1.05 + i * .17, -.12 - i * .045); monster.add(b); }   // the spine sticks out
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(.06, .09, .3, 8), skinMat); neck.position.set(0, 1.92, .26); neck.rotation.x = .6; monster.add(neck);
+  const head = new THREE.Group(); head.position.set(0, 2.05, .36); monster.add(head);
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(.2, 16, 12), skinMat); skull.scale.set(.9, 1.25, 1.05); head.add(skull);
+  const mouth = new THREE.Mesh(new THREE.SphereGeometry(.13, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x1a0000 })); mouth.rotation.x = Math.PI / 2 + .2; mouth.scale.set(1, 1, .5); mouth.position.set(0, -.1, .17); head.add(mouth);
+  const toothM = new THREE.MeshLambertMaterial({ color: 0xf2ead8 });
+  for (let i = 0; i < 9; i++) [1, -1].forEach(row => {   // two rows of long teeth
+    const tth = new THREE.Mesh(new THREE.ConeGeometry(.012, .07, 4), toothM); const a = (i / 8 - .5) * 2.2;
+    tth.position.set(Math.sin(a) * .12, -.1 + row * .05, .19 + Math.cos(a) * .02); tth.rotation.x = row > 0 ? Math.PI : 0; head.add(tth);
+  });
+  const eyeM = new THREE.MeshBasicMaterial({ color: 0xff1a1a });
+  [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), eyeM); e.position.set(sd * .08, .07, .18); head.add(e); });
+  const eyeGlow = new THREE.PointLight(0xff2020, 2, 3, 2); eyeGlow.position.set(0, .07, .4); head.add(eyeGlow);
+  [-1, 1].forEach(sd => {   // long arms down past its knees, ending in claws
+    const arm = new THREE.Group(); arm.position.set(sd * .26, 1.72, .2); monster.add(arm); mArms.push(arm);
+    const up = new THREE.Mesh(new THREE.CapsuleGeometry(.045, .5, 4, 8), skinMat); up.position.set(sd * .06, -.3, .05); up.rotation.z = sd * .15; arm.add(up);
+    const low = new THREE.Mesh(new THREE.CapsuleGeometry(.04, .55, 4, 8), skinMat); low.position.set(sd * .1, -.85, .14); low.rotation.x = -.25; arm.add(low);
+    for (let c = -1; c <= 1; c++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(.014, .16, 4), toothM); cl.position.set(sd * .1 + c * .03, -1.2, .22); cl.rotation.x = Math.PI - .4; arm.add(cl); }
+  });
+  [-1, 1].forEach(sd => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.065, .75, 4, 8), skinMat); l.position.set(sd * .12, .48, 0); monster.add(l); mLegs.push(l); });
+  const scrapM = new THREE.MeshLambertMaterial({ color: 0xd9a200, side: THREE.DoubleSide });
+  [[-.18, 1.55, .1, .4], [.2, 1.25, .05, -.5], [0, .95, .16, .2], [-.12, .9, -.12, -.3]].forEach(([x, y, z, r]) => {   // torn bits of the hazmat suit
+    const sc = new THREE.Mesh(new THREE.PlaneGeometry(.22, .3), scrapM); sc.position.set(x, y, z); sc.rotation.set(.2, r * 2, r); monster.add(sc);
+  });
+  monster.visible = false;
+}
+function ssForm(real) {   // show the hazmat explorer, or what it really is
+  [ssBody, ssHood, ssVisor, ssTank, ...ssLegs, ...ssArms].forEach(m => m.visible = !real); monster.visible = real;
+}
 const stealer = { state: 'idle', timer: 0 };
 L1.group.add(ss);
 // shortest path through the halls, one cell at a time, so it chases you around corners and crates
@@ -612,7 +657,7 @@ LEVELS.forEach(L => {
 const $ = id => document.getElementById(id);
 const player = { x: 0, z: 0, yaw: Math.PI, r: .3 };
 let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 0, stamina = 1, armed = false, weapon = null, stepClock = 0;
-let drawing = 0, meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false, vapor = 0;
+let shake = 0, drawing = 0, meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false, vapor = 0;
 const keys = {};
 addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
 addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -635,7 +680,7 @@ addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (e.repeat || !playing) return;
   if (meetStep >= 0) { if ($('choice').style.display === 'flex' && (k === '1' || k === '2')) choose(k === '1' ? 'pool' : 'hab'); return; }
-  if (siege.state === 'ask' && (k === '1' || k === '2')) { siegeChoice(k === '1' ? 'fight' : 'wait'); return; }
+  if (k === 'r' && nearInsideDoor()) { openAndFight(); return; }
   if (k === 'r' && nearPad()) { openPad(); return; }
   if (k === 'r' && nearDoor()) { startDoor(); return; }
   if (k === 'e') {
@@ -671,6 +716,7 @@ addEventListener('mousedown', e => {
 function enterLevel(next) {
   LEVELS.forEach(l => l.group.visible = l === next);
   L = next; L.visited = true;
+  if (next === L1) startHello();
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
   player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI;
   // no level names on screen: you are not told where you are
@@ -699,12 +745,11 @@ function choose(which) {
   chosen = which; $('choice').style.display = 'none'; meetTimer = 0; say(meetLines()[meetStep], 99);
 }
 $('goPool').onclick = () => choose('pool');
-$('sFight').onclick = () => siegeChoice('fight');
-$('sWait').onclick = () => siegeChoice('wait');
 document.querySelectorAll('#padkeys button').forEach(b => b.onclick = () => pressPad(b.dataset.k));
 $('padClose').onclick = () => { padState.open = false; $('pad').style.display = 'none'; setTimeout(lockMouse, 50); };
 $('goHab').onclick = () => choose('hab');
 function reset() {
+  hello.on = false;
   drawing = 0; Object.assign(siege, { state: 'off', t: 0, hit: false, gone: false }); Object.assign(padState, { open: false, entered: [], wrong: 0 }); elev.open = 0;
   elev.panels.forEach(p => p.m.position.x = elev.x + p.sd * .325); LEVELS.forEach(l => l.doorUsed = false);
   ['siege', 'pad'].forEach(id => $(id).style.display = 'none');
@@ -712,12 +757,13 @@ function reset() {
   Object.assign(ride, { on: false, y: 0, pitch: 0 }); $('fade').style.transition = '';
   vapor = 0; steam.forEach(p => p.visible = false); $('fade').style.background = '#000'; $('fade').style.opacity = 0;
   LEVELS.forEach(l => { l.visited = false; l.posters.forEach(p => p.found = false); l.bottleObjs.concat(l.weaponObjs).forEach(b => { b.taken = false; b.told = false; b.g.visible = true; }); });
+  L0.group.add(virus); virus.scale.setScalar(2); virus.rotation.set(0, 0, 0); virus.position.set(L0.virusAt[1] * CELL + CELL / 2, 0, L0.virusAt[0] * CELL + CELL / 2);
   meetStep = -1; virus.visible = false; $('end').style.display = 'none'; $('msg').style.display = 'none'; $('dark').style.opacity = 0;
   setSanity(100); sanClock = 0; water = 0; $('aw').textContent = 0; stamina = 1; weapon = null; setArmed(false);
   chosen = null; warned = false; $('choice').style.display = 'none'; $('fight').style.display = 'none';
   Object.assign(lizard, { state: 'wait', timer: 0, splash: 0 }); drops.forEach(m => m.visible = false); ripples.forEach(m => m.visible = false); liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false);
   stealer.state = 'idle'; stealer.timer = 0; ss.visible = true; ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0);
-  suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a);
+  suitMat.color.setHex(0xf5b301); visorMat.color.setHex(0x1f5f5a); ssForm(false);
   ss.position.set(L1.hazAt[1] * CELL + CELL / 2, 0, L1.hazAt[0] * CELL + CELL / 2);
   playing = true; enterLevel(L0);
 }
@@ -789,16 +835,17 @@ function jump() {
 const look = { pitch: 0 };
 const canvas = renderer.domElement;
 const menuOpen = () => ['choice', 'siege', 'pad', 'end', 'title'].some(id => $(id).style.display === 'flex');
+document.addEventListener('pointerlockchange', () => { $('lockhint').style.display = document.pointerLockElement === canvas || !playing ? 'none' : 'block'; });
 function lockMouse() { if (playing && !menuOpen() && document.pointerLockElement !== canvas) { try { const r = canvas.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch (e) {} } }
 function freeMouse() { if (document.pointerLockElement) document.exitPointerLock(); }
-addEventListener('mousemove', e => {
-  if (document.pointerLockElement !== canvas || !playing || meetStep >= 0 || ride.on || doorAnim.on || padState.open || siege.state === 'fight') return;
+addEventListener('mousemove', e => {   // moving the mouse turns you, locked or not (locking just keeps the cursor from leaving the screen)
+  if (!playing || menuOpen() || meetStep >= 0 || ride.on || doorAnim.on || padState.open || siege.state === 'fight' || hello.on || elev.open) return;
   player.yaw -= e.movementX * .0025;
   look.pitch = Math.max(-1.1, Math.min(1.1, look.pitch - e.movementY * .0025));
 });
 canvas.addEventListener('click', lockMouse);
 setInterval(() => { if (menuOpen()) freeMouse(); }, 200);   // when a menu pops up you get your cursor back to click it
-$('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); jump(); look.pitch = 0; setTimeout(lockMouse, 50); };
+$('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); jump(); look.pitch = 0; $('lockhint').style.display = 'block'; lockMouse(); };
 $('again').onclick = () => { reset(); look.pitch = 0; setTimeout(lockMouse, 50); };
 
 // ---------- things that are not really there ----------
@@ -928,9 +975,9 @@ function updateStealer(dt, t) {
     if (stealer.state === 'idle' && ds < 5) { stealer.state = 'talk'; stealer.timer = 0; say('A person in a yellow hazmat suit waves at you. <b>"Hi! Who are you?"</b>', 3); }
     if (stealer.state === 'talk' && (stealer.timer += dt) > 2.5) {
       stealer.state = 'chase'; stealer.timer = 0; screech();
-      suitMat.color.setHex(0xcbb8a0); visorMat.color.setHex(0x7a0f0f); ss.scale.set(1, 1.25, 1);   // the skin stretches and the visor goes red
+      ssForm(true);   // the suit splits open and the real thing unfolds out of it
       ssArms[1].rotation.z = 0; ssArms[1].position.y = 1.05;
-      say('The suit stretches... its skin slides. It is a <b>SKIN STEALER!</b> ' + '<b>RUN!</b> It is too fast to fight out here. Find the door with the green sign!', 4);
+      say('The suit splits open and something tall and pale unfolds out of it. It is a <b>SKIN STEALER!</b> ' + '<b>RUN!</b> It is too fast to fight out here. Find the door with the green sign!', 4);
     }
     return;
   }
@@ -943,6 +990,7 @@ function updateStealer(dt, t) {
   const dx = tx - ss.position.x, dz = tz - ss.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 3.7 * dt);   // faster than walking, slower than sprinting
   ss.position.x += dx / dd * step; ss.position.z += dz / dd * step;
   ssLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 14 + i * Math.PI) * .6; });
+  mLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 12 + i * Math.PI) * .55; }); mArms.forEach((a, i) => { a.rotation.x = -.5 + Math.sin(t * 12 + i * Math.PI) * .5; });   // it runs with its claws out
   if (ds < .9) ending('The Skin Stealer got you', 'As its teeth sink in, everything goes red. You cannot fight it out in the open, and taking out a weapon is too slow. Sprint (Shift) and find the door with the green sign.');
   else if (stealer.timer > 60) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
 }
@@ -1155,13 +1203,13 @@ const siege = { state: 'off', t: 0, bang: 0 };
 function startSiege() {
   Object.assign(siege, { state: 'bang', t: 0, bang: .6 });
   stealer.state = 'siege'; ss.visible = false;
-  say('The door slams shut behind you. On the wall: <b>THE CODE. Red, blue, green, yellow.</b> Then... <b>BANG!</b>', 4);
+  say('The door slams shut behind you. On the wall: <b>THE CODE. Red, blue, green, yellow.</b> Then... <b>BANG!</b> It is breaking the door down! <b>Open it and fight (R)</b> before it gets in!', 5);
 }
-function siegeChoice(which) {
-  if (siege.state !== 'ask') return;
-  setTimeout(lockMouse, 50);
-  $('siege').style.display = 'none';
-  if (which === 'wait') { siege.state = 'wait'; siege.t = 0; say('You hold your breath and wait...', 3); return; }
+const SIEGE_TIME = 10;
+const nearInsideDoor = () => siege.state === 'bang' && Math.hypot(25 * CELL - player.x, 19 * CELL + CELL / 2 - player.z) < 2.4;
+function openAndFight() {
+  if (siege.state !== 'bang') return;
+  $('hint').style.display = 'none';
   if (!weapon) { siege.state = 'over'; ending('You had nothing to fight with', 'You threw open the door with your bare hands. It did not go well. You need a weapon for this: the sword from the Poolrooms, or the bat in the halls.'); return; }
   siege.state = 'fight'; siege.t = 0; setArmed(true);
   player.x = 24 * CELL + 1.6; player.z = 19 * CELL + CELL / 2; player.yaw = Math.PI / 2;   // you face the door from just inside
@@ -1174,16 +1222,16 @@ function updateSiege(dt) {
       siege.bang = .7 + Math.random() * .5; burst(70, 1, .3, 1.6, 'lowpass'); burst(1800, 3, .04, .3, 'bandpass'); D.pivot.userData.shake = .25;
     }
     const sh = D.pivot.userData.shake || 0; D.pivot.userData.shake = Math.max(0, sh - dt); D.pivot.rotation.y = sh > 0 ? Math.sin(t * 60) * .03 : 0;
-    if (siege.state === 'bang' && t > 3.5) { siege.state = 'ask'; $('siege').style.display = 'flex'; }
-    if ((siege.state === 'ask' && t > 13) || (siege.state === 'wait' && t > 3)) {
-      siege.state = 'over'; $('siege').style.display = 'none'; D.pivot.rotation.y = 1.6; burst(60, 1, .6, 2, 'lowpass'); screech();
-      ending('It broke down the door', 'You waited too long. The door burst open and it tore you apart. Next time, fight it: you need a weapon for this.');
+    if (t > SIEGE_TIME) {
+      siege.state = 'over'; D.pivot.rotation.y = 1.6; burst(60, 1, .6, 2, 'lowpass'); screech();
+      ending('It broke down the door', 'You waited too long. The door burst open and it tore you apart. Next time, open the door and fight it (R) before the time runs out.');
     }
     return;
   }
   if (siege.state === 'fight') {   // the door flies open, it is right there, and you hit it
     D.pivot.rotation.y = 1.5 * Math.min(1, t / .3) * (t > 1.4 ? Math.max(0, 1 - (t - 1.4) / .4) : 1);
-    if (t < 1) { ss.visible = true; ss.position.set(23 * CELL + 1.2, 0, 19 * CELL + CELL / 2); ss.lookAt(player.x, 0, player.z); }
+    if (t < 1) { ss.visible = true; ssForm(true); ss.scale.set(1, 1, 1); ss.rotation.set(0, 0, 0); ss.position.set(23 * CELL + 1.2, 0, 19 * CELL + CELL / 2); ss.lookAt(player.x, 0, player.z);
+      mArms.forEach(a => a.rotation.x = -1.2 + Math.sin(t * 20) * .3); }   // claws up, lunging at you
     if (t > .55 && !siege.hit) { siege.hit = true; swing = .35; whoosh(); }
     if (t > .8 && !siege.gone) { siege.gone = true; ss.visible = false; screech(); }
     if (t > 2) {
@@ -1207,16 +1255,93 @@ function pressPad(k) {
   padState.entered.push(k); burst(2000, 6, .05, .3, 'bandpass'); drawPad();
   if (padState.entered.length < 4) return;
   if (padState.entered.join() === CODE.join()) {
-    padState.open = false; $('pad').style.display = 'none'; elev.open = .001;
+    padState.open = false; $('pad').style.display = 'none'; $('hint').style.display = 'none'; elev.open = .001;
     say('<b>Aha!</b> The pinpad beeps green and the elevator doors slide open...', 4); burst(1200, 8, .3, .4, 'bandpass');
-  } else { padState.wrong++; padState.entered = []; setTimeout(() => drawPad(padState.wrong >= 2 ? 'WRONG. Hint: the code was painted on the wall.' : 'WRONG. Try again.'), 10); burst(200, 2, .3, .6, 'square'); }
+  } else { padState.open = false; $('pad').style.display = 'none'; explodePad(); }
 }
+const sparkMat = new THREE.MeshBasicMaterial({ color: 0xffa040 });
+function explodePad() {
+  playing = false; $('hint').style.display = 'none';
+  say('The pinpad buzzes... sparks... <b>BOOM!</b>', 99);
+  burst(55, .7, 1.6, 2.6, 'lowpass'); burst(3200, .5, .9, 1, 'highpass'); burst(400, .6, .5, 1.2, 'lowpass');
+  const px = elev.padPos.x, pz = elev.padPos.z - .87, dx = player.x - px, dz = player.z - pz, dd = Math.hypot(dx, dz) || 1;
+  for (let i = 0; i < 50; i++) {   // burning bits fly straight at you
+    const m = drops[dropNext++ % drops.length]; m.visible = true; m.material = sparkMat; m.position.set(px, 1.35, pz);
+    m.userData.v.set(dx / dd * (3 + Math.random() * 4) + (Math.random() - .5) * 3, 1 + Math.random() * 3, dz / dd * (3 + Math.random() * 4) + (Math.random() - .5) * 3);
+  }
+  shake = 1.2;
+  $('fade').style.transition = 'opacity .05s'; $('fade').style.background = '#ffb347'; $('fade').style.opacity = 1;
+  setTimeout(() => { $('fade').style.transition = 'opacity 1.5s'; $('fade').style.background = '#2a0000'; }, 140);
+  setTimeout(() => { $('fade').style.transition = ''; ending('The pinpad exploded', 'You typed the wrong code and the pinpad blew up right in your face. The code was painted on the wall: red, blue, green, yellow.'); }, 1900);
+}
+// at the start of the Habitable Zone the virus is waiting for you: it warns you, then melts back into the dark
+const hello = { on: false, t: 0 };
+const HELLO = () => [
+  [.3, 'Something tall and black is waiting for you in the dark. It is the <b>virus</b>.'],
+  [3.5, L2.visited ? '"You made it through the Poolrooms! I could not go in there: the chlorine in that water would kill me."' : '"Told you I would find you. Listen to me, we do not have much time."'],
+  [7, '"There is a <b>Skin Stealer</b> down here. It looks like a lost person in a yellow suit. <b>Do not trust it.</b>"'],
+  [10.5, '"Find the code before he gets you. I will meet you at the elevator."'],
+  [13.8, 'The virus turns and runs off down the hall on its long tendrils, into the dark...']
+];
+function startHello() {
+  L1.group.add(virus); virus.visible = true; virus.scale.setScalar(1.35); virus.rotation.set(0, 0, 0);
+  virus.position.set(L1.start[1] * CELL + CELL / 2, 0, (L1.start[0] + 2) * CELL + CELL / 2);
+  Object.assign(hello, { on: true, t: 0, said: 0 });
+}
+function updateHello(dt) {
+  if (doorAnim.on) return;   // wait until you are through the door from the Poolrooms
+  const t = (hello.t += dt), lines = HELLO();
+  if (t < 13.8) virus.lookAt(player.x, 0, player.z);
+  let want = Math.atan2(virus.position.x - player.x, virus.position.z - player.z) + Math.PI - player.yaw; want = Math.atan2(Math.sin(want), Math.cos(want));
+  if (t < 13.8) { player.yaw += Math.max(-2 * dt, Math.min(2 * dt, want)); look.pitch *= .95; }   // you look at it while it talks
+  while (hello.said < lines.length && t > lines[hello.said][0]) say(lines[hello.said++][1], 99);
+  if (t > 13.8) {   // it runs away down the halls, around the crates
+    const vr = Math.floor(virus.position.z / CELL), vc = Math.floor(virus.position.x / CELL), nx = nextCell(vr, vc, 12, 2);
+    const tx = nx[1] * CELL + CELL / 2, tz = nx[0] * CELL + CELL / 2, dx = tx - virus.position.x, dz = tz - virus.position.z, dd = Math.hypot(dx, dz) || 1;
+    const go = Math.min(1, (t - 14.1) / .6), sp = 6.5 * Math.max(0, go), st = Math.min(dd, sp * dt);   // it turns first, then speeds up
+    virus.position.x += dx / dd * st; virus.position.z += dz / dd * st;
+    const heading = Math.atan2(dx, dz); if (hello.heading === undefined) hello.heading = Math.atan2(player.x - virus.position.x, player.z - virus.position.z);   // it was facing you
+    let turn = heading - hello.heading; turn = Math.atan2(Math.sin(turn), Math.cos(turn));
+    hello.heading += turn * Math.min(1, dt * 8);
+    hello.phase = (hello.phase || 0) + dt * sp * 1.6;   // stride speed follows how fast it is going
+    const ph = hello.phase, lean = .28 * Math.max(0, go);
+    virus.rotation.set(lean, hello.heading, Math.sin(ph) * .05);   // leaning forward, swaying a little
+    virus.position.y = Math.abs(Math.sin(ph)) * .12 * Math.max(0, go);   // bobbing with each step
+    limbs.forEach((l, i) => {   // long strides: the legs swing opposite each other, the arms pump against the legs
+      const side = i >> 1, arm = i % 2, swingAmt = (arm ? .55 : .75) * Math.max(0, go);
+      l.rotation.x = Math.sin(ph + side * Math.PI + (arm ? Math.PI : 0)) * swingAmt;
+    });
+  }
+  if (t > 16.4) {
+    limbs.forEach(l => l.rotation.x = 0); virus.rotation.set(0, 0, 0); hello.heading = undefined; hello.phase = 0; hello.on = false; virus.visible = false; virus.position.y = 0; say('<b>Try to find the code before he gets you.</b>', 3.5); }
+}
+
+// what the virus says when you find each other again (from the 2D game)
+const REUNION = [
+  [1.1, 'Something tall and black steps out of the elevator, on long twisting tendrils...'],
+  [3.8, 'It is the <b>virus</b>. <b>"There you are. I told you I would find you again."</b>'],
+  [7, '"You fought off a Skin Stealer? Not bad... for a human."'],
+  [10.2, '"This elevator warps space. <b>We will go to Level 94.</b> Come on. Stay close to me."'],
+  [13.2, 'You step into the elevator together. The doors slide shut and it starts to hum...']
+];
 function updateElevator(dt) {
   if (!elev.open) return;
   elev.open += dt;
   elev.panels.forEach(p => { p.m.position.x = elev.x + p.sd * (.325 + Math.min(1, elev.open / 1.2) * .6); });
-  if (elev.open > 2 && elev.open - dt <= 2) { $('fade').style.opacity = 1; say('You step into the elevator. The doors close and it starts to hum...', 3); }
-  if (elev.open > 3.6 && playing) ending('The elevator', 'This elevator warps space. Where it goes next, nobody knows... You found ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+  const t = elev.open, at = (time) => t > time && t - dt <= time;
+  if (at(.9)) {   // something is waiting inside: the virus
+    L1.group.add(virus); virus.visible = true; virus.scale.setScalar(1.35); virus.rotation.set(0, 0, 0);
+    virus.position.set(elev.x, 0, elev.z + .5); burst(140, 1, .5, .6, 'lowpass');
+  }
+  if (t > .9 && t < 2.6) virus.position.z = elev.z + .5 + Math.min(1, (t - .9) / 1.7) * 1.3;   // it steps out of the elevator
+  if (t > .9) {   // you turn to face it
+    virus.lookAt(player.x, 0, player.z);
+    let want = Math.atan2(player.x - virus.position.x, player.z - virus.position.z) - player.yaw; want = Math.atan2(Math.sin(want), Math.cos(want));
+    player.yaw += Math.max(-2 * dt, Math.min(2 * dt, want)); look.pitch *= .95;
+  }
+  REUNION.forEach(([time, line]) => { if (at(time)) say(line, 99); });
+  if (at(15.4)) $('fade').style.opacity = 1;
+  if (t > 17 && playing) ending('Together again', 'The elevator hums and drops through space with the virus beside you. Next stop: Level 94. You found ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
 }
 
 // ---------- the Poolrooms Lizard ----------
@@ -1348,15 +1473,15 @@ function updateLizard(dt, t) {
     if (lizard.timer > 5.2) { liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false); lizard.state = 'gone'; }
   }
 }
-window.__game = { siege, siegeChoice, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   moving = false;
   if (ride.on && playing) updateRide(dt);
   if (doorAnim.on && playing) updateDoor(dt);
-  if (playing && L === L1) { updateSiege(dt); updateElevator(dt); }
-  if (playing && meetStep < 0 && !ride.on && !doorAnim.on && !padState.open && siege.state !== 'fight') {
+  if (playing && L === L1) { updateSiege(dt); updateElevator(dt); if (hello.on) updateHello(dt); }
+  if (playing && meetStep < 0 && !ride.on && !doorAnim.on && !padState.open && siege.state !== 'fight' && !elev.open && !hello.on) {
     if (keys['arrowleft']) player.yaw += 2.2 * dt;
     if (keys['arrowright']) player.yaw -= 2.2 * dt;
     const mv = (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0), st = (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
@@ -1407,7 +1532,9 @@ function tick() {
         else if (L.map[pr][pc] === 'Z') ending('You became lost', 'You went a different way and got lost in the dark tunnels... and became a bacteria\'s lunch. Never wander off alone.');
         else if (!warned && DIRS.some(([dr, dc]) => L.map[pr + dr][pc + dc] === 'B')) { warned = true; say('The water here is black and perfectly still. You remember the virus: <b>"Avoid the black water."</b>', 3.5); }
       }
-      const nd = nearDoor(), np = nearPad(); $('hint').style.display = nd || np ? 'block' : 'none'; if (nd || np) $('hint').textContent = np ? '🔢 Press R to use the pinpad' : '🚪 Press R to go through the door';
+      const nd = nearDoor(), np = nearPad();
+      const sh = siege.state === 'bang' ? (nearInsideDoor() ? '⚔️ Press R to open the door and fight!' : '🚪 Get to the door!') : null;
+      $('hint').style.display = nd || np || sh ? 'block' : 'none'; if (nd || np || sh) $('hint').textContent = sh || (np ? '🔢 Press R to use the pinpad' : '🚪 Press R to go through the door');
     }
   }
   if (meetStep >= 0) {   // face the virus and play the meeting, then drop into Level 1
@@ -1446,6 +1573,7 @@ function tick() {
   const fall = updateVapor(dt);   // falling into the black water: you drop, tip over and look up as you sink
   camera.position.set(player.x, 1.6 - fall * fall * 1.5 + ride.y + (moving ? Math.sin(t * 9) * .03 : 0), player.z);
   camera.rotation.set(fall * .9 + ride.pitch + look.pitch, player.yaw, fall * .5);
+  if (shake > 0) { shake -= dt; camera.position.x += (Math.random() - .5) * shake * .25; camera.position.y += (Math.random() - .5) * shake * .25; }   // the blast shakes you
   placeListener();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
