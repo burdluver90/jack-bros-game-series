@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backrooms 3D</title>
+<title>PART 3.1 3D DEMO</title>
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: Arial, sans-serif; color: #f4ecc2; }
   canvas { display: block; }
@@ -81,7 +81,7 @@
 </div>
 <div id="title">
   <h1>The Backrooms Escape</h1>
-  <p><b>RATED M</b> · 3D test</p>
+  <p><b>PART 3.1 3D DEMO</b> · RATED M</p>
   <p>You woke up somewhere you should not be. You do not know where you are. Explore, read the posters on the walls, and find out what is waiting at the end.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> step left <span class="keys">D</span> step right <span class="keys">Mouse</span> look around<br>
      <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your weapon <span class="keys">Click</span> fight <span class="keys">R</span> open a door</p>
@@ -105,6 +105,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { MarchingCubes } from 'three/addons/objects/MarchingCubes.js';
 
 const CELL = 2;
 const DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]];
@@ -639,70 +640,92 @@ const ssVisor = new THREE.Mesh(new THREE.BoxGeometry(.26, .13, .08), visorMat); 
 const ssTank = new THREE.Mesh(new THREE.CylinderGeometry(.08, .08, .42, 10), new THREE.MeshLambertMaterial({ color: 0x9ca3af })); ssTank.position.set(0, 1.12, -.24); ss.add(ssTank);
 const ssLegs = [-.11, .11].map(x => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.08, .5, 4, 8), suitMat); l.position.set(x, .38, 0); ss.add(l); return l; });
 const ssArms = [-1, 1].map(s => { const a = new THREE.Mesh(new THREE.CapsuleGeometry(.065, .55, 4, 8), suitMat); a.position.set(s * .32, 1.05, 0); ss.add(a); return a; });
-// its real form, under the stolen suit: tall and hunched, stretched pale skin, long arms with claws,
-// a huge mouth of teeth and glowing red eyes, with torn yellow scraps of the suit still hanging off it
+// its real form, like the picture in the 2D game: a big, muscular body with silver-grey skin, a bald bulging head with two
+// glowing white eyes, and a jagged mouth full of teeth that splits open from its face all the way down its chest
 const monster = new THREE.Group(); ss.add(monster);
-const skinTex = tex(g => {   // pale, blotchy skin with dark veins running through it
-  g.fillStyle = '#c99d92'; g.fillRect(0, 0, 128, 128);
-  for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(${150 + Math.random() * 60},${90 + Math.random() * 40},${90 + Math.random() * 40},.25)`; g.beginPath(); g.arc(Math.random() * 128, Math.random() * 128, 3 + Math.random() * 10, 0, 7); g.fill(); }
+const skinTex = tex(g => {   // silver-grey skin: mottled, with faint veins and smears of blood
+  g.fillStyle = '#6c6f75'; g.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 70; i++) { const v = 70 + Math.random() * 70; g.fillStyle = `rgba(${v},${v + 3},${v + 8},.28)`; g.beginPath(); g.arc(Math.random() * 128, Math.random() * 128, 2 + Math.random() * 9, 0, 7); g.fill(); }
   g.lineCap = 'round';
-  for (let i = 0; i < 14; i++) {
-    let x = Math.random() * 128, y = Math.random() * 128; g.strokeStyle = Math.random() < .5 ? 'rgba(110,20,40,.55)' : 'rgba(70,40,110,.45)'; g.lineWidth = .6 + Math.random() * 1.2; g.beginPath(); g.moveTo(x, y);
-    for (let j = 0; j < 8; j++) { x += (Math.random() - .5) * 18; y += 6 + Math.random() * 8; g.lineTo(x, y); }
+  for (let i = 0; i < 10; i++) {
+    let x = Math.random() * 128, y = Math.random() * 128; g.strokeStyle = 'rgba(60,62,72,.45)'; g.lineWidth = .5 + Math.random(); g.beginPath(); g.moveTo(x, y);
+    for (let j = 0; j < 8; j++) { x += (Math.random() - .5) * 16; y += 5 + Math.random() * 8; g.lineTo(x, y); }
     g.stroke();
   }
+  for (let i = 0; i < 9; i++) { g.fillStyle = `rgba(${90 + Math.random() * 50},10,12,${.35 + Math.random() * .3})`; g.beginPath(); g.ellipse(Math.random() * 128, Math.random() * 128, 2 + Math.random() * 7, 1 + Math.random() * 3, Math.random() * 3, 0, 7); g.fill(); }   // blood
 }, [2, 2], 4);
-const skinMat = new THREE.MeshPhysicalMaterial({ map: skinTex, bumpMap: skinTex.bump, bumpScale: 2.5, roughness: .55, sheen: 1, sheenColor: 0xff8f8f, sheenRoughness: .5, clearcoat: .35, clearcoatRoughness: .4, emissive: 0x2a0a08 });   // a slimy sheen
-const mLegs = [], mArms = [];
+const skinMat = new THREE.MeshPhysicalMaterial({ map: skinTex, bumpMap: skinTex.bump, bumpScale: 1.6, metalness: .12, roughness: .55, sheen: .5, sheenColor: 0xcfd6e6, clearcoat: .25, clearcoatRoughness: .45, envMap: envTex, envMapIntensity: .3 });   // a cold, silvery sheen
+const mLegs = [], mArms = [], bodyPts = [];
+// The body is one smooth skin, not separate pieces: invisible points sit along its bones (and move when it moves),
+// and a blob of flesh is grown around all of them at once, so the chest flows into the shoulders, arms and hips like a real body.
+const MC = { size: 1.25, y: 1.15, z: .04 };
+const flesh = new MarchingCubes(46, skinMat, true, false, 120000); flesh.isolation = 80; flesh.scale.setScalar(MC.size); flesh.position.set(0, MC.y, MC.z);
+flesh.frustumCulled = false; monster.add(flesh);
 {
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.2, .8, 6, 12), skinMat); torso.position.set(0, 1.4, .08); torso.rotation.x = .35; monster.add(torso);
-  for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(.045, 8, 6), skinMat); b.position.set(0, 1.05 + i * .17, -.12 - i * .045); monster.add(b); }   // the spine sticks out
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(.06, .09, .3, 8), skinMat); neck.position.set(0, 1.92, .26); neck.rotation.x = .6; monster.add(neck);
-  const head = new THREE.Group(); head.position.set(0, 2.05, .36); monster.add(head);
-  const skull = new THREE.Mesh(new THREE.SphereGeometry(.2, 16, 12), skinMat); skull.scale.set(.9, 1.25, 1.05); head.add(skull);
-  const mouth = new THREE.Mesh(new THREE.SphereGeometry(.13, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x1a0000 })); mouth.rotation.x = Math.PI / 2 + .2; mouth.scale.set(1, 1, .5); mouth.position.set(0, -.1, .17); head.add(mouth);
-  const toothM = new THREE.MeshLambertMaterial({ color: 0xf2ead8 });
-  for (let i = 0; i < 9; i++) [1, -1].forEach(row => {   // two rows of long teeth
-    const tth = new THREE.Mesh(new THREE.ConeGeometry(.012, .07, 4), toothM); const a = (i / 8 - .5) * 2.2;
-    tth.position.set(Math.sin(a) * .12, -.1 + row * .05, .19 + Math.cos(a) * .02); tth.rotation.x = row > 0 ? Math.PI : 0; head.add(tth);
-  });
-  const eyeM = new THREE.MeshBasicMaterial({ color: 0xff1a1a });
-  [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), eyeM); e.position.set(sd * .08, .07, .18); head.add(e); });
-  const eyeGlow = new THREE.PointLight(0xff2020, .5, 1.5, 2); eyeGlow.position.set(0, .07, .4); head.add(eyeGlow);
-  const fill = new THREE.PointLight(0xffe2d4, 1.6, 4, 2); fill.position.set(0, 2.3, 1.3); monster.add(fill);   // a faint light on its body so you can see what it is
-  [-1, 1].forEach(sd => {   // long arms down past its knees, ending in claws
-    const arm = new THREE.Group(); arm.position.set(sd * .26, 1.72, .2); monster.add(arm); mArms.push(arm);
-    const up = new THREE.Mesh(new THREE.CapsuleGeometry(.045, .5, 4, 8), skinMat); up.position.set(sd * .06, -.3, .05); up.rotation.z = sd * .15; arm.add(up);
-    const low = new THREE.Mesh(new THREE.CapsuleGeometry(.04, .55, 4, 8), skinMat); low.position.set(sd * .1, -.85, .14); low.rotation.x = -.25; arm.add(low);
-    for (let c = -1; c <= 1; c++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(.014, .16, 4), toothM); cl.position.set(sd * .1 + c * .03, -1.2, .22); cl.rotation.x = Math.PI - .4; arm.add(cl); }
-  });
-  [-1, 1].forEach(sd => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.065, .75, 4, 8), skinMat); l.position.set(sd * .12, .48, 0); monster.add(l); mLegs.push(l); });
-  const scrapM = new THREE.MeshLambertMaterial({ color: 0xd9a200, side: THREE.DoubleSide });
-  [[-.18, 1.55, .1, .4], [.2, 1.25, .05, -.5], [0, .95, .16, .2], [-.12, .9, -.12, -.3]].forEach(([x, y, z, r]) => {   // torn bits of the hazmat suit
-    const sc = new THREE.Mesh(new THREE.PlaneGeometry(.22, .3), scrapM); sc.position.set(x, y, z); sc.rotation.set(.2, r * 2, r); monster.add(sc);
-  });
-  // extra detail
-  const bone = new THREE.MeshStandardMaterial({ color: 0xead6c6, roughness: .6 }), sinew = new THREE.MeshStandardMaterial({ color: 0x9a4a48, roughness: .5 });
-  const ribs = new THREE.Group(); ribs.position.copy(torso.position); ribs.rotation.copy(torso.rotation); monster.add(ribs);
-  for (let i = 0; i < 5; i++) {   // ribs showing through the skin
-    const rb = new THREE.Mesh(new THREE.TorusGeometry(.205 - Math.abs(i - 1) * .01, .016, 6, 18, Math.PI), bone);
-    rb.rotation.x = Math.PI / 2; rb.scale.set(1, .75, 1); rb.position.y = .25 - i * .11; ribs.add(rb);
+  const boneM = new THREE.MeshStandardMaterial({ color: 0xd9d2c8, roughness: .5 }), gumM = new THREE.MeshStandardMaterial({ color: 0x3a0303, roughness: .35, emissive: 0x1a0000 });
+  const toothM = new THREE.MeshStandardMaterial({ color: 0xf0e9dc, roughness: .3 });
+  const pt = (parent, x, y, z, r) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); bodyPts.push({ o, r }); return o; };
+  const boneLine = (parent, len, r0, rMid, r1, n) => { for (let i = 0; i <= n; i++) { const k = i / n; pt(parent, 0, -len * k, 0, r0 + (r1 - r0) * k + (rMid - (r0 + r1) / 2) * Math.sin(Math.PI * k)); } };
+  // the torso: broad chest and shoulders, a hunched upper back, a narrower waist and hips
+  [[0, 1.42, .0, .14], [-.12, 1.46, .02, .12], [.12, 1.46, .02, .12], [-.1, 1.47, .11, .09], [.1, 1.47, .11, .09],    // chest and pecs
+   [-.29, 1.6, .01, .085], [.29, 1.6, .01, .085], [-.2, 1.64, -.02, .08], [.2, 1.64, -.02, .08],                        // shoulders
+   [0, 1.58, -.06, .12], [-.15, 1.48, -.08, .1], [.15, 1.48, -.08, .1], [-.13, 1.32, -.06, .09], [.13, 1.32, -.06, .09],  // a broad back that narrows (lats)
+   [0, 1.28, .03, .12], [0, 1.15, .04, .11], [0, 1.03, .03, .11], [-.06, 1.2, .1, .055], [.06, 1.2, .1, .055],           // a narrow waist and stomach
+   [0, .93, 0, .12], [-.1, .9, 0, .095], [.1, .9, 0, .095], [0, .9, -.08, .09],                                          // hips
+   [0, 1.72, .02, .07], [-.07, 1.7, -.02, .06], [.07, 1.7, -.02, .06], [0, 1.82, .05, .065]].forEach(([x, y, z, r]) => pt(monster, x, y, z, r));   // a thick neck
+  // the head: big, bald and bulging
+  const head = new THREE.Group(); head.position.set(0, 1.97, .1); monster.add(head);
+  [[0, .02, 0, .16], [0, .11, -.05, .145], [0, -.08, .06, .095], [0, -.15, .07, .07], [-.06, -.06, .09, .06], [.06, -.06, .09, .06], [-.07, .07, .12, .05], [.07, .07, .12, .05]].forEach(([x, y, z, r]) => pt(head, x, y, z, r));
+  const eyeM = new THREE.MeshBasicMaterial({ color: 0xf4f7ff });
+  [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.SphereGeometry(.03, 16, 12), eyeM); e.position.set(sd * .075, .045, .205); head.add(e); });
+  const eyeGlow = new THREE.PointLight(0xe8f0ff, .25, 1.2, 2); eyeGlow.position.set(0, .05, .5); head.add(eyeGlow);
+  const fill = new THREE.PointLight(0xe6ecff, .7, 4, 2); fill.position.set(0, 2.3, 1.3); monster.add(fill);   // a faint light on its body so you can see what it is
+  // the mouth: a jagged split from its face down its chest, lined with teeth
+  const slit = new THREE.CatmullRomCurve3([V(0, 1.99, .29), V(0, 1.89, .29), V(0, 1.79, .19), V(0, 1.65, .23), V(0, 1.5, .26), V(0, 1.36, .24), V(0, 1.24, .2)]);
+  monster.add(new THREE.Mesh(new THREE.TubeGeometry(slit, 80, .026, 12, false), gumM));
+  for (let i = 0; i <= 26; i++) {
+    const pnt = slit.getPointAt(i / 26);
+    [-1, 1].forEach(sd => {   // teeth on both sides, zig-zagging inward
+      const tth = new THREE.Mesh(new THREE.ConeGeometry(.009, .045, 8), toothM);
+      tth.position.set(pnt.x + sd * .03, pnt.y + (sd > 0 ? .008 : -.008), pnt.z + .012); tth.rotation.z = sd * Math.PI / 2 + (i % 2 ? .3 : -.3); monster.add(tth);
+    });
   }
-  mArms.forEach((arm, ai) => {
-    const sd = ai ? 1 : -1;
-    [0, 1].forEach(j => { const sn = tendril(V(sd * (.02 + j * .04), -.08, .04), V(sd * (.1 + j * .03), -1.08, .2), .06, .009, 5); sn.material = sinew; arm.add(sn); });   // stringy sinews down the arm
-    for (let f = 0; f < 4; f++) {   // four long bony fingers with claws on the ends
-      const fg = new THREE.Group(); fg.position.set(sd * .1 + (f - 1.5) * .025, -1.12, .2); fg.rotation.set(.35 + f * .05, 0, sd * (f - 1.5) * .12); arm.add(fg);
-      const ph = new THREE.Mesh(new THREE.CapsuleGeometry(.011, .16, 3, 6), skinMat); ph.position.y = -.09; fg.add(ph);
-      const cl = new THREE.Mesh(new THREE.ConeGeometry(.01, .09, 4), bone); cl.position.y = -.22; cl.rotation.x = Math.PI; fg.add(cl);
-    }
+  // thick arms that hang to its thighs, bent and ready to grab, with big clawed fists
+  [-1, 1].forEach(sd => {
+    const arm = new THREE.Group(); arm.position.set(sd * .36, 1.6, .02); monster.add(arm); mArms.push(arm);
+    const upper = new THREE.Group(); upper.rotation.set(-.2, 0, sd * .3); arm.add(upper);
+    boneLine(upper, .42, .07, .07, .05, 7); pt(upper, 0, -.2, .045, .055); pt(upper, 0, -.16, -.045, .05);   // bicep and tricep                                                   // shoulder to elbow, with a bicep
+    const elbow = new THREE.Group(); elbow.position.set(0, -.42, 0); elbow.rotation.set(-.6, 0, -sd * .08); upper.add(elbow);
+    boneLine(elbow, .38, .052, .058, .04, 7); pt(elbow, 0, -.1, .03, .045);                     // forearm, thicker near the elbow
+    const wrist = new THREE.Group(); wrist.position.set(0, -.38, 0); elbow.add(wrist);
+    pt(wrist, 0, -.05, .01, .06); pt(wrist, 0, -.1, .03, .052);                                  // the fist
+    for (let k = 0; k < 4; k++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(.009, .06, 8), boneM); cl.position.set((k - 1.5) * .028, -.15, .06); cl.rotation.x = Math.PI - .7; wrist.add(cl); }   // claws
   });
-  const droolM = new THREE.MeshPhysicalMaterial({ color: 0xdfe9e4, roughness: .05, transparent: true, opacity: .55, clearcoat: 1 });
-  [-1, 1].forEach(sd => { const dr = new THREE.Mesh(new THREE.CylinderGeometry(.005, .002, .32, 5), droolM); dr.position.set(sd * .05, -.32, .2); head.add(dr); });   // drool hanging from its mouth
-  [[.15, 1.62, .2, .5], [-.17, 1.2, .16, -.7], [.08, .98, .2, .3]].forEach(([x, y, z, r]) => {   // loose flaps of stretched skin
-    const fl = new THREE.Mesh(new THREE.PlaneGeometry(.14, .26), skinMat); fl.material = skinMat.clone(); fl.material.side = THREE.DoubleSide; fl.position.set(x, y, z); fl.rotation.set(.3, r, r * .4); monster.add(fl);
+  // strong legs, crouched, standing on clawed feet
+  [-1, 1].forEach(sd => {
+    const leg = new THREE.Group(); leg.position.set(sd * .13, .86, 0); monster.add(leg); mLegs.push(leg);
+    const thigh = new THREE.Group(); thigh.rotation.set(-.3, 0, sd * .06); leg.add(thigh);
+    boneLine(thigh, .42, .095, .09, .062, 7); pt(thigh, 0, -.2, .05, .07); pt(thigh, 0, -.15, -.04, .065);   // thigh muscles front and back
+    const knee = new THREE.Group(); knee.position.set(0, -.42, 0); knee.rotation.x = .55; thigh.add(knee); leg.userData.knee = knee;
+    boneLine(knee, .4, .058, .055, .04, 7); pt(knee, 0, -.12, -.045, .058);                      // shin, with the calf at the back
+    const ankle = new THREE.Group(); ankle.position.set(0, -.4, 0); ankle.rotation.x = -.25; knee.add(ankle);
+    pt(ankle, 0, -.03, .02, .055); pt(ankle, 0, -.04, .1, .05); pt(ankle, 0, -.045, .17, .042);  // the foot
+    for (let k = 0; k < 4; k++) { const tx = (k - 1.5) * .026, cl = new THREE.Mesh(new THREE.ConeGeometry(.009, .05, 8), boneM); cl.position.set(tx, -.055, .22); cl.rotation.x = Math.PI / 2 + .3; ankle.add(cl); }   // toe claws
   });
   monster.visible = false;
+}
+// grow the skin around the bone points (again every frame while it moves)
+const _v = new THREE.Vector3(), _inv = new THREE.Matrix4();
+function buildFlesh() {
+  ss.updateMatrixWorld(true); _inv.copy(monster.matrixWorld).invert();
+  flesh.reset();
+  const span = 2 * MC.size;
+  bodyPts.forEach(({ o, r }) => {
+    o.getWorldPosition(_v).applyMatrix4(_inv);
+    const rn = r / span;
+    flesh.addBall((_v.x - flesh.position.x) / span + .5, (_v.y - flesh.position.y) / span + .5, (_v.z - flesh.position.z) / span + .5, rn * rn * 125, 45);
+  });
+  flesh.update(); flesh.built = true;
 }
 function ssForm(real) {   // show the hazmat explorer, or what it really is
   [ssBody, ssHood, ssVisor, ssTank, ...ssLegs, ...ssArms].forEach(m => m.visible = !real); monster.visible = real;
@@ -1114,7 +1137,7 @@ function updateStealer(dt, t) {
   const dx = tx - ss.position.x, dz = tz - ss.position.z, dd = Math.hypot(dx, dz) || 1, step = Math.min(dd, 3.7 * dt);   // faster than walking, slower than sprinting
   ss.position.x += dx / dd * step; ss.position.z += dz / dd * step;
   ssLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 14 + i * Math.PI) * .6; });
-  mLegs.forEach((l, i) => { l.rotation.x = Math.sin(t * 12 + i * Math.PI) * .55; }); mArms.forEach((a, i) => { a.rotation.x = -.5 + Math.sin(t * 12 + i * Math.PI) * .5; });   // it runs with its claws out
+  mLegs.forEach((l, i) => { const ph = t * 12 + i * Math.PI; l.rotation.x = Math.sin(ph) * .6; l.userData.knee.rotation.x = .55 + Math.max(0, Math.cos(ph)) * .8; }); mArms.forEach((a, i) => { a.rotation.x = -.5 + Math.sin(t * 12 + i * Math.PI) * .5; });   // it runs with its claws out
   if (ds < .9) ending('The Skin Stealer got you', 'As its teeth sink in, everything goes red. You cannot fight it out in the open, and taking out a weapon is too slow. Sprint (Shift) and find the door with the green sign.');
   else if (stealer.timer > 60) { stealer.state = 'gone'; ss.visible = false; say('It lost you in the dark. For now.', 3); }
 }
@@ -1620,7 +1643,7 @@ function updateLizard(dt, t) {
     if (lizard.timer > 5.2) { liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false); lizard.state = 'gone'; }
   }
 }
-window.__game = { hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -1729,6 +1752,7 @@ function tick() {
   if (shake > 0) { shake -= dt; camera.position.x += (Math.random() - .5) * shake * .25; camera.position.y += (Math.random() - .5) * shake * .25; }   // the blast shakes you
   placeListener();
   fx.uniforms.uTime.value = t; fx.uniforms.uSan.value = sanity / 100;
+  if (monster.visible && (!flesh.built || stealer.state === 'chase' || siege.state === 'fight')) buildFlesh();
   composer.render();
   requestAnimationFrame(tick);
 }
