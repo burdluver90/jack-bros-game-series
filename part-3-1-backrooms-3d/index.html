@@ -33,6 +33,7 @@
   #choice .opt { display: block; width: min(460px, 100%); margin: 8px 0; padding: 14px 18px; text-align: left; font-size: 16px; line-height: 1.4; color: #f4ecc2; background: rgba(20,16,4,.92); border: 2px solid #b8a55e; border-radius: 10px; cursor: pointer; }
   #choice .opt:hover { border-color: #fde68a; background: rgba(60,50,10,.95); }
   #choice .opt b { color: #fde68a; font-size: 18px; }
+  #hint { position: fixed; left: 50%; top: 58%; transform: translateX(-50%); display: none; padding: 8px 16px; border-radius: 8px; background: rgba(10,30,15,.85); border: 2px solid #5dff8f; color: #d9ffe6; font-weight: bold; font-size: 18px; pointer-events: none; }
   #fight { position: fixed; left: 50%; top: 58%; transform: translateX(-50%); display: none; padding: 8px 16px; border-radius: 8px; background: rgba(120,10,10,.85); border: 2px solid #f87171; font-weight: bold; font-size: 18px; pointer-events: none; }
   .keys { display: inline-block; padding: 2px 7px; border: 1px solid #fde68a; border-radius: 4px; margin: 0 2px; }
 </style>
@@ -43,13 +44,14 @@
   <div class="bar"><div id="stam"></div></div>
   <div>Posters found: <span id="pc">0</span> / <span id="ptot">8</span></div>
   <div><span id="slot" class="slot">1 ✊ empty</span> 💧 almond water x<span id="aw">0</span></div>
-  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink · 1 weapon · click fight</div>
+  <div style="opacity:.75">W/S walk · A/D turn · Shift sprint · E drink · 1 weapon · click fight · R door</div>
 </div>
 <div id="dark"></div>
 <div id="poster"><h2 id="pt"></h2><div id="pl"></div></div>
 <div id="msg"></div>
 <div id="fade"></div>
 <div id="fight"></div>
+<div id="hint"></div>
 <div id="choice">
   <h2>"Which way do you want to go?"</h2>
   <button class="opt" id="goPool"><b>1 · The Poolrooms</b><br>White tiles and warm water up to your knees, everywhere. Bright and quiet... but some of the water is black.</button>
@@ -60,7 +62,7 @@
   <p><b>RATED M</b> · 3D test</p>
   <p>You woke up somewhere you should not be. You do not know where you are. Explore, read the posters on the walls, and find out what is waiting at the end.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> turn left <span class="keys">D</span> turn right<br>
-     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your weapon <span class="keys">Click</span> fight</p>
+     <span class="keys">Shift</span> sprint <span class="keys">E</span> drink almond water <span class="keys">1</span> take out your weapon <span class="keys">Click</span> fight <span class="keys">R</span> open a door</p>
   <p>You start with nothing. Find almond water and a weapon. You can only fight when something attacks you.</p>
   <p>Your sanity drops by 1 every 6 seconds. If it hits 0, you lose your mind.</p>
   <button class="btn" id="go">Start</button>
@@ -293,6 +295,7 @@ const waveTex = (() => {
 })();
 const clearWater = new THREE.MeshStandardMaterial({ color: 0x8fdcec, roughness: .08, metalness: .15, transparent: true, opacity: .5, side: THREE.DoubleSide, depthWrite: false, normalMap: waveTex, normalScale: new THREE.Vector2(.6, .6) });
 const blackWater = new THREE.MeshStandardMaterial({ color: 0x030405, roughness: .02, metalness: .9, side: THREE.DoubleSide, normalMap: waveTex, normalScale: new THREE.Vector2(.25, .25) });
+const brassKnob = new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: .7, roughness: .3 });
 function buildLevel(L) {
   const map = L.map, rows = map.length, cols = map[0].length, W = cols * CELL, D = rows * CELL;
   L.wall = (r, c) => !map[r] || map[r][c] === undefined || '#PC'.includes(map[r][c]);
@@ -317,8 +320,28 @@ function buildLevel(L) {
   const lampGeo = new THREE.PlaneGeometry(.9, .4), boxes = {};
   const box = (w, h, d) => boxes[w + ',' + h + ',' + d] || (boxes[w + ',' + h + ',' + d] = new THREE.BoxGeometry(w, h, d));
   const crateMat = new THREE.MeshLambertMaterial({ map: crateTex });
+  // the exit door needs a real opening in the wall behind it, with a dark little room you step into
+  const xr = map.findIndex(row => row.includes('X')), xAt = xr >= 0 ? [xr, map[xr].indexOf('X')] : null;
+  const dDir = xAt && DIRS.find(([dr, dc]) => L.wall(xAt[0] + dr, xAt[1] + dc)), dWall = dDir && [xAt[0] + dDir[0], xAt[1] + dDir[1]];
+  function doorway(x, z, hh) {
+    const w = new THREE.Group(); w.position.set(x, 0, z); w.rotation.y = Math.atan2(dDir[1], dDir[0]); g.add(w);   // local +z points into the wall
+    [-1, 1].forEach(sd => { const m = new THREE.Mesh(box(.45, hh, CELL), wallMat); m.position.set(sd * .775, hh / 2, 0); w.add(m); });
+    const top = new THREE.Mesh(box(1.1, hh - 2.2, CELL), wallMat); top.position.set(0, (2.2 + hh) / 2, 0); w.add(top);
+    const dark = new THREE.MeshLambertMaterial({ color: 0x141414, side: THREE.DoubleSide });
+    const plane = (pw, ph, px, py, pz, rx, ry) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(pw, ph), dark); m.position.set(px, py, pz); m.rotation.set(rx, ry, 0); w.add(m); };
+    plane(CELL, 2.2, -.55, 1.1, 0, 0, Math.PI / 2); plane(CELL, 2.2, .55, 1.1, 0, 0, Math.PI / 2);   // the sides
+    plane(1.1, CELL, 0, 2.2, 0, Math.PI / 2, 0); plane(1.1, CELL, 0, .005, 0, -Math.PI / 2, 0);    // ceiling and floor
+    plane(1.1, 2.2, 0, 1.1, CELL / 2, 0, 0);                                                        // the back
+    // the door hangs on a hinge at one side so it can swing open into the dark
+    const pivot = new THREE.Group(); pivot.position.set(.55, 0, -CELL / 2 + .05); w.add(pivot);
+    const doorMat = new THREE.MeshStandardMaterial({ color: 0x55606a, metalness: .5, roughness: .5 });
+    const door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, .08), doorMat); door.position.set(-.55, 1.05, 0); pivot.add(door);
+    [-1, 1].forEach(sd => { const k = new THREE.Mesh(new THREE.SphereGeometry(.04, 10, 8), brassKnob); k.position.set(-.98, 1.0, sd * .07); pivot.add(k); });
+    L.door = { pivot, w: [dDir[1], dDir[0]] };
+  }
   map.forEach((row, r) => [...row].forEach((ch, c) => {
     const x = c * CELL + CELL / 2, z = r * CELL + CELL / 2, hh = hOf(r, c);
+    if (ch === '#' && dWall && r === dWall[0] && c === dWall[1]) { doorway(x, z, hh); return; }
     if (ch === '#') { const m = new THREE.Mesh(box(CELL, hh, CELL), wallMat); m.position.set(x, hh / 2, z); g.add(m); return; }
     if (ch === 'P') { const m = new THREE.Mesh(box(.8, hh, .8), wallMat); m.position.set(x, hh / 2, z); g.add(m); return; }
     if (ch === 'C') {   // a stack of crates, the top one smaller and turned a little
@@ -371,8 +394,6 @@ function buildLevel(L) {
   });
   if (L.exitAt) {   // the exit: a metal door in the wall with a glowing green EXIT sign over it
     const [r, c] = L.exitAt, x = c * CELL + CELL / 2, z = r * CELL + CELL / 2, d = DIRS.find(([dr, dc]) => L.wall(r + dr, c + dc));
-    const door = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, .08), new THREE.MeshStandardMaterial({ color: 0x55606a, metalness: .5, roughness: .5 }));
-    door.position.set(x + d[1] * (CELL / 2 - .05), 1.05, z + d[0] * (CELL / 2 - .05)); door.lookAt(x, 1.05, z); g.add(door);
     const sc = document.createElement('canvas'); sc.width = 128; sc.height = 48; const sg = sc.getContext('2d');
     sg.fillStyle = '#0b3d1a'; sg.fillRect(0, 0, 128, 48); sg.fillStyle = '#5dff8f'; sg.font = 'bold 34px Arial'; sg.textAlign = 'center'; sg.fillText('EXIT', 64, 37);
     const st = new THREE.CanvasTexture(sc); st.colorSpace = THREE.SRGBColorSpace;
@@ -585,6 +606,7 @@ addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (e.repeat || !playing) return;
   if (meetStep >= 0) { if ($('choice').style.display === 'flex' && (k === '1' || k === '2')) choose(k === '1' ? 'pool' : 'hab'); return; }
+  if (k === 'r' && nearDoor()) { startDoor(); return; }
   if (k === 'e') {
     if (!water) { say('You are out of almond water.', 2); return; }
     water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
@@ -642,6 +664,7 @@ function choose(which) {
 $('goPool').onclick = () => choose('pool');
 $('goHab').onclick = () => choose('hab');
 function reset() {
+  doorAnim.on = false; $('hint').style.display = 'none'; LEVELS.forEach(l => { if (l.door) l.door.pivot.rotation.y = 0; });
   Object.assign(ride, { on: false, y: 0, pitch: 0 }); $('fade').style.transition = '';
   vapor = 0; steam.forEach(p => p.visible = false); $('fade').style.background = '#000'; $('fade').style.opacity = 0;
   LEVELS.forEach(l => { l.visited = false; l.posters.forEach(p => p.found = false); l.bottleObjs.concat(l.weaponObjs).forEach(b => { b.taken = false; b.told = false; b.g.visible = true; }); });
@@ -982,6 +1005,42 @@ function updateRide(dt) {
   say('You shoot out of the slide and splash down into a pool. It is darker down here, and very quiet...', 3.5);
 }
 
+// ---------- going through a door (press R) ----------
+const doorAnim = { on: false, t: 0 };
+const nearDoor = () => playing && L.door && !ride.on && !doorAnim.on && meetStep < 0 && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 2.8;
+function creak() {
+  if (!audio) return;
+  const o = audio.createOscillator(), f = audio.createBiquadFilter(), g = audio.createGain(); o.type = 'sawtooth';
+  o.frequency.setValueAtTime(180, audio.currentTime); o.frequency.linearRampToValueAtTime(320, audio.currentTime + .5); o.frequency.linearRampToValueAtTime(140, audio.currentTime + 1);
+  f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = 6; g.gain.setValueAtTime(.12, audio.currentTime); g.gain.linearRampToValueAtTime(.001, audio.currentTime + 1.1);
+  o.connect(f).connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + 1.1);
+}
+function startDoor() {
+  Object.assign(doorAnim, { on: true, t: 0, x0: player.x, z0: player.z, yaw0: player.yaw, slam: false, creak: false });
+  $('hint').style.display = 'none'; $('fight').style.display = 'none';
+  say('You grab the handle and push the door open...', 3);
+}
+function updateDoor(dt) {
+  const D = L.door, [wx, wz] = D.w, cx = L.exitPos.x, cz = L.exitPos.z, a = doorAnim, t = (a.t += dt);
+  const ease = k => k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k), face = Math.atan2(-wx, -wz);
+  if (t < .6) {   // step up to the door and face it
+    const k = ease(t / .6); let dy = face - a.yaw0; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+    player.x = a.x0 + (cx - a.x0) * k; player.z = a.z0 + (cz - a.z0) * k; player.yaw = a.yaw0 + dy * k;
+  }
+  if (t > .4 && !a.creak) { a.creak = true; creak(); }
+  D.pivot.rotation.y = 1.6 * (t < .4 ? 0 : t < 1.2 ? ease((t - .4) / .8) : t < 3 ? 1 : 1 - ease((t - 3) / .6));   // swing open... then shut
+  if (t >= 1 && t < 2.3) { const k = ease((t - 1) / 1.3); player.x = cx + wx * 1.9 * k; player.z = cz + wz * 1.9 * k; player.yaw = face; }   // walk in
+  if (t >= 2.3 && t < 3) player.yaw = face + Math.PI * ease((t - 2.3) / .7);   // turn around to see the door close
+  if (t >= 3.6 && !a.slam) {
+    a.slam = true; burst(90, 1, .35, 1.4, 'lowpass'); burst(2400, 4, .05, .4, 'bandpass');
+    $('fade').style.transition = 'opacity .8s'; $('fade').style.opacity = 1; say('The door slams shut behind you. <b>Click.</b> It is quiet now.', 3);
+  }
+  if (t >= 4.8) {
+    a.on = false; $('fade').style.transition = '';
+    ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+  }
+}
+
 // ---------- the Poolrooms Lizard ----------
 // a red, scaly thing that crawls out of the water and chases you (from the 2D game). It will not go in the black water.
 // Grab the sword on the way and kill it, and the black water swallows the body: it eats anything dead.
@@ -1111,13 +1170,14 @@ function updateLizard(dt, t) {
     if (lizard.timer > 5.2) { liz.visible = false; lizPool.visible = false; lizSteam.forEach(p => p.visible = false); lizard.state = 'gone'; }
   }
 }
-window.__game = { ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock();
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   moving = false;
   if (ride.on && playing) updateRide(dt);
-  if (playing && meetStep < 0 && !ride.on) {
+  if (doorAnim.on && playing) updateDoor(dt);
+  if (playing && meetStep < 0 && !ride.on && !doorAnim.on) {
     if (keys['a']) player.yaw += 2.2 * dt;
     if (keys['d']) player.yaw -= 2.2 * dt;
     const mv = (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0);
@@ -1166,8 +1226,7 @@ function tick() {
         else if (L.map[pr][pc] === 'Z') ending('You became lost', 'You went a different way and got lost in the dark tunnels... and became a bacteria\'s lunch. Never wander off alone.');
         else if (!warned && DIRS.some(([dr, dc]) => L.map[pr + dr][pc + dc] === 'B')) { warned = true; say('The water here is black and perfectly still. You remember the virus: <b>"Avoid the black water."</b>', 3.5); }
       }
-      if (playing && Math.hypot(L.exitPos.x - player.x, L.exitPos.z - player.z) < 1.2)
-        ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+      const nd = nearDoor(); $('hint').style.display = nd ? 'block' : 'none'; if (nd) $('hint').textContent = '🚪 Press R to go through the door';
     }
   }
   if (meetStep >= 0) {   // face the virus and play the meeting, then drop into Level 1
