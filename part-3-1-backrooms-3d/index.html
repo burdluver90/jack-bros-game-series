@@ -1206,16 +1206,26 @@ function jump() {
 const look = { pitch: 0 };
 const canvas = document.body;   // lock the cursor to the whole page, so a click anywhere works
 const menuOpen = () => ['choice', 'siege', 'pad', 'end', 'title'].some(id => $(id).style.display === 'flex');
-document.addEventListener('pointerlockchange', () => { $('lockhint').style.display = document.pointerLockElement === canvas || !playing ? 'none' : 'block'; });
-function lockMouse() { if (playing && !menuOpen() && document.pointerLockElement !== canvas) { try { const r = canvas.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch (e) {} } }
+document.addEventListener('pointerlockchange', () => { lockPending = 0; if (document.pointerLockElement) lockRefused = false; $('lockhint').style.display = document.pointerLockElement === canvas || !playing ? 'none' : 'block'; });
+// only ask once at a time: a second request while the first is still pending makes the browser cancel the lock
+let lockPending = 0;
+function lockMouse() {
+  if (!playing || menuOpen() || document.pointerLockElement === canvas || performance.now() < lockPending) return;
+  lockPending = performance.now() + 1500;
+  try { const r = canvas.requestPointerLock(); if (r && r.catch) r.catch(() => { lockPending = 0; }); } catch (e) { lockPending = 0; }
+}
+document.addEventListener('pointerlockerror', () => { lockPending = 0; lockRefused = true; $('lockhint').textContent = '🖱️ This window will not lock the mouse. Move to the screen edge to keep turning, or play in Chrome or Edge.'; $('lockhint').style.display = playing ? 'block' : 'none'; });
 function freeMouse() { if (document.pointerLockElement) document.exitPointerLock(); }
+const mouseAt = { x: .5, y: .5, seen: false }; let lockRefused = false;
+addEventListener('mousemove', e => { mouseAt.x = e.clientX / innerWidth; mouseAt.y = e.clientY / innerHeight; mouseAt.seen = true; });
+const controlsFree = () => playing && !menuOpen() && meetStep < 0 && !ride.on && !doorAnim.on && !padState.open && siege.state !== 'fight' && !hello.on && !elev.open && !viewLock;
 addEventListener('mousemove', e => {   // moving the mouse turns you, locked or not (locking just keeps the cursor from leaving the screen)
   if (!playing || menuOpen() || meetStep >= 0 || ride.on || doorAnim.on || padState.open || siege.state === 'fight' || hello.on || elev.open || viewLock) return;
   player.yaw -= e.movementX * .0025;
   look.pitch = Math.max(-1.1, Math.min(1.1, look.pitch - e.movementY * .0025));
 });
 document.addEventListener('mousedown', () => setTimeout(lockMouse, 0));
-setInterval(() => { if (menuOpen()) freeMouse(); }, 200);   // when a menu pops up you get your cursor back to click it
+setInterval(() => { if (menuOpen()) freeMouse(); document.body.style.cursor = playing && !menuOpen() ? 'none' : ''; }, 200);   // when a menu pops up you get your cursor back to click it
 $('go').onclick = () => { $('title').style.display = 'none'; startHum(); reset(); jump(); look.pitch = 0; $('lockhint').style.display = 'block'; lockMouse(); };
 $('again').onclick = () => { reset(); look.pitch = 0; setTimeout(lockMouse, 50); };
 
@@ -3277,6 +3287,10 @@ function tick() {
   if (doorAnim.on && playing) updateDoor(dt);
   if (playing && L === L1) { updateSiege(dt); updateElevator(dt); if (hello.on) updateHello(dt); }
   if (playing && meetStep < 0 && !ride.on && !doorAnim.on && !padState.open && siege.state !== 'fight' && !elev.open && !hello.on) {
+    if (!document.pointerLockElement && mouseAt.seen && controlsFree()) {
+      const edge = (v, lo) => v < lo ? -(lo - v) / lo : v > 1 - lo ? (v - (1 - lo)) / lo : 0, ex = edge(mouseAt.x, .1), ey = edge(mouseAt.y, .08);
+      player.yaw -= ex * 2.6 * dt; look.pitch = Math.max(-1.1, Math.min(1.1, look.pitch - ey * 1.3 * dt));
+    }
     if (keys['arrowup'] && !viewLock) look.pitch = Math.min(1.1, look.pitch + 1.5 * dt);
     if (keys['arrowdown'] && !viewLock) look.pitch = Math.max(-1.1, look.pitch - 1.5 * dt);
     if (keys['arrowleft']) player.yaw += 2.2 * dt;
