@@ -714,7 +714,7 @@ virus.add(tendril(V(-.16, SHOULDER, 0), V(.16, SHOULDER, 0), .06, .025, 4));   /
 virus.add(tendril(V(-.1, HIP, 0), V(.1, HIP, 0), .04, .03, 3));               // hips
 // a limb made of 3 tendrils loosely wound together like in the 2D picture: lumpy, knotted strands that twist
 // unevenly, drift apart and squeeze back together. At the end the strands fan out and taper into claws.
-function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
+function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis, strands = 3) {
   const wob = [];
   for (let j = 0; j < joints.length - 1; j++) {
     wob.push(joints[j]);
@@ -722,18 +722,18 @@ function braid(joints, r, thick, turns, group, tipDir, tipLen, fanAxis) {
   }
   wob.push(joints[joints.length - 1]);
   const path = new THREE.CatmullRomCurve3(wob), up = V(0, 1, 0), side = V(1, 0, 0);
-  for (let s = 0; s < 3; s++) {
+  for (let s = 0; s < strands; s++) {
     const f1 = 3 + rnd() * 5, f2 = 5 + rnd() * 7, f3 = 2 + rnd() * 4, ph = rnd() * 6, ph2 = rnd() * 6, ph3 = rnd() * 6;
     const strandThick = thick * (.75 + rnd() * .55), pts = [], sizes = [];
     for (let i = 0; i <= 40; i++) {
       const k = i / 40, c = path.getPointAt(k), t = path.getTangentAt(k);
       const n = V(0, 0, 0).crossVectors(t, Math.abs(t.y) > .9 ? side : up).normalize(), b = V(0, 0, 0).crossVectors(t, n);
-      const a = s / 3 * Math.PI * 2 + k * turns * Math.PI * 2 + Math.sin(k * f3 + ph2) * .9;
+      const a = s / strands * Math.PI * 2 + k * turns * Math.PI * 2 + Math.sin(k * f3 + ph2) * .9;
       const rr = r * (.35 + .9 * Math.abs(Math.sin(k * f1 + ph)) + .4 * Math.sin(k * f2)) * (1 - k * .3);
       pts.push(c.clone().addScaledVector(n, Math.cos(a) * rr).addScaledVector(b, Math.sin(a) * rr));
       sizes.push((1 + .45 * Math.sin(k * 13 + ph3) * Math.sin(k * 7 + ph)) * (1 - Math.max(0, k - .8) * 1.5));
     }
-    const fan = tipDir.clone().applyAxisAngle(fanAxis, (s - 1) * .55).normalize(), last = pts[pts.length - 1];
+    const fan = tipDir.clone().applyAxisAngle(fanAxis, (s - (strands - 1) / 2) * (1.1 / Math.max(1, strands - 1))).normalize(), last = pts[pts.length - 1];
     for (let i = 1; i <= 6; i++) {
       const q = i / 6, p2 = last.clone().addScaledVector(fan, tipLen * q);
       p2.y = Math.max(.02, p2.y - tipLen * .35 * q * q);
@@ -762,6 +762,48 @@ const hairs = [];
 for (let i = 0; i < 8; i++) {   // thin sensory hairs that drift around the crown
   const a = i / 8 * Math.PI * 2, h = tendril(V(0, 0, 0), V(Math.cos(a) * .35, .25 + rnd() * .2, Math.sin(a) * .35), .1, .008, 4);
   h.position.y = .15; crown.add(h); hairs.push(h);
+}
+// everything built so far is the virus before it mutates: spindly, with a flat crown
+const vYoung = new THREE.Group(); [...virus.children].forEach(c => vYoung.add(c)); virus.add(vYoung);
+const youngLimbs = limbs.slice(), mutLimbs = [];
+// after it mutates, like the second picture in the 2D game: a thick body of knotted rope, a huge rose-like crown of petals in layers,
+// long arms with big claws, and sensory hairs bristling all over it
+const vMut = new THREE.Group(); vMut.visible = false; virus.add(vMut);
+const mutCrown = new THREE.Group();
+{
+  const STR = Q.low ? 3 : 5, MH = 1.15, MS = 2.05, hairG = new THREE.ConeGeometry(.0042, .13, 4); hairG.translate(0, .065, 0);
+  const hairsOn = (grp, joints, n, spread) => { const hb3 = makeBatch(grp); for (let i = 0; i < n; i++) { const seg = Math.floor(rnd() * (joints.length - 1)), c = joints[seg].clone().lerp(joints[seg + 1], rnd()); hb3.add(hairG, vMat, c.x + (rnd() - .5) * spread, c.y + (rnd() - .5) * spread, c.z + (rnd() - .5) * spread, (rnd() - .5) * 3, rnd() * 6, (rnd() - .5) * 3, 1, .6 + rnd() * .8, 1); } hb3.done(false, false); };
+  // the torso: many thick strands that pinch at the waist and bulge at the chest, with ribs of rope across it
+  for (let i = 0; i < (Q.low ? 6 : 10); i++) {
+    const a = i / (Q.low ? 6 : 10) * 6.283, pts = [V(Math.cos(a) * .15, MH, Math.sin(a) * .1), V(Math.cos(a + .9) * .1, MH + .28, Math.sin(a + .9) * .08), V(Math.cos(a + 1.7) * .26, MH + .62, Math.sin(a + 1.7) * .17), V(Math.cos(a + 2.4) * .22, MS - .02, Math.sin(a + 2.4) * .13), V(Math.cos(a + 3) * .06, MS + .2, Math.sin(a + 3) * .05)];
+    const cv = new THREE.CatmullRomCurve3(pts), tb = new THREE.TubeGeometry(cv, 34, .032 + (i % 3) * .009, 6, false); vMut.add(new THREE.Mesh(tb, vMat));
+  }
+  for (let i = 0; i < 5; i++) { const y = MH + .45 + i * .11, w = .19 + Math.sin(i / 4 * 3) * .09, cv = new THREE.CatmullRomCurve3([V(-w - .03, y, -.02), V(-w * .6, y - .03, .16), V(0, y + .02, .2), V(w * .6, y - .03, .16), V(w + .03, y, -.02)]); vMut.add(new THREE.Mesh(new THREE.TubeGeometry(cv, 18, .019, 6, false), vMat)); }
+  vMut.add(tendril(V(-.34, MS, 0), V(.34, MS, 0), .08, .05, 5)); vMut.add(tendril(V(-.2, MH, 0), V(.2, MH, 0), .05, .055, 3));
+  [[-.33, MS, 0, .1], [.33, MS, 0, .1], [-.18, MH, 0, .1], [.18, MH, 0, .1], [0, MS + .05, .06, .1]].forEach(([x, y, z, r2]) => { const k = lump(r2, .22); k.position.set(x, y, z); vMut.add(k); });
+  hairsOn(vMut, [V(0, MH, .14), V(.22, MH + .6, .14), V(-.22, MS, .1), V(0, MS, -.1), V(0, MH, -.1)], Q.low ? 24 : 90, .22);
+  // the crown: layers of wide petals opening like a black rose, on a thick neck
+  mutCrown.position.y = MS + .34; vMut.add(mutCrown);
+  [[.5, 11, .42, .3, .95, .6], [.3, 8, .36, .17, .76, .32], [.13, 5, .24, .1, .5, .05]].forEach(([rr, n, sz, y, wide, tilt], ri) => { for (let i = 0; i < n; i++) { const a = i / n * 6.283 + ri * .5, pet = lump(sz, .14); pet.scale.set(.2, .62, wide); pet.position.set(Math.cos(a) * rr, y, Math.sin(a) * rr); pet.rotation.set(0, -a, tilt - (ri ? .25 : 0)); mutCrown.add(pet); } });
+  const core = lump(.17, .25); core.position.y = .17; core.scale.y = .8; mutCrown.add(core);
+  for (let i = 0; i < 16; i++) { const a = i / 16 * 6.283; mutCrown.add(tendril(V(Math.cos(a) * .28, .02, Math.sin(a) * .28), V(Math.cos(a) * .86, -.08 - rnd() * .28, Math.sin(a) * .86), .15, .022, 4)); }
+  vMut.add(tendril(V(0, MS, 0), V(0, MS + .36, 0), .05, .1, 3));
+  hairsOn(mutCrown, [V(-.6, .22, 0), V(.6, .22, 0), V(0, .22, .6), V(0, .22, -.6), V(-.6, .22, 0)], Q.low ? 20 : 70, .15);
+  // long clawed arms that hang past the knees, and thick knotted legs
+  [-1, 1].forEach(side => {
+    const legJ = [V(side * .18, MH, 0), V(side * .29, .62, .07), V(side * .32, .06, 0)], armJ = [V(side * .34, MS, 0), V(side * .58, MS - .6, .1), V(side * .66, MH - .4, .24)];
+    const leg = new THREE.Group(); braid(legJ, .055, .036, 1.6, leg, V(0, 0, 1), .32, V(0, 1, 0), STR); const kn = lump(.09, .25); kn.position.copy(legJ[1]); leg.add(kn); hairsOn(leg, legJ, Q.low ? 14 : 45, .13);
+    const pl = new THREE.Group(); pl.position.set(side * .18, MH, 0); leg.position.set(-side * .18, -MH, 0); pl.add(leg); vMut.add(pl); mutLimbs.push(pl);
+    const arm = new THREE.Group(); braid(armJ, .045, .027, 1.4, arm, V(side * .25, -1, .45), .55, V(0, 0, 1), STR); const el = lump(.075, .25); el.position.copy(armJ[1]); arm.add(el); hairsOn(arm, armJ, Q.low ? 14 : 45, .12);
+    const pa = new THREE.Group(); pa.position.set(side * .34, MS, 0); arm.position.set(-side * .34, -MS, 0); pa.add(arm); vMut.add(pa); mutLimbs.push(pa);
+  });
+}
+// k = 0 is the old form, 1 the mutated form; in between, the old body shrinks away as the new one bursts out of it
+function setVirusMutation(k) {
+  vYoung.visible = k < .7; vMut.visible = k > .12;
+  const over = k >= 1 ? 1 : k <= 0 ? 0 : 1 + Math.sin(k * Math.PI * 1.2) * .24 * (1 - k * .5);   // it overshoots, then settles
+  vYoung.scale.setScalar(1 - k * .3); vMut.scale.setScalar(Math.max(.01, k * over));
+  limbs.length = 0; limbs.push(...(k > .4 ? mutLimbs : youngLimbs));
 }
 const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
 virus.scale.setScalar(2);   // twice as big as a person
@@ -2793,12 +2835,14 @@ const fun = { grace: 0, pg: [], heard: 0, underT: 0, wasUnder: false, lastFree: 
 const FUN_HELLO = [
   [.8, '...the coaster drops you in the dark. You land on soft carpet. Music is playing, somewhere.'],
   [4.2, 'Something tall unfolds beside you. <b>"Hi, Theo."</b> It is the virus.'],
-  [7.8, '"One reason my kind is stronger than the bashful bacteria: mutations. I underwent one. I am about twelve times stronger now."'],
-  [11.6, '"Since my mutation I can hear their hearts. Seven of them... no. Eight."'],
-  [15.2, '"Let\'s go. <b>They hunt by sound.</b>"']
+  [7.8, '"One reason my kind is stronger than the bashful bacteria: mutations."'],
+  [11, 'The virus shudders. Its tendrils split and swell. Its crown tears open, layer after layer. <b>It is mutating.</b>'],
+  [15, '"I am about twelve times stronger now."'],
+  [18.6, '"Since my mutation I can hear their hearts. Seven of them... no. Eight."'],
+  [22.2, '"Let\'s go. <b>They hunt by sound.</b>"']
 ];
 function startFunHello() {
-  L5.group.add(virus); virus.visible = true; virus.scale.setScalar(1.05); virus.rotation.set(0, 0, 0); virus.position.set(player.x + 1.7, 0, player.z + .4); virus.lookAt(player.x, 0, player.z);
+  L5.group.add(virus); virus.visible = true; setVirusMutation(0); fun.mutSound = 0; fun.vFrom = null; virus.scale.setScalar(1.05); virus.rotation.set(0, 0, 0); virus.position.set(player.x + 1.7, 0, player.z + .4); virus.lookAt(player.x, 0, player.z);
   fun.intro = 0; fun.said = 0; fun.introOn = true; frozen = true; viewLock = true; player.yaw = Math.atan2(player.x - virus.position.x, player.z - virus.position.z);
 }
 function funMusic(dt) {
@@ -2817,14 +2861,24 @@ function updateFun(dt, t) {
   funMusic(dt);
   // the room itself: candles, mirror ball, sweeping party lights that all go red when you are heard, shadows that follow you
   f.flames.forEach(({ fl, ph }) => { const k = .8 + Math.sin(t * 13 + ph) * .14 + Math.sin(t * 29 + ph * 2) * .08; fl.scale.set(.075 * k, .14 * k, 1); }); f.cakeLight.intensity = 3 + Math.sin(t * 11) * .5 + Math.sin(t * 23) * .3;
-  f.ball.rotation.y += dt * .5;
+  f.ball.rotation.y += dt * .5; mutCrown.rotation.y = Math.sin(t * .4) * .12; mutCrown.rotation.z = Math.sin(t * .7) * .04;
   f.party.forEach((l, i) => { const a0 = t * (.42 + i * .13) + i * 2.4, br = !playing ? 2 : f.chase ? 9 + Math.sin(t * 9) * 4 : 6 + Math.sin(t * 2 + i); l.position.set(37 + Math.cos(a0) * 19, 2.3, 28 + Math.sin(a0 * 1.3) * 9); l.intensity = br; l.color.setHex(f.chase ? 0xff1a14 : i ? 0x40b8ff : 0xff4fb0); });
   f.redLight.intensity = 4 + Math.sin(t * 2.3) * 1.2;
   { const sx = Math.round(player.x), sz = Math.round(player.z); f.down.position.set(sx + .5, 8, sz + .4); f.down.target.position.set(sx, 0, sz); }
   f.balloons.forEach(s => s.list.forEach(({ b, h, ph }) => { b.position.y = h + Math.sin(t * 1.2 + ph) * .06; }));
   if (f.introOn) {
     f.intro += dt; while (f.said < FUN_HELLO.length && f.intro > FUN_HELLO[f.said][0]) say(FUN_HELLO[f.said++][1], 99);
-    if (f.intro > 19) { f.introOn = false; frozen = false; viewLock = false; msgTimer = 4; }
+    // the mutation, in front of you: it shakes, the room shakes, and the new body bursts out of the old one
+    const mk = Math.max(0, Math.min(1, (f.intro - 11) / 3));
+    if (mk > 0 && mk < 1) {
+      const eased = mk * mk * (3 - 2 * mk), jit = Math.sin(f.intro * 47) * .05 * Math.sin(mk * Math.PI);
+      setVirusMutation(eased); virus.rotation.z = jit; virus.rotation.x = Math.sin(f.intro * 31) * .03 * Math.sin(mk * Math.PI); virus.scale.setScalar(1.05 - eased * .08); if (!f.vFrom) f.vFrom = [virus.position.x, virus.position.z, virus.position.x - player.x, virus.position.z - player.z]; { const n0 = Math.hypot(f.vFrom[2], f.vFrom[3]) || 1; virus.position.x = f.vFrom[0] + f.vFrom[2] / n0 * eased * 1.9; virus.position.z = f.vFrom[1] + f.vFrom[3] / n0 * eased * 1.9; look.pitch = eased * .3; } limbs.forEach((l, i) => { l.rotation.x = Math.sin(f.intro * 26 + i * 2) * .45 * Math.sin(mk * Math.PI); });
+      if ((f.mutSound -= dt) <= 0) { f.mutSound = .13 + Math.random() * .2; burst(90 + Math.random() * 500, 1.2, .14, .55, 'lowpass'); }
+      if (mk > .08 && !f.mutRoar) { f.mutRoar = true; screech(); shake = 1; }
+      shake = Math.max(shake, .22 * Math.sin(mk * Math.PI));
+    } else if (mk >= 1 && !f.mutDone) { f.mutDone = true; setVirusMutation(1); virus.rotation.set(0, virus.rotation.y, 0); virus.scale.setScalar(.97); limbs.forEach(l => { l.rotation.x = 0; }); burst(60, 1, .7, 2.2, 'lowpass'); shake = .7; }
+    if (f.intro > 22) look.pitch += (0 - look.pitch) * Math.min(1, dt * 2);
+    if (f.intro > 25) { f.introOn = false; frozen = false; viewLock = false; msgTimer = 4; }
     return;
   }
   // crawling under the table or through the crawl space: they cannot reach you there, and they soon lose track of you
@@ -2913,12 +2967,12 @@ function resetNewLevels() {
   town.vanOut.visible = true; town.vanIn.visible = false; town.watchers.forEach(w => w.w.visible = false); town.platform.position.y = 60;
   Object.assign(park, { wake: 0, woke: false, frozen: false, has: false, placed: false, swing: 0, phase: 'walk', noted: false, rideT: 0, black: false, target: null, retarget: 0 }); park.doll.visible = true; park.doll.position.set(8 * CELL + 1, .45, 26 * CELL + 1); park.doll.rotation.y = Math.PI / 2;
   park.clown.position.set(22 * CELL + 1, 0, 10 * CELL + 1); park.arm.rotation.x = -.5; park.armL.rotation.set(-1, .3, -.14); park.legs.forEach(l => l.rotation.x = 0); park.knees.forEach(k => k.rotation.x = .08); park.tails.rotation.x = 0; park.clown.rotation.z = 0; park.built = false; park.car.position.copy(park.curve.getPointAt(0));
-  Object.assign(fun, { grace: 0, heard: 0, underT: 0, wasUnder: false, lastFree: null, chase: false, intro: 0, said: 0, introOn: false, spot: null, spotT: 0, fT: null });
+  setVirusMutation(0); virus.rotation.set(0, 0, 0); Object.assign(fun, { vFrom: null, mutRoar: false, mutDone: false, mutSound: 0, grace: 0, heard: 0, underT: 0, wasUnder: false, lastFree: null, chase: false, intro: 0, said: 0, introOn: false, spot: null, spotT: 0, fT: null });
   fun.balloons.forEach(b => { b.popped = false; b.grp.visible = true; });
   fun.pg.forEach(q => { q.m.position.set(q.home[1] * CELL + 1, 0, q.home[0] * CELL + 1); q.state = 'wander'; q.tg = null; q.dest = null; q.arms.forEach(a => a.rotation.set(0, 0, 0)); q.fores.forEach(a => a.rotation.x = -.15); });
   limbs.forEach(l => l.rotation.x = 0);
 }
-window.__game = { renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock(); let frameNo = 0;
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
