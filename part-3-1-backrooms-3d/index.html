@@ -69,7 +69,7 @@
   <div>🧠 Sanity: <span id="san">100</span></div>
   <div class="bar"><div id="stam"></div></div>
   <div>Posters found: <span id="pc">0</span> / <span id="ptot">8</span></div>
-  <div><span id="slot" class="slot">1 ✊ empty</span> 💧 almond water x<span id="aw">0</span></div>
+  <div><span id="slot" class="slot">1 ✊ empty</span><span id="gear"></span> 💧 almond water x<span id="aw">0</span></div>
 </div>
 <div id="vig"></div>
 <div id="dark"></div>
@@ -101,7 +101,7 @@
   <p><b>PART 3.1 3D DEMO</b> · RATED M</p>
   <p>You woke up somewhere you should not be. You do not know where you are. Explore, read the posters on the walls, and find out what is waiting at the end.</p>
   <p><span class="keys">W</span> forward <span class="keys">S</span> back <span class="keys">A</span> step left <span class="keys">D</span> step right <span class="keys">Mouse</span> look around<br>
-     <span class="keys">Shift</span> sprint <span class="keys">C</span> crouch <span class="keys">E</span> drink almond water <span class="keys">1</span> weapon <span class="keys">Click</span> fight <span class="keys">R</span> doors and things<br>
+     <span class="keys">Shift</span> sprint <span class="keys">C</span> crouch <span class="keys">F</span> flashlight <span class="keys">E</span> drink almond water <span class="keys">1</span> weapon <span class="keys">Click</span> fight <span class="keys">R</span> doors and things<br>
      <span class="keys">Space</span> brake</p>
   <button class="btn" id="go">Start</button>
   <div class="gfxline">Graphics: <span class="gfxname"></span> <button class="gfxchange">Change</button></div>
@@ -664,6 +664,41 @@ LEVELS.push({
   bottles: [[27, 9], [18, 4], [10, 36]], weapons: [],
   intro: 'Balloons, streamers, the smell of cake. The music never stops.'
 });
+// carve rooms out of solid wall: [top row, left col, bottom row, right col], with extra marks placed afterwards
+const carve = (R, C, rects, marks = []) => { const m = Array.from({ length: R }, () => Array(C).fill('#')); rects.forEach(([r0, c0, r1, c1]) => { for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) m[r][c] = '.'; }); marks.forEach(([r, c, ch]) => { m[r][c] = ch; }); return m.map(r => r.join('')); };
+LEVELS.push({
+  name: 'Partypoopers', sub: 'Partygoers not welcome', map: carve(9, 11, [[1, 1, 7, 9]], [[1, 5, 'S']]), H: 3.3, noFake: true, calm: true, flicker: .985, glimpses: [], step: 'concrete', drain: .5, lightStep: 3,
+  fog: [0x2a2b2f, 10, 60], ambient: [0xdfe2e8, 1.05], lampColor: 0xe9ebef, lightColor: 0xe3e6ee, lightPower: 13,
+  walls: g => { g.fillStyle = '#4c4e54'; g.fillRect(0, 0, 128, 128); noise(g, '#44464c', '#55575d', 900); g.fillStyle = 'rgba(20,20,24,.3)'; g.fillRect(0, 108, 128, 20); },
+  floor: g => { g.fillStyle = '#44454a'; g.fillRect(0, 0, 128, 128); noise(g, '#3b3c41', '#4e4f54', 900); g.strokeStyle = '#1b1c1f'; g.lineWidth = 2; g.strokeRect(0, 0, 128, 128); },
+  ceil: g => { g.fillStyle = '#35363a'; g.fillRect(0, 0, 128, 128); noise(g, '#2e2f33', '#3c3d41', 500); },
+  posters: [], bottles: [], weapons: [],
+  intro: 'A small grey room. Three figures turn around.'
+}, {
+  name: 'Level 2', sub: 'Pipe Dreams', map: carve(24, 32, [[8, 11, 15, 21], [10, 3, 11, 10], [3, 3, 9, 4], [2, 2, 4, 6], [11, 22, 12, 28], [13, 27, 19, 28], [18, 25, 21, 30]], [[11, 16, 'S']]), H: 3.4, drain: 1.5, noFake: true, calm: true, flicker: .96, glimpses: [], step: 'concrete', lightStep: 4,
+  fog: [0x1c0f07, 6, 34], ambient: [0xffc9a0, .72], lampColor: 0xffd9a8, lightColor: 0xffb878, lightPower: 12,
+  walls: g => { g.fillStyle = '#4a3322'; g.fillRect(0, 0, 128, 128); noise(g, '#3f2a1b', '#59402c', 1100); g.fillStyle = 'rgba(120,60,20,.35)'; for (let i = 0; i < 9; i++) { g.fillRect(hash(i + 3) * 128, hash(i + 5) * 40, 3 + hash(i) * 5, 40 + hash(i + 7) * 70); } g.fillStyle = '#2b1c11'; for (let y = 0; y < 128; y += 42) g.fillRect(0, y, 128, 3); g.fillStyle = '#6a4a2f'; for (let x = 7; x < 128; x += 21) for (let y = 7; y < 128; y += 42) { g.beginPath(); g.arc(x, y, 1.6, 0, 7); g.fill(); } },
+  floor: g => { g.fillStyle = '#17120e'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#54493d'; for (let i = 0; i < 16; i++) { g.fillRect(i * 8, 0, 3, 128); g.fillRect(0, i * 8, 128, 3); } noise(g, 'rgba(0,0,0,.2)', 'rgba(120,70,30,.14)', 800); },
+  ceil: g => { g.fillStyle = '#231710'; g.fillRect(0, 0, 128, 128); noise(g, '#1c120c', '#2d1e15', 700); },
+  posters: [{ at: [15, 13], title: 'BRING A LIGHT', lines: ['Some levels', 'have no lights.', 'Things live', 'in the dark.', 'They HATE light.'] }], bottles: [[14, 20], [3, 5]], weapons: [],
+  intro: 'You fall through a hatch and land on hot metal. Pipes everywhere, hissing steam. The air is so hot it hurts to breathe.'
+}, {
+  name: 'Level 6', sub: 'Lights Out', map: carve(26, 32, [[19, 12, 23, 18], [9, 14, 18, 15], [6, 8, 10, 22], [7, 2, 8, 7], [4, 1, 11, 4], [7, 23, 8, 28], [2, 27, 6, 28], [2, 16, 3, 26], [11, 17, 15, 21], [15, 5, 17, 13]], [[21, 15, 'S']]), H: 3, drain: 1.4, noFake: true, calm: true, flicker: 0, noLamps: true, glimpses: [], step: 'concrete',
+  fog: [0x000000, 5, 30], ambient: [0x90a0c0, .012], lampColor: 0, lightColor: 0, lightPower: 0,
+  walls: g => { g.fillStyle = '#54565c'; g.fillRect(0, 0, 128, 128); noise(g, '#4a4c52', '#5e6066', 1000); g.fillStyle = '#34353a'; g.fillRect(0, 106, 128, 22); },
+  floor: g => { g.fillStyle = '#39393d'; g.fillRect(0, 0, 128, 128); noise(g, '#303034', '#434347', 1000); },
+  ceil: g => { g.fillStyle = '#2d2d31'; g.fillRect(0, 0, 128, 128); },
+  posters: [], bottles: [[17, 8], [14, 19]], weapons: [],
+  intro: 'The lights go out. You can\'t see your own hands.'
+}, {
+  name: 'Level !', sub: 'Run For Your Life', map: carve(44, 9, [[1, 3, 37, 5], [39, 3, 41, 5]], [[2, 4, 'S'], [12, 3, 'P'], [21, 5, 'P'], [30, 3, 'P'], [38, 3, '%'], [38, 4, '%'], [38, 5, '%']]), H: 3.4, drain: .4, noFake: true, calm: true, flicker: 0, glimpses: [], step: 'concrete', lightStep: 4, puddles: [[8, 4], [17, 3], [25, 5], [33, 4]],
+  fog: [0x220202, 6, 48], ambient: [0xff5040, .5], lampColor: 0xff2a1e, lightColor: 0xff2214, lightPower: 18,
+  walls: g => { g.fillStyle = '#6e1212'; g.fillRect(0, 0, 128, 128); noise(g, '#5e0e0e', '#7d1717', 1000); g.fillStyle = 'rgba(30,2,2,.5)'; g.fillRect(0, 104, 128, 24); g.fillStyle = 'rgba(25,2,2,.45)'; for (let i = 0; i < 7; i++) g.fillRect(hash(i + 9) * 128, 0, 2 + hash(i) * 4, 30 + hash(i + 2) * 70); },
+  floor: g => { g.fillStyle = '#2a0808'; g.fillRect(0, 0, 128, 128); noise(g, '#220606', '#340b0b', 1000); },
+  ceil: g => { g.fillStyle = '#3a0a0a'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#250606'; g.lineWidth = 3; g.strokeRect(0, 0, 128, 128); },
+  posters: [], bottles: [], weapons: [],
+  intro: 'The lights snap on. Every single one of them is red.'
+});
 LEVELS.forEach(buildLevel);
 LEVELS[5].low = (r, c) => LEVELS[5].map[r] && '%v'.includes(LEVELS[5].map[r][c]);   // low places you can only crawl through
 
@@ -800,6 +835,7 @@ const mutCrown = new THREE.Group();
 }
 // k = 0 is the old form, 1 the mutated form; in between, the old body shrinks away as the new one bursts out of it
 function setVirusMutation(k) {
+  vGlow.intensity = 3 - k * 2.2;
   vYoung.visible = k < .7; vMut.visible = k > .12;
   const over = k >= 1 ? 1 : k <= 0 ? 0 : 1 + Math.sin(k * Math.PI * 1.2) * .24 * (1 - k * .5);   // it overshoots, then settles
   vYoung.scale.setScalar(1 - k * .3); vMut.scale.setScalar(Math.max(.01, k * over));
@@ -807,7 +843,7 @@ function setVirusMutation(k) {
 }
 const vGlow = new THREE.PointLight(0xfff4c0, 3, 5, 2); vGlow.position.set(0, TOP + .6, .8); virus.add(vGlow);
 virus.scale.setScalar(2);   // twice as big as a person
-const L0 = LEVELS[0], L1 = LEVELS[1], L2 = LEVELS[2], L3 = LEVELS[3], L4 = LEVELS[4], L5 = LEVELS[5];
+const L0 = LEVELS[0], L1 = LEVELS[1], L2 = LEVELS[2], L3 = LEVELS[3], L4 = LEVELS[4], L5 = LEVELS[5], L6 = LEVELS[6], L7 = LEVELS[7], L8 = LEVELS[8], L9 = LEVELS[9];
 virus.position.set(L0.virusAt[1] * CELL + CELL / 2, 0, L0.virusAt[0] * CELL + CELL / 2);
 L0.group.add(virus);
 
@@ -1017,6 +1053,7 @@ addEventListener('keydown', e => {
     if (!water) { say('You are out of almond water.', 2); return; }
     water--; $('aw').textContent = water; setSanity(100); say('You drink the almond water. It tastes sweet. <b>Sanity back to 100.</b>', 3);
   }
+  if (k === 'f' && gear.light) { gear.lightOn = !gear.lightOn; showGear(); burst(2600, 7, .03, .4, 'bandpass'); return; }
   if (k === '1') {
     if (!weapon) { say('Your weapon slot is empty.', 2); return; }
     if (L === L1 && stealer.state === 'chase' && !armed) {   // too slow: you fumble with it while it closes in
@@ -1046,7 +1083,7 @@ addEventListener('mousedown', e => {
 function enterLevel(next) {
   LEVELS.forEach(l => l.group.visible = l === next);
   L = next; L.visited = true; camera.far = L.far || 60; camera.near = L.far ? .1 : .05; camera.updateProjectionMatrix();
-  if (humGain) humGain.gain.value = L === L3 ? .06 : L === L5 ? .2 : .5;   // the hum fades away outside
+  if (humGain) humGain.gain.value = L === L3 ? .06 : L === L5 ? .2 : L === L8 || L === L9 ? .1 : L === L7 ? .3 : .5;   // the hum fades away outside
   if (next === L1) startHello();
   scene.background = new THREE.Color(L.fog[0]); scene.fog = new THREE.Fog(L.fog[0], L.fog[1], L.fog[2]);
   player.x = L.start[1] * CELL + CELL / 2; player.z = L.start[0] * CELL + CELL / 2; player.yaw = Math.PI; player.vx = player.vz = 0;
@@ -1159,9 +1196,10 @@ function screech() {
 }
 // test links: #poolrooms or #habitable jumps straight to that level, water=N gives you almond water, sword gives you the sword
 function jump() {
-  const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
+  const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('run') ? L9 : h.includes('lightsout') ? L8 : h.includes('pipes') ? L7 : h.includes('poopers') ? L6 : h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
   const w = h.find(x => x.startsWith('water='));
-  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); }
+  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); }
+  if (h.includes('flashlight')) { gear.light = true; showGear(); }
   if (w) { water = Math.max(0, parseInt(w.slice(6)) || 0); $('aw').textContent = water; }
   if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
 }
@@ -1242,7 +1280,7 @@ function updateDeath(dt) {
   if (!d.hit && tt > .1) { d.hit = true; screech(); burst(80, 1, .35, 1.6, 'lowpass'); burst(1100, .8, .16, .5, 'bandpass'); shake = .55; $('dark').style.opacity = .8; if (o.sound) o.sound(); }
   if (o.mob && tt > .3 && Math.floor(tt * 3.4) !== Math.floor((tt - dt) * 3.4)) burst(95, 1, .13, .9, 'lowpass');   // your heart, or its grip
   const fadeAt = o.fadeAt || 1.3;
-  if (!d.faded && tt > fadeAt) { d.faded = true; $('fade').style.transition = 'opacity 1s ease-in'; $('fade').style.background = '#000'; $('fade').style.opacity = 1; }
+  if (!d.faded && tt > fadeAt) { d.faded = true; $('fade').style.transition = 'opacity 1s ease-in'; $('fade').style.background = o.white || '#000'; $('fade').style.opacity = 1; }
   if (tt > fadeAt + 1.15) { d.on = false; camRoll = 0; ride.pitch = 0; grabHands.forEach(x => x.h.visible = false); ending(o.title, o.text); }
 }
 function ssGrab(title, text, start) {
@@ -1603,7 +1641,8 @@ function updateDoor(dt) {
   }
   if (t >= 4.8) {
     a.on = false; $('fade').style.transition = '';
-    ending(L === L5 ? 'Partygoers not welcome' : 'You made it out!', L === L5 ? 'Behind the door is a small grey room. A hand-painted sign says PARTYGOERS NOT WELCOME, and three figures turn around, holding up smiles on sticks. You made it through Level Fun and found ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...' : 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
+    if (L === L5) { doorAnim.on = false; goLevel(L6, () => { player.yaw = Math.PI; bringVirus(1.6, -1); }); return; }
+    ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
   }
 }
 
@@ -2947,6 +2986,258 @@ function updateFun(dt, t) {
   }
 }
 
+// ---------- past the grey door ----------
+const gear = { photo: false, light: false, wrench: false, lightOn: false, bugs: false };
+const showGear = () => { $('gear').textContent = (gear.light ? ' 🔦' + (gear.lightOn ? ' on' : '') : '') + (gear.bugs ? ' 🪲' : '') + (gear.wrench ? ' 🔧' : '') + (gear.photo ? ' 📷' : ''); };
+const trail = { follow: 0, fT: null, ph: 0 };
+function bringVirus(dx, dz) { L.group.add(virus); virus.visible = true; setVirusMutation(1); virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); virus.position.set(player.x + dx, 0, player.z + dz); trail.fT = null; }
+function virusTrail(dt, near = 2.8, top = 6.2) {   // the virus stays close to you, around corners
+  const vd = Math.hypot(virus.position.x - player.x, virus.position.z - player.z), pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
+  if (vd > near) {
+    if ((trail.follow -= dt) <= 0 || !trail.fT) { trail.follow = .3; trail.fT = nextCell(Math.floor(virus.position.z / CELL), Math.floor(virus.position.x / CELL), pr, pc); }
+    const same = trail.fT[0] === pr && trail.fT[1] === pc, tx = same ? player.x : trail.fT[1] * CELL + 1, tz = same ? player.z : trail.fT[0] * CELL + 1, mx = tx - virus.position.x, mz = tz - virus.position.z, md = Math.hypot(mx, mz) || 1, sp = Math.min(top, vd * 1.3);
+    virus.position.x += mx / md * Math.min(md, sp * dt); virus.position.z += mz / md * Math.min(md, sp * dt);
+    let dy = Math.atan2(mx, mz) - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(.16, virus.rotation.y + dy * Math.min(1, dt * 6), 0);
+    trail.ph += dt * sp * 1.6; limbs.forEach((l, i) => { l.rotation.x = Math.sin(trail.ph + (i >> 1) * Math.PI + (i % 2 ? Math.PI : 0)) * (i % 2 ? .45 : .6); });
+  } else { limbs.forEach(l => { l.rotation.x *= .85; }); virus.rotation.x *= .85; }
+}
+const handsOfTheDark = (title, text, extra = {}) => grabDeath({ grip: { c: 0x08070a, e: 0x1c0404, claws: true }, title, text, fadeAt: 1.1, ...extra });
+const wordsOn = (txt, w, h, bg, fg, font, slant = 0) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); if (bg) { x.fillStyle = bg; x.fillRect(0, 0, w, h); } x.fillStyle = fg; x.font = font; x.textAlign = 'center'; x.textBaseline = 'middle'; x.translate(w / 2, h / 2); x.rotate(slant); String(txt).split('\n').forEach((l, i, a) => x.fillText(l, 0, (i - (a.length - 1) / 2) * parseInt(font.match(/\d+/)[0]) * 1.1)); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso; return t; };
+
+// ---- the Partypoopers: grey party guests in long robes, holding smiling masks up on sticks ----
+const poopR = { guests: [], talk: 0, said: 0, fall: 0, flash: 0 };
+{
+  const g = L6.group, R0 = 1.1;
+  const signT = wordsOn('PARTYGOERS NOT WELCOME', 1024, 128, null, '#8f9198', 'bold 70px Comic Sans MS, cursive'); const sign = new THREE.Mesh(new THREE.PlaneGeometry(9.5, 1.2), new THREE.MeshBasicMaterial({ map: signT, transparent: true, color: 0xb8bac2 })); sign.position.set(11, 2.5, 16 - .02); sign.rotation.y = Math.PI; g.add(sign);
+  const robeT = tex(gg => { gg.fillStyle = '#7a7d84'; gg.fillRect(0, 0, 128, 128); noise(gg, '#6f7279', '#858890', 900); gg.strokeStyle = 'rgba(40,42,48,.35)'; gg.lineWidth = 3; for (let x = 6; x < 128; x += 16) { gg.beginPath(); gg.moveTo(x, 0); gg.lineTo(x + 3, 128); gg.stroke(); } }, [2, 1], 4), robeM = new StdMat({ map: robeT, bumpMap: robeT.bump, bumpScale: 2, roughness: .9 }), beltM = new StdMat({ color: 0x3f4147, roughness: .7 }), skin = new StdMat({ color: 0x8d9097, roughness: .7 }), hatM = new StdMat({ color: 0x9a9da4, roughness: .8 }), stickM = new StdMat({ color: 0xa8742e, roughness: .6 });
+  const robePts = []; for (let i = 0; i <= 18; i++) { const k = i / 18; robePts.push(new THREE.Vector2(.36 - k * k * .13 - k * .09, k * 1.66)); } robePts.unshift(new THREE.Vector2(.01, 0)); robePts.push(new THREE.Vector2(.01, 1.7));
+  const robeG = new THREE.LatheGeometry(robePts, Q.low ? 14 : 28); { const pa = robeG.attributes.position; for (let i = 0; i < pa.count; i++) { const an = Math.atan2(pa.getZ(i), pa.getX(i)), y = pa.getY(i), k = 1 + .05 * Math.sin(an * 9) * Math.max(0, 1 - y / 1.3); pa.setX(i, pa.getX(i) * k); pa.setZ(i, pa.getZ(i) * k); } robeG.computeVertexNormals(); }
+  const maskT = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#f6e7b2'; x.beginPath(); x.arc(128, 128, 122, 0, 7); x.fill(); x.lineWidth = 8; x.strokeStyle = '#c9ad6c'; x.stroke(); x.fillStyle = 'rgba(235,120,120,.55)'; [[64, 150], [192, 150]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 22, 0, 7); x.fill(); }); x.fillStyle = '#17120a'; [[92, 104], [164, 104]].forEach(([a, b]) => { x.beginPath(); x.ellipse(a, b, 12, 17, 0, 0, 7); x.fill(); }); x.strokeStyle = '#b3171d'; x.lineWidth = 11; x.lineCap = 'round'; x.beginPath(); x.arc(128, 124, 66, .3, Math.PI - .3); x.stroke(); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })(), maskM = new StdMat({ map: maskT, roughness: .55 }), maskG = new THREE.CircleGeometry(.27, 28), backM = new StdMat({ color: 0xb79f6e, roughness: .8 });
+  [[-2.6, .1], [0, 0], [2.6, -.1]].forEach(([dx, dz], i) => {
+    const m = new THREE.Group(); m.position.set(11 + dx, 0, 10.6 + dz); g.add(m);
+    const add3 = (par, geo, mt, x, y, z, rx = 0, ry = 0, rz = 0) => { const o = new THREE.Mesh(geo, mt); o.position.set(x, y, z); o.rotation.set(rx, ry, rz); o.castShadow = true; par.add(o); return o; };
+    add3(m, robeG, robeM, 0, 0, 0); add3(m, new THREE.CylinderGeometry(.255, .275, .07, 18), beltM, 0, 1.08, 0);
+    const head = new THREE.Group(); head.position.set(0, 1.9, 0); m.add(head); add3(head, new THREE.SphereGeometry(.2, 22, 18), skin, 0, 0, 0).scale.set(.92, 1.08, .95);
+    [-1, 1].forEach(sd => { add3(head, new THREE.SphereGeometry(.02, 10, 8), new THREE.MeshBasicMaterial({ color: 0x101114 }), sd * .07, .03, .176); }); const smile = add3(head, new THREE.TorusGeometry(.055, .007, 6, 14, Math.PI), new THREE.MeshBasicMaterial({ color: 0x24262c }), 0, -.05, .176, 0, 0, Math.PI); void smile;
+    const hat = add3(head, new THREE.ConeGeometry(.17, .5, 20), hatM, -.04 + i * .02, .36, -.02, 0, 0, .14 - i * .05); hat.castShadow = true; add3(head, new THREE.SphereGeometry(.035, 10, 8), robeM, -.07 + i * .025, .62, -.02);
+    // the arm that holds up the mask, and the waving arm
+    const armS = new THREE.Group(); armS.position.set(.26, 1.62, .03); m.add(armS); add3(armS, new THREE.CapsuleGeometry(.065, .34, 6, 12), robeM, 0, -.2, 0); const fore = new THREE.Group(); fore.position.y = -.4; armS.add(fore); add3(fore, new THREE.CapsuleGeometry(.055, .24, 6, 12), robeM, 0, -.14, 0); add3(fore, new THREE.SphereGeometry(.05, 12, 10), skin, 0, -.31, 0); armS.rotation.set(-.8, 0, .1); fore.rotation.x = -1.35;
+    const mask = new THREE.Group(); mask.position.set(0, .42, .3); m.add(mask); add3(mask, new THREE.CylinderGeometry(.012, .012, 1.26, 8), stickM, .1, .55, 0, 0, 0, -.1); const mk = new THREE.Group(); mk.position.set(0, 1.48, .03); mask.add(mk); add3(mk, maskG, maskM, 0, 0, .012); add3(mk, maskG, backM, 0, 0, 0, 0, Math.PI, 0);
+    const armW = new THREE.Group(); armW.position.set(-.26, 1.62, .03); m.add(armW); add3(armW, new THREE.CapsuleGeometry(.065, .34, 6, 12), robeM, 0, -.2, 0); const fw = new THREE.Group(); fw.position.y = -.4; armW.add(fw); add3(fw, new THREE.CapsuleGeometry(.055, .24, 6, 12), robeM, 0, -.14, 0); add3(fw, new THREE.SphereGeometry(.05, 12, 10), skin, 0, -.31, 0); armW.rotation.set(0, 0, -.12);
+    poopR.guests.push({ m, mask, armW, fw, ph: i * 1.8, down: 0 });
+  });
+  // the camera on its tripod, grey balloons, and the hatch in the floor
+  const dark2 = new StdMat({ color: 0x1d2a3e, roughness: .4 }), metal2 = new StdMat({ color: 0x777a80, metalness: .7, roughness: .35, envMap: envTex, envMapIntensity: .5 }), glassM = new StdMat({ color: 0x2a6cc4, roughness: .05, metalness: .3, envMap: envTex, envMapIntensity: 1 });
+  const cam = new THREE.Group(); cam.position.set(16.3, 0, 7.6); cam.rotation.y = -.7; g.add(cam); [0, 2.1, 4.2].forEach(a0 => { const leg = new THREE.Mesh(new THREE.CylinderGeometry(.018, .012, 1.25, 8), metal2); leg.position.set(Math.cos(a0) * .2, .6, Math.sin(a0) * .2); leg.rotation.set(Math.sin(a0) * .32, 0, -Math.cos(a0) * .32); cam.add(leg); }); const cb = new THREE.Mesh(new RoundedBoxGeometry(.42, .28, .22, 3, .04), dark2); cb.position.y = 1.32; cam.add(cb); const lens = new THREE.Mesh(new THREE.CylinderGeometry(.085, .1, .12, 20), metal2); lens.rotation.x = Math.PI / 2; lens.position.set(0, 1.32, -.16); cam.add(lens); const gl = new THREE.Mesh(new THREE.CircleGeometry(.07, 20), glassM); gl.position.set(0, 1.32, -.222); gl.rotation.y = Math.PI; cam.add(gl); const fl = new THREE.Mesh(new THREE.BoxGeometry(.12, .06, .03), new THREE.MeshBasicMaterial({ color: 0xffe38a })); fl.position.set(.13, 1.49, -.08); cam.add(fl); poopR.cam = cam.position;
+  const grey = [0x7b7f88, 0x6c6f76, 0x8b8678]; [[4.6, 13.2], [5.6, 13.9], [17.4, 13.5], [18, 12.4]].forEach(([x, z], i) => { const b = new THREE.Mesh(new THREE.SphereGeometry(.24, 18, 14), new StdMat({ color: grey[i % 3], roughness: .45 })); b.scale.y = 1.2; b.position.set(x, 1.9 + i * .08, z); g.add(b); const st = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, 1.65, 4), new THREE.MeshBasicMaterial({ color: 0x222222 })); st.position.set(x, 1, z); g.add(st); });
+  const hatch = new THREE.Group(); hatch.position.set(5.5, 0, 6); g.add(hatch); poopR.hatch = hatch.position;
+  const pit = new THREE.Mesh(new THREE.CircleGeometry(.72, 28), new THREE.MeshBasicMaterial({ color: 0x030303 })); pit.rotation.x = -Math.PI / 2; pit.position.y = .012; hatch.add(pit); const rim = new THREE.Mesh(new THREE.TorusGeometry(.74, .05, 10, 32), metal2); rim.rotation.x = Math.PI / 2; rim.position.y = .03; hatch.add(rim); const lid = new THREE.Mesh(new THREE.CylinderGeometry(.74, .74, .04, 26), metal2); lid.position.set(1.65, .04, .15); lid.rotation.y = .4; hatch.add(lid); void R0;
+}
+const POOP_LINES = [[.6, '"Oh, a real person! Hi! Welcome!"'], [3.6, '"We are the Partypoopers. We wear these smiles so the Partygoers think we are one of them."'], [8, '"We are at WAR with the Partygoers. We hunt them, one by one."'], [12, 'It shivers. "Except the big one by the door. Nobody hunts THAT one."'], [16, 'It holds up an old camera. "Want a picture with us? We love pictures!"']];
+function updatePoopers(dt, t) {
+  const P0 = poopR; virusTrail(dt);
+  P0.talk += dt; while (P0.said < POOP_LINES.length && P0.talk > POOP_LINES[P0.said][0]) say(POOP_LINES[P0.said++][1], 4.5);
+  P0.guests.forEach((q, i) => {
+    q.m.rotation.y = Math.atan2(player.x - q.m.position.x, player.z - q.m.position.z);
+    const lower = i === 1 ? Math.min(1, P0.talk / 1.2) : gear.photo ? 0 : 0; q.down += (lower - q.down) * Math.min(1, dt * 3); q.mask.position.y = .42 - q.down * .62;
+    q.armW.rotation.set(i === 1 ? -.3 : Math.sin(t * .5 + q.ph) * .05, 0, i === 1 ? -2.4 + Math.sin(t * 6) * .3 : -.12); q.fw.rotation.x = i === 1 ? -.4 : -.2;
+    q.m.position.y = Math.abs(Math.sin(t * 1.7 + q.ph)) * .012;
+  });
+  if (P0.flash > 0) { P0.flash -= dt; $('fade').style.background = '#fff'; $('fade').style.transition = ''; $('fade').style.opacity = Math.max(0, P0.flash / .45); if (P0.flash <= 0) { $('fade').style.background = '#000'; $('fade').style.opacity = 0; } }
+  if (P0.fall > 0) { P0.fall += dt; ride.y = -P0.fall * P0.fall * 3.6; if (P0.fall > .85) { P0.fall = 0; goLevel(L7, () => { player.yaw = 0; bringVirus(1.6, 1.2); }); } return; }
+  if (!gear.photo && Math.hypot(P0.cam.x - player.x, P0.cam.z - player.z) < 2.6) { hintText = '📷 R'; actR = () => { gear.photo = true; showGear(); P0.flash = .45; burst(3200, 1, .1, .7, 'highpass'); say('FLASH. You, in the middle, three Partypoopers holding up their fake smiles and a thumbs up. Looking at it makes you feel safe.', 4.5); }; }
+  else if (Math.hypot(P0.hatch.x - player.x, P0.hatch.z - player.z) < 2) { hintText = '🕳️ R'; actR = () => { P0.fall = .001; frozen = true; viewLock = true; player.x = P0.hatch.x; player.z = P0.hatch.z; player.vx = player.vz = 0; say('You wave goodbye and drop down the hatch.', 2); }; }
+}
+
+// ---- Pipe Dreams: rusty pipes on every wall, one glowing red-hot, one cold and blue ----
+const pipeL = { steam: [], hotSteam: [], mice: [], valve: null, hot: true, turning: 0, gaugeN: [], crawlT: 0, crawlDead: false, squeezed: false, hiss: 0 };
+{
+  const g = L7.group, pb = makeBatch(g), seg = Q.low ? 6 : 10, rustT = tex(gg => { gg.fillStyle = '#8a5a34'; gg.fillRect(0, 0, 128, 128); noise(gg, '#744a2a', '#a06a3d', 1200); gg.fillStyle = 'rgba(40,20,8,.5)'; for (let i = 0; i < 9; i++) { gg.beginPath(); gg.ellipse(hash(i) * 128, hash(i + 2) * 128, 5 + hash(i + 4) * 14, 3 + hash(i + 5) * 7, 0, 0, 7); gg.fill(); } }, [3, 1], 3), rustM = new StdMat({ map: rustT, bumpMap: rustT.bump, bumpScale: 3, roughness: .68, metalness: .35, envMap: envTex, envMapIntensity: .25 }), rustD = new StdMat({ color: 0x4e331f, roughness: .7, metalness: .4 });
+  const cylBetween = (b, a0, b0, r0, mt) => { const dx = b0[0] - a0[0], dy = b0[1] - a0[1], dz = b0[2] - a0[2], l0 = Math.hypot(dx, dy, dz), q0 = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), V(dx / l0, dy / l0, dz / l0)), e = new THREE.Euler().setFromQuaternion(q0); b.add(new THREE.CylinderGeometry(r0, r0, l0, seg), mt, (a0[0] + b0[0]) / 2, (a0[1] + b0[1]) / 2, (a0[2] + b0[2]) / 2, e.x, e.y, e.z); };
+  const rows = Q.low ? [[2.75, .11], [.42, .1]] : [[2.85, .1], [2.42, .14], [.42, .11]];
+  L7.map.forEach((row, r) => [...row].forEach((ch, c) => { if (L7.wall(r, c)) return; const x0 = c * CELL, z0 = r * CELL;
+    DIRS.forEach(([dr, dc]) => { if (!L7.wall(r + dr, c + dc)) return; const off = .85;
+      rows.forEach(([y, r0], ri) => { const ax = dc ? x0 + 1 + dc * off : x0, az = dc ? z0 : z0 + 1 + dr * off, bx = dc ? ax : x0 + CELL, bz = dc ? z0 + CELL : az; cylBetween(pb, [ax, y, az], [bx, y, bz], r0, rustM); if ((r + c + ri) % 2 === 0) { pb.add(new THREE.CylinderGeometry(r0 + .035, r0 + .035, .09, seg), rustD, (ax + bx) / 2, y, (az + bz) / 2, dc ? 0 : 0, 0, dc ? 0 : Math.PI / 2); } });
+      if ((r + c) % 3 === 0 && !Q.low) { const ax = dc ? x0 + 1 + dc * .9 : x0 + 1, az = dc ? z0 + 1 : z0 + 1 + dr * .9; pb.add(new THREE.BoxGeometry(.22, 3.4, .22), rustD, ax, 1.7, az); }
+    });
+    if (c % 3 === 0) cylBetween(pb, [x0 + 1, 3.12, z0], [x0 + 1, 3.12, z0 + CELL], .09, rustM);
+  }));
+  pb.done(false, false);
+  // the cold blue pipe runs from the room to the crawler's vent, and the red-hot one from the room to the hole at the far end
+  const blueM = new StdMat({ color: 0x1e62c8, roughness: .3, emissive: 0x0a2c66, emissiveIntensity: .9, envMap: envTex, envMapIntensity: .6 }); pipeL.hotM = new StdMat({ color: 0xb8200e, roughness: .4, emissive: 0xff3a10, emissiveIntensity: 1.25 });
+  const bb = makeBatch(g), rb = makeBatch(g), Y = 1.08; [[[31, Y, 16.2], [22.2, Y, 16.2]], [[22.2, Y, 16.2], [22.2, Y, 20.2]], [[22.2, Y, 20.2], [6.2, Y, 20.2]], [[6.2, Y, 20.2], [6.2, Y, 9.8]], [[6.2, Y, 9.8], [8, Y, 6.6]]].forEach(([a0, b0]) => cylBetween(bb, a0, b0, .11, blueM)); bb.done(false, false);
+  [[[33, Y, 16.2], [43.8, Y, 16.2]], [[43.8, Y, 16.2], [43.8, Y, 22.2]], [[43.8, Y, 22.2], [57.8, Y, 22.2]], [[57.8, Y, 22.2], [57.8, Y, 37]], [[57.8, Y, 37], [53, Y, 40]], [[53, Y, 40], [53, .05, 40]]].forEach(([a0, b0]) => cylBetween(rb, a0, b0, .13, pipeL.hotM)); rb.done(false, false);
+  pipeL.hotLights = [[50, 23.4], [56.6, 31]].map(([x, z]) => { const l = new THREE.PointLight(0xff5420, 9, 10, 2); l.position.set(x, 1.5, z); g.add(l); return l; });
+  // the signs, gauges, and the steam that hisses out of the joints
+  const dangerT = wordsOn('DANGER\nHOT PIPES', 256, 128, '#f2d21c', '#111', 'bold 46px Arial', -.04), danger = new THREE.Mesh(new THREE.PlaneGeometry(1.1, .55), new THREE.MeshLambertMaterial({ map: dangerT })); danger.position.set(41.98, 1.8, 20.6); danger.rotation.y = -Math.PI / 2; danger.position.set(46, 1.85, 22.03); danger.rotation.y = 0; g.add(danger);
+  const gaugeT = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#eee7d3'; x.beginPath(); x.arc(64, 64, 60, 0, 7); x.fill(); x.lineWidth = 7; x.strokeStyle = '#4b3a28'; x.stroke(); x.strokeStyle = '#222'; x.lineWidth = 3; for (let i = 0; i <= 8; i++) { const a0 = 2.4 + i / 8 * 4.6; x.beginPath(); x.moveTo(64 + Math.cos(a0) * 50, 64 + Math.sin(a0) * 50); x.lineTo(64 + Math.cos(a0) * 41, 64 + Math.sin(a0) * 41); x.stroke(); } x.strokeStyle = '#c02020'; x.lineWidth = 7; x.beginPath(); x.arc(64, 64, 46, 5.4, 7); x.stroke(); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  [[28.5, 16.03], [37.5, 16.03], [14, 20.03]].forEach(([x, z], i) => { const gm = new THREE.Mesh(new THREE.CircleGeometry(.27, 24), new THREE.MeshBasicMaterial({ map: gaugeT, color: 0xbbbbbb })); gm.position.set(x, 1.92, z); g.add(gm); const n = new THREE.Group(); n.position.set(x, 1.92, z + .012); g.add(n); const nd = new THREE.Mesh(new THREE.BoxGeometry(.012, .2, .006), new THREE.MeshBasicMaterial({ color: 0xc01010 })); nd.position.y = .09; n.add(nd); pipeL.gaugeN.push({ n, ph: i * 2 }); });
+  const puff = softDot('225,225,225'), addSteam = (x, y, z, list) => { for (let i = 0; i < (Q.low ? 2 : 4); i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, transparent: true, opacity: 0, depthWrite: false })); sp.position.set(x, y, z); g.add(sp); list.push({ sp, x, y, z, ph: i / 4 + hash(x + i) }); } };
+  [[26, 2.4, 16.4], [40, 2.6, 16.4], [8, 2.4, 21], [36, 2.6, 31.4], [18, 2.6, 20.4]].forEach(([x, y, z]) => addSteam(x, y, z, pipeL.steam));
+  [[38, 1.3, 16.5], [48, 1.3, 22.6], [57.4, 1.3, 27], [57.4, 1.3, 33], [54.5, 1.4, 38.4]].forEach(([x, y, z]) => addSteam(x, y, z, pipeL.hotSteam));
+  // the big red valve wheel on the north wall, with the wrench stuck on it and a flashlight hanging beside it
+  const vx = 32, vz = 16.25; pipeL.vPos = V(vx, 0, vz + 1); const wheel = new THREE.Group(); wheel.position.set(vx, 1.55, vz + .16); g.add(wheel); pipeL.valve = wheel; const redW = new StdMat({ color: 0xb21218, roughness: .4, metalness: .3, envMap: envTex, envMapIntensity: .4 });
+  wheel.add(new THREE.Mesh(new THREE.TorusGeometry(.38, .042, 12, 34), redW)); [0, 1.05, 2.1].forEach(a0 => { const sp = new THREE.Mesh(new THREE.CylinderGeometry(.027, .027, .76, 10), redW); sp.rotation.z = a0; wheel.add(sp); }); wheel.add(new THREE.Mesh(new THREE.SphereGeometry(.075, 14, 10), redW));
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .3, 10), new StdMat({ color: 0x665544, metalness: .6, roughness: .4 })); stem.rotation.x = Math.PI / 2; stem.position.set(vx, 1.55, vz + .02); g.add(stem);
+  const steel = new StdMat({ color: 0x6d6f73, metalness: .75, roughness: .38, envMap: envTex, envMapIntensity: .5 }); pipeL.wrench = new THREE.Group(); pipeL.wrench.position.set(vx + .34, 1.26, vz + .24); pipeL.wrench.rotation.z = .5; g.add(pipeL.wrench); { const h = new THREE.Mesh(new THREE.BoxGeometry(.055, .62, .03), steel); h.position.y = -.26; pipeL.wrench.add(h); const j = new THREE.Mesh(new THREE.BoxGeometry(.16, .07, .05), steel); pipeL.wrench.add(j); const j2 = new THREE.Mesh(new THREE.BoxGeometry(.13, .05, .05), steel); j2.position.y = .1; pipeL.wrench.add(j2); }
+  pipeL.flash = new THREE.Group(); pipeL.flash.position.set(vx - .66, 1.3, vz + .17); g.add(pipeL.flash); { const b0 = new THREE.Mesh(new THREE.CylinderGeometry(.032, .032, .24, 12), new StdMat({ color: 0x20242a, roughness: .35 })); pipeL.flash.add(b0); const h = new THREE.Mesh(new THREE.CylinderGeometry(.056, .036, .08, 14), steel); h.position.y = -.15; pipeL.flash.add(h); const l0 = new THREE.Mesh(new THREE.CircleGeometry(.05, 14), new THREE.MeshBasicMaterial({ color: 0xffeeaa })); l0.rotation.x = Math.PI / 2; l0.position.y = -.195; pipeL.flash.add(l0); const str = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, .2, 4), new THREE.MeshBasicMaterial({ color: 0x111111 })); str.position.y = .21; pipeL.flash.add(str); }
+  { const cg = new THREE.PointLight(0xffb070, 7, 7, 2); cg.position.set(8, 2.6, 7.6); g.add(cg); }
+  const glowP = new THREE.PointLight(0xffe0a0, 2.4, 3, 2); glowP.position.set(vx - .1, 1.8, vz + .9); g.add(glowP);
+  // the hole at the end of the hot pipe
+  const hole = new THREE.Mesh(new THREE.CircleGeometry(1.15, 28), new THREE.MeshBasicMaterial({ color: 0x020202 })); hole.rotation.x = -Math.PI / 2; hole.position.set(53, .015, 40); g.add(hole); pipeL.hole = hole.position; const ring = new THREE.Mesh(new THREE.TorusGeometry(1.18, .07, 8, 30), rustD); ring.rotation.x = Math.PI / 2; ring.position.set(53, .04, 40); g.add(ring);
+  // the Pipe Crawler: a knot of rusty metal legs and tiny red lights, wedged behind a grate in the vent
+  const cr = new THREE.Group(); cr.position.set(8, 1.1, 5.4); g.add(cr); pipeL.crawler = cr; pipeL.crLegs = []; const body = new THREE.Mesh(new THREE.SphereGeometry(.46, 24, 18), new StdMat({ color: 0x5f3518, roughness: .55, metalness: .4 })); body.scale.set(1.2, .72, .9); cr.add(body); for (let i = 0; i < 14; i++) { const a0 = hash(i + 30) * 6.28, d0 = hash(i + 31) * 1.3, dot = new THREE.Mesh(new THREE.SphereGeometry(.03, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff2015 })); dot.position.set(Math.cos(a0) * .42 * Math.sin(d0), Math.cos(d0) * .28, Math.sin(a0) * .34 * Math.sin(d0) + .22); cr.add(dot); }
+  const legM = new StdMat({ color: 0x70431f, roughness: .5, metalness: .5 }), upG = new THREE.CylinderGeometry(.03, .022, .78, 6); upG.translate(0, -.39, 0); const loG = new THREE.CylinderGeometry(.022, .008, .95, 6); loG.translate(0, -.47, 0);
+  for (let i = 0; i < 10; i++) { const a0 = i / 10 * 6.283, h0 = new THREE.Group(); h0.position.set(Math.cos(a0) * .4, Math.sin(a0) * .18, 0); h0.rotation.set(0, 0, a0 + Math.PI / 2 + .5 * (i % 2 ? 1 : -1)); cr.add(h0); h0.add(new THREE.Mesh(upG, legM)); const kn = new THREE.Group(); kn.position.y = -.78; kn.rotation.z = (i % 2 ? -1 : 1) * 1.05; h0.add(kn); kn.add(new THREE.Mesh(loG, legM)); pipeL.crLegs.push({ h0, kn, base: h0.rotation.z, ph: i }); }
+  const gr = new THREE.Group(); gr.position.set(8, 1.25, 6.05); g.add(gr); pipeL.grate = gr; for (let i = 0; i <= 8; i++) { const bar = new THREE.Mesh(new THREE.CylinderGeometry(.018, .018, 1.8, 6), steel); bar.position.x = -1.1 + i * .275; gr.add(bar); } [-.9, .9].forEach(y => { const b0 = new THREE.Mesh(new THREE.BoxGeometry(2.3, .06, .05), steel); b0.position.y = y; gr.add(b0); }); pipeL.vent = V(8, 0, 6.6);
+  // three tiny mice that only ever run along the cold pipe
+  const mouseM = new StdMat({ color: 0x5e6066, roughness: .85 }); for (let i = 0; i < 3; i++) { const m0 = new THREE.Group(), b0 = new THREE.Mesh(new THREE.SphereGeometry(.06, 10, 8), mouseM); b0.scale.set(.8, .7, 1.5); b0.position.y = .05; m0.add(b0); const hd = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), mouseM); hd.position.set(0, .06, .1); m0.add(hd); const tl = new THREE.Mesh(new THREE.CylinderGeometry(.004, .002, .14, 4), mouseM); tl.rotation.x = Math.PI / 2 - .3; tl.position.set(0, .05, -.15); m0.add(tl); g.add(m0); pipeL.mice.push({ m: m0, k: i * .08, sp: .09 + i * .01 }); }
+}
+function steamFx(list, dt, t, on) { list.forEach(st => { const k = ((t * .5 + st.ph) % 1); st.sp.visible = on; if (!on) return; st.sp.position.set(st.x + Math.sin(k * 7 + st.ph * 9) * .25, st.y + k * 1.1 - .2, st.z + Math.cos(k * 5 + st.ph * 7) * .2); const sc = .35 + k * 1.5; st.sp.scale.set(sc, sc, 1); st.sp.material.opacity = Math.sin(k * Math.PI) * .42; }); }
+function updatePipes(dt, t) {
+  const P0 = pipeL; virusTrail(dt);
+  if ((P0.hiss -= dt) <= 0) { P0.hiss = 1 + Math.random() * 2.4; const st = P0.steam[Math.floor(Math.random() * P0.steam.length)]; soundAt(st.x, st.z, q => burst(4200, 1, .7, .2, 'highpass', q)); }
+  steamFx(P0.steam, dt, t, true); steamFx(P0.hotSteam, dt, t, P0.hot);
+  P0.gaugeN.forEach(g0 => { g0.n.rotation.z = 2 + Math.sin(t * 2.6 + g0.ph) * .22 + Math.sin(t * 19 + g0.ph) * .04; });
+  P0.mice.forEach(mo => { mo.k = (mo.k + dt * mo.sp) % 1; const pts = [[20, 21], [7, 21], [7, 8]], q0 = mo.k * 2, sg = Math.min(1, Math.floor(q0)), f0 = q0 - sg, a0 = pts[sg], b0 = pts[sg + 1]; mo.m.position.set(a0[0] + (b0[0] - a0[0]) * f0, 0, a0[1] + (b0[1] - a0[1]) * f0); mo.m.rotation.y = Math.atan2(b0[0] - a0[0], b0[1] - a0[1]); });
+  // the valve: flashlight first, then the wrench, then with the wrench you can shut off the hot pipe
+  if (P0.turning > 0) {
+    P0.turning += dt; P0.valve.rotation.z = -P0.turning * 2.4; if (Math.random() < dt * 12) burst(1400 + Math.random() * 900, 7, .1, .3, 'bandpass');
+    const k = Math.min(1, P0.turning / 2.2); P0.hotM.emissiveIntensity = 1.25 * (1 - k); P0.hotM.color.setRGB(.5 - k * .15, .12 + k * .22, .05 + k * .3); P0.hotLights.forEach(l => { l.intensity = 9 * (1 - k); });
+    if (k >= 1) { P0.turning = 0; P0.hot = false; frozen = false; viewLock = false; say('The hissing stops. The red-hot pipe fades to a dull grey.', 3.5); }
+    return;
+  }
+  if (Math.hypot(P0.vPos.x - player.x, P0.vPos.z - player.z) < 2.3) {
+    if (!gear.light) { hintText = '🔦 R'; actR = () => { gear.light = true; P0.flash.visible = false; showGear(); burst(2400, 6, .05, .4, 'bandpass'); say('You take the flashlight.', 2); }; }
+    else if (!gear.wrench) { hintText = '🔧 R'; actR = () => { gear.wrench = true; P0.wrench.visible = false; showGear(); burst(1200, 5, .08, .4, 'bandpass'); say('You work the rusty pipe wrench off the valve.', 2.5); }; }
+    else if (P0.hot) { hintText = '🔴 R'; actR = () => { P0.turning = .001; frozen = true; player.vx = player.vz = 0; screech(); say('You clamp the wrench on the big red valve and pull with everything you have.', 3); }; }
+  }
+  // the hot pipe: walk along it while it is live and it bursts
+  if (P0.hot) { const heat = player.x > 44 ? Math.min(1, (player.x - 44) / 10 + Math.max(0, player.z - 26) / 8) : 0; $('dark').style.opacity = Math.max(parseFloat($('dark').style.opacity) || 0, heat * .5).toFixed(2); if (player.z > 33 && player.x > 50) { burst(5200, 1, 1.6, 1.4, 'highpass'); shake = 1; grabDeath({ white: '#e8e8e8', fadeAt: .3, title: 'Steam', text: 'The red pipe gets hotter and hotter. A valve bursts. The steam is the last thing you ever feel.' }); return; } }
+  else if (Math.hypot(P0.hole.x - player.x, P0.hole.z - player.z) < 2.2) { hintText = '🕳️ R'; actR = () => { burst(90, 1, .4, 1.2, 'lowpass'); goLevel(L8, () => { player.yaw = 0; bringVirus(1.4, .9); say(L8.intro, 4); }); }; }
+  // the Pipe Crawler in the vent: it notices you, and it will not wait long
+  const crd = Math.hypot(P0.crawler.position.x - player.x, P0.crawler.position.z - player.z);
+  if (!P0.crawlDead) {
+    P0.crLegs.forEach(lg => { const tw = crd < 7 ? 1 : .35; lg.h0.rotation.z = lg.base + Math.sin(t * 7 * tw + lg.ph) * .09 * tw; lg.kn.rotation.x = Math.sin(t * 5 + lg.ph * 2) * .1 * tw; });
+    if (crd < 7 && Math.random() < dt * 5) burst(2400 + Math.random() * 1500, 9, .03, .25, 'bandpass');
+    if (crd < 4.6) {
+      if (!P0.crawlSeen) { P0.crawlSeen = true; say('Something is wedged inside the vent: a knot of rusty metal legs and tiny red lights. <b>It clicks. It has noticed you.</b>', 4); }
+      P0.crawlT += dt; hintText = gear.wrench ? '🔧 R' : '🕷️ R';
+      actR = () => {
+        if (gear.wrench) { P0.crawlDead = true; P0.grate.visible = false; P0.crawler.rotation.z = 2.6; P0.crawler.position.set(8, .3, 7); shake = .7; burst(700, 3, .3, 1.1, 'bandpass'); burst(180, 1, .5, 1.4, 'lowpass'); say('You lock the wrench on a bolt and twist. A whole leg falls off with a clang. Then another. It stops clicking.', 4); }
+        else { setSanity(Math.max(1, sanity - 15)); shake = .4; burst(2800, 7, .4, .5, 'bandpass'); say('You squeeze past it. Cold metal legs drag over your back. Your hands will not stop shaking.', 3.5); P0.squeezed = true; P0.crawlDead = true; }
+      };
+      if (P0.crawlT > 9) { P0.grate.visible = false; grabDeath({ mob: P0.crawler, y: 1.35, dist: .85, lift: -.35, far: 6, grip: { c: 0x5f3518, e: 0x180a02 }, title: 'The Pipe Crawler got you', text: 'It unfolds out of the vent and clicks right up your arm. It is very, very fast.', pose(k, t2) { P0.crLegs.forEach(lg => { lg.h0.rotation.z = lg.base + Math.sin(t2 * 30 + lg.ph) * .3; }); } }); return; }
+    } else P0.crawlT = Math.max(0, P0.crawlT - dt);
+  } else if (crd < 8 && Math.hypot(P0.vent.x - player.x, P0.vent.z - player.z) < 3.4) { hintText = '🕳️ R'; actR = () => { burst(1200, 3, .25, .4, 'bandpass'); goLevel(L8, () => { player.yaw = 0; bringVirus(1.4, .9); say(L8.intro, 4); }); }; }
+}
+
+// ---- Lights Out: nothing to see but red eyes. They hate light. ----
+const lightsL = { eyes: [], whisper: 0, hum: 0, bugT: 0, exit: V(33, 0, 6), wPos: V(4, 0, 15), said: false };
+{
+  const g = L8.group, eyeT = softDot('255,35,25'), hm = new THREE.MeshLambertMaterial({ color: 0x08070a });
+  lightsL.spot = new THREE.SpotLight(0xfff0d0, 0, 26, .46, .55, 1.25); g.add(lightsL.spot, lightsL.spot.target);
+  lightsL.bug = new THREE.PointLight(0x9dff7a, 0, 7, 2); g.add(lightsL.bug);
+  const spots = [[20, 14], [36, 26], [24, 18], [40, 20], [47, 15], [56, 8], [14, 32], [44, 5]];
+  spots.forEach(([x, z], i) => {
+    const m = new THREE.Group(), bd = new THREE.Mesh(new THREE.CapsuleGeometry(.24, 1.1, 6, 12), hm); bd.position.y = .95; bd.scale.set(.8, 1, .55); m.add(bd); const hd = new THREE.Mesh(new THREE.SphereGeometry(.22, 14, 10), hm); hd.position.y = 1.72; m.add(hd);
+    [-1, 1].forEach(sd => { const ar = new THREE.Mesh(new THREE.CapsuleGeometry(.05, 1.05, 4, 8), hm); ar.position.set(sd * .32, 1.02, .06); ar.rotation.z = sd * .14; m.add(ar); const e = new THREE.Sprite(new THREE.SpriteMaterial({ map: eyeT, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: true, fog: false, transparent: true })); e.position.set(sd * .085, 1.74, .22); e.scale.setScalar(.2); m.add(e); });
+    m.position.set(x + 1, 0, z + 1); g.add(m); lightsL.eyes.push({ m, home: [x + 1, z + 1], state: 'idle', re: 0, tg: null, t: hash(i) * 3, blink: hash(i + 2) * 4, ph: hash(i + 5) * 6 });
+  });
+  // the shape that does the whispering, its door, and the other shut doors along the halls
+  const whisper = new THREE.Group(); whisper.position.copy(lightsL.wPos); whisper.position.x = 3.6; g.add(whisper); const wb = new THREE.Mesh(new THREE.CapsuleGeometry(.3, 1.9, 6, 12), hm); wb.position.y = 1.35; wb.scale.z = .5; whisper.add(wb); const whiteDot = new THREE.MeshBasicMaterial({ color: 0xe8ecff, fog: false }); [-1, 1].forEach(sd => { const ey = new THREE.Mesh(new THREE.SphereGeometry(.025, 8, 6), whiteDot); ey.position.set(sd * .075, 2.25, .15); ey.rotation.y = Math.PI / 2; whisper.add(ey); }); whisper.rotation.y = Math.PI / 2;
+  const db = makeBatch(g), doorD = new StdMat({ color: 0x2b2c30, roughness: .55 }), frame = new StdMat({ color: 0x46484e, roughness: .7 }), knob = new StdMat({ color: 0x8a8678, metalness: .7, roughness: .4 });
+  [[20, 12.03, 0], [26, 12.03, 0], [34, 12.03, 0], [42, 12.03, 0], [31.97, 26, -Math.PI / 2], [31.97, 34, -Math.PI / 2], [40, 7.97, Math.PI], [48, 7.97, Math.PI]].forEach(([x, z, ry]) => { db.base.makeRotationY(ry).setPosition(x, 0, z); db.add(new THREE.BoxGeometry(1.25, 2.3, .06), frame, 0, 1.15, 0); db.add(new THREE.BoxGeometry(1.05, 2.15, .08), doorD, 0, 1.08, .02); db.add(new THREE.SphereGeometry(.04, 10, 8), knob, .4, 1.05, .08); }); db.done(false, false); db.base.identity();
+  // the way out: a door frame rimmed with faint red light, and a slope of light under it
+  const rl = new THREE.PointLight(0xff2010, 8, 13, 2); rl.position.set(33.6, 1.6, 6); g.add(rl); lightsL.redL = rl; const rimT = new THREE.MeshBasicMaterial({ color: 0xff2a14, fog: false }); [[-.62, 1.15, .06, 2.36], [.62, 1.15, .06, 2.36], [0, 2.33, 1.3, .06]].forEach(([x, y, w, h]) => { const bm = new THREE.Mesh(new THREE.PlaneGeometry(w, h), rimT); bm.position.set(32.03, y, 6 + x); bm.rotation.y = Math.PI / 2; g.add(bm); });
+  // a drifting cloud of glow bugs at the crossroads
+  const n = Q.low ? 28 : 70, bp = new Float32Array(n * 3); lightsL.bugBase = []; for (let i = 0; i < n; i++) lightsL.bugBase.push([(hash(i + 70) - .5) * 2.4, .7 + hash(i + 71) * 1.6, (hash(i + 72) - .5) * 2.4, hash(i + 73) * 6]);
+  const bg0 = new THREE.BufferGeometry(); bg0.setAttribute('position', new THREE.BufferAttribute(bp, 3)); lightsL.bugs = new THREE.Points(bg0, new THREE.PointsMaterial({ color: 0xaaff66, size: .075, map: softDot(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); lightsL.bugs.position.set(38, 0, 15); lightsL.bugs.frustumCulled = false; g.add(lightsL.bugs);
+}
+function updateLights(dt, t) {
+  const P0 = lightsL; virusTrail(dt, 2.2, 5);
+  // your own light
+  const cp = Math.cos(look.pitch), fx0 = -Math.sin(player.yaw) * cp, fy0 = Math.sin(look.pitch), fz0 = -Math.cos(player.yaw) * cp, cy = camera.position.y;
+  P0.spot.position.set(player.x + fx0 * .1 + Math.cos(player.yaw) * .2, cy - .25, player.z + fz0 * .1 - Math.sin(player.yaw) * .2); P0.spot.target.position.set(player.x + fx0 * 8, cy + fy0 * 8, player.z + fz0 * 8);
+  P0.spot.intensity = gear.lightOn ? 420 : 0; P0.bug.position.set(player.x, cy - .35, player.z); P0.bug.intensity = gear.bugs ? 1.8 + Math.sin(t * 7) * .3 : 0;
+  // the sounds that tell you where to go, and where not to
+  if ((P0.whisper -= dt) <= 0) { P0.whisper = .7 + Math.random() * 1.1; soundAt(P0.wPos.x, P0.wPos.z, q => { burst(3400 + Math.random() * 1400, 7, .45, 1.4, 'bandpass', q); }); }
+  if ((P0.hum -= dt) <= 0) { P0.hum = .55; soundAt(P0.exit.x, P0.exit.z, q => burst(118, 12, .6, 3, 'bandpass', q)); }
+  P0.redL.intensity = 7 + Math.sin(t * 9) * 1.5;
+  // walking toward the whispering
+  if (player.x < 6 && player.z > 8) { burst(3000, 7, 1.6, 1.8, 'bandpass'); handsOfTheDark('The whispers', 'The whispering knows your name. It says it one more time, right behind your ear. Then the dark closes in.'); return; }
+  // the glow bugs
+  if (!gear.bugs && !gear.lightOn) { const bx = P0.bugs.position, d0 = Math.hypot(bx.x - player.x, bx.z - player.z); if (d0 < 2.8) { hintText = '🪲 R'; actR = () => { gear.bugs = true; showGear(); say('You cup a handful of glow bugs. They glow brighter. Somewhere ahead, something shrieks and backs away.', 4); }; } }
+  { const pa = P0.bugs.geometry.attributes.position; P0.bugBase.forEach(([x, y, z, ph], i) => pa.setXYZ(i, x + Math.sin(t * .7 + ph) * .4, y + Math.sin(t * 1.1 + ph * 2) * .25, z + Math.cos(t * .6 + ph) * .4)); pa.needsUpdate = true; if (gear.bugs) P0.bugs.position.set(player.x, 0, player.z); }
+  // the red eyes: they drift closer whenever they are not being lit
+  P0.eyes.forEach(q => {
+    const m = q.m, dx = player.x - m.position.x, dz = player.z - m.position.z, d0 = Math.hypot(dx, dz); q.t += dt;
+    const lit = (gear.lightOn && d0 < 15 && lookingAt(m.position.x, 1.5, m.position.z, .87) && clearLine(player.x, player.z, m.position.x, m.position.z)) || (gear.bugs && d0 < 4.5);
+    if (lit && q.state !== 'flee') { q.state = 'flee'; q.t = 0; soundAt(m.position.x, m.position.z, p2 => { burst(2100, 3, .5, 1.3, 'bandpass', p2); }); }
+    if (q.state === 'flee') { const n0 = d0 || 1; const nx = m.position.x - dx / n0 * 6 * dt, nz = m.position.z - dz / n0 * 6 * dt; if (!L8.wall(Math.floor(nz / CELL), Math.floor(nx / CELL))) { m.position.x = nx; m.position.z = nz; } if (q.t > 2.2) { q.state = 'gone'; q.t = 0; m.visible = false; } }
+    else if (q.state === 'gone') { if (q.t > 9 && d0 > 11) { q.state = 'idle'; q.t = 0; m.visible = true; m.position.set(q.home[0], 0, q.home[1]); } }
+    else if (d0 < 15) {
+      if ((q.re -= dt) <= 0 || !q.tg) { q.re = .4; q.tg = nextCell(Math.floor(m.position.z / CELL), Math.floor(m.position.x / CELL), Math.floor(player.z / CELL), Math.floor(player.x / CELL)); }
+      const same = q.tg[0] === Math.floor(m.position.z / CELL) && q.tg[1] === Math.floor(m.position.x / CELL), tx = same ? player.x : q.tg[1] * CELL + 1, tz = same ? player.z : q.tg[0] * CELL + 1, mx = tx - m.position.x, mz = tz - m.position.z, md = Math.hypot(mx, mz) || 1, sp2 = Math.min(1.45, md / Math.max(dt, .001)) ; m.position.x += mx / md * sp2 * dt; m.position.z += mz / md * sp2 * dt; m.rotation.y = Math.atan2(dx, dz);
+      if (d0 < 1) { handsOfTheDark('Lights out', 'A pair of red eyes opens right in front of your face. Cold hands find you in the dark.', { start() { m.visible = true; } }); return; }
+    }
+    if (q.state !== 'gone') { const blink = Math.sin(t * .9 + q.ph) > .96 ? .05 : 1; m.children.forEach(o => { if (o.isSprite) o.scale.setScalar(.2 * blink); }); m.position.y = Math.sin(t * 2 + q.ph) * .012; }
+  });
+  // the way on
+  if (Math.hypot(P0.exit.x - player.x, P0.exit.z - player.z) < 2.6) { hintText = '🚪 R'; actR = () => { burst(90, 1, .4, 1.3, 'lowpass'); goLevel(L9, startRun); }; }
+}
+
+// ---- Level !: Run For Your Life ----
+const runL = { state: 'off', t: 0, z: 0, door: 3.05, slide: 0, shake: 0, rum: null, done: false };
+{
+  const g = L9.group, X0 = 9, doorZ = 76, wall = (txt, z, sd, sc = 1.0, col = '#f1d2c8') => { const t0 = wordsOn(txt, 1024, 256, null, col, 'bold 118px Arial Black, Arial', sd * .05), m = new THREE.Mesh(new THREE.PlaneGeometry(5 * sc, 1.25 * sc), new THREE.MeshBasicMaterial({ map: t0, transparent: true, depthWrite: false, color: 0xcfa59a })); m.position.set(X0 + sd * 2.97, 2.1, z); m.rotation.y = -sd * Math.PI / 2; g.add(m); };
+  wall('RUN', 13, -1, .95); wall('FOR', 24, 1, .95); wall('YOUR LIFE', 36, -1, 1.2); wall("DON'T STOP", 50, 1, 1.1); wall('NEARLY', 63, -1, .9);
+  const arrowT = wordsOn("DON'T STOP\n⬇ ⬇ ⬇", 512, 256, null, '#d9c9c0', 'bold 66px Arial Black, Arial'); [20, 44, 68].forEach(z => { const ar = new THREE.Mesh(new THREE.PlaneGeometry(4, 2), new THREE.MeshBasicMaterial({ map: arrowT, transparent: true, depthWrite: false, opacity: .75 })); ar.rotation.set(-Math.PI / 2, 0, Math.PI); ar.position.set(X0, .012, z); g.add(ar); });
+  // numbered doors all along the hall, and fallen ceiling lamps and debris on the floor
+  const db = makeBatch(g), doorM = new StdMat({ color: 0x3b0b0b, roughness: .55 }), frameM = new StdMat({ color: 0x1f0505, roughness: .7 }), knobM = new StdMat({ color: 0x7f6b5c, metalness: .7, roughness: .4 }); [[8, -1, 'M13'], [14, 1, 'M12'], [20, -1, 'M13B'], [28, 1, 'M26'], [34, -1, 'M31'], [42, 1, 'M38'], [48, -1, 'M13'], [56, 1, 'M44'], [60, -1, 'M13'], [70, 1, 'M!']].forEach(([z, sd, lab]) => { db.base.makeRotationY(sd * Math.PI / 2).setPosition(X0 + sd * 2.97, 0, z); db.add(new THREE.BoxGeometry(1.35, 2.44, .05), frameM, 0, 1.22, 0); db.add(new THREE.BoxGeometry(1.14, 2.26, .08), doorM, 0, 1.14, .02); db.add(new THREE.SphereGeometry(.04, 10, 8), knobM, .43, 1.05, .08); const la = new THREE.Mesh(new THREE.PlaneGeometry(.62, .24), new THREE.MeshBasicMaterial({ map: wordsOn(lab, 256, 96, null, '#d8b6aa', 'bold 74px Arial'), transparent: true, depthWrite: false })); la.position.set(X0 + sd * 2.9, 2.62, z); la.rotation.y = -sd * Math.PI / 2; g.add(la); }); db.base.identity();
+  const debM = new StdMat({ color: 0x1b0606, roughness: .85 }); for (let i = 0; i < (Q.low ? 14 : 34); i++) db.add(new THREE.BoxGeometry(.08 + hash(i) * .28, .03 + hash(i + 1) * .05, .05 + hash(i + 2) * .24), debM, X0 + (hash(i + 3) - .5) * 5.2, .03, 5 + hash(i + 4) * 68, 0, hash(i + 5) * 6, 0); db.done(false, false);
+  // the heavy door at the far end, sliding shut, with hazard stripes along its bottom edge
+  const stripeT = (() => { const c = document.createElement('canvas'); c.width = 256; c.height = 32; const x = c.getContext('2d'); x.fillStyle = '#d2b61e'; x.fillRect(0, 0, 256, 32); x.fillStyle = '#141414'; for (let i = -2; i < 12; i++) { x.save(); x.translate(i * 32, 0); x.transform(1, 0, .7, 1, 0, 0); x.fillRect(0, 0, 16, 32); x.restore(); } const t = new THREE.CanvasTexture(c); t.wrapS = THREE.RepeatWrapping; t.repeat.set(2, 1); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  const door = new THREE.Group(); door.position.set(X0, 0, doorZ + .3); g.add(door); runL.doorM = door; const slab = new StdMat({ color: 0x54565a, metalness: .7, roughness: .45, envMap: envTex, envMapIntensity: .3 }); const sb = new THREE.Mesh(new THREE.BoxGeometry(6.1, 3.5, .4), slab); sb.position.y = 1.75; door.add(sb); const hz = new THREE.Mesh(new THREE.PlaneGeometry(6.1, .32), new THREE.MeshBasicMaterial({ map: stripeT })); hz.position.set(0, .17, -.205); hz.rotation.y = Math.PI; door.add(hz); [1, 2.2].forEach(y => { const rb = new THREE.Mesh(new THREE.BoxGeometry(6.1, .1, .05), new StdMat({ color: 0x35373a, metalness: .7, roughness: .5 })); rb.position.set(0, y, -.22); door.add(rb); });
+  [[-3.05, .2], [3.05, .2]].forEach(([dx, w]) => { const fr = new THREE.Mesh(new THREE.BoxGeometry(w, 3.4, .7), new StdMat({ color: 0x1c1212, roughness: .6, metalness: .5 })); fr.position.set(X0 + dx, 1.7, doorZ + .1); g.add(fr); });
+  const pastL = new THREE.PointLight(0xdfe7ff, 4, 8, 2); pastL.position.set(X0, 1.2, doorZ + 3); g.add(pastL);
+  // the Red Dark: a wall of moving black smoke, with white eyes somewhere inside it
+  const wallG = new THREE.Group(); g.add(wallG); runL.wall = wallG; runL.puffs = []; const smoke = softDot('2,1,2'); const count = Q.low ? 26 : 70;
+  for (let i = 0; i < count; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: smoke, transparent: true, depthWrite: false, fog: false, opacity: .96 })); const px = (hash(i + 1) - .5) * 7.4, py = hash(i + 2) * 3.8, pz = -hash(i + 3) * 5 - i % 3; sp.position.set(px, py, pz); const sc = 2.6 + hash(i + 4) * 3; sp.scale.set(sc, sc, 1); wallG.add(sp); runL.puffs.push({ sp, px, py, pz, ph: hash(i + 5) * 6 }); }
+  const backing = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 3.6), new THREE.MeshBasicMaterial({ color: 0x010101, fog: false, side: THREE.DoubleSide })); backing.position.set(0, 1.7, -3.6); wallG.add(backing);
+  const whiteE = new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false }); [[-.75, 1.9], [-.45, 1.92], [.5, 1.5], [.76, 1.52], [-1.6, 1.15], [-1.4, 1.16], [1.7, 2.3], [1.96, 2.32]].forEach(([x, y]) => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 10, 8), whiteE); e.position.set(x, y, .4); wallG.add(e); });
+  wallG.visible = false;
+}
+function startRun() {
+  Object.assign(runL, { state: 'wait', t: 0, z: 2, door: 3.05, slide: 0, done: false, shouted: false }); runL.doorM.position.y = runL.door; runL.wall.visible = false; stamina = 1; player.yaw = Math.PI; L9.lights.forEach(l => { l.base0 = l.base0 || l.base; l.base = 0; l.p.intensity = 0; }); bringVirus(-1.5, -1.2); say('The lights go out for a moment...', 1.2);
+}
+function updateRun(dt, t) {
+  const R0 = runL; R0.t += dt; if (!frozen) virusTrail(dt, 3.2, 8);
+  if (R0.state === 'wait') {
+    if (R0.t > 1.1) { R0.state = 'go'; R0.t = 0; L9.lights.forEach(l => { l.base = l.base0; }); burst(90, 1, .5, 2, 'lowpass'); burst(1800, 5, .1, .5, 'bandpass'); shake = .35; say(L9.intro + ' Down the hall, the dark is moving. <b>At the far end, a heavy door is sliding shut.</b>', 3.5); R0.wall.visible = true; R0.z = player.z - 11; if (audio) { const o = audio.createOscillator(), f = audio.createBiquadFilter(), g0 = audio.createGain(); o.type = 'sawtooth'; o.frequency.value = 38; f.type = 'lowpass'; f.frequency.value = 190; g0.gain.value = 0; o.connect(f).connect(g0).connect(audio.destination); o.start(); R0.rum = { o, g0 }; } }
+    return;
+  }
+  if (R0.state === 'after') { if (R0.t > 2.6 && !R0.done) { R0.done = true; ending('To be continued...', 'You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops. The virus sits down next to you, breathing hard. "We are deeper than anyone has ever gone," it says. "And I think I know where the real exit is." You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); } return; }
+  // the dark comes on, faster than you can walk
+  R0.z += (R0.state === 'go' ? 4.05 : 1) * dt; R0.wall.position.set(9, 0, R0.z); R0.puffs.forEach(q => { q.sp.position.x = q.px + Math.sin(t * 1.3 + q.ph) * .3; q.sp.position.y = q.py + Math.sin(t * 1.7 + q.ph * 2) * .25; q.sp.material.rotation = t * .25 + q.ph; });
+  L9.lights.forEach(l => { const lamp = l.p.position.z; l.base = lamp < R0.z + 1 ? 0 : l.base0; l.lamp.visible = lamp > R0.z + 1; });
+  const gap = player.z - R0.z; if (R0.rum) { R0.rum.g0.gain.value = Math.min(.55, 4 / Math.max(2, gap) * .55); R0.rum.o.frequency.value = 36 + Math.max(0, 12 - gap) * 2; }
+  $('dark').style.opacity = Math.max(0, Math.min(.85, (9 - gap) / 9)).toFixed(2); if (gap < 6) shake = Math.max(shake, (6 - gap) * .05);
+  // the door drops all the way down over about half a minute
+  R0.door = Math.max(0, 3.05 * (1 - R0.t / 30)); R0.doorM.position.y = R0.door; const dd = 76 - player.z;
+  if (Math.floor(R0.t * 1.2) !== Math.floor((R0.t - dt) * 1.2)) soundAt(9, 76, q => burst(420, 3, .22, 1.5, 'bandpass', q));
+  if (R0.slide > 0) {
+    R0.slide += dt; const k = Math.min(1, R0.slide / .75); player.vx = player.vz = 0; player.x += (9 - player.x) * Math.min(1, dt * 6); player.z = R0.sz + (79.2 - R0.sz) * k * k * (3 - 2 * k); camH += (.5 - camH) * Math.min(1, dt * 14); look.pitch += (.08 - look.pitch) * Math.min(1, dt * 8); camRoll = Math.sin(k * Math.PI) * .09;
+    virus.position.set(player.x + 1.6, 0, Math.min(79.5, player.z - .8)); if (Math.random() < dt * 22) burst(600 + Math.random() * 600, 2, .08, .5, 'bandpass');
+    if (k >= 1) { R0.state = 'after'; R0.t = 0; R0.door = 0; R0.doorM.position.y = 0; R0.wall.visible = false; camRoll = 0; frozen = true; viewLock = true; if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } burst(60, 1, .7, 3, 'lowpass'); shake = 1; virus.position.set(player.x + 1.8, 0, player.z + 1.2); $('dark').style.opacity = 0; [.5, 1.1, 1.7].forEach(s0 => setTimeout(() => burst(80, 1, .3, 1.8, 'lowpass'), s0 * 1000)); say('Something hits the metal again and again... then it stops.', 3); }
+    return;
+  }
+  if (dd < 7 && !R0.shouted) { R0.shouted = true; say('<b>SLIDE!</b>', 2); }
+  if (dd < 6.2 && R0.door > .32) { hintText = '⬇️ C'; if (keys['c']) { R0.slide = .001; R0.sz = player.z; frozen = true; viewLock = true; burst(900, 1, .4, .8, 'bandpass'); return; } }
+  if (R0.door <= .32) { R0.doorM.position.y = 0; burst(55, 1, .7, 3, 'lowpass'); if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } handsOfTheDark('You were not fast enough', 'The door slams shut. The lights flicker red one last time. Then nothing.'); return; }
+  if (gap < 1.1) { if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } handsOfTheDark('You were not fast enough', 'You did not stop, and it did not either. The lights flicker red one last time. Then nothing.'); }
+}
+
 // ---------- always, and starting over ----------
 function updateLevelsAlways(dt, t) {
   if (L === L3) {
@@ -2962,6 +3253,11 @@ function updateLevelsAlways(dt, t) {
   if (L === L4) { park.fw.rotation.z += dt * .12; park.seats.forEach(({ seat }) => { seat.rotation.z = -park.fw.rotation.z; }); park.carousel.rotation.y += dt * .35; park.spin.forEach((h, i) => { h.position.y = Math.sin(t * 2 + i) * .22; }); }
 }
 function resetNewLevels() {
+  Object.assign(gear, { photo: false, light: false, wrench: false, lightOn: false, bugs: false }); $('gear').textContent = '';
+  Object.assign(poopR, { talk: 0, said: 0, fall: 0, flash: 0 }); poopR.guests.forEach(q => { q.down = 0; });
+  Object.assign(pipeL, { hot: true, turning: 0, crawlT: 0, crawlDead: false, crawlSeen: false, squeezed: false }); pipeL.flash.visible = true; pipeL.wrench.visible = true; pipeL.grate.visible = true; pipeL.hotM.emissiveIntensity = 1.25; pipeL.hotM.color.setHex(0xb8200e); pipeL.hotLights.forEach(l => { l.intensity = 9; }); pipeL.crawler.position.set(8, 1.1, 5.4); pipeL.crawler.rotation.set(0, 0, 0);
+  lightsL.eyes.forEach(q => { q.state = 'idle'; q.t = 0; q.m.visible = true; q.m.position.set(q.home[0], 0, q.home[1]); q.tg = null; }); lightsL.spot.intensity = 0; lightsL.bug.intensity = 0; lightsL.bugs.position.set(38, 0, 15);
+  if (runL.rum) { runL.rum.o.stop(); runL.rum = null; } Object.assign(runL, { state: 'off', t: 0, done: false, slide: 0 }); runL.wall.visible = false;
   frozen = false; viewLock = false; ride.y = 0; ride.pitch = 0; stopEngine();
   Object.assign(town, { phase: 'walk', t: 0, light: 1, v: 0, seen: 0, vanX: roadX(42), vanZ: 42, vanYaw: Math.atan2(roadX(43) - roadX(41), 2), nightDone: false, platDown: false, fell: false, black: false });
   town.vanOut.visible = true; town.vanIn.visible = false; town.watchers.forEach(w => w.w.visible = false); town.platform.position.y = 60;
@@ -2972,7 +3268,7 @@ function resetNewLevels() {
   fun.pg.forEach(q => { q.m.position.set(q.home[1] * CELL + 1, 0, q.home[0] * CELL + 1); q.state = 'wander'; q.tg = null; q.dest = null; q.arms.forEach(a => a.rotation.set(0, 0, 0)); q.fores.forEach(a => a.rotation.x = -.15); });
   limbs.forEach(l => l.rotation.x = 0);
 }
-window.__game = { setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { gear, poopR, pipeL, lightsL, runL, startRun, setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock(); let frameNo = 0;
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -2997,7 +3293,7 @@ function tick() {
     if (drawing > 0 && (drawing -= dt) <= 0) { setArmed(true); say('You finally get your ' + WEAPONS[weapon].name + ' out.', 2); }
     stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
     $('stam').style.width = (stamina * 100) + '%';
-    if ((sanClock += dt * (L.drain || 1)) >= 6) { sanClock -= 6; setSanity(sanity - 1); }
+    if ((sanClock += dt * (sprint ? 1 : .5) * (gear.photo ? .8 : 1)) >= 1) { sanClock -= 1; setSanity(sanity - 1); }   // 1 every 2 seconds, or 1 every second while sprinting; the Partypooper photo slows it a little
     if (sanity <= 0) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left.');
     // where you want to go, and how fast; in deep water you push against it, so you speed up and slow down slowly
     const sp = (mv || st) ? (sprint ? 5.5 : 3) * (crouching ? .47 : 1) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) / Math.hypot(mv, st) : 0;
@@ -3041,6 +3337,10 @@ function tick() {
       if (L === L3) updateTown(dt, t);
       if (L === L4) updatePark(dt, t);
       if (L === L5) updateFun(dt, t);
+      if (L === L6) updatePoopers(dt, t);
+      if (L === L7) updatePipes(dt, t);
+      if (L === L8) updateLights(dt, t);
+      if (L === L9) updateRun(dt, t);
       if (L === L2) {
         const pr = Math.floor(player.z / CELL), pc = Math.floor(player.x / CELL);
         if (L.map[pr][pc] === 'B') vaporize();
