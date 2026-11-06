@@ -513,7 +513,7 @@ function buildLevel(L) {
     const wet = ch2 => L.allWet ? !'#PC'.includes(ch2) : '~BL'.includes(ch2);
     if (wet(ch)) {   // clear water you wade through, or black water that kills you, a foot deep, with see-through sides at the edges
       const dep = L.waterDepth || .02, mat = ch === 'B' ? blackWater : clearWater;
-      if (!(Q.low && L.allWet && ch !== 'B')) { const m = new THREE.Mesh(waterGeo, mat); m.rotation.x = -Math.PI / 2; m.position.set(x, dep + (ch === 'B' ? .003 : 0), z); g.add(m); }
+      if (!(Q.low && L.allWet && ch !== 'B')) { const m = new THREE.Mesh(waterGeo, mat); m.rotation.x = -Math.PI / 2; m.position.set(x, dep + (ch === 'B' ? (Q.low && L.allWet ? .07 : .003) : 0), z); g.add(m); }
       if (L.waterDepth) DIRS.forEach(([dr, dc]) => {
         const n = (map[r + dr] || '')[c + dc];
         if (!n || wet(n) || L.wall(r + dr, c + dc)) return;
