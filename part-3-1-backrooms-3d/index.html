@@ -3128,17 +3128,17 @@ function updateVirusRage(dt, t) {
     return;
   }
   if (r0.phase === 1) {   // it comes apart at them, one after another
-    const g0 = 1 + .34 * Math.min(1, r0.t * 3); virus.scale.set(.97 * g0, .97 * g0, .97 * g0);
+    const g0 = 1 + .1 * Math.min(1, r0.t * 3); virus.scale.set(.97 * g0, .97 * g0, .97 * g0);
     if (r0.wait > 0) { r0.wait -= dt; virus.position.y *= .8; return; }
     if (!r0.target || r0.target.dead) { r0.target = alive.slice().sort((a, b) => Math.hypot(a.m.position.x - virus.position.x, a.m.position.z - virus.position.z) - Math.hypot(b.m.position.x - virus.position.x, b.m.position.z - virus.position.z))[0]; r0.from = Math.hypot((r0.target?.m.position.x ?? 0) - virus.position.x, (r0.target?.m.position.z ?? 0) - virus.position.z) || 1; }
     if (!r0.target) { r0.phase = 2; r0.t = 0; return; }
-    const m = r0.target.m, dx = m.position.x - virus.position.x, dz = m.position.z - virus.position.z, d0 = Math.hypot(dx, dz) || 1, st = Math.min(d0, 19 * dt); virus.position.x += dx / d0 * st; virus.position.z += dz / d0 * st; virus.rotation.set(.75, Math.atan2(dx, dz), 0); virus.position.y = Math.sin(Math.min(1, 1 - d0 / r0.from) * Math.PI) * Math.min(2.2, r0.from * .22);
+    const m = r0.target.m, dx = m.position.x - virus.position.x, dz = m.position.z - virus.position.z, d0 = Math.hypot(dx, dz) || 1, st = Math.min(d0, 19 * dt); virus.position.x += dx / d0 * st; virus.position.z += dz / d0 * st; virus.rotation.set(.75, Math.atan2(dx, dz), 0); virus.position.y = Math.sin(Math.min(1, 1 - d0 / r0.from) * Math.PI) * Math.min(.12, r0.from * .03);
     r0.ph = (r0.ph || 0) + dt * 34; limbs.forEach((l, i) => { l.rotation.x = Math.sin(r0.ph + i * 1.6) * .9; });
     if (d0 < 1.05) { killPartygoer(r0.target); r0.target = null; r0.wait = .2; }
     return;
   }
   // it stands in the wreck, shaking, and folds back down
-  const k = Math.min(1, r0.t / 1.6), g0 = 1.34 - .34 * k; virus.scale.set(.97 * g0, .97 * g0, .97 * g0); virus.position.y *= .85; virus.rotation.x *= .9; limbs.forEach((l, i) => { l.rotation.x = Math.sin(t * 22 + i) * .1 * (1 - k); });
+  const k = Math.min(1, r0.t / 1.6), g0 = 1.1 - .1 * k; virus.scale.set(.97 * g0, .97 * g0, .97 * g0); virus.position.y *= .85; virus.rotation.x *= .9; limbs.forEach((l, i) => { l.rotation.x = Math.sin(t * 22 + i) * .1 * (1 - k); });
   if (k >= 1) { f.rage = null; f.allDead = true; virus.position.y = 0; say('"They should not have touched me." It looks at its hands, then at you. <b>The party is over.</b>', 5); }
 }
 function openPresent(text) {
@@ -3872,9 +3872,9 @@ function updateHotelBase(dt, t, near) {
       if (!bo.said) { bo.said = true; say('A giant boiler roars in the middle of the room. On the far wall, a plain grey door with a green EXIT sign. And next to it, very tall, very patient: <b>"Checking out, guest? =)"</b>', 7); }
       bo.m.rotation.y = Math.atan2(player.x - bo.m.position.x, player.z - bo.m.position.z);
       if (bd < 3.4 && gear.roomKey) { hintText = '🔑 R'; actR = () => { gear.roomKey = false; showGear(); bo.state = 'bow'; bo.t = 0; burst(1400, 7, .15, .5, 'bandpass'); say('You hold out the key to Room 213. "I would like to check out, please." It looks at the key for a long time. Then it bows. <b>"A polite guest. How rare. Do come again. =)"</b>', 7); }; }
-      if (bd < 1.9 && !frozen) { bo.state = 'virus'; bo.t = 0; virus.visible = true; virus.scale.setScalar(1.28); screech(); shake = .9; say('It reaches for you. The virus rises up to its full height and wraps itself around the Concierge. <b>"GO! Through the door!"</b>', 5); }
+      if (bd < 1.9 && !frozen) { bo.state = 'virus'; bo.t = 0; virus.visible = true; virus.scale.setScalar(1.08); screech(); shake = .9; say('It reaches for you. The virus rises up to its full height and wraps itself around the Concierge. <b>"GO! Through the door!"</b>', 5); }
     } else if (bo.state === 'bow') { bo.t += dt; bo.m.rotation.x = Math.min(.5, bo.t * .7); if (bo.t > 2.4) { bo.state = 'polite'; } }
-    else if (bo.state === 'virus') { bo.t += dt; const k0 = Math.min(1, bo.t / 2.6), tx = 80, tz = 19.5; bo.m.position.x += (tx - bo.m.position.x) * dt * 1.5; bo.m.position.z += (tz - bo.m.position.z) * dt * 1.5; virus.position.set(bo.m.position.x + .55, .5, bo.m.position.z + .3); virus.rotation.set(.6, t * 6, 0); bo.m.rotation.z = Math.sin(t * 15) * .08; if (k0 >= 1) { bo.state = 'gone'; bo.m.visible = false; virus.position.y = 0; virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); burst(70, 1, 1.4, 3, 'lowpass'); burst(3200, 2, .7, 1, 'highpass'); shake = 1; say('A crash and a roar of fire. The virus comes limping through the steam, smoking, but grinning.', 5); } }
+    else if (bo.state === 'virus') { bo.t += dt; const k0 = Math.min(1, bo.t / 2.6), tx = 80, tz = 19.5; bo.m.position.x += (tx - bo.m.position.x) * dt * 1.5; bo.m.position.z += (tz - bo.m.position.z) * dt * 1.5; virus.position.set(bo.m.position.x + .55, .02, bo.m.position.z + .3); virus.rotation.set(.6, t * 6, 0); bo.m.rotation.z = Math.sin(t * 15) * .08; if (k0 >= 1) { bo.state = 'gone'; bo.m.visible = false; virus.position.y = 0; virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); burst(70, 1, 1.4, 3, 'lowpass'); burst(3200, 2, .7, 1, 'highpass'); shake = 1; say('A crash and a roar of fire. The virus comes limping through the steam, smoking, but grinning.', 5); } }
     else if (bo.state === 'fall') { bo.t += dt; const mx = 80 - bo.m.position.x, mz = 19.5 - bo.m.position.z; bo.m.position.x += mx * dt * .9; bo.m.position.z += mz * dt * .9; bo.m.rotation.x = -Math.min(1.1, bo.t * .55); if (bo.t > 2.8) { bo.state = 'gone'; bo.m.visible = false; burst(70, 1, 1.4, 3, 'lowpass'); shake = .8; } }
     // the real exit
     if (bo.state === 'polite' || bo.state === 'gone') { if (near(96.8, 16, 2.6)) { hintText = '🚪 R'; actR = () => { burst(90, 1, .5, 2, 'lowpass'); ending('To be continued...', 'The exit door slams shut behind you. The heat, the music and the smiles are gone. You are standing on cool carpet under buzzing lights. Somewhere ahead you can hear wind. Real wind. "We are close now," the virus says. "Closer than anyone." You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); }; } }
