@@ -662,7 +662,7 @@ LEVELS.push({
   },
   floor: g => { g.fillStyle = '#94803f'; g.fillRect(0, 0, 128, 128); noise(g, '#857238', '#a38e49', 1100); ['#a33d4a', '#3f77b0', '#3b8f5a', '#b9962a'].forEach((c, i) => { g.fillStyle = c; for (let k = 0; k < 7; k++) g.fillRect(hash(i * 10 + k) * 128, hash(i * 20 + k + 3) * 128, 2, 2); }); },
   ceil: g => { g.fillStyle = '#d8cfa6'; g.fillRect(0, 0, 128, 128); noise(g, '#cbc297', '#e3dbb6', 500); g.strokeStyle = '#8f8560'; g.lineWidth = 3; g.strokeRect(0, 0, 128, 128); g.lineWidth = 1.5; g.strokeRect(62, 0, 4, 128); g.strokeRect(0, 62, 128, 4); },
-  posters: [{ at: [29, 8], title: 'QUIET PLEASE =)', lines: ['They hunt by', 'sound.', 'Stay low.'] }, { at: [3, 36], title: 'FOR YOU =)', lines: ['Presents are', 'not always', 'presents.'] }, { at: [8, 18], title: 'EAT THE CAKE =)', lines: ['It is warm', 'and sweet', '=) =) =)'] }],
+  posters: [{ at: [29, 8], title: 'QUIET PLEASE =)', lines: ['They hear you.', 'Up close they', 'see you. Stay low.'] }, { at: [3, 36], title: 'FOR YOU =)', lines: ['Presents are', 'not always', 'presents.'] }, { at: [8, 18], title: 'EAT THE CAKE =)', lines: ['It is warm', 'and sweet', '=) =) =)'] }],
   bottles: [[27, 9], [18, 4], [10, 36]], weapons: [],
   intro: 'Balloons, streamers, the smell of cake. The music never stops.'
 });
@@ -1667,7 +1667,7 @@ function updateDoor(dt) {
   if (t >= 4.8) {
     a.on = false; $('fade').style.transition = '';
     if (L === L10) { doorAnim.on = false; goLevel(L5, startFunHello); return; }
-    if (L === L5) { doorAnim.on = false; goLevel(L6, () => { player.yaw = Math.PI; bringVirus(1.6, -1); }); return; }
+    if (L === L5) { virus.scale.setScalar(.97); virus.position.y = 0; doorAnim.on = false; goLevel(L6, () => { player.yaw = Math.PI; bringVirus(1.6, -1); }); return; }
     ending('You made it out!', 'You found the way out and ' + totalFound() + ' of ' + totalPosters() + ' posters. To be continued...');
   }
 }
@@ -2530,6 +2530,10 @@ function updateTown(dt, t) {
 }
 
 // ---------- the castle amusement park ----------
+const clothFab = (() => { const S = Q.low ? 128 : 512, mk = (draw, srgb) => { const c = document.createElement('canvas'); c.width = c.height = S; draw(c.getContext('2d')); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = Q.aniso; if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t; };
+  const map = mk(g0 => { g0.fillStyle = '#343a4a'; g0.fillRect(0, 0, S, S); for (let i = 0; i < S * S / 26; i++) { g0.fillStyle = ['rgba(120,130,152,.2)', 'rgba(14,16,24,.26)', 'rgba(82,92,114,.2)'][i % 3]; g0.fillRect(hash(i + 3) * S, hash(i + 5) * S, 1.5, 1); } }, true);
+  const bump = mk(g0 => { g0.fillStyle = '#808080'; g0.fillRect(0, 0, S, S); g0.fillStyle = 'rgba(40,40,40,.34)'; for (let x = 0; x < S; x += 3) g0.fillRect(x, 0, 1, S); g0.fillStyle = 'rgba(210,210,210,.2)'; for (let y = 0; y < S; y += 3) g0.fillRect(0, y, S, 1); }, false); map.repeat.set(3, 3); bump.repeat.set(3, 3); return { map, bump }; })();
+function clothFolds(geo, amp, freq = 1) { const a0 = geo.attributes.position; for (let i = 0; i < a0.count; i++) { const x = a0.getX(i), y = a0.getY(i), z = a0.getZ(i), r = Math.hypot(x, z) || 1, an = Math.atan2(z, x), k = 1 + amp * (Math.sin(y * 31 * freq + an * 2.4) * .55 + Math.sin(y * 67 * freq - an * 3.6) * .3 + Math.sin(an * 7 + y * 13 * freq) * .4); a0.setX(i, x * k); a0.setZ(i, z * k); void r; } geo.computeVertexNormals(); return geo; }
 const park = { clown: new THREE.Group(), frozen: false, doll: new THREE.Group(), has: false, placed: false, t: 0, step: 0, target: null, retarget: 0, swing: 0, phase: 'walk', noted: false, curve: null, rideT: 0, spin: [] };
 {
   const g = L4.group, cl = park.clown, sm = (c, r = .6) => new StdMat({ color: c, roughness: r });
@@ -2728,7 +2732,7 @@ const park = { clown: new THREE.Group(), frozen: false, doll: new THREE.Group(),
   const bodyC = new StdMat({ color: 0x17181d, roughness: .62, metalness: .45, envMap: envTex, envMapIntensity: .45 }), trimC = new StdMat({ color: 0x8c1219, roughness: .55, metalness: .25, envMap: envTex, envMapIntensity: .3 }); add(park.car, new RoundedBoxGeometry(1.3, .55, 2.2, 3, .1), bodyC, 0, .34, 0); add(park.car, new RoundedBoxGeometry(1.36, .22, .22, 2, .06), trimC, 0, .66, 1.05); add(park.car, new RoundedBoxGeometry(1.36, .4, .16, 2, .05), trimC, 0, .75, -1.05);
   { const barM = new StdMat({ color: 0xa4a8ae, metalness: .55, roughness: .58, envMap: envTex, envMapIntensity: .5 }), grip = new StdMat({ color: 0x17171a, roughness: .75 }); const b0 = add(park.car, new THREE.CylinderGeometry(.024, .024, 1.08, 14), barM, 0, .98, .47); b0.rotation.z = Math.PI / 2; [-1, 1].forEach(sd => { add(park.car, new THREE.CylinderGeometry(.024, .03, .4, 12), barM, sd * .52, .79, .47); const g0 = add(park.car, new THREE.CylinderGeometry(.03, .03, .2, 14), grip, sd * .23, .98, .47); g0.rotation.z = Math.PI / 2; });
     const seg = Q.low ? 5 : 9, xf = (geo, x, y, z, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) => geo.applyMatrix4(new THREE.Matrix4().compose(V(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz)), V(sx, sy, sz)));
-    const weave = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g0 = c.getContext('2d'); g0.fillStyle = '#7a7a7a'; g0.fillRect(0, 0, 64, 64); for (let x = 0; x < 64; x += 4) for (let y = 0; y < 64; y += 4) { g0.fillStyle = (x + y) % 8 ? '#a8a8a8' : '#4a4a4a'; g0.fillRect(x, y, 3, 3); } const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(5, 12); return t; })(), ribs = (() => { const c = document.createElement('canvas'); c.width = 64; c.height = 4; const g0 = c.getContext('2d'); for (let x = 0; x < 64; x += 4) { g0.fillStyle = '#c4c4c4'; g0.fillRect(x, 0, 2, 4); g0.fillStyle = '#3a3a3a'; g0.fillRect(x + 2, 0, 2, 4); } const t = new THREE.CanvasTexture(c); t.wrapS = THREE.RepeatWrapping; t.repeat.set(3, 1); return t; })(), sleeve0 = new StdMat({ color: 0x262b38, roughness: .9, bumpMap: weave, bumpScale: .7 }), cuff0 = new StdMat({ color: 0x3a4154, roughness: .95, bumpMap: ribs, bumpScale: 1 });
+    const weave = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g0 = c.getContext('2d'); g0.fillStyle = '#7a7a7a'; g0.fillRect(0, 0, 64, 64); for (let x = 0; x < 64; x += 4) for (let y = 0; y < 64; y += 4) { g0.fillStyle = (x + y) % 8 ? '#a8a8a8' : '#4a4a4a'; g0.fillRect(x, y, 3, 3); } const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(5, 12); return t; })(), ribs = (() => { const c = document.createElement('canvas'); c.width = 64; c.height = 4; const g0 = c.getContext('2d'); for (let x = 0; x < 64; x += 4) { g0.fillStyle = '#c4c4c4'; g0.fillRect(x, 0, 2, 4); g0.fillStyle = '#3a3a3a'; g0.fillRect(x + 2, 0, 2, 4); } const t = new THREE.CanvasTexture(c); t.wrapS = THREE.RepeatWrapping; t.repeat.set(3, 1); return t; })(), sleeve0 = new StdMat({ map: clothFab.map, bumpMap: clothFab.bump, bumpScale: .55, roughness: .92 }), cuff0 = new StdMat({ color: 0x3a4154, roughness: .95, bumpMap: ribs, bumpScale: 1 });
     park.hands = new THREE.Group(); park.hands.visible = false; park.car.add(park.hands);
     const texC = (w, h, draw, srgb = true) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.anisotropy = Q.aniso; if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t; };
     const hr = Q.low ? 1 : 3, u1Of = x => x * .5 + .5, J1 = .51, J2 = .76, rnd = (() => { let n = 7; return () => hash(n++); })();
@@ -2769,7 +2773,7 @@ const park = { clown: new THREE.Group(), frozen: false, doll: new THREE.Group(),
       const thW = .0142, thH = .012, thumb = skinTube([V(th * .034, .026, -.098), V(th * .05, .018, -.078), V(th * .066, .012, -.06), V(th * .082, .012, -.05), V(th * .098, .014, -.044), V(th * .116, .018, -.04)], thW, thH, t => (1 - .18 * t) * (1 + .025 * GS(t, J1, .06) - .02 * GS(t, .34, .12) - .012 * GS(t, .68, .07) + .03 * GS(t, .9, .05)) * tipRound(t), () => V(0, .86, -.5)); fg.push(thumb); nl.push(nailOn(thumb, .885, thW * .8, thH * .8, .017));
       const h0 = new THREE.Group(); h0.position.set(sd * .23, .98, .47); park.hands.add(h0); h0.add(new THREE.Mesh(mergeGeometries(fg), skinF)); h0.add(new THREE.Mesh(mergeGeometries(bk), skinB)); h0.add(new THREE.Mesh(mergeGeometries(nl), nailMat));
       // the forearm running back from the wrist out of the bottom corner of your view
-      const wr = V(sd * .232, 1.03, .295), el = V(sd * .56, .62, -.05), dA = el.clone().sub(wr), lA = dA.length(), arm0 = new THREE.CylinderGeometry(.027, .044, lA, seg + 3, 1, true), cf0 = new THREE.CylinderGeometry(.03, .032, .035, seg + 3), qA = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), dA.clone().normalize()); const am = new THREE.Mesh(arm0, sleeve0); am.position.copy(wr).addScaledVector(dA, .5); am.quaternion.copy(qA); park.hands.add(am); const cm = new THREE.Mesh(cf0, cuff0); cm.position.copy(wr).addScaledVector(dA, .04); cm.quaternion.copy(qA); park.hands.add(cm); }); } [-1, 1].forEach(sd => { park.carLed = park.carLed || new THREE.MeshBasicMaterial({ color: 0xff3020, fog: false }); add(park.car, new THREE.BoxGeometry(.03, .05, 2.1), park.carLed, sd * .665, .42, 0); });
+      const wr = V(sd * .232, 1.03, .295), el = V(sd * .4, .78, -.06), dA = el.clone().sub(wr), lA = dA.length(), arm0 = clothFolds(new THREE.CylinderGeometry(.027, .044, lA, Q.low ? 10 : 28, Q.low ? 4 : 40, true), Q.low ? 0 : .045, .7), cf0 = new THREE.CylinderGeometry(.03, .032, .035, seg + 3), qA = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), dA.clone().normalize()); const am = new THREE.Mesh(arm0, sleeve0); am.position.copy(wr).addScaledVector(dA, .5); am.quaternion.copy(qA); park.hands.add(am); const cm = new THREE.Mesh(cf0, cuff0); cm.position.copy(wr).addScaledVector(dA, .04); cm.quaternion.copy(qA); park.hands.add(cm); }); } [-1, 1].forEach(sd => { park.carLed = park.carLed || new THREE.MeshBasicMaterial({ color: 0xff3020, fog: false }); add(park.car, new THREE.BoxGeometry(.03, .05, 2.1), park.carLed, sd * .665, .42, 0); });
   // folded away until the launch: swept wings with lights on the tips, and two rocket nozzles
   { const wS = new THREE.Shape(); wS.moveTo(0, -.55); wS.lineTo(1.75, -.95); wS.lineTo(1.75, -.7); wS.lineTo(0, .55); wS.lineTo(0, -.55); const wG = new THREE.ExtrudeGeometry(wS, { depth: .05, bevelEnabled: true, bevelThickness: .012, bevelSize: .012, bevelSegments: 1 }); wG.rotateX(Math.PI / 2); const wM = new StdMat({ color: 0x8d939c, metalness: .85, roughness: .28, envMap: envTex, envMapIntensity: .8 }), wR = new StdMat({ color: 0x9c1218, metalness: .4, roughness: .3 });
     park.wings = []; [-1, 1].forEach(sd => { const w0 = new THREE.Group(); w0.position.set(sd * .64, .46, -.1); w0.scale.set(sd * .001, 1, 1); park.car.add(w0); w0.add(new THREE.Mesh(wG, wM)); add(w0, new THREE.BoxGeometry(.42, .055, .1), wR, 1.55, 0, -.9); const tip = add(w0, new THREE.SphereGeometry(.05, 8, 6), park.carLed, 1.75, 0, -.85); void tip; park.wings.push({ w0, sd }); });
@@ -2778,6 +2782,22 @@ const park = { clown: new THREE.Group(), frozen: false, doll: new THREE.Group(),
   // past the ramp there is nothing but black, stars, and one huge glowing tunnel mouth in a wall of rock
   { const n0 = Q.low ? 200 : 700, sp0 = new Float32Array(n0 * 3); for (let i = 0; i < n0; i++) sp0.set([-280 - hash(i + 1) * 300, -210 + hash(i + 2) * 190, -60 + (hash(i + 3) - .5) * 240], i * 3); const sg0 = new THREE.BufferGeometry(); sg0.setAttribute('position', new THREE.BufferAttribute(sp0, 3)); const st0 = new THREE.Points(sg0, new THREE.PointsMaterial({ color: 0xb8c4ff, size: 1.6, sizeAttenuation: false, fog: false })); st0.frustumCulled = false; g.add(st0);
     const rock = new THREE.Mesh(new THREE.CircleGeometry(95, 48), new StdMat({ color: 0x2c2822, roughness: .95, emissive: 0x1f1812, fog: false })); rock.rotation.y = Math.PI / 2; rock.position.set(-534, -136, -60); g.add(rock); const hole = new THREE.Mesh(new THREE.CircleGeometry(9.5, 40), new THREE.MeshBasicMaterial({ color: 0x010102, fog: false })); hole.rotation.y = Math.PI / 2; hole.position.set(-533.6, -135, -60); g.add(hole); park.farRing = new THREE.Mesh(new THREE.TorusGeometry(9.6, .32, 10, 56), new THREE.MeshBasicMaterial({ color: 0xff3a20, fog: false })); park.farRing.rotation.y = Math.PI / 2; park.farRing.position.set(-533.4, -135, -60); g.add(park.farRing); const fl0 = new THREE.PointLight(0xff5030, 60, 70, 1.6); fl0.position.set(-522, -135, -60); g.add(fl0); }
+  // the rider, seen in the chase shots. Your own hands and sleeves join on to these arms.
+  { const hoodie = new StdMat({ map: clothFab.map, bumpMap: clothFab.bump, bumpScale: .55, roughness: .92 }), hoodIn = new StdMat({ color: 0x141720, roughness: .95 }), seamM = new StdMat({ color: 0x11131a, roughness: .9 }), ribM = new StdMat({ color: 0x20242f, roughness: .96 }), jeans = new StdMat({ color: 0x31435e, roughness: .9, bumpMap: clothFab.bump, bumpScale: .5 }), soleM = new StdMat({ color: 0xd8d6cf, roughness: .75 }), shoeM = new StdMat({ color: 0x1d1d22, roughness: .6 }), lo = Q.low, seg = lo ? 10 : 32, hs = lo ? 4 : 36;
+    park.rider = new THREE.Group(); park.rider.visible = false; park.car.add(park.rider); const R0 = park.rider, part = (geo, m, x, y, z, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) => { const o = add(R0, geo, m, x, y, z); o.rotation.set(rx, ry, rz); o.scale.set(sx, sy, sz); o.castShadow = true; return o; }, limb = (a0, b0, r1, r2, m, amp = .05) => { const d0 = b0.clone().sub(a0), o = new THREE.Mesh(clothFolds(new THREE.CylinderGeometry(r1, r2, d0.length(), seg, hs), lo ? 0 : amp, .7), m); o.position.copy(a0).addScaledVector(d0, .5); o.quaternion.setFromUnitVectors(V(0, 1, 0), d0.clone().normalize()); o.castShadow = true; R0.add(o); return o; };
+    // the padded seat they are strapped into
+    add(park.car, new RoundedBoxGeometry(.56, .68, .12, 3, .05), new StdMat({ color: 0x1c1d22, roughness: .7 }), 0, .92, -.36); add(park.car, new RoundedBoxGeometry(.3, .2, .1, 3, .04), new StdMat({ color: 0x24252b, roughness: .65 }), 0, 1.36, -.33);
+    // the hoodie's body: drawn as one shape with real folds gathered at the waist
+    const bodyPts = new THREE.SplineCurve([[.172, .55], [.19, .62], [.2, .72], [.205, .86], [.204, .98], [.192, 1.08], [.158, 1.15], [.112, 1.2], [.08, 1.24]].map(([r, y]) => new THREE.Vector2(r, y))).getPoints(lo ? 12 : 48); part(clothFolds(new THREE.LatheGeometry(bodyPts, lo ? 14 : 56), lo ? 0 : .028, .8), hoodie, 0, 0, -.12, .05, 0, 0, 1, 1, .74);
+    part(new THREE.CylinderGeometry(.176, .172, .05, seg), ribM, 0, .56, -.12, .05, 0, 0, 1, 1, .74); if (!lo) for (let i = 0; i < 44; i++) { const an = i / 44 * 6.2832; part(new THREE.BoxGeometry(.006, .046, .004), seamM, Math.cos(an) * .178, .56, -.12 + Math.sin(an) * .178 * .74); }
+    // the hood, up: a seam over the crown, soft creases, and cloth bunched around the neck
+    part(clothFolds(new THREE.SphereGeometry(.128, seg + 8, seg + 4), lo ? 0 : .022, 1.3), hoodie, 0, 1.37, -.075, -.12, 0, 0, .96, 1.1, 1.08); part(clothFolds(new THREE.SphereGeometry(.058, seg, 14), lo ? 0 : .03, 1.5), hoodie, 0, 1.42, -.18, -.5, 0, 0, 1, 1.15, 1.1);
+    const crown = part(new THREE.TorusGeometry(.1345, .0028, 5, lo ? 16 : 48, Math.PI), seamM, 0, 1.37, -.075, -.12, Math.PI / 2, 0, 1, 1.1, 1); void crown; [-1, 1].forEach(sd => part(new THREE.TorusGeometry(.1, .0022, 5, lo ? 12 : 36, Math.PI), seamM, sd * .045, 1.37, -.075, -.12, Math.PI / 2, 0, .92, 1.16, 1));
+    part(clothFolds(new THREE.TorusGeometry(.112, .03, 10, seg + 8), 0), hoodie, 0, 1.235, -.13, 1.4, 0, 0, 1.08, .96, 1); part(new THREE.TorusGeometry(.13, .024, 10, seg + 8), hoodie, 0, 1.19, -.17, 1.15, 0, 0, 1.18, .95, 1);
+    part(new THREE.SphereGeometry(.094, seg, seg), new THREE.MeshBasicMaterial({ color: 0x020203 }), 0, 1.355, .002, 0, 0, 0, .78, 1, .6); part(new THREE.TorusGeometry(.086, .017, 8, seg + 8), hoodIn, 0, 1.355, .045, -.05, 0, 0, .86, 1.14, 1);
+    [-1, 1].forEach(sd => { part(new THREE.CylinderGeometry(.0045, .0045, .13, 6), new StdMat({ color: 0xb8bcc6, roughness: .8 }), sd * .04, 1.19, .025, .1); part(new THREE.CylinderGeometry(.006, .006, .022, 8), new StdMat({ color: 0x8a8e96, metalness: .7, roughness: .35 }), sd * .04, 1.115, .033, .1); });
+    // shoulder seams, creased sleeves, jeans and shoes
+    [-1, 1].forEach(sd => { const sh = V(sd * .235, 1.1, -.11), el = V(sd * .4, .78, -.06); part(new THREE.SphereGeometry(.08, seg, 16), hoodie, sh.x, sh.y, sh.z); part(new THREE.TorusGeometry(.078, .0035, 6, seg + 4), seamM, sh.x - sd * .03, sh.y + .005, sh.z, 0, Math.PI / 2, sd * .55); limb(sh, el, .07, .052, hoodie); part(new THREE.SphereGeometry(.054, seg, 12), hoodie, el.x, el.y, el.z); limb(V(sd * .11, .66, -.08), V(sd * .13, .66, .36), .088, .07, jeans, .035); limb(V(sd * .13, .66, .36), V(sd * .13, .36, .62), .064, .05, jeans, .035); part(new THREE.CapsuleGeometry(.05, .13, 4, 12), shoeM, sd * .13, .31, .69, 1.45); part(new THREE.BoxGeometry(.1, .02, .22), soleM, sd * .13, .262, .7); }); }
   park.carLight = new THREE.PointLight(0xff4030, 5, 20, 2); park.carLight.position.set(0, 1.3, 3.6); park.car.add(park.carLight);
   { const db0 = makeBatch(g), trash = [0x2a2622, 0x3a2a1c, 0x24262a, 0x33191a].map(c => sm(c, .95)), clothM = new StdMat({ color: 0x2a2024, roughness: 1, side: THREE.DoubleSide });
     for (let i = 0; i < (Q.low ? 40 : 120); i++) { const x = 3 + hash(i + 70) * 74, z = 3 + hash(i + 71) * 52; if (L4.wall(Math.floor(z / CELL), Math.floor(x / CELL))) continue; db0.add(new THREE.BoxGeometry(.1 + hash(i + 72) * .4, .02 + hash(i + 73) * .05, .08 + hash(i + 74) * .3), trash[i % 4], x, .03, z, 0, hash(i + 75) * 6, 0); }
@@ -2811,7 +2831,7 @@ function updatePark(dt, t) {
     const q2 = p.curve.getPointAt(Math.max(0, p.rideS - (flying ? 11 : 7.5)) / p.len), lift = flying ? 3.4 : 2.05, cx = q.x + (q2.x - q.x) * p.chase, cz = q.z + (q2.z - q.z) * p.chase, cy = (q.y + 1.34) + (q2.y + lift - q.y - 1.34) * p.chase;
     player.x = cx; player.z = cz; ride.y = cy - camH; let aimY = Math.atan2(-tg.x, -tg.z); if (p.chase > .03) { let dA = Math.atan2(-(q.x - cx), -(q.z - cz)) - aimY; dA = Math.atan2(Math.sin(dA), Math.cos(dA)); aimY += dA * p.chase; } player.yaw = aimY; const aimP = pitch * .9 + (Math.atan2(q.y + .5 - cy, Math.max(1, Math.hypot(q.x - cx, q.z - cz))) - pitch * .9) * p.chase; look.pitch += (aimP - look.pitch) * Math.min(1, dt * 7); camRoll = -p.bank * .9 * (1 - p.chase * .6);
     if (camera.far < 600 && p.rideS > p.tunnelAt) { camera.far = 600; camera.updateProjectionMatrix(); }
-    p.hands.visible = p.chase < .4; p.hands.position.y = Math.sin(p.rideT * 41) * .0035 * Math.min(1, v0 / 40);
+    p.hands.visible = true; p.rider.visible = p.chase > .4; p.hands.position.y = Math.sin(p.rideT * 41) * .0035 * Math.min(1, v0 / 40);
     // the engines
     if (audio && p.fire > .01 && !p.engine) { const o1 = audio.createOscillator(), o2 = audio.createOscillator(), o3 = audio.createOscillator(), f1 = audio.createBiquadFilter(), g1 = audio.createGain(); o1.type = 'sawtooth'; o2.type = 'square'; o3.type = 'sawtooth'; f1.type = 'lowpass'; g1.gain.value = 0; [o1, o2, o3].forEach(o => { o.connect(f1); o.start(); }); f1.connect(g1).connect(audio.destination); p.engine = { o1, o2, o3, f1, g1 }; burst(140, 1, 1.6, 3, 'lowpass'); burst(2200, .7, 1, 1, 'highpass'); }
     if (p.engine) { const rev = 62 + v0 * 2.2 + Math.sin(p.rideT * 37) * 3; p.engine.o1.frequency.value = rev; p.engine.o2.frequency.value = rev * .5; p.engine.o3.frequency.value = rev * 1.51; p.engine.f1.frequency.value = 420 + v0 * 24; p.engine.g1.gain.value = (.17 + launched * .13) * p.fire; }
@@ -2858,7 +2878,7 @@ function updatePark(dt, t) {
 
 // ---------- Level Fun ----------
 const cols2 = i => [0xe63946, 0x2a9df4, 0x2ecc71, 0xf4a2d8, 0xf39c12, 0x9b59b6][i % 6];
-const fun = { grace: 0, pg: [], heard: 0, underT: 0, wasUnder: false, lastFree: null, music: 0, note: 0, chase: false, intro: 0, said: 0, spot: null, spotT: 0, balloons: [], popped: 0, follow: 0, fT: null };
+const fun = { stains: [], sprays: [], grace: 0, pg: [], heard: 0, underT: 0, wasUnder: false, lastFree: null, music: 0, note: 0, chase: false, intro: 0, said: 0, spot: null, spotT: 0, balloons: [], popped: 0, follow: 0, fT: null };
 {
   const g = L5.group, add = (par, geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); par.add(o); return o; }, lm = c => new THREE.MeshLambertMaterial({ color: c });
   const batch = makeBatch(g), G = (w, h, d) => new THREE.BoxGeometry(w, h, d), dummy = new THREE.Object3D(), col = new THREE.Color();
@@ -3017,16 +3037,61 @@ function startFunHello() {
   fun.intro = 0; fun.said = 0; fun.introOn = true; frozen = true; viewLock = true; player.yaw = Math.atan2(player.x - virus.position.x, player.z - virus.position.z);
 }
 function funMusic(dt) {
-  if (!audio || fun.chase) return;
+  if (!audio || fun.chase || fun.rage || fun.allDead) return;
   if ((fun.music -= dt) > 0) return;
   fun.music = .34; const scale = [0, 4, 7, 12, 7, 4, 9, 5], nt = 392 * Math.pow(2, scale[fun.note++ % 8] / 12) * (fun.note % 16 < 8 ? 1 : .89);
   const o = audio.createOscillator(), g = audio.createGain(); o.type = 'triangle'; o.frequency.value = nt; g.gain.setValueAtTime(.05, audio.currentTime); g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .3); o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + .32);
 }
 function alertParty(msg) {
-  if (fun.chase) return;
+  if (fun.chase || fun.rage || fun.allDead) return;
   fun.chase = true; fun.heard = 0; screech(); say(msg, 3.5); fun.pg.forEach(q => { q.state = 'chase'; q.re = 0; });
 }
 function calmParty() { fun.chase = false; fun.pg.forEach(q => { q.state = 'wander'; q.tg = null; q.wait = Math.random() * 2; }); }
+// a route that keeps to the walls: open floor costs five times as much as a cell beside a wall
+function wallRoute(r0, c0, r1, c1) {
+  const f = fun, map = L5.map, R = map.length, C = map[0].length, id = (r, c) => r * C + c, inside = (r, c) => r >= 0 && c >= 0 && r < R && c < C;
+  if (!f.hug) { f.hug = new Uint8Array(R * C); for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) f.hug[id(r, c)] = DIRS.some(([a, b]) => L5.wall(r + a, c + b)) ? 1 : 0; }
+  if (r0 === r1 && c0 === c1) return [r0, c0];
+  const dist = new Int32Array(R * C).fill(1e9), buckets = [[id(r1, c1)]]; dist[id(r1, c1)] = 0;
+  for (let d0 = 0; d0 < buckets.length; d0++) { const b0 = buckets[d0]; if (!b0) continue; for (const n0 of b0) { if (dist[n0] !== d0) continue; const r = Math.floor(n0 / C), c = n0 % C; for (const [a, b] of DIRS) { const nr = r + a, nc = c + b; if (!inside(nr, nc) || L5.wall(nr, nc)) continue; const n1 = id(nr, nc), d1 = d0 + (f.hug[n1] ? 1 : 5); if (d1 < dist[n1]) { dist[n1] = d1; (buckets[d1] = buckets[d1] || []).push(n1); } } } }
+  let best = [r0, c0], bd = dist[id(r0, c0)]; for (const [a, b] of DIRS) { const nr = r0 + a, nc = c0 + b; if (inside(nr, nc) && !L5.wall(nr, nc) && dist[id(nr, nc)] < bd) { bd = dist[id(nr, nc)]; best = [nr, nc]; } } return best;
+}
+// the spot on the nearest wall to you, where the virus wants to be
+function wallBeside(bx, bz) {
+  let best = null, bd = 1e9; for (const [dz, dx] of DIRS) for (let k = .5; k < bd && k < 26; k += .5) { const x = bx + dx * k, z = bz + dz * k; if (L5.wall(Math.floor(z / CELL), Math.floor(x / CELL))) { bd = k; best = [bx + dx * (k - .62), bz + dz * (k - .62)]; break; } } return best || [bx, bz];
+}
+// a partygoer lays a hand on the virus, and that is the end of the party
+function startVirusRage(q) {
+  const f = fun; f.chase = false; f.rage = { t: 0, first: q, phase: 0, target: null, wait: 0, hit: false }; f.spot = null; f.pg.forEach(o => { o.state = 'wander'; o.tg = null; o.dest = null; });
+  screech(); say('One of them grabs the virus by the arm. It stops moving. <b>The whole room goes quiet.</b>', 3.5);
+}
+function killPartygoer(q) {
+  const f = fun, x = q.m.position.x, z = q.m.position.z; q.dead = true; q.dy = 0; shake = Math.max(shake, .8); burst(150, 1.2, .35, 2.4, 'lowpass'); burst(2600, 2, .22, .9, 'bandpass');
+  const st = f.stains.find(o => !o.visible) || (() => { const o = new THREE.Mesh(new THREE.CircleGeometry(1, 18), new THREE.MeshBasicMaterial({ color: 0x4d0304, transparent: true, opacity: .9, depthWrite: false })); o.rotation.x = -Math.PI / 2; L5.group.add(o); f.stains.push(o); return o; })(); st.position.set(x, .018, z); st.scale.setScalar(.7 + Math.random() * .7); st.visible = true;
+  const sp = f.sprays.find(o => !o.sp.visible) || (() => { const o = { sp: new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot('170,8,8'), transparent: true, depthWrite: false })), t: 0 }; L5.group.add(o.sp); f.sprays.push(o); return o; })(); sp.sp.position.set(x, 1.5, z); sp.sp.visible = true; sp.t = 0;
+}
+function updateVirusRage(dt, t) {
+  const f = fun, r0 = f.rage; r0.t += dt; const alive = f.pg.filter(q => !q.dead);
+  if (r0.phase === 0) {   // the hand on its arm, and the long silence
+    const q = r0.first, dx = virus.position.x - q.m.position.x, dz = virus.position.z - q.m.position.z, d0 = Math.hypot(dx, dz) || 1; if (d0 > .85) { q.m.position.x += dx / d0 * Math.min(d0 - .85, 3 * dt); q.m.position.z += dz / d0 * Math.min(d0 - .85, 3 * dt); } q.m.rotation.y = Math.atan2(dx, dz); q.arms.forEach(a => { a.rotation.x = -1.5; }); virus.rotation.y = Math.atan2(-dx, -dz); virus.rotation.x *= .85;
+    limbs.forEach(l => { l.rotation.x *= .8; }); virus.scale.set(.97, .97, .97);
+    if (r0.t > 1.5) { r0.phase = 1; r0.t = 0; burst(55, 1, 1.1, 3, 'lowpass'); screech(); shake = 1; say('<b>THE VIRUS SCREAMS.</b> Every smile in the room stops being a smile.', 3); }
+    return;
+  }
+  if (r0.phase === 1) {   // it comes apart at them, one after another
+    const g0 = 1 + .34 * Math.min(1, r0.t * 3); virus.scale.set(.97 * g0, .97 * g0, .97 * g0);
+    if (r0.wait > 0) { r0.wait -= dt; virus.position.y *= .8; return; }
+    if (!r0.target || r0.target.dead) { r0.target = alive.slice().sort((a, b) => Math.hypot(a.m.position.x - virus.position.x, a.m.position.z - virus.position.z) - Math.hypot(b.m.position.x - virus.position.x, b.m.position.z - virus.position.z))[0]; r0.from = Math.hypot((r0.target?.m.position.x ?? 0) - virus.position.x, (r0.target?.m.position.z ?? 0) - virus.position.z) || 1; }
+    if (!r0.target) { r0.phase = 2; r0.t = 0; return; }
+    const m = r0.target.m, dx = m.position.x - virus.position.x, dz = m.position.z - virus.position.z, d0 = Math.hypot(dx, dz) || 1, st = Math.min(d0, 19 * dt); virus.position.x += dx / d0 * st; virus.position.z += dz / d0 * st; virus.rotation.set(.75, Math.atan2(dx, dz), 0); virus.position.y = Math.sin(Math.min(1, 1 - d0 / r0.from) * Math.PI) * Math.min(2.2, r0.from * .22);
+    r0.ph = (r0.ph || 0) + dt * 34; limbs.forEach((l, i) => { l.rotation.x = Math.sin(r0.ph + i * 1.6) * .9; });
+    if (d0 < 1.05) { killPartygoer(r0.target); r0.target = null; r0.wait = .2; }
+    return;
+  }
+  // it stands in the wreck, shaking, and folds back down
+  const k = Math.min(1, r0.t / 1.6), g0 = 1.34 - .34 * k; virus.scale.set(.97 * g0, .97 * g0, .97 * g0); virus.position.y *= .85; virus.rotation.x *= .9; limbs.forEach((l, i) => { l.rotation.x = Math.sin(t * 22 + i) * .1 * (1 - k); });
+  if (k >= 1) { f.rage = null; f.allDead = true; virus.position.y = 0; say('"They should not have touched me." It looks at its hands, then at you. <b>The party is over.</b>', 5); }
+}
 function updateFun(dt, t) {
   const f = fun;
   funMusic(dt);
@@ -3054,19 +3119,30 @@ function updateFun(dt, t) {
   }
   // crawling under the table or through the crawl space: they cannot reach you there, and they soon lose track of you
   const under = !!L5.low(Math.floor(player.z / CELL), Math.floor(player.x / CELL));
+  if (!f.underGlow) { f.underGlow = new THREE.PointLight(0xffc88a, 0, 9, 1.6); L5.group.add(f.underGlow); }
+  f.underGlow.intensity += ((under ? 7 : 0) - f.underGlow.intensity) * Math.min(1, dt * 5); f.underGlow.position.set(player.x, .5, player.z);
   if (under) {
-    $('dark').style.opacity = .3;
+    $('dark').style.opacity = .08;
     if (f.chase && (f.underT += dt) > 3.5) { calmParty(); f.underT = 0; say('Yellow feet shuffle past. Someone giggles. Then the music starts again.', 3.5); }
   } else { if (f.wasUnder) f.grace = Math.max(f.grace, 1.5); f.underT = 0; f.lastFree = [Math.floor(player.z / CELL), Math.floor(player.x / CELL)]; }
   f.wasUnder = under;
   // the sound you make: running is loud, walking carries a little way, standing still is silent
   if (f.grace > 0) f.grace -= dt;
   const speed = Math.hypot(player.vx, player.vz), noise = under ? 0 : crouching ? (speed > .3 ? 1.3 : 0) : speed > 3.6 ? 15 : speed > .6 ? 3.8 : 0, touch = under ? 0 : crouching ? 1.05 : 1.7;
+  // and they can see a little way, but not through walls. Over the table only if you are standing up.
+  const sightR = under ? 0 : crouching ? 2.6 : 5, sees = m => { const x0 = m.position.x, z0 = m.position.z, d0 = Math.hypot(player.x - x0, player.z - z0); if (d0 > sightR) return false; for (let k = .1; k < 1; k += .5 / Math.max(d0, .5)) { const r = Math.floor((z0 + (player.z - z0) * k) / CELL), c = Math.floor((x0 + (player.x - x0) * k) / CELL); if (L5.wall(r, c) && (crouching || !L5.map[r] || L5.map[r][c] !== '%')) return false; } return true; };
   // the partygoers
   const pcell = f.lastFree || [Math.floor(player.z / CELL), Math.floor(player.x / CELL)];
+  f.sprays.forEach(o => { if (!o.sp.visible) return; o.t += dt; const k = o.t / .55; o.sp.scale.setScalar(.5 + k * 3.2); o.sp.material.opacity = Math.max(0, 1 - k); if (k >= 1) o.sp.visible = false; });
   f.pg.forEach(q => {
     const m = q.m, dx = player.x - m.position.x, dz = player.z - m.position.z, d = Math.hypot(dx, dz);
+    if (q.dead) { if (q.dy < .5) { q.dy += dt; const k = Math.min(1, q.dy / .5), e0 = k * k; m.rotation.x = -1.54 * e0; m.position.y = .13 * e0; q.head.rotation.z = 1.1 * e0; q.arms[0].rotation.set(-2.5 * e0, 0, .5 * e0); q.arms[1].rotation.set(-.4 * e0, 0, -.9 * e0); q.legs[0].rotation.x = .25 * e0; q.legs[1].rotation.x = -.2 * e0; } return; }
+    if (f.rage) { if (q !== f.rage.first) { q.arms[0].rotation.x = -2.5 + Math.sin(t * 19 + q.ph) * .12; q.arms[1].rotation.x = -2.5 - Math.sin(t * 17 + q.ph) * .12; q.fores.forEach(a => { a.rotation.x = -1.5; }); const a0 = virus.position.x - m.position.x, b0 = virus.position.z - m.position.z; let dy = Math.atan2(a0, b0) - m.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); m.rotation.y += dy * Math.min(1, dt * 6); } return; }
+    // a partygoer that reaches the virus goes for it
+    if (Math.hypot(virus.position.x - m.position.x, virus.position.z - m.position.z) < (q.state === 'chase' ? 2 : 1.15)) { startVirusRage(q); return; }
     if (!under && !f.chase && f.grace <= 0 && (d < noise || d < touch)) alertParty('The music stops. Every smiling face turns toward you at once. <b>They heard you. =) RUN!</b>');
+    // being seen takes a moment: its head snaps round first, so you get one chance to duck or back away
+    if (!f.chase && f.grace <= 0 && sees(m)) { if (!q.seeT) burst(1500, 9, .22, .35, 'bandpass'); q.seeT = (q.seeT || 0) + dt; let dy = Math.atan2(dx, dz) - m.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); m.rotation.y += dy * Math.min(1, dt * 9); if (q.seeT > .7) { q.seeT = 0; alertParty('That smiling face is looking right at you. Then all of them are. <b>It SAW you. =) RUN!</b>'); } } else q.seeT = Math.max(0, (q.seeT || 0) - dt);
     if (f.spot && f.spotT > 0 && q.state !== 'chase') q.dest = f.spot;
     let tx, tz, sp = 0;
     if (q.state === 'chase') {
@@ -3087,7 +3163,7 @@ function updateFun(dt, t) {
         tx = q.tg[1] * CELL + 1; tz = q.tg[0] * CELL + 1; sp = 1.1;
       }
     }
-    if (sp) {
+    if (sp && !(q.seeT > 0 && q.state !== 'chase')) {
       const mx = tx - m.position.x, mz = tz - m.position.z, md = Math.hypot(mx, mz) || 1, st = Math.min(md, sp * dt); m.position.x += mx / md * st; m.position.z += mz / md * st;
       if (md > .08) { const w = Math.atan2(mx, mz); let dy = w - m.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); m.rotation.y += dy * Math.min(1, dt * 7); }
       const moved = md > .08, ph0 = t * sp * 3.4 + q.ph, sw = moved ? Math.sin(ph0) * (q.state === 'chase' ? .72 : .42) : 0, ch = q.state === 'chase'; q.legs[0].rotation.x = sw; q.legs[1].rotation.x = -sw;
@@ -3095,23 +3171,35 @@ function updateFun(dt, t) {
       q.arms[0].rotation.x = -sw * .7 + (ch ? -1.25 + Math.sin(t * 11 + q.ph) * .3 : 0); q.arms[1].rotation.x = sw * .7 + (ch ? -1.25 - Math.sin(t * 11 + q.ph) * .3 : 0); q.fores[0].rotation.x = ch ? -.5 : -.15; q.fores[1].rotation.x = ch ? -.5 : -.15;
     }
   });
-  f.pg.forEach(q => { q.head.rotation.z = Math.sin(t * .7 + q.ph * 3) * (q.state === 'chase' ? .32 : .2); q.head.rotation.x = Math.sin(t * .43 + q.ph) * .08; q.m.children[0].rotation.x = q.state === 'chase' ? .1 : 0; });
+  f.pg.forEach(q => { if (q.dead) return; q.head.rotation.z = Math.sin(t * .7 + q.ph * 3) * (q.state === 'chase' ? .32 : .2); q.head.rotation.x = Math.sin(t * .43 + q.ph) * .08; q.m.children[0].rotation.x = q.state === 'chase' ? .1 : 0; });
   if (!playing) return;
   if (f.spotT > 0) f.spotT -= dt;
   // they give up if you get away from them for a while
-  if (f.chase && !under) { const nearest = Math.min(...f.pg.map(q => Math.hypot(q.m.position.x - player.x, q.m.position.z - player.z))); f.heard = nearest > 17 ? f.heard + dt : 0; if (f.heard > 6) { calmParty(); say('They lost you. The music starts up again. =)', 3); } }
-  // the virus stays close to you
-  const vd = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
-  if (vd > 2.8) {
-    if ((f.follow -= dt) <= 0 || !f.fT) { f.follow = .3; f.fT = nextCell(Math.floor(virus.position.z / CELL), Math.floor(virus.position.x / CELL), pcell[0], pcell[1]); }
-    const tx = f.fT[0] === pcell[0] && f.fT[1] === pcell[1] ? player.x : f.fT[1] * CELL + 1, tz = f.fT[0] === pcell[0] && f.fT[1] === pcell[1] ? player.z : f.fT[0] * CELL + 1, mx = tx - virus.position.x, mz = tz - virus.position.z, md = Math.hypot(mx, mz) || 1, sp = Math.min(6.2, vd * 1.3);
-    virus.position.x += mx / md * Math.min(md, sp * dt); virus.position.z += mz / md * Math.min(md, sp * dt);
-    let dy = Math.atan2(mx, mz) - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(.18, virus.rotation.y + dy * Math.min(1, dt * 6), 0);
-    f.vPh = (f.vPh || 0) + dt * sp * 1.6; limbs.forEach((l, i) => { l.rotation.x = Math.sin(f.vPh + (i >> 1) * Math.PI + (i % 2 ? Math.PI : 0)) * (i % 2 ? .45 : .6); });
-  } else { limbs.forEach(l => { l.rotation.x *= .85; }); virus.rotation.x *= .85; }
+  if (f.chase && !under && !f.rage) { const nearest = Math.min(...f.pg.filter(q => !q.dead).map(q => Math.hypot(q.m.position.x - player.x, q.m.position.z - player.z))); f.heard = nearest > 17 ? f.heard + dt : 0; if (f.heard > 6) { calmParty(); say('They lost you. The music starts up again. =)', 3); } }
+  // the virus keeps to the walls near you, bent low, and goes dead still when one of them comes close
+  if (f.rage) updateVirusRage(dt, t);
+  else {
+    if ((f.follow -= dt) <= 0 || !f.vSpot) { f.follow = .45; const bx = under ? pcell[1] * CELL + 1 : player.x, bz = under ? pcell[0] * CELL + 1 : player.z; f.vSpot = wallBeside(bx, bz); }
+    const vr = Math.floor(virus.position.z / CELL), vc = Math.floor(virus.position.x / CELL), [sx, sz] = f.vSpot, sr = Math.floor(sz / CELL), sc = Math.floor(sx / CELL), sd0 = Math.hypot(sx - virus.position.x, sz - virus.position.z), near = f.allDead ? null : f.pg.find(q => !q.dead && Math.hypot(q.m.position.x - virus.position.x, q.m.position.z - virus.position.z) < 3.4), still = near && !f.chase, hunch = .97 * .84;
+    virus.scale.set(.97, hunch, .97);
+    if (sd0 > .5 && !still) {
+      if ((f.vRe -= dt) <= 0 || !f.fT) { f.vRe = .35; f.fT = wallRoute(vr, vc, sr, sc); }
+      let wx, wz; if (vr === sr && vc === sc) { wx = sx; wz = sz; } else { wx = f.fT[1] * CELL + 1; wz = f.fT[0] * CELL + 1; for (const [a0, b0] of DIRS) if (L5.wall(f.fT[0] + a0, f.fT[1] + b0)) { wx += b0 * .4; wz += a0 * .4; } }
+      const mx = wx - virus.position.x, mz = wz - virus.position.z, md = Math.hypot(mx, mz) || 1, vd = Math.hypot(virus.position.x - player.x, virus.position.z - player.z), sp = vd > 12 ? 5.6 : f.chase ? 4.6 : 2.7;
+      virus.position.x += mx / md * Math.min(md, sp * dt); virus.position.z += mz / md * Math.min(md, sp * dt);
+      let dy = Math.atan2(mx, mz) - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(virus.rotation.x + (.5 - virus.rotation.x) * Math.min(1, dt * 6), virus.rotation.y + dy * Math.min(1, dt * 6), 0);
+      f.vPh = (f.vPh || 0) + dt * sp * 2; limbs.forEach((l, i) => { const base = i % 2 ? .25 : -.55; l.rotation.x = base + Math.sin(f.vPh + (i >> 1) * Math.PI + (i % 2 ? Math.PI : 0)) * (i % 2 ? .3 : .42); });
+    } else {
+      // back to the wall, watching whoever is closest
+      const lk = still ? near.m.position : player, ax = lk.x - virus.position.x, az = lk.z - virus.position.z; let dy = Math.atan2(ax, az) - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(virus.rotation.x + (.34 - virus.rotation.x) * Math.min(1, dt * 5), virus.rotation.y + dy * Math.min(1, dt * 4), 0);
+      limbs.forEach((l, i) => { const base = i % 2 ? .25 : -.55; l.rotation.x += (base - l.rotation.x) * Math.min(1, dt * 7); });
+    }
+  }
   // things you can do here
+  if (!under && !crouching && !hintText && [[1.3, 0], [-1.3, 0], [0, 1.3], [0, -1.3]].some(([ox, oz]) => L5.low(Math.floor((player.z + oz) / CELL), Math.floor((player.x + ox) / CELL)))) hintText = '🧎 C';
   if (!under) {
-    if (Math.hypot(f.cake.x - player.x, f.cake.z - player.z) < 4.6 && !f.chase) { hintText = '🎂 R'; actR = () => pgGrab(null, 'Happy birthday', 'The cake is warm and sweet and full of teeth. The partygoers clap as you stop moving. =)', f.cake); }
+    if (f.allDead || f.rage) { /* nobody is left to spring the traps */ }
+    else if (Math.hypot(f.cake.x - player.x, f.cake.z - player.z) < 4.6 && !f.chase) { hintText = '🎂 R'; actR = () => pgGrab(null, 'Happy birthday', 'The cake is warm and sweet and full of teeth. The partygoers clap as you stop moving. =)', f.cake); }
     else if (Math.hypot(f.present.x - player.x, f.present.z - player.z) < 2.4) { hintText = '🎁 R'; actR = () => { burst(200, 2, .3, 1.4, 'lowpass'); pgGrab(null, 'Happy birthday', 'The tag said FOR YOU, and it was. The lid opens by itself, and long yellow arms pull you in. The virus told you it smelled wrong. =)', f.present); }; }
     else if (Math.hypot(f.red.x - player.x, f.red.z - player.z) < 2.4) { hintText = '🚪 R'; actR = () => ending('Red door', 'The EXIT opens onto nothing but red. You fall for a very, very long time. The note said to avoid red things.'); }
     else { const s = f.balloons.find(b => !b.popped && Math.hypot(b.x - player.x, b.z - player.z) < 2.2); if (s && !f.chase) { hintText = '🎈 R'; actR = () => { s.popped = true; s.grp.visible = false; burst(1200, .5, .12, 1.8, 'bandpass'); f.spot = V(s.x, 0, s.z); f.spotT = 9; f.pg.forEach(q => { q.re = 0; }); say('<b>POP!</b> Every head turns toward the sound.', 3); }; } }
@@ -3479,10 +3567,10 @@ function resetNewLevels() {
   Object.assign(town, { phase: 'walk', t: 0, light: 1, v: 0, seen: 0, vanX: roadX(42), vanZ: 42, vanYaw: Math.atan2(roadX(43) - roadX(41), 2), nightDone: false, platDown: false, fell: false, black: false });
   town.vanOut.visible = true; town.vanIn.visible = false; town.watchers.forEach(w => w.w.visible = false); town.platform.position.y = 60;
   Object.assign(park, { wake: 0, woke: false, frozen: false, has: false, placed: false, swing: 0, phase: 'walk', noted: false, rideT: 0, black: false, target: null, retarget: 0 }); park.doll.visible = true; park.doll.position.set(13, .45, 57.25); park.doll.rotation.y = Math.PI;
-  park.clown.position.set(22 * CELL + 1, 0, 10 * CELL + 1); park.arm.rotation.x = -.5; park.armL.rotation.set(-1, .3, -.14); park.legs.forEach(l => l.rotation.x = 0); park.knees.forEach(k => k.rotation.x = .08); park.tails.rotation.x = 0; park.clown.rotation.z = 0; park.built = false; park.car.position.copy(park.curve.getPointAt(0)); park.car.rotation.set(0, 0, 0); park.rideS = 0; park.fire = 0; park.chase = 0; park.hands.visible = false; park.wings.forEach(({ w0, sd }) => { w0.scale.set(sd * .001, 1, .001); }); park.flames.forEach(f => { f.sp.visible = false; }); park.fireLight.intensity = 0; if (park.wind) { park.wind.src.stop(); park.wind = null; } if (park.engine) { [park.engine.o1, park.engine.o2, park.engine.o3].forEach(o => o.stop()); park.engine = null; } { const c0 = new THREE.Color().setRGB(.16, .012, .01); for (let i = 0; i < park.leds.count; i++) park.leds.setColorAt(i, c0); park.leds.instanceColor.needsUpdate = true; c0.setRGB(.25, .02, .015); for (let i = 0; i < park.ringN; i++) park.rings.setColorAt(i, c0); park.rings.instanceColor.needsUpdate = true; }
-  setVirusMutation(0); virus.rotation.set(0, 0, 0); Object.assign(fun, { vFrom: null, mutRoar: false, mutDone: false, mutSound: 0, grace: 0, heard: 0, underT: 0, wasUnder: false, lastFree: null, chase: false, intro: 0, said: 0, introOn: false, spot: null, spotT: 0, fT: null });
+  park.clown.position.set(22 * CELL + 1, 0, 10 * CELL + 1); park.arm.rotation.x = -.5; park.armL.rotation.set(-1, .3, -.14); park.legs.forEach(l => l.rotation.x = 0); park.knees.forEach(k => k.rotation.x = .08); park.tails.rotation.x = 0; park.clown.rotation.z = 0; park.built = false; park.car.position.copy(park.curve.getPointAt(0)); park.car.rotation.set(0, 0, 0); park.rideS = 0; park.fire = 0; park.chase = 0; park.hands.visible = false; park.rider.visible = false; park.wings.forEach(({ w0, sd }) => { w0.scale.set(sd * .001, 1, .001); }); park.flames.forEach(f => { f.sp.visible = false; }); park.fireLight.intensity = 0; if (park.wind) { park.wind.src.stop(); park.wind = null; } if (park.engine) { [park.engine.o1, park.engine.o2, park.engine.o3].forEach(o => o.stop()); park.engine = null; } { const c0 = new THREE.Color().setRGB(.16, .012, .01); for (let i = 0; i < park.leds.count; i++) park.leds.setColorAt(i, c0); park.leds.instanceColor.needsUpdate = true; c0.setRGB(.25, .02, .015); for (let i = 0; i < park.ringN; i++) park.rings.setColorAt(i, c0); park.rings.instanceColor.needsUpdate = true; }
+  setVirusMutation(0); virus.rotation.set(0, 0, 0); virus.scale.setScalar(1); virus.position.y = 0; fun.stains.forEach(o => { o.visible = false; }); fun.sprays.forEach(o => { o.sp.visible = false; }); Object.assign(fun, { rage: null, allDead: false, vSpot: null, vRe: 0, vFrom: null, mutRoar: false, mutDone: false, mutSound: 0, grace: 0, heard: 0, underT: 0, wasUnder: false, lastFree: null, chase: false, intro: 0, said: 0, introOn: false, spot: null, spotT: 0, fT: null });
   fun.balloons.forEach(b => { b.popped = false; b.grp.visible = true; });
-  fun.pg.forEach(q => { q.m.position.set(q.home[1] * CELL + 1, 0, q.home[0] * CELL + 1); q.state = 'wander'; q.tg = null; q.dest = null; q.arms.forEach(a => a.rotation.set(0, 0, 0)); q.fores.forEach(a => a.rotation.x = -.15); });
+  fun.pg.forEach(q => { q.dead = false; q.dy = 0; q.m.rotation.x = 0; q.head.rotation.set(0, 0, 0); q.legs.forEach(l => { l.rotation.x = 0; }); q.m.position.set(q.home[1] * CELL + 1, 0, q.home[0] * CELL + 1); q.state = 'wander'; q.tg = null; q.dest = null; q.arms.forEach(a => a.rotation.set(0, 0, 0)); q.fores.forEach(a => a.rotation.x = -.15); });
   limbs.forEach(l => l.rotation.x = 0);
 }
 window.__game = { L4, L10, setSanity, gear, poopR, pipeL, lightsL, runL, startRun, setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
@@ -3503,13 +3591,11 @@ function tick() {
     if (keys['arrowleft']) player.yaw += 2.2 * dt;
     if (keys['arrowright']) player.yaw -= 2.2 * dt;
     const mv = frozen ? 0 : (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0), st = frozen ? 0 : (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
-    // hold C to crouch in Level Fun: slow and almost silent, and low enough to crawl under things. You can't stand up under something.
-    if (L === L5) {
-      const pr0 = Math.floor(player.z / CELL), pc0 = Math.floor(player.x / CELL), inLow = [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([ox, oz]) => L.low(Math.floor((player.z + oz * player.r) / CELL), Math.floor((player.x + ox * player.r) / CELL)));
-      crouching = !frozen && (!!keys['c'] || inLow); void pr0; void pc0;
-      const nearLow = [[0, 0], [.8, 0], [-.8, 0], [0, .8], [0, -.8]].some(([ox, oz]) => L.low(Math.floor((player.z + oz) / CELL), Math.floor((player.x + ox) / CELL)));
-      camH += ((crouching ? (nearLow ? .6 : .92) : 1.6) - camH) * Math.min(1, dt * 7);
-    } else { crouching = false; camH += (1.6 - camH) * Math.min(1, dt * 7); }
+    // hold C to crouch anywhere: slow and quiet. Under something low you stay down until you are out.
+    { const low0 = L.low || (() => false), inLow = [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([ox, oz]) => low0(Math.floor((player.z + oz * player.r) / CELL), Math.floor((player.x + ox * player.r) / CELL)));
+      crouching = !frozen && (!!keys['c'] || inLow);
+      const nearLow = [[0, 0], [.8, 0], [-.8, 0], [0, .8], [0, -.8]].some(([ox, oz]) => low0(Math.floor((player.z + oz) / CELL), Math.floor((player.x + ox) / CELL)));
+      camH += ((crouching ? (nearLow ? .6 : .92) : 1.6) - camH) * Math.min(1, dt * 7); }
     const sprint = keys['shift'] && mv > 0 && stamina > .02 && drawing <= 0 && !crouching;
     if (drawing > 0 && (drawing -= dt) <= 0) { setArmed(true); say('You finally get your ' + WEAPONS[weapon].name + ' out.', 2); }
     stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
