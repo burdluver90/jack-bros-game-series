@@ -61,8 +61,9 @@
   <h1>Graphics</h1>
   <p id="gfxmsg">Pick what fits your computer. You can change it later.</p>
   <button class="opt" data-q="high"><b>High</b><br>RTX 4050 and Ryzen 5 5500, or better</button>
-  <button class="opt" data-q="medium"><b>Medium</b><br>Game consoles</button>
-  <button class="opt" data-q="low"><b>Low</b><br>School Chromebooks</button>
+  <button class="opt" data-q="medium"><b>Medium</b><br>PS5 and Xbox Series consoles</button>
+  <button class="opt" data-q="low1080"><b>Low 1080p</b><br>Recommended for PS4</button>
+  <button class="opt" data-q="low"><b>Low 720p</b><br>School Chromebooks</button>
 </div>
 <div id="hud">
   <div>🧠 Sanity: <span id="san">100</span></div>
@@ -128,12 +129,13 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // ---------- graphics settings ----------
 // Picked before the world is built, so Low really builds a lighter game: fewer things to draw, simpler lighting and fewer pixels.
-const lowRes = () => Math.min(1, 720 / innerHeight);   // Low draws at 720p: full size on a small screen, and no more than that on a big one
+const lowRes = cap => Math.min(1, cap / innerHeight);   // Low never draws taller than its limit: full size on a small screen, and no more than that on a big one
 const GFX = {
   high:   { name: 'High',   pr: Math.min(devicePixelRatio, 2), samples: 4, post: true,  bloomRes: 1,  shadow: 4096, sunR: 75, tex: 512, aniso: 16, std: 'full', cube: 1,   poly: 120000, every: 1, lightStep: 1, lightPow: 1,   amb: 1,    rips: 24, waterSeg: 10, grass: 150000, flowers: 9000, leaf: 110, ter: [340, 420], far: 1200, conf: 6000, sky: 5, birds: 16, ff: true,  fogK: 1 },
   medium: { name: 'Medium', pr: Math.min(devicePixelRatio, 1), samples: 0, post: true,  bloomRes: .5, shadow: 1536, sunR: 50, tex: 256, aniso: 4,  std: 'std',  cube: .8,  poly: 80000,  every: 2, lightStep: 1, lightPow: 1,   amb: 1,    rips: 12, waterSeg: 6,  grass: 45000,  flowers: 3000, leaf: 56,  ter: [200, 250], far: 500,  conf: 2500, sky: 3, birds: 10, ff: true,  fogK: .85 },
-  low:    { name: 'Low',    pr: lowRes(), samples: 0, post: false, bloomRes: 0, shadow: 0, sunR: 0, tex: 256, aniso: 4, std: 'lite', cube: .6, poly: 30000,  every: 3, lightStep: 2, lightPow: 1.5, amb: 1.15, rips: 5,  waterSeg: 2,  grass: 15000,  flowers: 600,  leaf: 30,  ter: [110, 135],  far: 0,    conf: 500,  sky: 2, birds: 0,  ff: false, fogK: .7, low: true }
+  low:    { name: 'Low 720p', res: 720, pr: lowRes(720), samples: 0, post: false, bloomRes: 0, shadow: 0, sunR: 0, tex: 256, aniso: 4, std: 'lite', cube: .6, poly: 30000,  every: 3, lightStep: 2, lightPow: 1.5, amb: 1.15, rips: 5,  waterSeg: 2,  grass: 15000,  flowers: 600,  leaf: 30,  ter: [110, 135],  far: 0,    conf: 500,  sky: 2, birds: 0,  ff: false, fogK: .7, low: true }
 };
+GFX.low1080 = { ...GFX.low, name: 'Low 1080p', res: 1080, pr: lowRes(1080) };   // the same light world, drawn at a higher resolution
 const Q = await new Promise(done => {
   const box = document.getElementById('gfx'), use = id => { try { localStorage.setItem('backrooms3dGfx', id); } catch (e) {} };
   const asked = new URLSearchParams(location.search).get('gfx');
@@ -354,7 +356,7 @@ const fx = new ShaderPass({
     }`
 });
 if (Q.post) { composer.addPass(fx); composer.addPass(new OutputPass()); }
-addEventListener('resize', () => { if (Q.low) renderer.setPixelRatio(lowRes()); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); if (Q.post) composer.setSize(innerWidth, innerHeight); });
+addEventListener('resize', () => { if (Q.low) renderer.setPixelRatio(lowRes(Q.res)); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); if (Q.post) composer.setSize(innerWidth, innerHeight); });
 
 // every texture is drawn at 256 x 256, then gets fine grain and a few grimy stains; its brightness is also used
 // as a bump map so walls and floors catch the light instead of looking flat
