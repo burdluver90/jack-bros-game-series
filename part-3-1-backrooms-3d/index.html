@@ -1260,9 +1260,9 @@ function screech() {
 }
 // test links: #poolrooms or #habitable jumps straight to that level, water=N gives you almond water, sword gives you the sword
 function jump() {
-  const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('bacteria') ? L16 : h.includes('library') ? L15 : h.includes('boiler') || h.includes('basement') ? L14 : h.includes('upstairs') ? L13 : h.includes('lobby') ? L12 : h.includes('hotel') ? L11 : h.includes('tunnel') ? L10 : h.includes('run') ? L9 : h.includes('lightsout') ? L8 : h.includes('pipes') ? L7 : h.includes('poopers') ? L6 : h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
+  const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('ending') ? L0 : h.includes('bacteria') ? L16 : h.includes('library') ? L15 : h.includes('boiler') || h.includes('basement') ? L14 : h.includes('upstairs') ? L13 : h.includes('lobby') ? L12 : h.includes('hotel') ? L11 : h.includes('tunnel') ? L10 : h.includes('run') ? L9 : h.includes('lightsout') ? L8 : h.includes('pipes') ? L7 : h.includes('poopers') ? L6 : h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
   const w = h.find(x => x.startsWith('water='));
-  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L11) hotelStreet(); if (lvl === L15) libraryStart(); if (lvl === L16) bacStart(); if (lvl === L12 || lvl === L13 || lvl === L14) { player.yaw = lvl === L12 ? 0 : -Math.PI / 2; bringVirus(1.4, 1); } if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); }
+  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L11) hotelStreet(); if (lvl === L15) libraryStart(); if (lvl === L16) bacStart(); if (lvl === L0) finaleStart(); if (lvl === L12 || lvl === L13 || lvl === L14) { player.yaw = lvl === L12 ? 0 : -Math.PI / 2; bringVirus(1.4, 1); } if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); }
   if (h.includes('flashlight')) { gear.light = true; showGear(); }
   if (w) { water = Math.max(0, parseInt(w.slice(6)) || 0); $('aw').textContent = water; }
   if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
@@ -3914,7 +3914,7 @@ function updateHotelBase(dt, t, near) {
     else if (bo.state === 'virus') { bo.t += dt; const k0 = Math.min(1, bo.t / 2.6), tx = 80, tz = 19.5; bo.m.position.x += (tx - bo.m.position.x) * dt * 1.5; bo.m.position.z += (tz - bo.m.position.z) * dt * 1.5; virus.position.set(bo.m.position.x + .55, .02, bo.m.position.z + .3); virus.rotation.set(.6, t * 6, 0); bo.m.rotation.z = Math.sin(t * 15) * .08; if (k0 >= 1) { bo.state = 'gone'; bo.m.visible = false; virus.position.y = 0; virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); burst(70, 1, 1.4, 3, 'lowpass'); burst(3200, 2, .7, 1, 'highpass'); shake = 1; say('A crash and a roar of fire. The virus comes limping through the steam, smoking, but grinning.', 5); } }
     else if (bo.state === 'fall') { bo.t += dt; const mx = 80 - bo.m.position.x, mz = 19.5 - bo.m.position.z; bo.m.position.x += mx * dt * .9; bo.m.position.z += mz * dt * .9; bo.m.rotation.x = -Math.min(1.1, bo.t * .55); if (bo.t > 2.8) { bo.state = 'gone'; bo.m.visible = false; burst(70, 1, 1.4, 3, 'lowpass'); shake = .8; } }
     // the real exit
-    if (bo.state === 'polite' || bo.state === 'gone') { if (near(96.8, 16, 2.6)) { hintText = '🚪 R'; actR = () => { burst(90, 1, .5, 2, 'lowpass'); ending('To be continued...', 'The exit door slams shut behind you. The heat, the music and the smiles are gone. You are standing on cool carpet under buzzing lights. Somewhere ahead you can hear wind. Real wind. "We are close now," the virus says. "Closer than anyone." You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); }; } }
+    if (bo.state === 'polite' || bo.state === 'gone') { if (near(96.8, 16, 2.6)) { hintText = '🚪 R'; actR = () => { burst(90, 1, .5, 2, 'lowpass'); goLevel(L0, finaleStart); }; } }
   }
 }
 
@@ -4034,6 +4034,144 @@ function updateBac(dt, t) {
   if (T > 57) { b.on = false; frozen = false; viewLock = false; ride.y = 0; virus.scale.setScalar(.97); virus.rotation.set(0, virus.rotation.y, 0); }
 }
 
+// ---------- the ending: back where it started (only in the 3D game) ----------
+const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), camT: V(0, 0, 0), done: new Set(), open: 0, warp: 0, faceClock: 0, windT: 0, DOOR: { x: 43, z: 34 }, SPOT: { x: 45.3, z: 36.3 }, ME: { x: 43, z: 35.7 }, FRONT: { x: 43, z: 38.3 } };
+{
+  const g = L0.group, lo = Q.low, seg = lo ? 10 : 30, hs = lo ? 4 : 30;
+  // the barrier: a door of real daylight in the wall
+  { const c = document.createElement('canvas'); c.width = 400; c.height = 640; const x = c.getContext('2d'), sky = x.createLinearGradient(0, 0, 0, 430); sky.addColorStop(0, '#2d7fd8'); sky.addColorStop(.75, '#a5d8f5'); sky.addColorStop(1, '#f4fbff'); x.fillStyle = sky; x.fillRect(0, 0, 400, 430); const sun = x.createRadialGradient(285, 150, 0, 285, 150, 170); sun.addColorStop(0, 'rgba(255,255,240,1)'); sun.addColorStop(.18, 'rgba(255,250,215,.9)'); sun.addColorStop(1, 'rgba(255,250,215,0)'); x.fillStyle = sun; x.fillRect(0, 0, 400, 430); x.fillStyle = 'rgba(255,255,255,.75)'; [[70, 90, 50], [115, 100, 42], [40, 105, 34], [190, 240, 40], [235, 248, 32], [150, 250, 30]].forEach(([a, b, r]) => { x.beginPath(); x.ellipse(a, b, r, r * .42, 0, 0, 6.3); x.fill(); }); x.fillStyle = '#6f9f62'; x.beginPath(); x.moveTo(0, 420); x.quadraticCurveTo(120, 365, 240, 412); x.quadraticCurveTo(330, 440, 400, 395); x.lineTo(400, 640); x.lineTo(0, 640); x.fill(); const gr = x.createLinearGradient(0, 400, 0, 640); gr.addColorStop(0, '#5fa548'); gr.addColorStop(1, '#2d6a2a'); x.fillStyle = gr; x.beginPath(); x.moveTo(0, 450); x.quadraticCurveTo(210, 400, 400, 455); x.lineTo(400, 640); x.lineTo(0, 640); x.fill(); x.fillStyle = '#c9b98d'; x.beginPath(); x.moveTo(190, 425); x.lineTo(212, 425); x.lineTo(330, 640); x.lineTo(70, 640); x.fill(); const t0 = new THREE.CanvasTexture(c); t0.colorSpace = THREE.SRGBColorSpace;
+    fin.portal = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2.4), new THREE.MeshBasicMaterial({ map: t0, fog: false, color: 0xb4b4b4 })); fin.portal.position.set(43, 1.2, 34.03); fin.portal.visible = false; g.add(fin.portal);
+    fin.glow = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 5.2), new THREE.MeshBasicMaterial({ map: softDot('255,250,225'), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); fin.glow.position.set(43, 1.25, 34.015); fin.glow.visible = false; g.add(fin.glow);
+    fin.sun = new THREE.PointLight(0xfff4d8, 0, 15, 1.3); fin.sun.position.set(43, 1.4, 34.7); fin.sun.visible = false; g.add(fin.sun); fin.fill = new THREE.PointLight(0xffe7c0, 0, 5, 1.5); fin.fill.visible = false; g.add(fin.fill); }
+  // the key the virus has been carrying all this time
+  { const gold = new StdMat({ color: 0xd8a93a, roughness: .32, metalness: .8, emissive: 0x8a5a10 }), k = new THREE.Group(), a = (geo, x, y, z) => { const o = new THREE.Mesh(geo, gold); o.position.set(x, y, z); k.add(o); return o; }; a(new THREE.TorusGeometry(.055, .015, 8, 20), 0, .1, 0); a(new THREE.CylinderGeometry(.012, .012, .2, 8), 0, -.05, 0); a(new THREE.BoxGeometry(.05, .018, .012), .025, -.13, 0); a(new THREE.BoxGeometry(.038, .018, .012), .02, -.095, 0); k.scale.setScalar(1.9); k.visible = false; g.add(k); fin.key = k;
+    fin.tend = new THREE.Mesh(new THREE.CylinderGeometry(.012, .03, 1, 8), new StdMat({ color: 0x07070a, roughness: .55 })); fin.tend.visible = false; g.add(fin.tend); }
+  // you. In the hood, the whole game long.
+  { const me = new THREE.Group(); me.visible = false; me.position.set(43, 0, 35.7); g.add(me); fin.me = me;
+    const hoodie = new StdMat({ map: clothFab.map, bumpMap: clothFab.bump, bumpScale: .55, roughness: .92, side: THREE.DoubleSide }), ribM = new StdMat({ color: 0x20242f, roughness: .96 }), seamM = new StdMat({ color: 0x11131a, roughness: .9 }), jeans = new StdMat({ color: 0x31435e, roughness: .9, bumpMap: clothFab.bump, bumpScale: .5 }), shoeM = new StdMat({ color: 0x1d1d22, roughness: .6 }), soleM = new StdMat({ color: 0xd8d6cf, roughness: .75 }), skin = new StdMat({ color: 0xa67a5c, roughness: .68 });
+    const put = (par, geo, m, x, y, z, rx = 0, sx = 1, sy = 1, sz = 1) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.x = rx; o.scale.set(sx, sy, sz); par.add(o); return o; }, limb = (a0, b0, r1, r2, m, amp = .045) => { const d0 = b0.clone().sub(a0), o = new THREE.Mesh(clothFolds(new THREE.CylinderGeometry(r1, r2, d0.length(), seg, hs), lo ? 0 : amp, .7), m); o.position.copy(a0).addScaledVector(d0, .5); o.quaternion.setFromUnitVectors(V(0, 1, 0), d0.clone().normalize().negate()); me.add(o); return o; };
+    const body = new THREE.SplineCurve([[.178, .82], [.196, .9], [.205, 1.04], [.208, 1.18], [.196, 1.29], [.158, 1.36], [.105, 1.41], [.08, 1.44]].map(([r, y]) => new THREE.Vector2(r, y))).getPoints(lo ? 12 : 48); put(me, clothFolds(new THREE.LatheGeometry(body, lo ? 14 : 56), lo ? 0 : .026, .8), hoodie, 0, 0, 0, 0, 1, 1, .72);
+    put(me, new THREE.TorusGeometry(.18, .022, 8, seg + 8), ribM, 0, .83, 0, 1.5708, 1, .72, 1); put(me, new THREE.BoxGeometry(.25, .13, .025), hoodie, 0, .95, .142); put(me, new THREE.BoxGeometry(.25, .006, .03), seamM, 0, 1.017, .142);
+    // real hands: a lofted palm with tendons, jointed fingers with creases, a thumb that sits forward, and nails
+    const handPaint = (draw) => { const c = document.createElement('canvas'); c.width = lo ? 128 : 256; c.height = lo ? 128 : 256; const x = c.getContext('2d'), Sz = c.width; x.fillStyle = '#a67a5c'; x.fillRect(0, 0, Sz, Sz); for (let i = 0; i < 700; i++) { x.fillStyle = `rgba(${Math.random() < .5 ? '70,40,25' : '215,170,140'},${Math.random() * .07})`; x.fillRect(Math.random() * Sz, Math.random() * Sz, 1 + Math.random() * 2, 1 + Math.random() * 2); } draw(x, Sz); const t0 = new THREE.CanvasTexture(c); t0.colorSpace = THREE.SRGBColorSpace; t0.anisotropy = Q.aniso; return t0; };
+    const fingerT = handPaint((x, Sz) => { [[.355, 5], [.69, 4], [.97, 3]].forEach(([k, n]) => { for (let i = 0; i < n; i++) { const y = Sz * (1 - k + (i - n / 2) * .014); x.strokeStyle = 'rgba(70,38,24,.2)'; x.lineWidth = Sz / 230; x.beginPath(); x.moveTo(0, y); for (let u = 0; u <= Sz; u += Sz / 10) x.lineTo(u, y + Math.sin(u * .05 + i) * Sz * .004); x.stroke(); } const g0 = x.createLinearGradient(0, Sz * (1 - k - .05), 0, Sz * (1 - k + .05)); g0.addColorStop(0, 'rgba(70,35,22,0)'); g0.addColorStop(.5, 'rgba(70,35,22,.07)'); g0.addColorStop(1, 'rgba(70,35,22,0)'); x.fillStyle = g0; x.fillRect(0, Sz * (1 - k - .05), Sz, Sz * .1); }); });
+    const palmT = handPaint((x, Sz) => { [.38, .46, .54, .62].forEach((u, i) => { x.strokeStyle = 'rgba(205,162,130,.16)'; x.lineWidth = Sz / 60; x.beginPath(); x.moveTo(Sz * (.5 + (u - .5) * .35), Sz * .92); x.lineTo(Sz * u, Sz * .1); x.stroke(); x.strokeStyle = 'rgba(70,55,75,.09)'; x.lineWidth = Sz / 120; x.beginPath(); x.moveTo(Sz * (.45 + i * .04), Sz * .86); x.quadraticCurveTo(Sz * (u + .05), Sz * .55, Sz * (u + .03), Sz * .18); x.stroke(); }); });
+    const fingerSkin = new StdMat({ map: fingerT, roughness: .62 }), palmSkin = new StdMat({ map: palmT, roughness: .66 }), nailM = new StdMat({ color: 0xe6c8b4, roughness: .55 });
+    const loft = (pts, sec, hint) => { const cv = new THREE.CatmullRomCurve3(pts, false, 'centripetal'), rows = lo ? 12 : 34, ar = lo ? 8 : 16, P0 = [], U0 = [], I0 = [], frame = t0 => { const c = cv.getPointAt(t0), T = cv.getTangentAt(t0), N = hint.clone().addScaledVector(T, -hint.dot(T)).normalize(); return { c, T, N, B: T.clone().cross(N) }; }; for (let i = 0; i <= rows; i++) { const t0 = i / rows, { c, N, B } = frame(t0), [rN, rB] = sec(t0); for (let j = 0; j <= ar; j++) { const a0 = -Math.PI + j / ar * 6.2832; P0.push(c.x + N.x * Math.cos(a0) * rN + B.x * Math.sin(a0) * rB, c.y + N.y * Math.cos(a0) * rN + B.y * Math.sin(a0) * rB, c.z + N.z * Math.cos(a0) * rN + B.z * Math.sin(a0) * rB); U0.push(j / ar, t0); } } for (let i = 0; i < rows; i++) for (let j = 0; j < ar; j++) { const a0 = i * (ar + 1) + j, b0 = a0 + ar + 1; I0.push(a0, a0 + 1, b0, b0, a0 + 1, b0 + 1); } const g0 = new THREE.BufferGeometry(); g0.setAttribute('position', new THREE.Float32BufferAttribute(P0, 3)); g0.setAttribute('uv', new THREE.Float32BufferAttribute(U0, 2)); g0.setIndex(I0); g0.computeVertexNormals(); g0.frame = frame; return g0; };
+    const tipR = t0 => t0 > .87 ? Math.sqrt(Math.max(.002, 1 - ((t0 - .87) / .13) ** 2)) : 1, bump = (t0, c, w) => Math.exp(-(((t0 - c) / w) ** 2));
+    const nailOn = (tb, t0, w0, up, len) => { const { c, T, N, B } = tb.frame(t0), g0 = new THREE.SphereGeometry(1, lo ? 8 : 14, lo ? 6 : 10); g0.scale(w0, .0014, len); return g0.applyMatrix4(new THREE.Matrix4().makeBasis(B, N, T).setPosition(c.clone().addScaledVector(N, up))); };
+    const makeHand = sd => { const h0 = new THREE.Group(), out = V(sd, 0, 0), fingers = [], nails = [];
+      const palm = loft([V(0, .012, 0), V(0, -.02, .001), V(.0, -.05, .003), V(0, -.08, .003), V(0, -.096, .002)], t0 => [(.0135 + .003 * bump(t0, .3, .3) + .0015 * bump(t0, .84, .08)) * (t0 > .93 ? Math.sqrt(Math.max(.02, 1 - ((t0 - .93) / .07) ** 2)) : 1), (.024 + .0195 * Math.min(1, t0 * 1.7)) * (t0 > .93 ? Math.sqrt(Math.max(.02, 1 - ((t0 - .93) / .07) ** 2)) : 1)], out);
+      [[.0305, -.087, .047, .0086, .058], [.0102, -.092, .052, .0089, .012], [-.0102, -.09, .048, .0084, -.03], [-.03, -.082, .037, .0072, -.085]].forEach(([z0, y0, len, r0, fan]) => { const curls = [.2, .55, 1.0], lens = [len, len * .62, len * .5], pts = [V(0, y0 + .012, z0 * .96)]; let q0 = V(sd * .001, y0, z0); pts.push(q0.clone()); curls.forEach((c0, i) => { const d0 = V(-sd * Math.sin(c0), -Math.cos(c0), fan * (1 - i * .25)).normalize(); const mid = q0.clone().addScaledVector(d0, lens[i] * .5), e0 = q0.clone().addScaledVector(d0, lens[i]); pts.push(mid, e0); q0 = e0; }); const tb = loft(pts, t0 => { const w0 = r0 * (1 - .22 * t0) * (1 + .035 * bump(t0, .355, .08) - .02 * bump(t0, .52, .12) + .025 * bump(t0, .69, .07) + .015 * bump(t0, .9, .05)) * tipR(t0); return [w0 * .94, w0]; }, out); fingers.push(tb); nails.push(nailOn(tb, .915, r0 * .68, r0 * .66 * .92, r0 * .92)); });
+      const th = [V(-sd * .002, -.012, .014), V(-sd * .007, -.032, .029), V(-sd * .012, -.052, .04), V(-sd * .017, -.07, .046), V(-sd * .023, -.086, .048)], thumb = loft(th, t0 => { const w0 = (.0118 - .0032 * t0) * (1 + .7 * bump(t0, 0, .3) + .025 * bump(t0, .52, .08) + .015 * bump(t0, .9, .05)) * tipR(t0); return [w0 * .88, w0]; }, V(sd * .78, .1, .62)); fingers.push(thumb); nails.push(nailOn(thumb, .9, .0056, .0078, .0072));
+      h0.add(new THREE.Mesh(mergeGeometries(fingers), fingerSkin)); h0.add(new THREE.Mesh(palm, palmSkin)); h0.add(new THREE.Mesh(mergeGeometries(nails), nailM)); h0.traverse(o => { o.castShadow = true; }); return h0; };
+    fin.hands = [];
+    [-1, 1].forEach(sd => {
+      limb(V(sd * .1, .88, 0), V(sd * .115, .48, .012), .09, .07, jeans); limb(V(sd * .115, .48, .012), V(sd * .12, .09, -.005), .07, .058, jeans);
+      put(me, new THREE.SphereGeometry(.07, seg, 10), shoeM, sd * .12, .07, .045, 0, .9, .72, 1.75); put(me, new THREE.SphereGeometry(.07, seg, 8), soleM, sd * .12, .018, .045, 0, .92, .2, 1.82);
+      const sh = V(sd * .2, 1.295, 0), el = V(sd * .265, 1.03, .012), wr = V(sd * .272, .79, .06); limb(sh, el, .06, .054, hoodie); limb(el, wr, .056, .045, hoodie); put(me, new THREE.SphereGeometry(.066, seg, 12), hoodie, sd * .196, 1.3, 0, 0, 1, 1, .95); put(me, new THREE.CylinderGeometry(.044, .044, .04, seg), ribM, wr.x, wr.y, wr.z); { const hn = makeHand(sd); hn.position.set(wr.x, wr.y - .018, wr.z + .002); hn.rotation.x = -.14; me.add(hn); fin.hands.push(hn); }
+      const str = limb(V(sd * .04, 1.4, .105), V(sd * .05, 1.2, .15), .0035, .0035, new StdMat({ color: 0x8d8d90, roughness: .9 }), 0); void str;
+    });
+    put(me, new THREE.CylinderGeometry(.05, .058, .12, seg), skin, 0, 1.44, 0);
+    put(me, clothFolds(new THREE.TorusGeometry(.08, .02, 10, seg + 8), 0), hoodie, 0, 1.415, -.006, 1.42, 1.06, .94, 1);
+    // the head and the face
+    const head = new THREE.Group(); head.position.set(0, 1.46, .004); me.add(head); fin.head = head;
+    const W = lo ? 512 : 1024, H = W / 2, base = document.createElement('canvas'); base.width = W; base.height = H; const out = document.createElement('canvas'); out.width = W; out.height = H; const K = W / 1024, c0 = base.getContext('2d'); c0.scale(K, K);
+    { const cx = 256, cy = 256; c0.fillStyle = '#a67a5c'; c0.fillRect(0, 0, 1024, 512); for (let i = 0; i < 2600; i++) { c0.fillStyle = `rgba(${Math.random() < .5 ? '70,40,25' : '205,160,130'},${Math.random() * .05})`; c0.fillRect(Math.random() * 1024, Math.random() * 512, 2 + Math.random() * 3, 2 + Math.random() * 3); }
+      const shade = c0.createRadialGradient(cx, cy - 20, 40, cx, cy, 220); shade.addColorStop(0, 'rgba(205,160,125,.3)'); shade.addColorStop(1, 'rgba(45,22,12,.42)'); c0.fillStyle = shade; c0.fillRect(0, 0, 1024, 512);
+      [[-50, -34, 34], [52, -30, 37]].forEach(([dx, dy, r]) => { const e = c0.createRadialGradient(cx + dx, cy + dy, 3, cx + dx, cy + dy, r); e.addColorStop(0, '#000'); e.addColorStop(.52, 'rgba(0,0,0,.97)'); e.addColorStop(.8, 'rgba(25,8,6,.5)'); e.addColorStop(1, 'rgba(25,8,6,0)'); c0.fillStyle = e; c0.save(); c0.translate(cx + dx, cy + dy); c0.scale(1, .86); c0.translate(-cx - dx, -cy - dy); c0.fillRect(cx + dx - r, cy + dy - r * 1.3, r * 2, r * 2.6); c0.restore(); });
+      c0.fillStyle = 'rgba(55,28,18,.5)'; c0.beginPath(); c0.moveTo(cx - 3, cy - 18); c0.lineTo(cx + 5, cy - 18); c0.lineTo(cx + 12, cy + 18); c0.lineTo(cx - 10, cy + 18); c0.fill(); c0.fillStyle = 'rgba(20,8,5,.85)'; [-8, 9].forEach(dx => { c0.beginPath(); c0.ellipse(cx + dx, cy + 20, 4, 2.6, 0, 0, 6.3); c0.fill(); });
+    }
+    const faceT = new THREE.CanvasTexture(out); faceT.colorSpace = THREE.SRGBColorSpace; faceT.anisotropy = Q.aniso; fin.base = base; fin.out = out; fin.outX = out.getContext('2d'); fin.faceT = faceT; fin.K = K;
+    const hg = new THREE.SphereGeometry(.112, lo ? 20 : 48, lo ? 16 : 36), hp = hg.attributes.position; for (let i = 0; i < hp.count; i++) { const x = hp.getX(i), y = hp.getY(i), z = hp.getZ(i), jaw = y < 0 ? 1 + y * 1.5 : 1; hp.setXYZ(i, x * jaw + (y < -.02 ? .005 * Math.sin(y * 60) : 0), y, z * (y < 0 ? 1 + y * .7 : 1)); } hg.computeVertexNormals();
+    fin.faceM = put(head, hg, new StdMat({ map: faceT, roughness: .72 }), 0, .11, 0, 0, .93, 1.18, 1);
+    put(head, new THREE.SphereGeometry(.119, seg + 6, 16, 0, 6.2832, 0, 1.38), new StdMat({ color: 0x17110d, roughness: .95, bumpMap: clothFab.bump, bumpScale: .6 }), 0, .118, -.008, -.3, .96, 1.16, 1.03);
+    [-1, 1].forEach(sd => put(head, new THREE.SphereGeometry(.024, 10, 8), skin, sd * .104, .105, -.01, 0, .4, 1.15, .75));
+    // two blinding lights where the eyes should be
+    { const glow = softDot('255,255,245'); fin.eyes = new THREE.Group(); fin.eyes.visible = false; head.add(fin.eyes); fin.eyeGlow = [-1, 1].map(sd => { const core = new THREE.Mesh(new THREE.SphereGeometry(.0165, 14, 10), new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false })); core.position.set(sd * .035, .138, .1); fin.eyes.add(core); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: 0xffffff, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, fog: false, transparent: true })); sp.position.copy(core.position); sp.position.z += .01; sp.renderOrder = 3; fin.eyes.add(sp); return sp; }); }
+    // the smile: a red tear with nothing to stop it at the edges of the face
+    { const N = lo ? 44 : 96, pos = new Float32Array((N + 1) * 6), idx = []; for (let i = 0; i < N; i++) { const a0 = i * 2; idx.push(a0, a0 + 1, a0 + 2, a0 + 1, a0 + 3, a0 + 2); } const g0 = new THREE.BufferGeometry(); g0.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g0.setIndex(idx); fin.smile = new THREE.Mesh(g0, new THREE.MeshBasicMaterial({ color: 0xff1208, side: THREE.DoubleSide, fog: false })); fin.smile.frustumCulled = false; fin.smile.visible = false; fin.smile.renderOrder = 4; head.add(fin.smile); fin.smileN = N;
+      fin.smileGlow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: softDot('255,25,12'), transparent: true, opacity: .14, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); fin.smileGlow.position.set(0, .06, .13); fin.smileGlow.visible = false; head.add(fin.smileGlow);
+      fin.drawSmile = (t0, warp) => { const E = .115 + warp * .215, tear = Math.random() < .12 ? Math.random() * 2 - 1 : 9; for (let i = 0; i <= N; i++) { const k = i / N * 2 - 1, x0 = k * E, ak = Math.abs(k), yc = .066 + .1 * Math.pow(ak, 1.7) * (E / .33 + .3) + k * .01 * warp + warp * .0022 * Math.sin(k * 9 + t0 * 6) + warp * .0009 * Math.sin(k * 25 - t0 * 12) + (Math.abs(k - tear) < .09 ? (Math.random() - .5) * .022 : 0), th = (.05 * (1 - Math.pow(ak, 1.45)) + .001) * (1 + .05 * Math.sin(k * 31 + t0 * 8) * warp), top = yc + th * .1, bot = yc - th * .9, zAt = y0 => { const q0 = 1 - (x0 / .104) ** 2 - ((y0 - .11) / .132) ** 2; return Math.max(q0 > 0 ? .112 * Math.sqrt(q0) : 0, .045) + .004; }; pos[i * 6] = x0; pos[i * 6 + 1] = top; pos[i * 6 + 2] = zAt(top); pos[i * 6 + 3] = x0; pos[i * 6 + 4] = bot; pos[i * 6 + 5] = zAt(bot); } g0.attributes.position.needsUpdate = true; }; }
+    // the hood, which gets pulled down
+    const hood = new THREE.Group(); hood.position.set(0, 1.42, -.085); me.add(hood); fin.hood = hood;
+    const hd = clothFolds(new THREE.SphereGeometry(.14, lo ? 18 : 40, lo ? 14 : 32), lo ? 0 : .02, 1.3), pa = hd.attributes.position, ia = hd.index.array, keep = []; for (let i = 0; i < ia.length; i += 3) { const a0 = ia[i], b0 = ia[i + 1], c1 = ia[i + 2], cx = (pa.getX(a0) + pa.getX(b0) + pa.getX(c1)) / 3, cy = (pa.getY(a0) + pa.getY(b0) + pa.getY(c1)) / 3, cz = (pa.getZ(a0) + pa.getZ(b0) + pa.getZ(c1)) / 3; if (!(cz > .03 && Math.abs(cx) < .095 && cy > -.12 && cy < .09)) keep.push(a0, b0, c1); } hd.setIndex(keep);
+    put(hood, hd, hoodie, 0, .155, .1, 0, .98, 1.14, 1.1); fin.hoodDark = put(hood, new THREE.CircleGeometry(.105, 24), new THREE.MeshBasicMaterial({ color: 0x020203 }), 0, .15, .206, 0, .95, 1.25, 1); put(hood, new THREE.TorusGeometry(.1, .009, 8, seg + 8), hoodie, 0, .147, .213, 0, .98, 1.24, 1);
+    fin.drawFace = (t0, warp) => { const X = fin.outX, K0 = fin.K; X.drawImage(base, 0, 0); if (warp <= .001) { faceT.needsUpdate = true; return; } const y0 = Math.round(150 * K0), y1 = Math.round(420 * K0), st = Math.max(2, Math.round(7 * K0)), sx = Math.round(60 * K0), sw = Math.round(392 * K0); const tear = Math.random() < .14 ? Math.random() * 270 + 150 : -1; for (let y = y0; y < y1; y += st) { const yk = y / K0, mouth = Math.max(0, 1 - Math.abs(yk - 318) / 75), off = warp * K0 * (Math.sin(yk * .08 + t0 * 5.5) * 4.5 + Math.sin(yk * .23 - t0 * 11) * 2 + (tear > 0 && Math.abs(yk - tear) < 13 ? (Math.random() - .5) * 42 : 0)), wid = warp * K0 * mouth * (34 + Math.sin(t0 * 2.3) * 16); X.drawImage(base, sx, y, sw, st, sx + off - wid / 2, y, sw + wid, st); } faceT.needsUpdate = true; };
+    fin.drawFace(0, 0);
+  }
+}
+function resetFinale() {
+  fin.on = false; fin.cam = false; fin.phase = ''; fin.san = 1; fin.open = 0; fin.warp = 0; fin.done.clear();
+  [fin.portal, fin.glow, fin.sun, fin.fill, fin.key, fin.tend, fin.me, fin.eyes, fin.smile, fin.smileGlow].forEach(o => { o.visible = false; }); fin.sun.intensity = 0; fin.fill.intensity = 0; fin.hood.rotation.x = 0; fin.head.rotation.set(0, 0, 0); fin.drawFace(0, 0);
+}
+function finaleStart() {
+  resetFinale(); fin.on = true; fin.phase = 'lead'; fin.t = 0; player.x = 31; player.z = 39; player.yaw = -Math.PI / 2; look.pitch = 0; bringVirus(2.2, 0); virus.rotation.set(0, Math.PI / 2, 0); if (bac.newT) { bac.newT.visible = true; bac.newT.scale.setScalar(1); }
+  fin.sun.visible = true; fin.fill.visible = true; fin.leg = 0;
+  say('The door slams shut behind you. Damp carpet. Yellow walls. The lights buzz. <b>You are back where it all started.</b> The virus walks ahead of you without a word.', 7);
+}
+function finTendril(a0, b0) { const d0 = b0.clone().sub(a0), n = d0.length() || .001; fin.tend.visible = true; fin.tend.position.copy(a0).addScaledVector(d0, .5); fin.tend.quaternion.setFromUnitVectors(V(0, 1, 0), d0.divideScalar(n)); fin.tend.scale.y = n; }
+function updateFinale(dt, t) {
+  const f = fin; f.t += dt; const T = f.t, beat = (at, fn) => { const k = f.phase + at; if (T >= at && !f.done.has(k)) { f.done.add(k); fn(); } },
+    aim = (x, y, z, sp = 3) => { const dx = x - player.x, dz = z - player.z, want = Math.atan2(-dx, -dz); let dy = want - player.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); player.yaw += dy * Math.min(1, dt * sp); const py = Math.atan2(y - camH, Math.max(.3, Math.hypot(dx, dz))); look.pitch += (py - look.pitch) * Math.min(1, dt * sp); },
+    faceYou = () => { const y0 = Math.atan2(player.x - virus.position.x, player.z - virus.position.z); let dy = y0 - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(0, virus.rotation.y + dy * Math.min(1, dt * 3), 0); },
+    walkTo = (x, z, top) => { const mx = x - virus.position.x, mz = z - virus.position.z, md = Math.hypot(mx, mz); if (md < .04) { limbs.forEach(l => { l.rotation.x *= .85; }); return true; } const st = Math.min(md, top * dt); virus.position.x += mx / md * st; virus.position.z += mz / md * st; let dy = Math.atan2(mx, mz) - virus.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); virus.rotation.set(.1, virus.rotation.y + dy * Math.min(1, dt * 6), 0); trail.ph += dt * top * 1.6; limbs.forEach((l, i) => { l.rotation.x = Math.sin(trail.ph + (i >> 1) * Math.PI + (i % 2 ? Math.PI : 0)) * (i % 2 ? .45 : .6); }); return false; };
+  // the door of daylight
+  f.portal.visible = f.glow.visible = f.open > .002; f.portal.scale.x = Math.max(.002, f.open); const dim = f.phase === 'ask' ? 1 - easeIO(T / 7) * .78 : 1; f.portal.material.color.setScalar(.42 + .28 * dim); f.glow.material.opacity = f.open * dim * (.42 + Math.sin(t * 2.1) * .05); f.glow.scale.x = .35 + f.open * .65; f.sun.intensity = f.open * dim * (Q.low ? 8 : 12);
+  if (f.open > .3 && f.phase !== 'ask') { if ((f.windT -= dt) <= 0) { f.windT = 3.6; burst(520, .7, 4.4, .24, 'bandpass'); if (Math.random() < .7) [0, .16, .34].forEach(s0 => setTimeout(() => burst(3100 + Math.random() * 700, 14, .08, .12, 'bandpass'), s0 * 1000)); } }
+
+  if (f.phase === 'lead') {
+    const way = [[40, 39], [f.SPOT.x, f.SPOT.z]], w0 = way[f.leg]; if (w0) { const dp = Math.hypot(virus.position.x - player.x, virus.position.z - player.z); if (dp < 9 && walkTo(w0[0], w0[1], 2.7)) f.leg++; } else faceYou();
+    if (f.leg >= 2 && Math.hypot(44 - player.x, 37 - player.z) < 4.8) { f.phase = 'key'; f.t = 0; frozen = true; viewLock = true; player.vx = player.vz = 0; setArmed(false); f.key.visible = true; f.key.rotation.set(0, 0, .4); }
+    return;
+  }
+  const chest = virus.position.clone().add(V(0, 1.5, 0));
+  if (f.phase === 'key') {
+    faceYou();
+    const hold = chest.clone().add(V((player.x - virus.position.x) * .42, .1, (player.z - virus.position.z) * .42)), lock = V(44.05, 1.25, 34.12), k0 = easeIO((T - 5.2) / 1.7); f.key.position.lerpVectors(hold, lock, k0); f.key.rotation.z = .4 + k0 * 1.2; f.key.rotation.y = T > 7 ? Math.min(1.5708, (T - 7) * 3.5) : 0;
+    if (T < 8.2) finTendril(chest, f.key.position); else f.tend.visible = false;
+    if (T < 5) aim(f.key.position.x, f.key.position.y, f.key.position.z, 2.5); else aim(T < 7.3 ? 44 : 43, 1.35, 34, 2);
+    beat(.3, () => say('"I have had this key for years."', 4.8));
+    beat(5.2, () => say('"It opens the barrier of this place into the real world."', 6));
+    beat(7.1, () => { burst(1800, 5, .1, .9, 'bandpass'); burst(420, 3, .16, .9, 'lowpass'); });
+    beat(7.7, () => { shake = .7; burst(60, 1, 1.7, 2.6, 'lowpass'); burst(900, .5, 2.2, .4, 'bandpass'); });
+    if (T > 7.7) f.open = easeIO((T - 7.7) / 2.6);
+    beat(11.3, () => say('"You are worthy."', 3));
+    beat(14.3, () => say('<b>"Be free, my friend."</b>', 5));
+    if (T > 16.2) { f.phase = 'free'; f.t = 0; frozen = false; viewLock = false; }
+    return;
+  }
+  if (f.phase === 'free') {
+    faceYou(); limbs.forEach(l => { l.rotation.x *= .85; });
+    if (Math.hypot(f.DOOR.x - player.x, f.DOOR.z + .4 - player.z) < 1.75 && player.z > 34.5) { f.phase = 'ask'; f.t = 0; frozen = true; viewLock = true; player.vx = player.vz = 0; setArmed(false); f.from = { x: player.x, z: player.z }; burst(90, 2, .5, 1.3, 'lowpass'); say('The wind stops.', 2.2); }
+    return;
+  }
+  // the question
+  const k1 = easeIO(T / 1.2); player.x = f.from.x + (f.ME.x - f.from.x) * k1; player.z = f.from.z + (f.ME.z - f.from.z) * k1;
+  const vDone = T < 1.5 ? false : walkTo(f.FRONT.x, f.FRONT.z, 3); if (vDone || T > 3.6) faceYou();
+  if (T > 1 && !f.cam) aim(virus.position.x, 2.45, virus.position.z, 2.8); else if (!f.cam) aim(f.DOOR.x, 1.6, f.DOOR.z, 2);
+  beat(2.2, () => say('"But I simply have one question."', 4.2));
+  beat(6.6, () => { say('<b>"What is your face?"</b>', 5.8); burst(70, 1, 1.2, 1.2, 'lowpass'); });
+  beat(10, () => { f.cam = true; f.me.visible = true; f.me.position.set(f.ME.x, 0, f.ME.z); f.fill.position.set(42.5, 1.9, 36.9); f.fill.intensity = Q.low ? 2.4 : 3.8; });
+  if (f.cam) {
+    const k2 = easeIO((T - 14.6) / 5.2), up = easeIO((T - 10.7) / 1.5), cx = (41.95 + (41.4 - 41.95) * up) * (1 - k2) + 43 * k2, cy = 1.02 + .48 * up + .08 * k2, cz = (36.95 + (37.25 - 36.95) * up - (T - 10) * .02) * (1 - k2) + 36.62 * k2; f.camP.set(cx, cy, cz); f.camT.set(43 - .27 * (1 - up), .78 + .72 * up + .07 * k2, f.ME.z); f.hands.forEach((h0, i) => { h0.rotation.z = Math.sin(t * 13 + i * 2) * .018 + Math.sin(t * 29 + i) * .008; });
+    const hk = easeIO((T - 12.7) / 1.25); f.hood.rotation.x = .14 * (1 - hk) - 2.2 * hk; f.head.rotation.x = .46 * hk - .46 * easeIO((T - 15.2) / 2.1); f.hoodDark.visible = hk < .25;
+    const tip = V(0, .3, .1); f.hood.localToWorld(tip); const reach = easeIO((T - 11) / 1.6), back = easeIO((T - 14) / .9), from = virus.position.clone().add(V(0, 1.75, 0)); if (T > 11 && back < 1) finTendril(from, from.clone().lerp(tip, reach * (1 - back)));
+    else f.tend.visible = false;
+    if (T > 15.2) { f.warp = Math.min(1, (T - 15.2) / 2.8); f.san = 1 - f.warp * .72; f.head.rotation.z = Math.sin(t * 1.3) * .035 + (Math.random() < .035 ? (Math.random() - .5) * .16 : 0); f.head.rotation.y = Math.sin(t * .8) * .03; f.eyes.visible = f.smile.visible = f.smileGlow.visible = true; const on = Math.min(1, (T - 15.2) / .7); f.eyeGlow.forEach(sp => { sp.material.opacity = on * .3; sp.scale.setScalar(.055); }); f.smileGlow.scale.set(.42 + f.warp * .42, .2, 1); if ((f.faceClock -= dt) <= 0) { f.faceClock = 1 / 15; f.drawFace(t, f.warp * .45); f.drawSmile(t, f.warp); } }
+  }
+  beat(12.7, () => { burst(650, 1, .5, .55, 'bandpass'); burst(180, 1, .3, .6, 'lowpass'); });
+  beat(15.8, () => { screech(); shake = .22; });
+  beat(17.6, () => { say('<b>"You have lost more than your sanity."</b>', 5); f.sanFrom = sanity; });
+  if (T > 17.6 && T < 20.2) { setSanity(Math.round(f.sanFrom * (1 - Math.min(1, (T - 17.6) / 2.4)))); $('tunnel').style.display = 'none'; }
+  beat(22.6, () => { say('<b>"You have lost your soul."</b>', 5); f.closing = true; burst(55, 1, .9, 3, 'lowpass'); shake = .8; f.key.visible = false; });
+  if (T > 22.6) f.open = Math.max(0, 1 - (T - 22.6) / .4);
+  beat(27.6, () => { say('<b>"Welcome to your new home, Theo."</b>', 99); burst(42, 1, 3, 2.4, 'lowpass'); });
+  beat(32.6, () => { glimpse.blackout = 99; f.fill.intensity = .5; burst(95, 2, .5, 1.2, 'lowpass'); });
+  beat(33.4, () => { $('fade').style.transition = 'opacity 1.6s'; $('fade').style.opacity = 1; });
+  beat(35.4, () => { $('fade').style.transition = ''; $('fade').style.opacity = 0; ending('The End', 'You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); });
+}
+
 // ---------- always, and starting over ----------
 function updateLevelsAlways(dt, t) {
   if (L === L3) {
@@ -4049,7 +4187,7 @@ function updateLevelsAlways(dt, t) {
   if (L === L4) { park.fw.rotation.z += dt * .025; park.seats.forEach(({ seat }) => { seat.rotation.z = -park.fw.rotation.z; }); park.carousel.rotation.y += dt * (.035 + Math.max(0, Math.sin(t * .4)) * .05); park.spin.forEach((h, i) => { h.position.y = Math.sin(t * .35 + i) * .1; }); }
 }
 function resetNewLevels() {
-  Object.assign(gear, { photo: false, light: false, wrench: false, lightOn: false, bugs: false, axe: false, roomKey: false, brass: false, sheet: false, hat: false }); resetHotel(); resetLibBac(); $('gear').textContent = '';
+  Object.assign(gear, { photo: false, light: false, wrench: false, lightOn: false, bugs: false, axe: false, roomKey: false, brass: false, sheet: false, hat: false }); resetHotel(); resetLibBac(); resetFinale(); $('gear').textContent = '';
   Object.assign(poopR, { talk: 0, said: 0, fall: 0, flash: 0 }); poopR.guests.forEach(q => { q.down = 0; });
   Object.assign(pipeL, { hot: true, turning: 0, crawlT: 0, crawlDead: false, crawlSeen: false, squeezed: false }); pipeL.flash.visible = true; pipeL.wrench.visible = true; pipeL.grate.visible = true; pipeL.hotM.emissiveIntensity = 1.25; pipeL.hotM.color.setHex(0xb8200e); pipeL.hotLights.forEach(l => { l.intensity = 9; }); pipeL.crawler.position.set(8, 1.1, 5.4); pipeL.crawler.rotation.set(0, 0, 0);
   lightsL.eyes.forEach(q => { q.state = 'idle'; q.t = 0; q.m.visible = true; q.m.position.set(q.home[0], 0, q.home[1]); q.tg = null; }); lightsL.spot.intensity = 0; lightsL.bug.intensity = 0; lightsL.bugs.position.set(38, 0, 15);
@@ -4064,7 +4202,7 @@ function resetNewLevels() {
   fun.pg.forEach(q => { q.dead = false; q.dy = 0; q.m.rotation.x = 0; q.head.rotation.set(0, 0, 0); q.legs.forEach(l => { l.rotation.x = 0; }); q.m.position.set(q.home[1] * CELL + 1, 0, q.home[0] * CELL + 1); q.state = 'wander'; q.tg = null; q.dest = null; q.arms.forEach(a => a.rotation.set(0, 0, 0)); q.fores.forEach(a => a.rotation.x = -.15); });
   limbs.forEach(l => l.rotation.x = 0);
 }
-window.__game = { L15, L16, library, bac, L4, L10, L11, L12, L13, L14, hotel, setSanity, gear, poopR, pipeL, lightsL, runL, startRun, setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
+window.__game = { fin, finaleStart, L0, L15, L16, library, bac, L4, L10, L11, L12, L13, L14, hotel, setSanity, gear, poopR, pipeL, lightsL, runL, startRun, setVirusMutation, renderer, Q, scene, grabDeath, watcherGrab, clownGrab, pgGrab, ssGrab, death, get crouching() { return crouching; }, get camH() { return camH; }, look, keys, town, park, fun, goLevel, buildFlesh, hello, monster, ssForm, siege, openAndFight, padState, pressPad, openPad, elev, get drawing() { return drawing; }, doorAnim, startDoor, nearDoor, ride, startRide, splash, lizard, liz, killLizard, vaporize, get vapor() { return vapor; }, player, virus, ss, stealer, LEVELS, choose, foeClose, get weapon() { return weapon; }, get armed() { return armed; }, get meetStep() { return meetStep; }, setSanity, enterLevel, phantom, fake, glimpse, startGlimpse, get sanity() { return sanity; }, get water() { return water; }, get level() { return L.name; } };   // handy for testing
 const clock = new THREE.Clock(); let frameNo = 0;
 function tick() {
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
@@ -4091,8 +4229,8 @@ function tick() {
     if (drawing > 0 && (drawing -= dt) <= 0) { setArmed(true); say('You finally get your ' + WEAPONS[weapon].name + ' out.', 2); }
     stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
     $('stam').style.width = (stamina * 100) + '%';
-    if (L !== L15 && (sanClock += dt * (gear.photo ? (sprint ? 1 / 2 : 1 / 3) : (sprint ? 1 : 1 / 2))) >= 1) { sanClock -= 1; setSanity(sanity - 1); }   // 1 every 2 s, 1 every s sprinting; with the Partypooper photo, 1 every 3 s, 1 every 2 s sprinting
-    if (sanity <= 0) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left.');
+    if (L !== L15 && !fin.on && (sanClock += dt * (gear.photo ? (sprint ? 1 / 2 : 1 / 3) : (sprint ? 1 : 1 / 2))) >= 1) { sanClock -= 1; setSanity(sanity - 1); }   // 1 every 2 s, 1 every s sprinting; with the Partypooper photo, 1 every 3 s, 1 every 2 s sprinting
+    if (sanity <= 0 && !fin.on) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left.');
     // where you want to go, and how fast; in deep water you push against it, so you speed up and slow down slowly
     const sp = (mv || st) ? (sprint ? 5.5 : 3) * (crouching ? .47 : 1) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) / Math.hypot(mv, st) : 0;
     const tvx = (-Math.sin(player.yaw) * mv + Math.cos(player.yaw) * st) * sp, tvz = (-Math.cos(player.yaw) * mv - Math.sin(player.yaw) * st) * sp;
@@ -4123,9 +4261,9 @@ function tick() {
       }
     });
     $('dark').style.opacity = 0;
-    if (!L.calm) updatePhantom(dt);
-    updateFake(dt); updateGlimpse(dt);
-    if (L === L0) {
+    if (!fin.on) { if (!L.calm) updatePhantom(dt); updateFake(dt); updateGlimpse(dt); }
+    if (L === L0 && fin.on) updateFinale(dt, t);
+    else if (L === L0) {
       const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
       if (dv < 9) virus.visible = true;
       if (dv < 3.4) { meetStep = 0; meetTimer = 0; say(MEET[0], 99); }
@@ -4195,9 +4333,10 @@ function tick() {
   const fall = updateVapor(dt);   // falling into the black water: you drop, tip over and look up as you sink
   camera.position.set(player.x, camH - fall * fall * 1.5 + ride.y + (moving ? Math.sin(t * (crouching ? 6 : 9)) * (crouching ? .012 : .03) : 0), player.z);
   camera.rotation.set(fall * .9 + ride.pitch + look.pitch, player.yaw, fall * .5 + camRoll);
+  if (fin.cam) { camera.position.copy(fin.camP); camera.lookAt(fin.camT); }
   if (shake > 0) { shake -= dt; camera.position.x += (Math.random() - .5) * shake * .25; camera.position.y += (Math.random() - .5) * shake * .25; }   // the blast shakes you
   placeListener();
-  fx.uniforms.uTime.value = t; fx.uniforms.uSan.value = sanity / 100;
+  fx.uniforms.uTime.value = t; fx.uniforms.uSan.value = fin.on ? fin.san : sanity / 100;
   frameNo++; if (monster.visible && (!flesh.built || ((stealer.state === 'chase' || siege.state === 'fight' || death.on) && frameNo % Q.every === 0))) buildFlesh();
   if (Q.post) composer.render(); else renderer.render(scene, camera);
   requestAnimationFrame(tick);
