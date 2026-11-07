@@ -4036,7 +4036,7 @@ function updateBac(dt, t) {
 // ---------- the ending: back where it started (only in the 3D game) ----------
 const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), camT: V(0, 0, 0), done: new Set(), open: 0, warp: 0, faceClock: 0, windT: 0, DOOR: { x: 43, z: 34 }, SPOT: { x: 45.3, z: 36.3 }, ME: { x: 43, z: 35.7 }, FRONT: { x: 43, z: 38.3 } };
 {
-  const g = L0.group, lo = Q.low, seg = lo ? 10 : 30, hs = lo ? 4 : 30;
+  const g = L0.group, lo0 = Q.low, lo = Q.low, seg = lo ? 10 : 30, hs = lo ? 4 : 30;
   // the barrier: a door of real daylight in the wall
   { const c = document.createElement('canvas'); c.width = 400; c.height = 640; const x = c.getContext('2d'), sky = x.createLinearGradient(0, 0, 0, 430); sky.addColorStop(0, '#2d7fd8'); sky.addColorStop(.75, '#a5d8f5'); sky.addColorStop(1, '#f4fbff'); x.fillStyle = sky; x.fillRect(0, 0, 400, 430); const sun = x.createRadialGradient(285, 150, 0, 285, 150, 170); sun.addColorStop(0, 'rgba(255,255,240,1)'); sun.addColorStop(.18, 'rgba(255,250,215,.9)'); sun.addColorStop(1, 'rgba(255,250,215,0)'); x.fillStyle = sun; x.fillRect(0, 0, 400, 430); x.fillStyle = 'rgba(255,255,255,.75)'; [[70, 90, 50], [115, 100, 42], [40, 105, 34], [190, 240, 40], [235, 248, 32], [150, 250, 30]].forEach(([a, b, r]) => { x.beginPath(); x.ellipse(a, b, r, r * .42, 0, 0, 6.3); x.fill(); }); x.fillStyle = '#6f9f62'; x.beginPath(); x.moveTo(0, 420); x.quadraticCurveTo(120, 365, 240, 412); x.quadraticCurveTo(330, 440, 400, 395); x.lineTo(400, 640); x.lineTo(0, 640); x.fill(); const gr = x.createLinearGradient(0, 400, 0, 640); gr.addColorStop(0, '#5fa548'); gr.addColorStop(1, '#2d6a2a'); x.fillStyle = gr; x.beginPath(); x.moveTo(0, 450); x.quadraticCurveTo(210, 400, 400, 455); x.lineTo(400, 640); x.lineTo(0, 640); x.fill(); x.fillStyle = '#c9b98d'; x.beginPath(); x.moveTo(190, 425); x.lineTo(212, 425); x.lineTo(330, 640); x.lineTo(70, 640); x.fill(); const t0 = new THREE.CanvasTexture(c); t0.colorSpace = THREE.SRGBColorSpace;
     fin.portal = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2.4), new THREE.MeshBasicMaterial({ map: t0, fog: false, color: 0xb4b4b4 })); fin.portal.position.set(43, 1.2, 34.03); fin.portal.visible = false; g.add(fin.portal);
@@ -4045,6 +4045,7 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
   // the key the virus has been carrying all this time
   { const gold = new StdMat({ color: 0xd8a93a, roughness: .32, metalness: .8, emissive: 0x8a5a10 }), k = new THREE.Group(), a = (geo, x, y, z) => { const o = new THREE.Mesh(geo, gold); o.position.set(x, y, z); k.add(o); return o; }; a(new THREE.TorusGeometry(.055, .015, 8, 20), 0, .1, 0); a(new THREE.CylinderGeometry(.012, .012, .2, 8), 0, -.05, 0); a(new THREE.BoxGeometry(.05, .018, .012), .025, -.13, 0); a(new THREE.BoxGeometry(.038, .018, .012), .02, -.095, 0); k.scale.setScalar(1.9); k.visible = false; g.add(k); fin.key = k;
     { const pl = new THREE.Group(); pl.add(new THREE.Mesh(new THREE.BoxGeometry(.16, .26, .025), gold)); const hole = new THREE.Mesh(new THREE.CircleGeometry(.026, 16), new THREE.MeshBasicMaterial({ color: 0x050403 })); hole.position.z = .014; pl.add(hole); pl.position.set(44.05, 1.24, 34.015); pl.visible = false; g.add(pl); fin.plate = pl; }
+    { const st = new THREE.Mesh(new THREE.CircleGeometry(1, lo0 ? 20 : 48), new THREE.MeshBasicMaterial({ map: softDot('2,2,3'), transparent: true, depthWrite: false, fog: false })); st.rotation.x = -1.5708; st.position.set(43, .022, 35.7); st.visible = false; g.add(st); fin.stain = st; }
     fin.tend = new THREE.Mesh(new THREE.CylinderGeometry(.012, .03, 1, 8), new StdMat({ color: 0x07070a, roughness: .55 })); fin.tend.visible = false; g.add(fin.tend); }
   // you. In the hood, the whole game long.
   { const me = new THREE.Group(); me.visible = false; me.position.set(43, 0, 35.7); g.add(me); fin.me = me;
@@ -4108,7 +4109,7 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
 }
 function resetFinale() {
   fin.on = false; fin.cam = false; fin.phase = ''; fin.san = 1; fin.open = 0; fin.warp = 0; fin.done.clear();
-  [fin.portal, fin.glow, fin.sun, fin.fill, fin.key, fin.tend, fin.me, fin.plate, fin.eyes, fin.smile, fin.smileGlow].forEach(o => { o.visible = false; }); fin.sun.intensity = 0; fin.fill.intensity = 0; fin.hood.rotation.x = 0; fin.head.rotation.set(0, 0, 0); fin.drawFace(0, 0); fin.armR.rotation.set(0, 0, 0); fin.me.rotation.set(0, 0, 0); fin.me.scale.setScalar(1); fin.arms.forEach(a0 => { a0.scale.setScalar(1); a0.rotation.set(0, 0, 0); }); fin.head.scale.setScalar(1); fin.monster.visible = false; fin.claws.forEach(o => { o.visible = false; }); fin.tintable.forEach(q => { q.m.color.copy(q.base); }); fin.key.rotation.set(0, 0, 0); fin.grip.visible = false; fin.good = false; $('fade').style.background = ''; if (hotel.boss) hotel.boss.killed = false;
+  [fin.portal, fin.glow, fin.sun, fin.fill, fin.key, fin.tend, fin.me, fin.plate, fin.stain, fin.eyes, fin.smile, fin.smileGlow].forEach(o => { o.visible = false; }); fin.sun.intensity = 0; fin.fill.intensity = 0; fin.hood.rotation.x = 0; fin.head.rotation.set(0, 0, 0); fin.drawFace(0, 0); fin.armR.rotation.set(0, 0, 0); fin.me.rotation.set(0, 0, 0); fin.me.position.y = 0; fin.eyeGlow.forEach(sp => { sp.material.depthTest = false; }); fin.me.scale.setScalar(1); fin.arms.forEach(a0 => { a0.scale.setScalar(1); a0.rotation.set(0, 0, 0); }); fin.head.scale.setScalar(1); fin.monster.visible = false; fin.claws.forEach(o => { o.visible = false; }); fin.tintable.forEach(q => { q.m.color.copy(q.base); }); fin.key.rotation.set(0, 0, 0); fin.grip.visible = false; fin.good = false; $('fade').style.background = ''; if (hotel.boss) hotel.boss.killed = false;
 }
 function finaleStart(good = false) {
   resetFinale(); fin.good = good; fin.on = true; fin.phase = 'lead'; fin.t = 0; player.x = 31; player.z = 39; player.yaw = -Math.PI / 2; look.pitch = 0; bringVirus(2.2, 0); virus.rotation.set(0, Math.PI / 2, 0); if (bac.newT) { bac.newT.visible = true; bac.newT.scale.setScalar(1); }
@@ -4217,14 +4218,17 @@ function updateFinale(dt, t) {
     const c3 = easeIO((T - 31.6) / 4.4); f.camP.lerp(V(40.35, 2.1, 37.9), c3); f.camT.lerp(V(43, 1.75, 36.5), c3);
     f.drawSmile(t, 1 + k3 * .35);
     f.fill.position.set(41.6, 2.7, 37); f.fill.intensity = (Q.low ? 2.4 : 3.8) + k3 * 2;
+    if (T > 41.8) { const sk = Math.min(1, (T - 41.8) / 5.2), dn = sk * sk * (3 - 2 * sk); f.me.position.y = -4.4 * dn; f.me.rotation.z = Math.sin(t * 1.9) * .03; f.stain.visible = true; f.stain.scale.setScalar(.25 + Math.min(1, (T - 41.8) / 2.2) * 1.5); f.camT.y += (.75 - f.camT.y) * Math.min(1, (T - 41.8) / 4); if (sk >= 1) f.me.visible = false; }
   }
   beat(31.6, () => { $('msg').style.display = 'none'; msgTimer = 0; screech(); shake = .9; burst(55, 1, 4, 3, 'lowpass'); });
   [32.3, 32.9, 33.6, 34.2, 35, 35.7].forEach((c0, i) => beat(c0, () => { burst(1500 + i * 220, 2.5, .09, 1.3, 'bandpass'); burst(130, 1, .22, 1.8, 'lowpass'); shake = Math.max(shake, .45); }));
   beat(36.6, () => { screech(); });
   beat(37.4, () => say('<b>"You are stuck here for eternity now."</b>', 99));
-  beat(42.2, () => { glimpse.blackout = 99; f.fill.intensity = .5; burst(95, 2, .5, 1.2, 'lowpass'); });
-  beat(43, () => { $('fade').style.transition = 'opacity 1.6s'; $('fade').style.opacity = 1; });
-  beat(45, () => { $('fade').style.transition = ''; $('fade').style.opacity = 0; ending('The End', 'You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); });
+  beat(41.8, () => { f.eyeGlow.forEach(sp => { sp.material.depthTest = true; }); burst(48, 1, 5, 2.8, 'lowpass'); burst(260, 1.5, 4.4, .5, 'lowpass'); shake = .35; say('<b>Theo sinks into the ground.</b>', 3.4); });
+  beat(45.4, () => say('<b>Now a new monster is born, one with a taste for human souls, hoping it can escape.</b>', 99));
+  beat(52.4, () => { glimpse.blackout = 99; f.fill.intensity = .5; burst(95, 2, .5, 1.2, 'lowpass'); });
+  beat(53.2, () => { $('fade').style.transition = 'opacity 1.6s'; $('fade').style.opacity = 1; });
+  beat(55.2, () => { $('fade').style.transition = ''; $('fade').style.opacity = 0; ending('The End', 'You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); });
 }
 
 // ---------- always, and starting over ----------
