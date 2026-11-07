@@ -111,7 +111,6 @@
 <div id="end">
   <h1 id="eh">To be continued...</h1>
   <p id="ep"></p>
-  <a class="btn" href="../part-3-1-backrooms/index.html">Play the full game</a>
   <button class="btn" id="again" style="background:#b8a55e">Play again</button>
   <div class="gfxline">Graphics: <span class="gfxname"></span> <button class="gfxchange">Change</button></div>
 </div>
@@ -1262,7 +1261,7 @@ function screech() {
 function jump() {
   const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('ending') ? L0 : h.includes('bacteria') ? L16 : h.includes('library') ? L15 : h.includes('boiler') || h.includes('basement') ? L14 : h.includes('upstairs') ? L13 : h.includes('lobby') ? L12 : h.includes('hotel') ? L11 : h.includes('tunnel') ? L10 : h.includes('run') ? L9 : h.includes('lightsout') ? L8 : h.includes('pipes') ? L7 : h.includes('poopers') ? L6 : h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
   const w = h.find(x => x.startsWith('water='));
-  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L11) hotelStreet(); if (lvl === L15) libraryStart(); if (lvl === L16) bacStart(); if (lvl === L0) finaleStart(); if (lvl === L12 || lvl === L13 || lvl === L14) { player.yaw = lvl === L12 ? 0 : -Math.PI / 2; bringVirus(1.4, 1); } if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); }
+  if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L11) hotelStreet(); if (lvl === L15) libraryStart(); if (lvl === L16) bacStart(); if (lvl === L0) finaleStart(h.includes('good')); if (lvl === L12 || lvl === L13 || lvl === L14) { player.yaw = lvl === L12 ? 0 : -Math.PI / 2; bringVirus(1.4, 1); } if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); }
   if (h.includes('flashlight')) { gear.light = true; showGear(); }
   if (w) { water = Math.max(0, parseInt(w.slice(6)) || 0); $('aw').textContent = water; }
   if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
@@ -3270,7 +3269,7 @@ function updateFun(dt, t) {
 
 // ---------- past the grey door ----------
 const gear = { photo: false, light: false, wrench: false, lightOn: false, bugs: false };
-const showGear = () => { $('gear').textContent = (gear.light ? ' 🔦' + (gear.lightOn ? ' on' : '') : '') + (gear.bugs ? ' 🪲' : '') + (gear.wrench ? ' 🔧' : '') + (gear.photo ? ' 📷' : '') + (gear.axe ? ' 🪓' : '') + (gear.roomKey ? ' 🔑213' : '') + (gear.brass ? ' 🗝️' : '') + (gear.sheet ? ' 🎼' : '') + (gear.hat ? ' 🥳' : ''); };
+const showGear = () => { $('gear').textContent = (gear.light ? ' 🔦' + (gear.lightOn ? ' on' : '') : '') + (gear.bugs ? ' 🪲' : '') + (gear.wrench ? ' 🔧' : '') + (gear.photo ? ' 📷' : '') + (gear.axe ? ' 🪓' : '') + (gear.roomKey ? ' 🔑213' : '') + (gear.brass ? ' 🗝️' : '') + (gear.sheet ? ' 🎼' : '') + (gear.hat ? ' 🥳' : '') + (gear.barrier ? ' 🔑' : ''); };
 const trail = { follow: 0, fT: null, ph: 0 };
 function bringVirus(dx, dz) { L.group.add(virus); virus.visible = true; setVirusMutation(1); virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); virus.position.set(player.x + dx, 0, player.z + dz); trail.fT = null; }
 function virusTrail(dt, near = 2.8, top = 6.2) {   // the virus stays close to you, around corners
@@ -3807,7 +3806,7 @@ function hotelHit() {
   if (L !== L14) return false; const h = hotel, near = o => Math.hypot(o.position.x - player.x, o.position.z - player.z), hn = h.hound.state !== 'gone' && near(h.hound.m) < 3.2, bn = h.boss.state === 'stand' && near(h.boss.m) < 3.6; if (!hn && !bn) return false;
   if (!weapon) { say('You have nothing to fight with!', 2); return true; } if (!armed) setArmed(true); swing = .35; whoosh(); burst(170, 1.2, .25, 1.6, 'lowpass');
   if (hn) { if (h.hound.state === 'sleep') h.hound.state = 'chase'; if (++h.hound.hits >= 3) { h.hound.state = 'flee'; h.hound.t = 0; say('It screams without a mouth and scrabbles away into the dark.', 3); } return true; }
-  shake = .4; h.boss.hits++; h.boss.m.position.x += .2; if (h.boss.hits === 1) { h.bossHead.material = h.crackM; say('Its smooth face cracks like porcelain. It does not stop smiling.', 3); } if (h.boss.hits >= 4) { h.boss.state = 'fall'; h.boss.t = 0; say('One last swing. It stumbles back, back, into the fire, and <b>the fire takes it.</b>', 4); } return true;
+  shake = .4; h.boss.hits++; h.boss.m.position.x += .2; if (h.boss.hits === 1) { h.bossHead.material = h.crackM; say('Its smooth face cracks like porcelain. It does not stop smiling.', 3); } if (h.boss.hits >= 4) { h.boss.state = 'fall'; h.boss.t = 0; h.boss.killed = true; say('One last swing. It stumbles back, back, into the fire, and <b>the fire takes it.</b>', 4); } return true;
 }
 function updateHotel(dt, t) {
   const h = hotel, near = (x, z, d) => Math.hypot(x - player.x, z - player.z) < d;
@@ -3914,7 +3913,7 @@ function updateHotelBase(dt, t, near) {
     else if (bo.state === 'virus') { bo.t += dt; const k0 = Math.min(1, bo.t / 2.6), tx = 80, tz = 19.5; bo.m.position.x += (tx - bo.m.position.x) * dt * 1.5; bo.m.position.z += (tz - bo.m.position.z) * dt * 1.5; virus.position.set(bo.m.position.x + .55, .02, bo.m.position.z + .3); virus.rotation.set(.6, t * 6, 0); bo.m.rotation.z = Math.sin(t * 15) * .08; if (k0 >= 1) { bo.state = 'gone'; bo.m.visible = false; virus.position.y = 0; virus.scale.setScalar(.97); virus.rotation.set(0, 0, 0); burst(70, 1, 1.4, 3, 'lowpass'); burst(3200, 2, .7, 1, 'highpass'); shake = 1; say('A crash and a roar of fire. The virus comes limping through the steam, smoking, but grinning.', 5); } }
     else if (bo.state === 'fall') { bo.t += dt; const mx = 80 - bo.m.position.x, mz = 19.5 - bo.m.position.z; bo.m.position.x += mx * dt * .9; bo.m.position.z += mz * dt * .9; bo.m.rotation.x = -Math.min(1.1, bo.t * .55); if (bo.t > 2.8) { bo.state = 'gone'; bo.m.visible = false; burst(70, 1, 1.4, 3, 'lowpass'); shake = .8; } }
     // the real exit
-    if (bo.state === 'polite' || bo.state === 'gone') { if (near(96.8, 16, 2.6)) { hintText = '🚪 R'; actR = () => { burst(90, 1, .5, 2, 'lowpass'); goLevel(L0, finaleStart); }; } }
+    if (bo.state === 'polite' || bo.state === 'gone') { if (near(96.8, 16, 2.6)) { hintText = '🚪 R'; actR = () => { burst(90, 1, .5, 2, 'lowpass'); if (bo.killed) goLevel(L0, () => finaleStart(false)); else if (bo.state === 'polite') goLevel(L0, () => finaleStart(true)); else ending('To be continued...', 'The exit door slams shut behind you. The heat, the music and the smiles are gone. You are standing on cool carpet under buzzing lights. Somewhere ahead you can hear wind. Real wind. "We are close now," the virus says. "Closer than anyone." You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); }; } }
   }
 }
 
@@ -4045,6 +4044,7 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
     fin.sun = new THREE.PointLight(0xfff4d8, 0, 15, 1.3); fin.sun.position.set(43, 1.4, 34.7); fin.sun.visible = false; g.add(fin.sun); fin.fill = new THREE.PointLight(0xffe7c0, 0, 5, 1.5); fin.fill.visible = false; g.add(fin.fill); }
   // the key the virus has been carrying all this time
   { const gold = new StdMat({ color: 0xd8a93a, roughness: .32, metalness: .8, emissive: 0x8a5a10 }), k = new THREE.Group(), a = (geo, x, y, z) => { const o = new THREE.Mesh(geo, gold); o.position.set(x, y, z); k.add(o); return o; }; a(new THREE.TorusGeometry(.055, .015, 8, 20), 0, .1, 0); a(new THREE.CylinderGeometry(.012, .012, .2, 8), 0, -.05, 0); a(new THREE.BoxGeometry(.05, .018, .012), .025, -.13, 0); a(new THREE.BoxGeometry(.038, .018, .012), .02, -.095, 0); k.scale.setScalar(1.9); k.visible = false; g.add(k); fin.key = k;
+    { const pl = new THREE.Group(); pl.add(new THREE.Mesh(new THREE.BoxGeometry(.16, .26, .025), gold)); const hole = new THREE.Mesh(new THREE.CircleGeometry(.026, 16), new THREE.MeshBasicMaterial({ color: 0x050403 })); hole.position.z = .014; pl.add(hole); pl.position.set(44.05, 1.24, 34.015); pl.visible = false; g.add(pl); fin.plate = pl; }
     fin.tend = new THREE.Mesh(new THREE.CylinderGeometry(.012, .03, 1, 8), new StdMat({ color: 0x07070a, roughness: .55 })); fin.tend.visible = false; g.add(fin.tend); }
   // you. In the hood, the whole game long.
   { const me = new THREE.Group(); me.visible = false; me.position.set(43, 0, 35.7); g.add(me); fin.me = me;
@@ -4069,7 +4069,7 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
     [-1, 1].forEach(sd => {
       limb(V(sd * .1, .88, 0), V(sd * .115, .48, .012), .09, .07, jeans); limb(V(sd * .115, .48, .012), V(sd * .12, .09, -.005), .07, .058, jeans);
       put(me, new THREE.SphereGeometry(.07, seg, 10), shoeM, sd * .12, .07, .045, 0, .9, .72, 1.75); put(me, new THREE.SphereGeometry(.07, seg, 8), soleM, sd * .12, .018, .045, 0, .92, .2, 1.82);
-      const sh = V(sd * .2, 1.295, 0), el = V(sd * .265, 1.03, .012), wr = V(sd * .272, .79, .06); limb(sh, el, .06, .054, hoodie); limb(el, wr, .056, .045, hoodie); put(me, new THREE.SphereGeometry(.066, seg, 12), hoodie, sd * .196, 1.3, 0, 0, 1, 1, .95); put(me, new THREE.CylinderGeometry(.044, .044, .04, seg), ribM, wr.x, wr.y, wr.z); { const hn = makeHand(sd); hn.position.set(wr.x, wr.y - .018, wr.z + .002); hn.rotation.x = -.14; me.add(hn); fin.hands.push(hn); }
+      const mark = me.children.length, sh = V(sd * .2, 1.295, 0), el = V(sd * .265, 1.03, .012), wr = V(sd * .272, .79, .06); limb(sh, el, .06, .054, hoodie); limb(el, wr, .056, .045, hoodie); put(me, new THREE.SphereGeometry(.066, seg, 12), hoodie, sd * .196, 1.3, 0, 0, 1, 1, .95); put(me, new THREE.CylinderGeometry(.044, .044, .04, seg), ribM, wr.x, wr.y, wr.z); { const hn = makeHand(sd); hn.position.set(wr.x, wr.y - .018, wr.z + .002); hn.rotation.x = -.14; me.add(hn); fin.hands.push(hn); } if (sd < 0) { const arm = new THREE.Group(); arm.position.copy(sh); me.children.slice(mark).forEach(o => { o.position.sub(sh); arm.add(o); }); me.add(arm); fin.armR = arm; const grip = new THREE.Group(), blackM = new StdMat({ color: 0x07070a, roughness: .5 }); [-.03, -.055, -.08].forEach((y0, i) => { const o = new THREE.Mesh(new THREE.TorusGeometry(.05 - i * .002, .009, 8, 24), blackM); o.rotation.x = 1.5708; o.scale.set(.5, 1, 1); o.position.y = y0; grip.add(o); }); grip.visible = false; fin.hands[0].add(grip); fin.grip = grip; }
       const str = limb(V(sd * .04, 1.4, .105), V(sd * .05, 1.2, .15), .0035, .0035, new StdMat({ color: 0x8d8d90, roughness: .9 }), 0); void str;
     });
     put(me, new THREE.CylinderGeometry(.05, .058, .12, seg), skin, 0, 1.44, 0);
@@ -4092,7 +4092,7 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
     // the smile: a red tear with nothing to stop it at the edges of the face
     { const N = lo ? 44 : 96, pos = new Float32Array((N + 1) * 6), idx = []; for (let i = 0; i < N; i++) { const a0 = i * 2; idx.push(a0, a0 + 1, a0 + 2, a0 + 1, a0 + 3, a0 + 2); } const g0 = new THREE.BufferGeometry(); g0.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g0.setIndex(idx); fin.smile = new THREE.Mesh(g0, new THREE.MeshBasicMaterial({ color: 0xff1208, side: THREE.DoubleSide, fog: false })); fin.smile.frustumCulled = false; fin.smile.visible = false; fin.smile.renderOrder = 4; head.add(fin.smile); fin.smileN = N;
       fin.smileGlow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: softDot('255,25,12'), transparent: true, opacity: .14, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); fin.smileGlow.position.set(0, .06, .13); fin.smileGlow.visible = false; head.add(fin.smileGlow);
-      fin.drawSmile = (t0, warp) => { const E = .115 + warp * .215, tear = Math.random() < .12 ? Math.random() * 2 - 1 : 9; for (let i = 0; i <= N; i++) { const k = i / N * 2 - 1, x0 = k * E, ak = Math.abs(k), yc = .066 + .1 * Math.pow(ak, 1.7) * (E / .33 + .3) + k * .01 * warp + warp * .0022 * Math.sin(k * 9 + t0 * 6) + warp * .0009 * Math.sin(k * 25 - t0 * 12) + (Math.abs(k - tear) < .09 ? (Math.random() - .5) * .022 : 0), th = (.05 * (1 - Math.pow(ak, 1.45)) + .001) * (1 + .05 * Math.sin(k * 31 + t0 * 8) * warp), top = yc + th * .1, bot = yc - th * .9, zAt = y0 => { const q0 = 1 - (x0 / .104) ** 2 - ((y0 - .11) / .132) ** 2; return Math.max(q0 > 0 ? .112 * Math.sqrt(q0) : 0, .045) + .004; }; pos[i * 6] = x0; pos[i * 6 + 1] = top; pos[i * 6 + 2] = zAt(top); pos[i * 6 + 3] = x0; pos[i * 6 + 4] = bot; pos[i * 6 + 5] = zAt(bot); } g0.attributes.position.needsUpdate = true; }; }
+      fin.drawSmile = (t0, warp) => { const E = .1 + warp * .125, tear = Math.random() < .12 ? Math.random() * 2 - 1 : 9; for (let i = 0; i <= N; i++) { const k = i / N * 2 - 1, x0 = k * E, ak = Math.abs(k), yc = .07 + .075 * Math.pow(ak, 1.7) * (E / .225 + .1) + k * .01 * warp + warp * .0022 * Math.sin(k * 9 + t0 * 6) + warp * .0009 * Math.sin(k * 25 - t0 * 12) + (Math.abs(k - tear) < .09 ? (Math.random() - .5) * .022 : 0), th = (.034 * (1 - Math.pow(ak, 1.45)) + .001) * (1 + .05 * Math.sin(k * 31 + t0 * 8) * warp), top = yc + th * .1, bot = yc - th * .9, zAt = y0 => { const q0 = 1 - (x0 / .104) ** 2 - ((y0 - .11) / .132) ** 2; return Math.max(q0 > 0 ? .112 * Math.sqrt(q0) : 0, .045) + .004; }; pos[i * 6] = x0; pos[i * 6 + 1] = top; pos[i * 6 + 2] = zAt(top); pos[i * 6 + 3] = x0; pos[i * 6 + 4] = bot; pos[i * 6 + 5] = zAt(bot); } g0.attributes.position.needsUpdate = true; }; }
     // the hood, which gets pulled down
     const hood = new THREE.Group(); hood.position.set(0, 1.42, -.085); me.add(hood); fin.hood = hood;
     const hd = clothFolds(new THREE.SphereGeometry(.14, lo ? 18 : 40, lo ? 14 : 32), lo ? 0 : .02, 1.3), pa = hd.attributes.position, ia = hd.index.array, keep = []; for (let i = 0; i < ia.length; i += 3) { const a0 = ia[i], b0 = ia[i + 1], c1 = ia[i + 2], cx = (pa.getX(a0) + pa.getX(b0) + pa.getX(c1)) / 3, cy = (pa.getY(a0) + pa.getY(b0) + pa.getY(c1)) / 3, cz = (pa.getZ(a0) + pa.getZ(b0) + pa.getZ(c1)) / 3; if (!(cz > .03 && Math.abs(cx) < .095 && cy > -.12 && cy < .09)) keep.push(a0, b0, c1); } hd.setIndex(keep);
@@ -4103,12 +4103,12 @@ const fin = { on: false, phase: '', t: 0, san: 1, cam: false, camP: V(0, 0, 0), 
 }
 function resetFinale() {
   fin.on = false; fin.cam = false; fin.phase = ''; fin.san = 1; fin.open = 0; fin.warp = 0; fin.done.clear();
-  [fin.portal, fin.glow, fin.sun, fin.fill, fin.key, fin.tend, fin.me, fin.eyes, fin.smile, fin.smileGlow].forEach(o => { o.visible = false; }); fin.sun.intensity = 0; fin.fill.intensity = 0; fin.hood.rotation.x = 0; fin.head.rotation.set(0, 0, 0); fin.drawFace(0, 0);
+  [fin.portal, fin.glow, fin.sun, fin.fill, fin.key, fin.tend, fin.me, fin.plate, fin.eyes, fin.smile, fin.smileGlow].forEach(o => { o.visible = false; }); fin.sun.intensity = 0; fin.fill.intensity = 0; fin.hood.rotation.x = 0; fin.head.rotation.set(0, 0, 0); fin.drawFace(0, 0); fin.armR.rotation.set(0, 0, 0); fin.me.rotation.set(0, 0, 0); fin.key.rotation.set(0, 0, 0); fin.grip.visible = false; fin.good = false; $('fade').style.background = ''; if (hotel.boss) hotel.boss.killed = false;
 }
-function finaleStart() {
-  resetFinale(); fin.on = true; fin.phase = 'lead'; fin.t = 0; player.x = 31; player.z = 39; player.yaw = -Math.PI / 2; look.pitch = 0; bringVirus(2.2, 0); virus.rotation.set(0, Math.PI / 2, 0); if (bac.newT) { bac.newT.visible = true; bac.newT.scale.setScalar(1); }
+function finaleStart(good = false) {
+  resetFinale(); fin.good = good; fin.on = true; fin.phase = 'lead'; fin.t = 0; player.x = 31; player.z = 39; player.yaw = -Math.PI / 2; look.pitch = 0; bringVirus(2.2, 0); virus.rotation.set(0, Math.PI / 2, 0); if (bac.newT) { bac.newT.visible = true; bac.newT.scale.setScalar(1); }
   fin.sun.visible = true; fin.fill.visible = true; fin.leg = 0;
-  say('The door slams shut behind you. Damp carpet. Yellow walls. The lights buzz. <b>You are back where it all started.</b> The virus walks ahead of you without a word.', 7);
+  say(good ? 'The door closes quietly behind you. Damp carpet. Yellow walls. The lights buzz. <b>You are back where it all started.</b> The virus walks ahead of you, humming.' : 'The door slams shut behind you. Damp carpet. Yellow walls. The lights buzz. <b>You are back where it all started.</b> You can still see that smooth face cracking. You cannot stop seeing it. The virus walks ahead of you without a word.', 7);
 }
 function finTendril(a0, b0) { const d0 = b0.clone().sub(a0), n = d0.length() || .001; fin.tend.visible = true; fin.tend.position.copy(a0).addScaledVector(d0, .5); fin.tend.quaternion.setFromUnitVectors(V(0, 1, 0), d0.divideScalar(n)); fin.tend.scale.y = n; }
 function updateFinale(dt, t) {
@@ -4128,22 +4128,58 @@ function updateFinale(dt, t) {
   const chest = virus.position.clone().add(V(0, 1.5, 0));
   if (f.phase === 'key') {
     faceYou();
-    const hold = chest.clone().add(V((player.x - virus.position.x) * .42, .1, (player.z - virus.position.z) * .42)), lock = V(44.05, 1.25, 34.12), k0 = easeIO((T - 5.2) / 1.7); f.key.position.lerpVectors(hold, lock, k0); f.key.rotation.z = .4 + k0 * 1.2; f.key.rotation.y = T > 7 ? Math.min(1.5708, (T - 7) * 3.5) : 0;
-    if (T < 8.2) finTendril(chest, f.key.position); else f.tend.visible = false;
-    if (T < 5) aim(f.key.position.x, f.key.position.y, f.key.position.z, 2.5); else aim(T < 7.3 ? 44 : 43, 1.35, 34, 2);
+    const hold = chest.clone().add(V((player.x - virus.position.x) * .42, .1, (player.z - virus.position.z) * .42)), mine = V(player.x, 1.1, player.z), give = easeIO((T - 11.7) / 1.3); f.key.position.lerpVectors(hold, mine, give); f.key.rotation.z = .4; if (T < 13) finTendril(chest, f.key.position); else { f.tend.visible = false; f.key.visible = false; }
+    if (T < 12.6) aim(f.key.position.x, f.key.position.y, f.key.position.z, 2.5); else aim(44.05, 1.24, 34, 2);
     beat(.3, () => say('"I have had this key for years."', 4.8));
-    beat(5.2, () => say('"It opens the barrier of this place into the real world."', 6));
-    beat(7.1, () => { burst(1800, 5, .1, .9, 'bandpass'); burst(420, 3, .16, .9, 'lowpass'); });
-    beat(7.7, () => { shake = .7; burst(60, 1, 1.7, 2.6, 'lowpass'); burst(900, .5, 2.2, .4, 'bandpass'); });
-    if (T > 7.7) f.open = easeIO((T - 7.7) / 2.6);
-    beat(11.3, () => say('"You are worthy."', 3));
-    beat(14.3, () => say('<b>"Be free, my friend."</b>', 5));
-    if (T > 16.2) { f.phase = 'free'; f.t = 0; frozen = false; viewLock = false; }
+    beat(5.2, () => say('"It opens the barrier of this place into the real world."', 4));
+    beat(9.2, () => say('"You are worthy."', 2.6));
+    beat(11.8, () => say('<b>"Be free, my friend."</b> It puts the key in your hand.', 5));
+    beat(13, () => { gear.barrier = true; showGear(); burst(1700, 7, .12, .6, 'bandpass'); f.plate.visible = true; });
+    if (T > 14.6) { f.phase = 'free'; f.t = 0; frozen = false; viewLock = false; }
     return;
   }
   if (f.phase === 'free') {
     faceYou(); limbs.forEach(l => { l.rotation.x *= .85; });
-    if (Math.hypot(f.DOOR.x - player.x, f.DOOR.z + .4 - player.z) < 1.75 && player.z > 34.5) { f.phase = 'ask'; f.t = 0; frozen = true; viewLock = true; player.vx = player.vz = 0; setArmed(false); f.from = { x: player.x, z: player.z }; burst(90, 2, .5, 1.3, 'lowpass'); say('The wind stops.', 2.2); }
+    if (Math.hypot(44.05 - player.x, 34 - player.z) < 2.5) { hintText = '🔑 R'; actR = () => { f.phase = 'push'; f.t = 0; frozen = true; viewLock = true; player.vx = player.vz = 0; setArmed(false); gear.barrier = false; showGear(); f.cam = true; f.me.visible = true; f.me.rotation.y = Math.PI; f.key.visible = true; f.fill.position.set(42.6, 1.9, 35.7); f.fill.intensity = Q.low ? 2 : 3; f.camP.set(41.5, 1.42, 36.7); f.camT.set(43.5, 1.2, 34.6); say('You push the key into the wall and turn it.', 4.5); }; }
+    return;
+  }
+  // you open the door yourself
+  if (f.phase === 'push') {
+    faceYou(); const st = easeIO(T / 1.2), raise = easeIO(T / 1) * (1 - easeIO((T - 3) / .8)); f.me.position.set(43.78, 0, 35.42 - .36 * st); f.armR.rotation.x = -1.36 * raise;
+    if (T < 1.3) { const palm = V(0, -.055, 0); f.hands[0].localToWorld(palm); f.key.position.set(palm.x, palm.y, palm.z - .24); f.key.rotation.set(1.5708, 0, 0); } else f.key.rotation.y = Math.min(1.5708, (T - 1.5) * 4 > 0 ? (T - 1.5) * 4 : 0);
+    beat(1.25, () => { burst(1800, 5, .1, .9, 'bandpass'); });
+    beat(1.6, () => burst(420, 3, .16, .9, 'lowpass'));
+    beat(2, () => { shake = .7; burst(60, 1, 1.7, 2.6, 'lowpass'); burst(900, .5, 2.2, .4, 'bandpass'); });
+    if (T > 2) f.open = easeIO((T - 2) / 2.6);
+    if (T > 5.4) { f.phase = 'sun'; f.t = 0; f.cam = false; f.me.visible = false; f.me.rotation.y = 0; f.armR.rotation.x = 0; f.fill.intensity = 0; player.x = f.me.position.x; player.z = f.me.position.z; player.yaw = .55; look.pitch = 0; }
+    return;
+  }
+  // one moment of real daylight
+  if (f.phase === 'sun') {
+    faceYou(); aim(f.DOOR.x, 1.5, f.DOOR.z, 1.5);
+    if (T > 2.4) { f.t = 0; f.from = { x: player.x, z: player.z }; if (f.good) { f.phase = 'shake'; say('You turn around. The virus has followed you this far. <b>It holds out one long black tendril.</b>', 6); } else { f.phase = 'ask'; burst(90, 2, .5, 1.3, 'lowpass'); say('The wind stops.', 2.2); } }
+    return;
+  }
+  // the good ending: you gave the key back, so you get to shake its hand and leave
+  if (f.phase === 'shake') {
+    const k1 = easeIO(T / 1.2); player.x = f.from.x + (f.ME.x - f.from.x) * k1; player.z = f.from.z + (f.ME.z - f.from.z) * k1;
+    if (walkTo(f.ME.x, 37.3, 3) || T > 3) faceYou(); aim(virus.position.x, 1.75, virus.position.z, 2.8);
+    if (T > 2.6) { hintText = '🤝 R'; actR = () => { f.phase = 'hands'; f.t = 0; f.cam = true; f.me.visible = true; f.me.position.set(f.ME.x, 0, f.ME.z); f.fill.position.set(41.8, 1.9, 36.5); f.fill.intensity = Q.low ? 2 : 3; f.camP.set(40.1, 1.42, 36.55); f.camT.set(43, 1.42, 36.55); }; }
+    return;
+  }
+  if (f.phase === 'hands') {
+    faceYou(); limbs.forEach(l => { l.rotation.x *= .85; });
+    const shaking = T > 1.5 && T < 5.2, raise = easeIO(T / .9) * (1 - easeIO((T - 6.2) / .7)); f.armR.rotation.x = -1.12 * raise + (shaking ? Math.sin(T * 9) * .1 : 0); f.camP.x = 40.1 + Math.min(1, T / 7) * .35;
+    const palm = V(0, -.055, 0); f.hands[0].localToWorld(palm); const from = virus.position.clone().add(V(0, 1.5, 0)), reach = easeIO((T - .5) / 1) * (1 - easeIO((T - 5.3) / .7)); if (T > .5 && T < 6) finTendril(from, from.clone().lerp(palm, reach)); else f.tend.visible = false; f.grip.visible = T > 1.45 && T < 5.4; virus.position.y = shaking ? Math.abs(Math.sin(T * 9)) * .02 : 0;
+    beat(1.5, () => { say('<b>You shake hands with the virus.</b>', 3.6); burst(420, 2, .22, .5, 'lowpass'); });
+    beat(5.2, () => say('<b>"Goodbye, my friend."</b>', 3));
+    if (T > 7.2) { f.phase = 'out'; f.t = 0; f.cam = false; f.me.visible = false; f.tend.visible = false; f.fill.intensity = 0; virus.position.y = 0; }
+    return;
+  }
+  if (f.phase === 'out') {
+    faceYou(); aim(f.DOOR.x, 1.55, f.DOOR.z, 3); if (T > .9) { player.z = Math.max(34.6, player.z - dt * 1.25); moving = true; if ((f.stepT = (f.stepT || 0) - dt) <= 0) { f.stepT = .48; footstep(); } }
+    beat(1.5, () => { $('fade').style.background = '#fff'; $('fade').style.transition = 'opacity 1.5s'; $('fade').style.opacity = 1; });
+    beat(3.5, () => { $('fade').style.transition = ''; $('fade').style.opacity = 0; $('fade').style.background = ''; ending('You made it out', 'Warm sun. Green grass. Real wind on your face. The door is gone, and for the first time in a long time, nothing is smiling at you. You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); });
     return;
   }
   // the question
@@ -4158,15 +4194,15 @@ function updateFinale(dt, t) {
     const hk = easeIO((T - 12.7) / 1.25); f.hood.rotation.x = .14 * (1 - hk) - 2.2 * hk; f.head.rotation.x = .46 * hk - .46 * easeIO((T - 15.2) / 2.1); f.hoodDark.visible = hk < .25;
     const tip = V(0, .3, .1); f.hood.localToWorld(tip); const reach = easeIO((T - 11) / 1.6), back = easeIO((T - 14) / .9), from = virus.position.clone().add(V(0, 1.75, 0)); if (T > 11 && back < 1) finTendril(from, from.clone().lerp(tip, reach * (1 - back)));
     else f.tend.visible = false;
-    if (T > 15.2) { f.warp = Math.min(1, (T - 15.2) / 2.8); f.san = 1 - f.warp * .72; f.head.rotation.z = Math.sin(t * 1.3) * .035 + (Math.random() < .035 ? (Math.random() - .5) * .16 : 0); f.head.rotation.y = Math.sin(t * .8) * .03; f.eyes.visible = f.smile.visible = f.smileGlow.visible = true; const on = Math.min(1, (T - 15.2) / .7); f.eyeGlow.forEach(sp => { sp.material.opacity = on * .3; sp.scale.setScalar(.055); }); f.smileGlow.scale.set(.42 + f.warp * .42, .2, 1); if ((f.faceClock -= dt) <= 0) { f.faceClock = 1 / 15; f.drawFace(t, f.warp * .45); f.drawSmile(t, f.warp); } }
+    if (T > 15.2) { f.warp = Math.min(1, (T - 15.2) / 2.8); f.san = 1 - f.warp * .72; f.head.rotation.z = Math.sin(t * 1.3) * .035 + (Math.random() < .035 ? (Math.random() - .5) * .16 : 0); f.head.rotation.y = Math.sin(t * .8) * .03; f.eyes.visible = f.smile.visible = f.smileGlow.visible = true; const on = Math.min(1, (T - 15.2) / .7); f.eyeGlow.forEach(sp => { sp.material.opacity = on * .3; sp.scale.setScalar(.055); }); f.smileGlow.scale.set(.3 + f.warp * .22, .14, 1); if ((f.faceClock -= dt) <= 0) { f.faceClock = 1 / 15; f.drawFace(t, f.warp * .45); f.drawSmile(t, f.warp); } }
   }
   beat(12.7, () => { burst(650, 1, .5, .55, 'bandpass'); burst(180, 1, .3, .6, 'lowpass'); });
   beat(15.8, () => { screech(); shake = .22; });
   beat(17.6, () => { say('<b>"You have lost more than your sanity."</b>', 5); f.sanFrom = sanity; });
   if (T > 17.6 && T < 20.2) { setSanity(Math.round(f.sanFrom * (1 - Math.min(1, (T - 17.6) / 2.4)))); $('tunnel').style.display = 'none'; }
-  beat(22.6, () => { say('<b>"You have lost your soul."</b>', 5); f.closing = true; burst(55, 1, .9, 3, 'lowpass'); shake = .8; f.key.visible = false; });
+  beat(22.6, () => { say('<b>"You have lost your soul."</b>', 5); f.closing = true; burst(55, 1, .9, 3, 'lowpass'); shake = .8; f.key.visible = false; f.plate.visible = false; });
   if (T > 22.6) f.open = Math.max(0, 1 - (T - 22.6) / .4);
-  beat(27.6, () => { say('<b>"Welcome to your new home, Theo."</b>', 99); burst(42, 1, 3, 2.4, 'lowpass'); });
+  beat(27.6, () => { say('<b>"Welcome to your home, Theo."</b>', 99); burst(42, 1, 3, 2.4, 'lowpass'); });
   beat(32.6, () => { glimpse.blackout = 99; f.fill.intensity = .5; burst(95, 2, .5, 1.2, 'lowpass'); });
   beat(33.4, () => { $('fade').style.transition = 'opacity 1.6s'; $('fade').style.opacity = 1; });
   beat(35.4, () => { $('fade').style.transition = ''; $('fade').style.opacity = 0; ending('The End', 'You found ' + totalFound() + ' of ' + totalPosters() + ' posters.'); });
@@ -4187,7 +4223,7 @@ function updateLevelsAlways(dt, t) {
   if (L === L4) { park.fw.rotation.z += dt * .025; park.seats.forEach(({ seat }) => { seat.rotation.z = -park.fw.rotation.z; }); park.carousel.rotation.y += dt * (.035 + Math.max(0, Math.sin(t * .4)) * .05); park.spin.forEach((h, i) => { h.position.y = Math.sin(t * .35 + i) * .1; }); }
 }
 function resetNewLevels() {
-  Object.assign(gear, { photo: false, light: false, wrench: false, lightOn: false, bugs: false, axe: false, roomKey: false, brass: false, sheet: false, hat: false }); resetHotel(); resetLibBac(); resetFinale(); $('gear').textContent = '';
+  Object.assign(gear, { photo: false, light: false, wrench: false, lightOn: false, bugs: false, axe: false, roomKey: false, brass: false, sheet: false, hat: false, barrier: false }); resetHotel(); resetLibBac(); resetFinale(); $('gear').textContent = '';
   Object.assign(poopR, { talk: 0, said: 0, fall: 0, flash: 0 }); poopR.guests.forEach(q => { q.down = 0; });
   Object.assign(pipeL, { hot: true, turning: 0, crawlT: 0, crawlDead: false, crawlSeen: false, squeezed: false }); pipeL.flash.visible = true; pipeL.wrench.visible = true; pipeL.grate.visible = true; pipeL.hotM.emissiveIntensity = 1.25; pipeL.hotM.color.setHex(0xb8200e); pipeL.hotLights.forEach(l => { l.intensity = 9; }); pipeL.crawler.position.set(8, 1.1, 5.4); pipeL.crawler.rotation.set(0, 0, 0);
   lightsL.eyes.forEach(q => { q.state = 'idle'; q.t = 0; q.m.visible = true; q.m.position.set(q.home[0], 0, q.home[1]); q.tg = null; }); lightsL.spot.intensity = 0; lightsL.bug.intensity = 0; lightsL.bugs.position.set(38, 0, 15);
@@ -4262,7 +4298,7 @@ function tick() {
     });
     $('dark').style.opacity = 0;
     if (!fin.on) { if (!L.calm) updatePhantom(dt); updateFake(dt); updateGlimpse(dt); }
-    if (L === L0 && fin.on) updateFinale(dt, t);
+    if (L === L0 && fin.on) { updateFinale(dt, t); $('hint').style.display = hintText ? 'block' : 'none'; if (hintText) $('hint').textContent = hintText; }
     else if (L === L0) {
       const dv = Math.hypot(virus.position.x - player.x, virus.position.z - player.z);
       if (dv < 9) virus.visible = true;
