@@ -2,17 +2,37 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jack-Bros Games</title>
 <style>
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:radial-gradient(circle at 50% 0%,#1d2a44,#0b0f1a 70%);color:#eef1f8;font-family:"Trebuchet MS","Segoe UI",sans-serif;text-align:center;padding:1rem}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:radial-gradient(circle at 50% 0%,#1d2a44,#0b0f1a 70%);color:#eef1f8;font-family:"Trebuchet MS","Segoe UI",sans-serif;text-align:center;padding:1.5rem 1rem}
 h1{margin:0}
-a.game{display:inline-block;padding:.8em 1.8em;border-radius:999px;border:2px solid #5b8cff;background:#17233f;color:#fff;font-weight:bold;text-decoration:none;font-size:1.2rem}
+.flagship{position:relative;width:100%;max-width:720px;padding:2.6rem 1.5rem 2.2rem;border:2px solid #d9c465;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(90deg,#3a3213 0 34px,#332c10 34px 68px);box-shadow:0 0 50px rgba(217,196,101,.28)}
+.flagship::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(255,245,190,.42),rgba(0,0,0,.35) 62%,rgba(0,0,0,.72));pointer-events:none}
+.flagship>*{position:relative}
+.tag{margin:0 0 .9rem;color:#ffe680;font-size:.82rem;font-weight:bold;letter-spacing:.32em;text-indent:.32em}
+.flagship h2{margin:0;color:#fff8d8;font-size:clamp(2rem,8vw,3.6rem);line-height:1.04;letter-spacing:.01em;text-shadow:0 2px 16px #000}
+.sub{margin:.65rem 0 0;color:#ffe680;font-size:1.25rem;font-weight:bold}
+.blurb{max-width:32em;margin:1rem auto 1.5rem;color:#f4efd8;font-size:1.05rem;line-height:1.45}
+.play{display:inline-block;padding:.85em 2.4em;border-radius:999px;background:#ffe680;color:#1a1505;font-size:1.25rem;font-weight:bold;text-decoration:none;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.play:hover,.play:focus-visible{background:#fff4b8}
+.rating{margin:1rem 0 0;color:#e8dfb4;font-size:.85rem;font-weight:bold;letter-spacing:.1em}
+.more{margin:.6rem 0 0;font-size:1rem;font-weight:bold;letter-spacing:.08em;opacity:.75}
+a.game{display:inline-block;padding:.7em 1.6em;border-radius:999px;border:2px solid #5b8cff;background:#17233f;color:#fff;font-weight:bold;text-decoration:none;font-size:1.05rem}
 a.game:hover{background:#5b8cff}
 small{opacity:.6}
 </style></head><body>
 <h1>Jack-Bros Games</h1>
+<section class="flagship">
+<p class="tag">OUR FLAGSHIP GAME</p>
+<h2>3.1 EXCLUSIVE 3D VERSION</h2>
+<p class="sub">The Backrooms Escape</p>
+<p class="blurb">The whole story, rebuilt to walk through in full 3D. It is harder than the original, and it has two endings you will only find here.</p>
+<a class="play" href="part-3-1-backrooms-3d/">Play now</a>
+<p class="rating">RATED M</p>
+</section>
+<p class="more">MORE GAMES</p>
 <a class="game" href="finding-milk-part-2/">Part 2: Finding Milk</a>
 <a class="game" href="part-3-grown-up/">Part 3: Grown Up</a>
 <a class="game" href="part-3-1-backrooms/">Part 3.1: The Backrooms Escape</a>
 <a href="part-3-1-backrooms/extras.html" style="color:#ffd76b">Backrooms Extras: the new levels and art</a>
-<a href="part-3-1-backrooms-3d/" style="color:#ffd76b">PART 3.1 3D DEMO</a>
 <small>E-10 rated</small>
 </body></html>
