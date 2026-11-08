@@ -99,6 +99,11 @@
   <button class="opt" id="goPool"><b>1 · The Poolrooms</b><br>White tiles and warm water up to your knees, everywhere. Bright and quiet... but some of the water is black.</button>
   <button class="opt" id="goHab"><b>2 · The Habitable Zone</b><br>Dark concrete halls and crates. Other people live down there. Or something that looks like people.</button>
 </div>
+<div id="libTalk" class="overlay" style="justify-content:flex-end;background:linear-gradient(transparent 30%,rgba(0,0,0,.86));padding-bottom:20px">
+  <div style="color:#d9cdb4;font:bold 13px Georgia;letter-spacing:.24em;margin-bottom:6px">THE LIBRARIAN</div>
+  <p id="ltSay" style="width:min(680px,100%);margin:0 0 12px;color:#f4ecd8;font:italic 21px/1.4 Georgia;text-shadow:0 2px 8px #000"></p>
+  <div id="ltOpts" style="width:min(620px,100%)"></div>
+</div>
 <div id="title">
   <p style="margin:0 0 6px;color:#ffe680;font-size:clamp(20px,4.5vw,30px);font-weight:bold;letter-spacing:.06em">3.1 EXCLUSIVE 3D VERSION</p>
   <h1>The Backrooms Escape</h1>
@@ -1195,6 +1200,7 @@ function ending(title, text) { playing = false; $('hint').style.display = 'none'
 addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (e.repeat || !playing) return;
+  if ($('libTalk').style.display === 'flex') { const n = parseInt(k, 10); if (n >= 1) talkPick(n - 1); return; }
   if (meetStep >= 0) { if ($('choice').style.display === 'flex' && (k === '1' || k === '2')) choose(k === '1' ? 'pool' : 'hab'); return; }
   if (k === 'r' && nearInsideDoor()) { openAndFight(); return; }
   if (k === 'r' && actR) { const f = actR; actR = null; f(); return; }
@@ -1216,7 +1222,7 @@ addEventListener('keydown', e => {
   }
 });
 addEventListener('mousedown', e => {
-  if (e.button !== 0 || !playing || meetStep >= 0 || swing > 0) return;
+  if (e.button !== 0 || !playing || meetStep >= 0 || swing > 0 || $('libTalk').style.display === 'flex') return;
   if (L === L1 && stealer.state === 'chase') { say('You are too tired from running in the water to fight it.', 2.5); return; }
   if (hotelHit()) return;
   const foe = foeClose();
@@ -1359,7 +1365,7 @@ function jump() {
 }
 const look = { pitch: 0 };
 const canvas = document.body;   // lock the cursor to the whole page, so a click anywhere works
-const menuOpen = () => ['choice', 'siege', 'pad', 'end', 'title'].some(id => $(id).style.display === 'flex');
+const menuOpen = () => ['choice', 'siege', 'pad', 'end', 'title', 'libTalk'].some(id => $(id).style.display === 'flex');
 document.addEventListener('pointerlockchange', () => { lockPending = 0; if (document.pointerLockElement) lockRefused = false; $('lockhint').style.display = document.pointerLockElement === canvas || !playing ? 'none' : 'block'; });
 // only ask once at a time: a second request while the first is still pending makes the browser cancel the lock
 let lockPending = 0;
@@ -4241,21 +4247,52 @@ const library = { dust: null, drank: false, read: false };
 function sign_(g, txt, w, h, x, y, z, ry, bg = '#b08a3c', fg = '#160d06') { const t = wordsOn(txt, Math.round(w * 400), Math.round(h * 400), bg, fg, `bold ${Math.round(Math.min(h * 400 * .4, w * 400 / 16))}px Georgia`), o = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t })); o.position.set(x, y, z); o.rotation.y = ry; g.add(o); return o; }
 function doorLib(g, x, z, label) { const d0 = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.7, .1), new StdMat({ color: 0x2b170c, roughness: .45 })); d0.position.set(x, 1.35, z); g.add(d0); const kn = new THREE.Mesh(new THREE.SphereGeometry(.05, 12, 10), new StdMat({ color: 0xc9a24a, metalness: .8, roughness: .3 })); kn.position.set(x + .7, 1.1, z + .09); g.add(kn); sign_(g, label, 1.5, .3, x, 2.95, z + .03, 0); }
 // a book, held out by something that means it kindly. The Backrooms has got to the words.
-const libBook = document.createElement('div'); libBook.id = 'libBook'; libBook.style.cssText = 'display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1deg);width:min(560px,86vw);height:min(600px,74vh);background:radial-gradient(ellipse at center,#3d3528 0%,#201a12 72%,#100c07 100%);border:10px solid #150a06;box-shadow:0 0 90px #000;padding:34px;overflow:hidden;color:#0a0704;font-family:Georgia,serif;z-index:50;pointer-events:none'; document.body.appendChild(libBook);
-const BOOKS = [['The Levels Below', 'Nobody who walks it is lost. The floor is only remembering you. Every door you open has been waiting a long time and it knows your name now and it would like you to stay.'], ['A Guide to Almond Water', 'One cup is a kindness. Two cups is a debt. There are shelves here for what you owe, and there is room on them for you.'], ['Names of the Wanderers', 'We keep them all, and we keep them carefully. You have been written down already. It was very neat handwriting. Please do not ask to see the page.'], ['What the Lights Say', 'They hum so that you will not hear what is under the humming. If it ever stops, stand very still, and think of something polite.']];
-function openBook(n) { const [t0, b0] = BOOKS[n % BOOKS.length]; libBook.innerHTML = '<div style="filter:blur(3.4px);text-align:center;font:bold 30px Georgia;margin:6px 0 24px">' + t0 + '</div><div style="filter:blur(2.8px);font-size:21px;line-height:1.75">' + b0 + ' ' + b0 + ' ' + b0 + '</div>'; libBook.style.display = 'block'; }
+const libBook = document.createElement('div'); libBook.id = 'libBook'; libBook.style.cssText = 'display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1deg);width:min(560px,86vw);height:min(600px,74vh);background:radial-gradient(ellipse at center,#e7d9b8 0%,#d3c096 72%,#a8916a 100%);border:10px solid #3a1d10;box-shadow:0 0 90px #000;padding:34px;overflow:hidden;color:#21140b;font-family:Georgia,serif;z-index:50;pointer-events:none'; document.body.appendChild(libBook);
+const BOOKS = [
+  ['The Levels Below', 'Nobody who walks it is lost. The floor is only remembering you.', 'Every door you open has been waiting a long time. It knows your name now, and it would like you to stay.', 'If you find a way down, take it. If you find a way out, look at it carefully first. The exit is not always an exit.'],
+  ['A Guide to Almond Water', 'One cup is a kindness. Two cups is a debt.', 'It will quiet your head and steady your hands. It will not tell you who filled the bottle, and you should not ask.', 'There are shelves here for what you owe, and there is room on them for you.'],
+  ['Names of the Wanderers', 'We keep them all, and we keep them carefully.', 'Some walked out. Some are still walking. Some only look like they are.', 'You have been written down already. It was very neat handwriting. Please do not ask to see the page.']
+];
+function openBook(n) { const [t0, ...b0] = BOOKS[n]; libBook.innerHTML = '<div style="text-align:center;font:bold 32px Georgia;margin:4px 0 8px">' + t0 + '</div><div style="text-align:center;font:italic 16px Georgia;margin-bottom:22px;opacity:.7">Book ' + (n + 1) + ' of ' + BOOKS.length + '</div>' + b0.map(q => '<p style="font-size:21px;line-height:1.5;margin:0 0 16px">' + q + '</p>').join('') + '<div style="position:absolute;left:0;right:0;bottom:16px;text-align:center;font:italic 15px Georgia;opacity:.65">R to give it back</div>'; libBook.style.display = 'block'; }
+// talking to it. It speaks very softly, and it has read how all of this ends.
+const libTalk = { opts: [] };
+function talkShow(text, opts) {
+  libTalk.opts = opts; $('ltSay').innerHTML = text; const box = $('ltOpts'); box.innerHTML = '';
+  opts.forEach(([label], i) => { const b = document.createElement('button'); b.className = 'opt'; b.style.cssText = 'width:100%;margin:4px 0;padding:8px 14px;font-size:15px'; b.innerHTML = (i + 1) + ' · ' + label; b.onclick = () => talkPick(i); box.appendChild(b); });
+}
+function talkPick(i) { const o = libTalk.opts[i]; if (!o) return; burst(1500, 1, .06, .12, 'highpass'); o[1](); }
+const talkBack = ['Ask something else.', () => talkMenu('"Yes?"')];
+function talkMenu(line) {
+  const left = BOOKS.length - (library.page || 0), opts = [['What is this place?', talkPlace], ['What are you?', talkYou], ['How do I get out of here?', talkOut], ['Do you know the thing that follows me?', talkVirus], [left ? 'May I read one of your books?' : 'Are there any more books?', left ? talkBook : talkNoBooks]];
+  if (!library.shouted) opts.push(['<b>HELLO? CAN YOU HEAR ME?</b> (shout)', talkShout]);
+  opts.push(['Goodbye.', talkEnd]); talkShow(line, opts);
+}
+function talkPlace() { talkShow('"The place where lost things are written down. Every level keeps its records, and sooner or later they all come here to be shelved."', [['Who reads them all?', () => talkShow('"I do. I have read every one of them twice. You appear in more of them than you would expect."', [talkBack])], ['Why does it feel safe in here?', () => talkShow('"Because it is quiet, and nothing is hungry while it is quiet. Your head will not swim in this room. Please enjoy that. It stops at the door."', [talkBack])], talkBack]); }
+function talkYou() { talkShow('"I keep the shelves. I was a visitor once, I think. I returned something late."', [['What happened?', () => talkShow('"I stayed to work off the fine. That was a very long time ago. The fine is still growing. I have stopped minding."', [['Are you going to hurt me?', () => talkShow('"Only if you raise your hand to me, or go back for a second cup. One cup. Please."', [talkBack])], talkBack])], talkBack]); }
+function talkOut() { talkShow('"The stairs at the far end go down. Down is the only direction we keep in stock."', [['What is down there?', () => talkShow('"A dark that listens. A red hall that is in a hurry. Then a very grand hotel. Mind the carpets. Do not stay the night."', [['Is there really an exit?', () => talkShow('"There is a door, and there is a key. I have read how it ends. There are two endings, and I shelved them both. No, I will not tell you."', [talkBack])], talkBack])], talkBack]); }
+function talkVirus() { talkShow('"It has held a library card for longer than I have held these shelves. It has never once returned anything."', [['Can I trust it?', () => talkShow('"It has kept one item out for years. A small one. Ask yourself why it wants you walking beside it when it finally brings that back."', [talkBack])], talkBack]); }
+function talkNoBooks() { talkShow('"No. There were only ever three that were safe to open. The others are reading you."', [talkBack]); }
+function talkShout() { library.shouted = true; shake = .25; burst(90, 1, .5, .7, 'lowpass'); talkShow('It raises one long white finger to its teeth. Every book on every shelf seems to lean in and listen. <b>"Please."</b>', [['(whisper) Sorry.', () => talkMenu('"Thank you. Now. Softly."')]]); }
+function talkClose() { library.talking = false; $('libTalk').style.display = 'none'; frozen = false; viewLock = false; setTimeout(lockMouse, 50); }
+function talkEnd() { talkClose(); say('It bows its long white head. "Quietly, now."', 3); }
+function talkBook() { const lb = library; talkClose(); lb.reading = true; lb.page = (lb.page || 0) + 1; frozen = true; viewLock = true; player.vx = player.vz = 0; openBook(lb.page - 1); burst(1400, 1, .3, .3, 'highpass'); say('It opens the book for you and waits, very patiently, while you read.', 3); }
+function talkOpen() { const lb = library; lb.talking = true; frozen = true; viewLock = true; player.vx = player.vz = 0; $('msg').style.display = 'none'; msgTimer = 0; $('libTalk').style.display = 'flex'; freeMouse(); talkMenu(lb.spoke ? '"You again. Quietly, now."' : '"You may speak, Theo. Softly, please. The books are sleeping."'); lb.spoke = true; }
 function librarianEats(title, text) { const lb = library, m = lb.m; lb.reading = false; libBook.style.display = 'none'; m.position.set(player.x - Math.sin(player.yaw) * 1.9, 0, player.z - Math.cos(player.yaw) * 1.9); m.rotation.y = player.yaw; lb.head.rotation.set(.45, 0, 0); screech(); burst(60, 1, .8, 2.8, 'lowpass'); grabDeath({ mob: m, y: 3.45, grip: { c: 0xeeeae2, e: 0x1a1612 }, dist: 1.7, lift: 1.5, far: 2.2, title, text }); }
 function libraryStart() { player.yaw = 0; bringVirus(1.3, .8); say('The pipe ends at a vent. You crawl out into a quiet room that smells like old paper. <b>It feels... safe. Your head stops swimming.</b>', 5); }
 function updateLibrary(dt, t) {
   const lb = library, near = (x, z, d) => Math.hypot(x - player.x, z - player.z) < d; virusTrail(dt, 2.6, 6); lb.dust.rotation.y = Math.sin(t * .03) * .02; lb.dust.position.y = Math.sin(t * .2) * .08;
+  if (lb.talking) {   // you look up at it and it looks down at you
+    const mx = lb.m.position.x - player.x, mz = lb.m.position.z - player.z, dd = Math.hypot(mx, mz); let dy = Math.atan2(-mx, -mz) - player.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); player.yaw += dy * Math.min(1, dt * 5); look.pitch += (Math.min(.95, Math.atan2(3.3 - camH, Math.max(.5, dd))) - look.pitch) * Math.min(1, dt * 4);
+    let dr = Math.atan2(-mx, -mz) - lb.m.rotation.y; dr = Math.atan2(Math.sin(dr), Math.cos(dr)); lb.m.rotation.y += dr * Math.min(1, dt * 2.4); lb.head.rotation.z = Math.sin(t * .4) * .06; return;
+  }
   if (near(26, 50.8, 2.3)) { hintText = '💻 R'; actR = () => { burst(2400, 6, .06, .3, 'bandpass'); say('Someone typed a message and never sent it: <b>"THE LEVELS KEEP GOING DOWN. THE EXIT IS NOT ALWAYS AN EXIT. IF YOU HEAR WHISPERING IN THE DARK, GO THE OTHER WAY. IF THE LIGHTS TURN RED, RUN."</b> The virus reads over your shoulder. "Good advice," it mutters.', 9); }; return; }
   if (near(23.2, 50.8, 2)) { hintText = '📖 R'; actR = () => { burst(1800, 2, .25, .25, 'highpass'); say('The open book is a list of names. Every page, the same handwriting. The last name on the last page is still wet, and it is yours. =)', 6); }; return; }
   // reading: R puts the book back
-  if (lb.reading) { hintText = '📕 R'; actR = () => { lb.reading = false; libBook.style.display = 'none'; frozen = false; viewLock = false; burst(1200, 1, .2, .25, 'highpass'); say('It takes the book back and bows its long white head. The teeth do not move. "Quietly, now."', 4); }; return; }
+  if (lb.reading) { hintText = '📕 R'; actR = () => { lb.reading = false; libBook.style.display = 'none'; frozen = false; viewLock = false; burst(1200, 1, .2, .25, 'highpass'); if (lb.page >= BOOKS.length) { lb.offer.visible = false; say('It takes the last book back and shows you two long, empty hands. <b>There were only ever three.</b> "Quietly, now."', 5); } else say('It takes the book back and bows its long white head. The teeth do not move. "Quietly, now."', 4); }; return; }
   // it walks its aisle, and turns its head to follow you
   { const m = lb.m, dd = Math.hypot(m.position.x - player.x, m.position.z - player.z), a0 = player.x - m.position.x, b1 = player.z - m.position.z; if (dd > 7) { lb.dir = lb.dir || 1; m.position.z += lb.dir * dt * .8; if (m.position.z > 42) lb.dir = -1; if (m.position.z < 10) lb.dir = 1; m.rotation.y += ((lb.dir > 0 ? 0 : Math.PI) - m.rotation.y) * Math.min(1, dt * 2); } else { let dy = Math.atan2(a0, b1) - m.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); m.rotation.y += dy * Math.min(1, dt * 2.4); } lb.head.rotation.z = Math.sin(t * .4) * .06;
-    if (dd < 11 && !lb.met) { lb.met = true; say('Something very tall and very white walks the aisle, without a sound. Red eyes. Far too many teeth. <b>It looks down and holds a book out to you.</b>', 7); }
-    if (dd < 4.3) { hintText = '📕 R'; actR = () => { lb.reading = true; lb.page = (lb.page || 0) + 1; frozen = true; viewLock = true; player.vx = player.vz = 0; openBook(lb.page - 1); burst(1400, 1, .3, .3, 'highpass'); say('You open it. The pages are dark and the words swim. You can almost read them. <b>The Backrooms has got into the ink.</b>', 6); }; return; } }
+    if (dd < 11 && !lb.met) { lb.met = true; say('Something very tall and very white walks the aisle, without a sound. Red eyes. Far too many teeth. <b>It stops, looks down at you, and waits for you to speak.</b>', 7); }
+    if (dd < 4.3) { hintText = '💬 R'; actR = talkOpen; return; } }
   // one cup. please.
   lb.drip.position.set(40, 1.28 - ((t * .9) % 1) * .24, 49.01);
   if (near(40, 50.4, 2.1)) { hintText = '💧 R'; actR = () => { if (lb.drank) { librarianEats('Overdue', 'You reach for the faucet again. It said one cup. It said please. The lights do not even flicker. Long white fingers close around your head from behind, and the last thing you see is a very great many teeth.'); return; } lb.drank = true; lb.cup.visible = false; setSanity(100); burst(600, 2, .5, .4, 'bandpass'); say('You fill the one cup and drink. Cool almond water, and your thoughts line up again. <b>Somewhere in the stacks, something very tall stops walking.</b>', 5); }; return; }
@@ -4283,7 +4320,7 @@ const bac = { m: null, tendrils: [], t: 0, step: 0, done: false, on: false, stai
   // the way out of the hall: a loose grate down at the far end
   const gr = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, .08), new StdMat({ color: 0x4a4b50, roughness: .5, metalness: .6 })); gr.position.set(9, .55, 2.06); g.add(gr); for (let i = 0; i < 6; i++) { const b1 = new THREE.Mesh(new THREE.BoxGeometry(1.38, .05, .03), new THREE.MeshBasicMaterial({ color: 0x08080a })); b1.position.set(9, .18 + i * .15, 2.12); g.add(b1); }
 }
-function resetLibBac() { library.drank = false; library.cup.visible = true; library.reading = false; library.met = false; library.page = 0; library.dir = 1; libBook.style.display = 'none'; library.m.position.set(33, 0, 25); library.m.rotation.set(0, 0, 0); library.head.rotation.set(.24, 0, 0); Object.assign(bac, { t: 0, step: 0, done: false, on: false }); bac.m.visible = false; bac.m.scale.setScalar(1); bac.m.rotation.set(0, Math.PI * 0, 0); bac.tendrils.forEach(o => { o.gone = false; o.tg.visible = true; o.tg.position.copy(o.home); o.tg.rotation.copy(o.rot); o.tg.scale.setScalar(1); }); bac.grab.visible = false; bac.stain.visible = false; bac.tube.forEach(o => { o.visible = false; }); bac.newT.visible = false; bac.newT.scale.setScalar(1); }
+function resetLibBac() { library.talking = false; library.shouted = false; library.spoke = false; $('libTalk').style.display = 'none'; library.offer.visible = true; library.drank = false; library.cup.visible = true; library.reading = false; library.met = false; library.page = 0; library.dir = 1; libBook.style.display = 'none'; library.m.position.set(33, 0, 25); library.m.rotation.set(0, 0, 0); library.head.rotation.set(.24, 0, 0); Object.assign(bac, { t: 0, step: 0, done: false, on: false }); bac.m.visible = false; bac.m.scale.setScalar(1); bac.m.rotation.set(0, Math.PI * 0, 0); bac.tendrils.forEach(o => { o.gone = false; o.tg.visible = true; o.tg.position.copy(o.home); o.tg.rotation.copy(o.rot); o.tg.scale.setScalar(1); }); bac.grab.visible = false; bac.stain.visible = false; bac.tube.forEach(o => { o.visible = false; }); bac.newT.visible = false; bac.newT.scale.setScalar(1); }
 function bacStart() { const b = bac; b.on = true; b.t = 0; b.step = 0; b.done = false; player.x = 9; player.z = 50; player.yaw = 0; look.pitch = .55; bringVirus(1.5, -1.1); if (Q.fit) crouch.hold = 4.5; else virus.scale.set(.97, .8, .97); frozen = true; viewLock = true; ride.y = -1.15; b.m.visible = false; b.m.position.set(9, 0, 29); b.m.rotation.y = 0; say('You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.', 5); }
 function updateBac(dt, t) {
   const b = bac; if (!b.on) { virusTrail(dt, 2.6, 6); if (Math.hypot(9 - player.x, 3 - player.z) < 2.8) { hintText = '🕳️ R'; actR = () => { burst(1200, 3, .25, .4, 'bandpass'); goLevel(L11, hotelStreet); }; } return; }
