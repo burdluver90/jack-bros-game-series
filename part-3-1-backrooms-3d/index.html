@@ -1593,13 +1593,14 @@ function screech() {
   g.gain.setValueAtTime(.15, audio.currentTime); g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .8);
   o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + .8);
 }
-// test links: #poolrooms or #habitable jumps straight to that level, water=N gives you almond water, sword gives you the sword
+// test links: #poolrooms or #habitable jumps straight to that level, water=N gives you almond water, sword gives you the sword, photo gives you the Partypooper photo
 function jump() {
   const h = location.hash.slice(1).toLowerCase().split('&'), lvl = h.includes('ending') ? L0 : h.includes('suburb') ? L17 : h.includes('bacteria') ? L16 : h.includes('library') ? L15 : h.includes('boiler') || h.includes('basement') ? L14 : h.includes('upstairs') ? L13 : h.includes('lobby') ? L12 : h.includes('hotel') ? L11 : h.includes('tunnel') ? L10 : h.includes('run') ? L9 : h.includes('lightsout') ? L8 : h.includes('pipes') ? L7 : h.includes('poopers') ? L6 : h.includes('fun') ? L5 : h.includes('park') ? L4 : h.includes('level94') ? L3 : h.includes('poolrooms') ? L2 : h.includes('habitable') ? L1 : null;
   const w = h.find(x => x.startsWith('water='));
   if (lvl) { L0.visited = false; enterLevel(lvl); if (lvl === L5) startFunHello(); if (lvl === L11) hotelStreet(); if (lvl === L4 && h.includes('open')) openParkGate(true); if (lvl === L15) { if (h.includes('epilogue')) librarianWrites(); else libraryStart(); } if (lvl === L16) bacStart(); if (lvl === L0) finaleStart(h.includes('good')); if (lvl === L12 || lvl === L13 || lvl === L14) { player.yaw = lvl === L12 ? 0 : -Math.PI / 2; bringVirus(1.4, 1); } if (lvl === L6) { player.yaw = Math.PI; bringVirus(1.6, -1); } if (lvl === L7) { player.yaw = 0; bringVirus(1.6, 1.2); } if (lvl === L8) { player.yaw = 0; bringVirus(1.4, .9); } if (lvl === L9) startRun(); if (lvl === L17) suburbStart(); if (h.includes('boiler')) { hotel.bDoor.position.y = 4.2; L14.map[3] = L14.map[3].replace('%', '.'); L14.map[4] = L14.map[4].replace('%', '.'); player.x = 66; player.z = 8; player.yaw = -Math.PI / 2; bringVirus(1.4, 1); } }
   if (h.includes('flashlight')) { gear.light = true; showGear(); }
   if (h.includes('roomkey')) { gear.roomKey = true; showGear(); }
+  if (h.includes('photo')) { gear.photo = true; showGear(); }
   if (w) { water = Math.max(0, parseInt(w.slice(6)) || 0); $('aw').textContent = water; }
   if (h.includes('sword')) { weapon = 'sword'; L2.weaponObjs.forEach(o => { o.taken = true; o.g.visible = false; }); setArmed(false); }
 }
