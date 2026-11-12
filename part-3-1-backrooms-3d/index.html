@@ -791,7 +791,7 @@ function genSuburb(R) {
   const bottles = order.slice(6, 10).map(h => h.cells[ri(h.cells.length)]);
   return { map: m.map(r => r.join('')), out, lanes, houses, houseOf, pcs, lurks, roams, bottles, rows, cols, K, gate, blocks, P, ST, BS };
 }
-const RUN_OBST = [[6, 'C'], [11, 'A'], [14, 'B'], [19, 'D'], [24, 'C'], [28, 'B'], [31, 'A'], [36, 'C'], [40, 'A'], [42, 'B'], [47, 'D'], [52, 'C'], [56, 'B'], [59, 'A'], [64, 'C'], [68, 'A'], [70, 'B'], [75, 'D'], [80, 'C'], [84, 'B'], [87, 'A']], RUN_COLS = { A: [3, 4], B: [4, 5], C: [4], D: [3, 4, 5] };
+const RUN_OBST = [[6, 'C'], [9, 'B'], [11, 'A'], [14, 'B'], [16, 'E'], [19, 'D'], [22, 'A'], [24, 'C'], [26, 'E'], [28, 'B'], [31, 'A'], [33, 'B'], [36, 'C'], [38, 'D'], [40, 'A'], [42, 'B'], [45, 'C'], [47, 'D'], [50, 'A'], [52, 'C'], [54, 'E'], [56, 'B'], [59, 'A'], [62, 'B'], [64, 'C'], [66, 'B'], [68, 'A'], [70, 'B'], [73, 'C'], [75, 'D'], [78, 'A'], [80, 'C'], [82, 'E'], [84, 'B'], [87, 'A']], RUN_COLS = { A: [3, 4], B: [4, 5], C: [4], D: [3, 4, 5], E: [3, 5] };   // E leaves only a narrow gap in the middle
 const carve = (R, C, rects, marks = []) => { const m = Array.from({ length: R }, () => Array(C).fill('#')); rects.forEach(([r0, c0, r1, c1]) => { for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) m[r][c] = '.'; }); marks.forEach(([r, c, ch]) => { m[r][c] = ch; }); return m.map(r => r.join('')); };
 LEVELS.push({
   name: 'Partypoopers', sub: 'Partygoers not welcome', map: carve(9, 11, [[1, 1, 7, 9]], [[1, 5, 'S']]), H: 3.3, noFake: true, calm: true, flicker: .985, glimpses: [], step: 'concrete', drain: .5, lightStep: 3,
@@ -818,7 +818,7 @@ LEVELS.push({
   posters: [], bottles: [[17, 8], [14, 19]], weapons: [],
   intro: 'The lights go out. You can\'t see your own hands.'
 }, {
-  name: 'Level !', sub: 'Run For Your Life', map: carve(99, 9, [[1, 3, 92, 5], [94, 3, 96, 5]], [[2, 4, 'S'], [93, 3, '%'], [93, 4, '%'], [93, 5, '%'], ...RUN_OBST.flatMap(([r, k]) => RUN_COLS[k].map(c => [r, c, '%']))]), H: 3.4, drain: .4, noFake: true, calm: true, flicker: 0, glimpses: [], step: 'concrete', lightStep: 4, puddles: [[8, 4], [17, 3], [25, 5], [33, 4], [45, 3], [61, 5], [73, 4], [89, 3]],
+  name: 'Level !', sub: 'Run For Your Life', map: carve(99, 9, [[1, 3, 92, 5], [94, 3, 96, 5]], [[2, 4, 'S'], [93, 3, '%'], [93, 4, '%'], [93, 5, '%'], ...RUN_OBST.flatMap(([r, k]) => RUN_COLS[k].map(c => [r, c, '%']))]), H: 3.4, drain: .4, noFake: true, calm: true, flicker: 0, glimpses: [], step: 'concrete', lightStep: 4, puddles: [[8, 4], [17, 3], [25, 5], [34, 4], [44, 3], [61, 5], [72, 4], [89, 3]],
   fog: [0x220202, 6, 48], ambient: [0xff5040, .5], lampColor: 0xff2a1e, lightColor: 0xff2214, lightPower: 18,
   walls: g => { g.fillStyle = '#6e1212'; g.fillRect(0, 0, 128, 128); noise(g, '#5e0e0e', '#7d1717', 1000); g.fillStyle = 'rgba(30,2,2,.5)'; g.fillRect(0, 104, 128, 24); g.fillStyle = 'rgba(25,2,2,.45)'; for (let i = 0; i < 7; i++) g.fillRect(hash(i + 9) * 128, 0, 2 + hash(i) * 4, 30 + hash(i + 2) * 70); },
   floor: g => { g.fillStyle = '#2a0808'; g.fillRect(0, 0, 128, 128); noise(g, '#220606', '#340b0b', 1000); },
@@ -1388,6 +1388,7 @@ LEVELS.forEach(L => {
 const $ = id => document.getElementById(id);
 const player = { x: 0, z: 0, yaw: Math.PI, r: .3, vx: 0, vz: 0 };
 let L = L0, playing = false, msgTimer = 0, posterTimer = 0, sanity = 100, sanClock = 0, water = 0, stamina = 1, armed = false, weapon = null, stepClock = 0;
+let runSlideT = 0, runSlideC = false;   // the run: tap C while running and you slide
 let camRoll = 0, actR = null, hintText = null, frozen = false, viewLock = false, shake = 0, drawing = 0, meetStep = -1, meetTimer = 0, moving = false, chosen = null, warned = false, vapor = 0;
 const keys = {};
 addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
@@ -4004,6 +4005,12 @@ const runL = { state: 'off', t: 0, z: 0, door: 3.05, slide: 0, shake: 0, rum: nu
     const papG = new THREE.PlaneGeometry(.21, .3), paps = new THREE.InstancedMesh(papG, paperM, Q.low ? 40 : 140), dm = new THREE.Object3D(); for (let k = 0; k < paps.count; k++) { dm.position.set(X0 + (rnd() - .5) * 5.4, .01 + k * .00002, 3 + rnd() * (ZE - 5)); dm.rotation.set(-Math.PI / 2 + (rnd() - .5) * .1, 0, rnd() * 6.3); dm.updateMatrix(); paps.setMatrixAt(k, dm.matrix); } g.add(paps);
     const exitT = wordsOn('EXIT ⬆', 256, 96, '#0b2a12', '#7dffa0', 'bold 60px Arial'); for (let z = 30; z < ZE; z += 40) { const sg0 = new THREE.Mesh(new THREE.BoxGeometry(.7, .26, .08), [M(0x222222), M(0x222222), M(0x222222), M(0x222222), new THREE.MeshBasicMaterial({ map: exitT }), new THREE.MeshBasicMaterial({ map: exitT })]); sg0.position.set(X0, H0 - .2, z); g.add(sg0); }
   }
+  // the floor that gives way between you and the virus
+  { const pg = new THREE.Group(); pg.visible = false; g.add(pg); runL.pit = pg; const pz = 116;
+    const hole = new THREE.Mesh(new THREE.PlaneGeometry(5.96, 4), new THREE.MeshBasicMaterial({ color: 0x000000 })); hole.rotation.x = -Math.PI / 2; hole.position.set(X0, .012, pz); pg.add(hole);
+    const rimM = new StdMat({ color: 0x2a0a08, roughness: .9 }); for (let i = 0; i < 30; i++) { const side = i % 2 ? 1 : -1, w = .2 + Math.random() * .45, ch = new THREE.Mesh(new THREE.BoxGeometry(w, .08 + Math.random() * .1, .25 + Math.random() * .3), rimM); ch.position.set(X0 - 2.9 + Math.random() * 5.8, .03, pz + side * (2 - Math.random() * .25)); ch.rotation.set((Math.random() - .5) * .5, Math.random() * 3, (Math.random() - .5) * .5); pg.add(ch); }
+    for (let i = 0; i < 6; i++) { const rb = new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, .5 + Math.random() * .6, 5), new StdMat({ color: 0x3b2618, roughness: .7, metalness: .5 })); rb.position.set(X0 - 2.6 + Math.random() * 5.2, .1, pz + (i % 2 ? 1 : -1) * 1.9); rb.rotation.set(Math.PI / 2 + (Math.random() - .5) * .8, 0, (Math.random() - .5) * .8); pg.add(rb); }
+    runL.slabs = []; for (let i = 0; i < 9; i++) { const sl = new THREE.Mesh(new THREE.BoxGeometry(1.9, .16, 1.25), rimM); sl.visible = false; g.add(sl); runL.slabs.push({ m: sl, x0: X0 - 2 + (i % 3) * 2, z0: pz - 1.3 + Math.floor(i / 3) * 1.3 }); } }
   // the Red Dark: a wall of moving black smoke, with white eyes somewhere inside it
   const wallG = new THREE.Group(); g.add(wallG); runL.wall = wallG; runL.puffs = []; const smoke = softDot('2,1,2'); const count = Q.low ? 26 : 70;
   for (let i = 0; i < count; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: smoke, transparent: true, depthWrite: false, fog: false, opacity: .96 })); const px = (hash(i + 1) - .5) * 7.4, py = hash(i + 2) * 3.8, pz = -1.5 - hash(i + 3) * 5; sp.position.set(px, py, pz); const sc = 2.6 + hash(i + 4) * 3; sp.scale.set(sc, sc, 1); wallG.add(sp); runL.puffs.push({ sp, px, py, pz, ph: hash(i + 5) * 6 }); }
@@ -4060,31 +4067,38 @@ function animateRedDark(t) {   // the arms grab and claw at the air, the heads j
 }
 const redDarkGrab = (title, text) => grabDeath({ mob: runL.wall, y: 2.45, dist: 1.5, lift: .55, far: 5, fadeAt: 1.5, title, text, grip: { c: 0x2a0a0c, e: 0x220405, claws: true }, pose(k, t2) { animateRedDark(t2 * 1.6); } });
 function startRun() {
-  Object.assign(runL, { state: 'wait', t: 0, z: 2, door: 3.05, slide: 0, done: false, shouted: false }); runL.doorM.position.y = runL.door; runL.wall.visible = false; stamina = 1; player.yaw = Math.PI; L9.lights.forEach(l => { l.base0 = l.base0 || l.base; l.base = 0; l.p.intensity = 0; }); bringVirus(-1.5, -1.2); say('The lights go out for a moment...', 1.2);
+  Object.assign(runL, { state: 'wait', t: 0, z: 2, door: 3.05, slide: 0, done: false, shouted: false, split: false }); runL.pit.visible = false; runL.slabs.forEach(s0 => s0.m.visible = false); [57, 58].forEach(r => { L9.map[r] = L9.map[r].slice(0, 3) + '...' + L9.map[r].slice(6); }); runL.doorM.position.y = runL.door; runL.wall.visible = false; stamina = 1; player.yaw = Math.PI; L9.lights.forEach(l => { l.base0 = l.base0 || l.base; l.base = 0; l.p.intensity = 0; }); bringVirus(-1.5, -1.2); say('The lights go out for a moment...', 1.2);
 }
 function updateRun(dt, t) {
-  const R0 = runL; R0.t += dt; if (!frozen) virusTrail(dt, 3.2, 8);
+  const R0 = runL; R0.t += dt; if (!frozen && !R0.split) virusTrail(dt, 3.2, 8);
   { const A = L9.allLamps; let i0 = A.findIndex(a => a.z > player.z - 3); if (i0 < 0) i0 = A.length - 1; i0 = Math.max(0, Math.min(A.length - L9.lights.length, i0 - 1)); L9.lights.forEach((l, k) => { const a = A[i0 + k]; l.p.position.z = a.z; l.lamp = a.lamp; l.haze = a.haze; }); A.forEach(a => { a.lamp.visible = R0.state === 'off' || R0.state === 'wait' || a.z > R0.z + 1; if (a.haze) a.haze.visible = a.lamp.visible; }); }
   if (R0.state === 'wait') {
     if (R0.t > 1.1) { R0.state = 'go'; R0.t = 0; L9.lights.forEach(l => { l.base = l.base0; }); burst(90, 1, .5, 2, 'lowpass'); burst(1800, 5, .1, .5, 'bandpass'); shake = .35; say(L9.intro + ' Down the hall, the dark is moving. <b>At the far end, a heavy door is sliding shut.</b>', 3.5); R0.wall.visible = true; R0.z = player.z - 11; if (audio) { const o = audio.createOscillator(), f = audio.createBiquadFilter(), g0 = audio.createGain(); o.type = 'sawtooth'; o.frequency.value = 38; f.type = 'lowpass'; f.frequency.value = 190; g0.gain.value = 0; o.connect(f).connect(g0).connect(audio.destination); o.start(); R0.rum = { o, g0 }; } }
     return;
   }
   if (R0.state === 'after') { if (R0.t > 2.6 && !R0.done) { R0.done = true; goLevel(L17, suburbStart); } return; }
+  // halfway down, the floor gives way right behind you: the virus is left on the other side
+  if (!R0.split && player.z > 118.6) { R0.split = true; R0.pit.visible = true; [57, 58].forEach(r => { L9.map[r] = L9.map[r].slice(0, 3) + '%%%' + L9.map[r].slice(6); });
+    R0.slabs.forEach(s0 => { s0.m.visible = true; s0.m.position.set(s0.x0, .02, s0.z0); s0.m.rotation.set(0, (Math.random() - .5) * .2, 0); s0.vy = -Math.random() * 1.2; s0.d = Math.random() * .3; s0.rx = (Math.random() - .5) * 3; s0.rz = (Math.random() - .5) * 3; });
+    virus.position.set(9, 0, 111.4); virus.rotation.y = Math.atan2(player.x - 9, player.z - 111.4); shake = .8; burst(45, 1, 1.4, 3, 'lowpass'); burst(160, 2, .9, 2, 'lowpass'); burst(900, 3, .3, .7, 'bandpass');
+    say('The floor behind you <b>cracks and falls away</b> into the dark. <b>"THEO!"</b> The virus is on the other side. <b>"Keep running! I will find you!"</b>', 4.5); }
+  if (R0.split) { R0.slabs.forEach(s0 => { if (!s0.m.visible || (s0.d -= dt) > 0) return; s0.vy -= 9.8 * dt; s0.m.position.y += s0.vy * dt; s0.m.rotation.x += s0.rx * dt; s0.m.rotation.z += s0.rz * dt; if (s0.m.position.y < -8) s0.m.visible = false; });
+    if (virus.visible) { virus.rotation.y = Math.atan2(player.x - virus.position.x, player.z - virus.position.z); if (R0.z > virus.position.z - .5) virus.visible = false; } }
   // the dark comes on, faster than you can walk
-  R0.z += (R0.state === 'go' ? Math.min(6, 3.05 + Math.max(0, player.z - R0.z - 9) * .3) : 1) * dt; R0.wall.position.set(9, 0, R0.z); R0.puffs.forEach(q => { q.sp.position.x = q.px + Math.sin(t * 1.3 + q.ph) * .3; q.sp.position.y = q.py + Math.sin(t * 1.7 + q.ph * 2) * .25; q.sp.material.rotation = t * .25 + q.ph; }); animateRedDark(t);
+  R0.z += (R0.state === 'go' ? Math.min(6.5, 3.3 + Math.max(0, player.z - R0.z - 8) * .35) : 1) * dt; R0.wall.position.set(9, 0, R0.z); R0.puffs.forEach(q => { q.sp.position.x = q.px + Math.sin(t * 1.3 + q.ph) * .3; q.sp.position.y = q.py + Math.sin(t * 1.7 + q.ph * 2) * .25; q.sp.material.rotation = t * .25 + q.ph; }); animateRedDark(t);
   L9.lights.forEach(l => { const lamp = l.p.position.z; l.base = lamp < R0.z + 1 ? 0 : l.base0; l.lamp.visible = lamp > R0.z + 1; });
   const gap = player.z - R0.z; if (R0.rum) { R0.rum.g0.gain.value = Math.min(.55, 4 / Math.max(2, gap) * .55); R0.rum.o.frequency.value = 36 + Math.max(0, 12 - gap) * 2; }
   $('dark').style.opacity = Math.max(0, Math.min(.85, (9 - gap) / 9)).toFixed(2); if (gap < 6) shake = Math.max(shake, (6 - gap) * .05);
   // the door drops all the way down over about half a minute
-  R0.door = Math.max(0, 3.05 * (1 - R0.t / 68)); R0.doorM.position.y = R0.door; const dd = 186 - player.z;
+  R0.door = Math.max(0, 3.05 * (1 - R0.t / 56)); R0.doorM.position.y = R0.door; const dd = 186 - player.z;
   if (Math.floor(R0.t * 1.2) !== Math.floor((R0.t - dt) * 1.2)) soundAt(9, 186, q => burst(420, 3, .22, 1.5, 'bandpass', q));
   if (R0.slide > 0) {
     R0.slide += dt; const k = Math.min(1, R0.slide / .75); player.vx = player.vz = 0; player.x += (9 - player.x) * Math.min(1, dt * 6); player.z = R0.sz + (189.2 - R0.sz) * k * k * (3 - 2 * k); camH += (.5 - camH) * Math.min(1, dt * 14); look.pitch += (.08 - look.pitch) * Math.min(1, dt * 8); camRoll = Math.sin(k * Math.PI) * .09;
-    virus.position.set(player.x + 1.6, 0, Math.min(189.5, player.z - .8)); if (Math.random() < dt * 22) burst(600 + Math.random() * 600, 2, .08, .5, 'bandpass');
-    if (k >= 1) { R0.state = 'after'; R0.t = 0; R0.door = 0; R0.doorM.position.y = 0; R0.wall.visible = false; camRoll = 0; frozen = true; viewLock = true; if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } burst(60, 1, .7, 3, 'lowpass'); shake = 1; virus.position.set(player.x + 1.8, 0, player.z + 1.2); $('dark').style.opacity = 0; [.5, 1.1, 1.7].forEach(s0 => setTimeout(() => burst(80, 1, .3, 1.8, 'lowpass'), s0 * 1000)); say('Something hits the metal again and again... then it stops.', 3); }
+    if (!R0.split) virus.position.set(player.x + 1.6, 0, Math.min(189.5, player.z - .8)); if (Math.random() < dt * 22) burst(600 + Math.random() * 600, 2, .08, .5, 'bandpass');
+    if (k >= 1) { R0.state = 'after'; R0.t = 0; R0.door = 0; R0.doorM.position.y = 0; R0.wall.visible = false; camRoll = 0; frozen = true; viewLock = true; if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } burst(60, 1, .7, 3, 'lowpass'); shake = 1; if (!R0.split) virus.position.set(player.x + 1.8, 0, player.z + 1.2); $('dark').style.opacity = 0; [.5, 1.1, 1.7].forEach(s0 => setTimeout(() => burst(80, 1, .3, 1.8, 'lowpass'), s0 * 1000)); say('Something hits the metal again and again... then it stops.', 3); }
     return;
   }
-  if (!crouching && RUN_OBST.some(([r0, k]) => k === 'D' && r0 * CELL - player.z > 0 && r0 * CELL - player.z < 4.5)) hintText = '⬇️ hold C';
+  if (!crouching && RUN_OBST.some(([r0, k]) => k === 'D' && r0 * CELL - player.z > 0 && r0 * CELL - player.z < 4.5)) hintText = '⬇️ C slide';
   if (dd < 7 && !R0.shouted) { R0.shouted = true; say('<b>SLIDE!</b>', 2); }
   if (dd < 6.2 && R0.door > .32) { hintText = '⬇️ C'; if (keys['c']) { R0.slide = .001; R0.sz = player.z; frozen = true; viewLock = true; burst(900, 1, .4, .8, 'bandpass'); return; } }
   if (R0.door <= .32) { R0.doorM.position.y = 0; burst(55, 1, .7, 3, 'lowpass'); if (R0.rum) { R0.rum.o.stop(); R0.rum = null; } redDarkGrab('You were not fast enough', 'The door slams shut. Then the arms find you, all of them at once. The lights flicker red one last time. Then nothing.'); return; }
@@ -4776,7 +4790,7 @@ const bac = { m: null, tendrils: [], t: 0, step: 0, done: false, on: false, stai
   const gr = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, .08), new StdMat({ color: 0x4a4b50, roughness: .5, metalness: .6 })); gr.position.set(9, .55, 2.06); g.add(gr); for (let i = 0; i < 6; i++) { const b1 = new THREE.Mesh(new THREE.BoxGeometry(1.38, .05, .03), new THREE.MeshBasicMaterial({ color: 0x08080a })); b1.position.set(9, .18 + i * .15, 2.12); g.add(b1); }
 }
 function resetLibBac() { libWriteEnd(); library.talking = false; library.shouted = false; library.spoke = false; $('libTalk').style.display = 'none'; library.offer.visible = true; library.drank = false; library.cup.visible = true; library.reading = false; library.met = false; library.page = 0; library.dir = 1; libBook.style.display = 'none'; library.m.position.set(33, 0, 25); library.m.rotation.set(0, 0, 0); library.head.rotation.set(.24, 0, 0); Object.assign(bac, { t: 0, step: 0, done: false, on: false }); bac.m.visible = false; bac.m.scale.setScalar(1); bac.m.rotation.set(0, Math.PI * 0, 0); bac.tendrils.forEach(o => { o.gone = false; o.tg.visible = true; o.tg.position.copy(o.home); o.tg.rotation.copy(o.rot); o.tg.scale.setScalar(1); }); bac.grab.visible = false; bac.stain.visible = false; bac.tube.forEach(o => { o.visible = false; }); bac.newT.visible = false; bac.newT.scale.setScalar(1); }
-function bacStart() { const b = bac; b.on = true; b.t = 0; b.step = 0; b.done = false; player.x = 9; player.z = 50; player.yaw = 0; look.pitch = .55; bringVirus(1.5, -1.1); if (Q.fit) crouch.hold = 4.5; else virus.scale.set(.97, .8, .97); frozen = true; viewLock = true; ride.y = -1.15; b.m.visible = false; b.m.position.set(9, 0, 29); b.m.rotation.y = 0; say('You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.', 5); }
+function bacStart() { const b = bac; b.on = true; b.t = 0; b.step = 0; b.done = false; player.x = 9; player.z = 50; player.yaw = 0; look.pitch = .55; bringVirus(1.5, -1.1); if (Q.fit) crouch.hold = 4.5; else virus.scale.set(.97, .8, .97); frozen = true; viewLock = true; ride.y = -1.15; b.m.visible = false; b.m.position.set(9, 0, 29); b.m.rotation.y = 0; say('You slide under the door just before it slams shut. Behind it, something hits the metal again and again... then it stops.', 5); if (runL.split) setTimeout(() => say('Something tall unfolds beside you. <b>"Told you I would find you, Theo."</b>', 4), 5600); }
 function updateBac(dt, t) {
   const b = bac; if (!b.on) { virusTrail(dt, 2.6, 6); if (Math.hypot(9 - player.x, 3 - player.z) < 2.8) { hintText = '🕳️ R'; actR = () => { burst(1200, 3, .25, .4, 'bandpass'); goLevel(L11, hotelStreet); }; } return; }
   b.t += dt; const T = b.t, sched = [5, 9, 13.5, 16, 21, 22.6, 27, 31, 35, 39, 46, 52.5], at = (n, fn) => { if (b.step === n && T >= sched[n]) { b.step++; fn(); } }, aim = (x, y, z, sp = 3) => { const dx = x - player.x, dz = z - player.z, want = Math.atan2(-dx, -dz); let dy = want - player.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); player.yaw += dy * Math.min(1, dt * sp); const py = Math.atan2(y - camH - ride.y, Math.max(.3, Math.hypot(dx, dz))); look.pitch += (py - look.pitch) * Math.min(1, dt * sp); };
@@ -5327,15 +5341,64 @@ const sub = { roam: [], lurk: [], pcs: [], bits: [], doors: [], done: 0, open: f
     return { m, hip, hipY, spine, chest, neck, head, jaw, jaw0: o.jaw, legs, free, bar, tilt: o.tilt, hunch: o.hunch, bend: o.bend, headUp: -(o.hunch * .85 + .3) };
   };
   const redLook = (hunch, bend) => { const sgn = () => Math.random() < .5 ? -1 : 1; return { hunch, bend, tilt: sgn() * (.22 + Math.random() * .3), lean: (Math.random() - .5) * .16, jaw: .25 + Math.random() * .35, eyeSide: sgn(), longArm: sgn(), shoulder: .02 + Math.random() * .035, barSide: -1 }; };
-  // the street watchers: very thin, very tall, with two pinprick eyes
-  const darkM = sm(0x17181d, .72, { emissive: 0x050608 }), eyeM = new THREE.MeshBasicMaterial({ color: 0xe8efff, fog: false });
-  S0.roams.forEach(([r, c], i) => { const m = new THREE.Group(), legs = [], arms = []; m.position.set(cx(c), 0, cx(r));
-    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.22, 1, 6, 14), darkM); torso.position.y = 2.6; torso.scale.set(.85, 1, .55); m.add(torso); for (let k = 0; k < 5; k++) { const rb = new THREE.Mesh(new THREE.TorusGeometry(.17, .018, 6, 18, 3), darkM); rb.position.set(0, 2.9 - k * .12, .05); rb.rotation.set(Math.PI / 2, 0, Math.PI * .5); rb.scale.set(1, .6, 1); m.add(rb); }
-    const hd = new THREE.Mesh(new THREE.SphereGeometry(.19, 18, 14), darkM); hd.position.y = 3.55; hd.scale.set(1, 1.3, 1); m.add(hd); [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.SphereGeometry(.018, 8, 6), eyeM); e.position.set(sd * .06, 3.6, .17); m.add(e); });
-    const nk = new THREE.Mesh(new THREE.CylinderGeometry(.045, .06, .4, 10), darkM); nk.position.y = 3.25; m.add(nk);
-    [-1, 1].forEach(sd => { const lg = new THREE.Group(); lg.position.set(sd * .14, 2.05, 0); m.add(lg); lg.add(new THREE.Mesh(taper(1.05, .07, .08, .05), darkM)); const kn = new THREE.Group(); kn.position.y = -1.05; lg.add(kn); kn.add(new THREE.Mesh(taper(1, .05, .055, .035), darkM)); legs.push({ lg, kn });
-      const ar = new THREE.Group(); ar.position.set(sd * .3, 3.05, 0); ar.rotation.z = sd * .08; m.add(ar); ar.add(new THREE.Mesh(taper(1.1, .05, .06, .04), darkM)); const fa = new THREE.Group(); fa.position.y = -1.1; ar.add(fa); fa.add(new THREE.Mesh(taper(1.15, .04, .045, .025), darkM)); for (let f = 0; f < 4; f++) { const fg = new THREE.Mesh(new THREE.ConeGeometry(.012, .32, 6), darkM); fg.position.set((f - 1.5) * .025, -1.3, 0); fg.rotation.x = Math.PI; fa.add(fg); } arms.push({ ar, fa }); });
-    m.traverse(o => { if (o.isMesh) o.castShadow = !Q.low; }); g.add(m); sub.roam.push({ m, legs, arms, cell: [r, c], next: [r, c], goal: null, state: 'walk', lost: 0, re: 0, yaw: 0, ph: i * 2 }); });
+  // the street watchers: very thin, very tall, with two pinprick eyes. Skin like wet slate pulled over bone, cords in every limb, fingers that never stop being long
+  const darkM = sm(0x17181d, .66, { emissive: 0x050608 }), ridgeM = sm(0x2b2d34, .5), cordM = sm(0x0d0e11, .72), eyeM = new THREE.MeshBasicMaterial({ color: 0xe8efff, fog: false }), nailM = sm(0x3a3a3e, .35);
+  if (MD) { const W = 512, cv = document.createElement('canvas'), bv = document.createElement('canvas'); cv.width = cv.height = bv.width = bv.height = W; const x = cv.getContext('2d'), b = bv.getContext('2d');
+    x.fillStyle = '#26272d'; x.fillRect(0, 0, W, W); b.fillStyle = '#808080'; b.fillRect(0, 0, W, W);
+    for (let i = 0; i < 220; i++) { const px = Math.random() * W, py = Math.random() * W, r = 8 + Math.random() * 50, dark = Math.random() < .6, gr = x.createRadialGradient(px, py, 0, px, py, r); gr.addColorStop(0, dark ? 'rgba(5,6,9,.4)' : 'rgba(70,74,86,.25)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = gr; x.fillRect(px - r, py - r, r * 2, r * 2); const g2 = b.createRadialGradient(px, py, 0, px, py, r); g2.addColorStop(0, dark ? 'rgba(40,40,40,.45)' : 'rgba(215,215,215,.35)'); g2.addColorStop(1, 'rgba(128,128,128,0)'); b.fillStyle = g2; b.fillRect(px - r, py - r, r * 2, r * 2); }
+    const vein = (px, py, a0, w, n) => { for (let i = 0; i < n; i++) { const nx = px + Math.cos(a0) * 6, ny = py + Math.sin(a0) * 6; [[x, 'rgba(8,10,16,.7)'], [b, 'rgba(230,230,230,.75)']].forEach(([c, col]) => { c.strokeStyle = col; c.lineWidth = w; c.beginPath(); c.moveTo(px, py); c.lineTo(nx, ny); c.stroke(); }); px = nx; py = ny; a0 += (Math.random() - .5) * .6; w *= .985; if (Math.random() < .045 && w > .8) vein(px, py, a0 + (Math.random() < .5 ? -1 : 1) * .7, w * .7, n - i); } };
+    for (let i = 0; i < 22; i++) vein(Math.random() * W, Math.random() * W, Math.random() * 6.28, 1.2 + Math.random() * 1.8, 40 + Math.random() * 40);
+    for (let i = 0; i < 8000; i++) { const px = Math.random() * W, py = Math.random() * W; x.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.25)' : 'rgba(90,94,106,.18)'; x.fillRect(px, py, 1.5, 1.5); b.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.3)' : 'rgba(255,255,255,.3)'; b.fillRect(px, py, 1.5, 1.5); }
+    const tx = new THREE.CanvasTexture(cv), bt = new THREE.CanvasTexture(bv); tx.colorSpace = THREE.SRGBColorSpace; [tx, bt].forEach(t0 => { t0.wrapS = t0.wrapT = THREE.RepeatWrapping; t0.repeat.set(2, 3); t0.anisotropy = 8; });
+    darkM.color.setHex(0xffffff); darkM.map = tx; darkM.bumpMap = bt; darkM.bumpScale = 2; darkM.roughness = .55; ridgeM.bumpMap = bt; ridgeM.bumpScale = 1.2; cordM.bumpMap = bt; cordM.bumpScale = 1; }
+  const watcherModel = () => {
+    const s0 = Math.random() * 40, F = (geo, amp = .006, f = 7) => { if (!MD) return geo; const p0 = geo.attributes.position, n = geo.attributes.normal; for (let i = 0; i < p0.count; i++) { const k = mdNoise(p0.getX(i) + s0, p0.getY(i) * .6 + s0, p0.getZ(i) - s0, f) * amp; p0.setXYZ(i, p0.getX(i) + n.getX(i) * k, p0.getY(i) + n.getY(i) * k, p0.getZ(i) + n.getZ(i) * k); } return geo; };
+    const m = new THREE.Group(), legs = [], arms = [];
+    // hips and a belly sucked in under the ribs, with the spine showing all the way up the back
+    ad(m, F(sph(.15, 20, 14), .01), darkM, 0, 2.08, 0, 0, 0, 0, 1.1, .62, .75);
+    [-1, 1].forEach(sd => ad(m, sph(.035, 10, 8), ridgeM, sd * .14, 2.12, .05, 0, 0, 0, 1, .7, 1));
+    ad(m, F(cap(.095, .34, 16), .008, 9), darkM, 0, 2.38, -.01, 0, 0, 0, 1, 1, .66);
+    [-1, 1].forEach(sd => ad(m, tube([[sd * .05, 2.2, .06], [sd * .07, 2.4, .055], [sd * .1, 2.6, .07]], .012, 8), cordM));
+    for (let i = 0; i < 16; i++) ad(m, sph(.022 - i * .0004, 8, 6), ridgeM, 0, 2.12 + i * .068, -.07 - Math.sin(Math.min(1, i / 10) * Math.PI) * .07 - (i > 9 ? .02 : 0), 0, 0, 0, 1.25, .75, 1);
+    // a narrow ribcage you can count, shoulder blades like folded wings, collarbones
+    ad(m, F(sph(.2, 28, 20), .01, 8), darkM, 0, 2.86, 0, 0, 0, 0, 1, 1.38, .6);
+    for (let k = 0; k < 8; k++) { const y = 3.12 - k * .055, f0 = Math.sqrt(Math.max(.05, 1 - ((y - 2.86) / .276) ** 2)), rx = .2 * f0 + .004, rz = .12 * f0 + .004; [-1, 1].forEach(sd => { const pts = []; for (let i = 0; i <= 8; i++) { const a0 = -.7 + i / 8 * 2.05; pts.push([sd * Math.cos(a0) * rx, y - Math.max(0, a0) * .04, Math.sin(a0) * rz]); } ad(m, tube(pts, .0105, 14), ridgeM); }); }
+    ad(m, cap(.016, .3, 8), ridgeM, 0, 2.88, .118, .06);
+    [-1, 1].forEach(sd => { ad(m, F(sph(.08, 14, 10), .008), darkM, sd * .1, 2.98, -.09, 0, 0, sd * .35, 1, 1.4, .38); ad(m, tube([[sd * .02, 3.13, .09], [sd * .14, 3.15, .07], [sd * .28, 3.08, .01]], .013, 8), ridgeM); ad(m, F(sph(.06, 12, 10), .006), darkM, sd * .29, 3.05, 0); });
+    // a long neck, all cords, leaning a little forward
+    ad(m, F(taper(.42, .045, .05, .06, 14), .004, 12), darkM, 0, 3.52, .02, -.12);
+    [-1, 1].forEach(sd => ad(m, tube([[sd * .03, 3.5, .06], [sd * .05, 3.33, .05], [sd * .07, 3.14, .04]], .01, 8), cordM)); ad(m, sph(.02, 8, 6), ridgeM, 0, 3.3, .065);
+    // the head: long, smooth, with sockets set deep and two pinprick lights at the bottom of them, a slit where the mouth should be
+    const hd = new THREE.Group(); hd.position.set(0, 3.55, .04); m.add(hd);
+    ad(hd, F(sph(.15, 32, 24), .008, 9), darkM, 0, .07, 0, 0, 0, 0, .82, 1.45, .98);
+    ad(hd, cap(.018, .13, 10), ridgeM, 0, .1, .118, 0, 0, Math.PI / 2, 1, 1, .7);
+    [-1, 1].forEach(sd => { ad(hd, sph(.03, 14, 10), holeM, sd * .05, .065, .118, 0, 0, sd * -.25, 1, .7, .5); const e = ad(hd, sph(.016, 10, 8), eyeM, sd * .05, .062, .128); e.userData.eye = true; ad(hd, sph(.03, 10, 8), ridgeM, sd * .075, .0, .1, 0, 0, sd * .5, 1.1, .45, .55); ad(hd, cap(.003, .02, 4), holeM, sd * .012, .005, .14, 0, 0, sd * .25); });
+    ad(hd, cap(.004, .085, 6), holeM, 0, -.06, .128, 0, 0, Math.PI / 2); for (let i = 0; i < 7; i++) ad(hd, cap(.0025, .014, 4), ridgeM, (i - 3) * .014, -.06, .132);
+    ad(hd, F(sph(.06, 14, 10), .004), darkM, 0, -.12, .07, 0, 0, 0, .8, .6, .9);
+    // legs: long thighs, knees like knots, shins with a ridge of bone, long feet and long toes
+    [-1, 1].forEach(sd => { const lg = new THREE.Group(); lg.position.set(sd * .14, 2.05, 0); m.add(lg);
+      ad(lg, F(taper(1.05, .07, .08, .05, 18), .009, 6), darkM); ad(lg, tube([[sd * .02, -.08, .07], [sd * .015, -.5, .085], [0, -.98, .05]], .014, 10), cordM); ad(lg, tube([[sd * .06, -.1, -.03], [sd * .075, -.5, -.04], [sd * .04, -.98, -.02]], .011, 10), cordM);
+      const kn = new THREE.Group(); kn.position.y = -1.05; lg.add(kn);
+      ad(kn, sph(.055, 12, 10), ridgeM, 0, .01, .02, 0, 0, 0, 1, 1.15, .9);
+      ad(kn, F(taper(1, .05, .055, .035, 16), .007, 7), darkM); ad(kn, tube([[0, -.05, .045], [0, -.5, .05], [0, -.95, .035]], .011, 10), ridgeM); ad(kn, F(sph(.045, 12, 10), .005), darkM, 0, -.3, -.04, 0, 0, 0, .9, 3, .8);
+      ad(kn, sph(.035, 10, 8), ridgeM, 0, -1.0, 0); ad(kn, F(cap(.034, .26, 10), .004), darkM, 0, -1.02, .13, Math.PI / 2, 0, 0, 1, 1, .5);
+      for (let i = 0; i < 5; i++) { const x0 = (i - 2) * .018, ln = .075 - Math.abs(i - (sd > 0 ? 1 : 3)) * .008; ad(kn, cap(.008, ln, 6), darkM, x0, -1.03, .29 + ln / 2, Math.PI / 2 + .2, 0, 0); ad(kn, new THREE.ConeGeometry(.006, .03, sg(5)), nailM, x0, -1.04, .31 + ln, Math.PI / 2 + .45, 0, 0); }
+      legs.push({ lg, kn });
+      // arms: hang to the knees; elbows like knots; hands with four long jointed fingers and a thumb
+      const ar = new THREE.Group(); ar.position.set(sd * .3, 3.05, 0); ar.rotation.z = sd * .08; m.add(ar);
+      ad(ar, F(taper(1.1, .05, .06, .04, 16), .007, 7), darkM); ad(ar, tube([[0, -.06, .045], [sd * .01, -.55, .056], [0, -1.05, .038]], .01, 10), cordM); ad(ar, tube([[sd * .04, -.05, -.02], [sd * .055, -.55, -.025], [sd * .03, -1.05, -.015]], .009, 10), cordM);
+      const fa = new THREE.Group(); fa.position.y = -1.1; ar.add(fa);
+      ad(fa, sph(.045, 12, 10), ridgeM, 0, 0, -.015); ad(fa, F(taper(1.15, .04, .045, .025, 16), .006, 8), darkM);
+      [[.03, .02], [-.026, .025], [0, -.035]].forEach(([x0, z0]) => ad(fa, tube([[x0 * .9, -.05, z0], [x0 * 1.2, -.57, z0 * 1.25], [x0 * .6, -1.12, z0 * .6]], .007, 10), cordM));
+      const hand = new THREE.Group(); hand.position.y = -1.15; hand.rotation.y = sd * Math.PI / 2; fa.add(hand);
+      ad(hand, F(sph(.038, 12, 10), .004), darkM, 0, -.05, 0, 0, 0, 0, .9, 1.5, .4);
+      for (let f = 0; f < 4; f++) { const fg = new THREE.Group(); fg.position.set((f - 1.5) * .019 * -sd, -.1, 0); fg.rotation.x = .15 + f * .04; hand.add(fg); let par = fg; const segs = [.13, .11, .09]; segs.forEach((ln, si) => { ad(par, taper(ln, .008 - si * .0015, .0085 - si * .0015, .006 - si * .0015, 8), darkM); ad(par, sph(.0085 - si * .0015, 8, 6), ridgeM); const nx = new THREE.Group(); nx.position.y = -ln; nx.rotation.x = .18 + si * .08; par.add(nx); par = nx; }); ad(par, new THREE.ConeGeometry(.005, .045, sg(5)), nailM, 0, -.02, 0, Math.PI, 0, 0); }
+      const th = new THREE.Group(); th.position.set(-sd * .035 * -1, -.05, .012); th.rotation.set(.35, 0, sd * .5); hand.add(th); ad(th, taper(.09, .009, .009, .006, 8), darkM); const t2 = new THREE.Group(); t2.position.y = -.09; t2.rotation.x = .3; th.add(t2); ad(t2, taper(.07, .006, .006, .003, 8), darkM); ad(t2, new THREE.ConeGeometry(.0045, .035, sg(5)), nailM, 0, -.08, 0, Math.PI, 0, 0);
+      arms.push({ ar, fa }); });
+    bakeRig(m, new Set([m, hd, ...legs.flatMap(l => [l.lg, l.kn]), ...arms.flatMap(a0 => [a0.ar, a0.fa])]));
+    return { m, legs, arms, hd };
+  };
+  S0.roams.forEach(([r, c], i) => { const { m, legs, arms, hd } = watcherModel(); m.position.set(cx(c), 0, cx(r)); g.add(m); sub.roam.push({ m, legs, arms, hd, cell: [r, c], next: [r, c], goal: null, state: 'walk', lost: 0, re: 0, yaw: 0, ph: i * 2 }); });
   // in the houses: person-sized, bent nearly double, standing very still in the dark until something wakes them
   S0.lurks.forEach(({ house, home }) => { const rig = redMan(redLook(1, .14)), m = rig.m; m.position.set(cx(home[1]), 0, cx(home[0])); m.rotation.y = Math.random() * 6.28; g.add(m);
     const q = { m, rig, house, home, cell: home.slice(), next: home.slice(), state: 'roam', away: 0, re: 0, ph: 0, wait: Math.random() * 3, step: 0 }; poseMan(q, 0, 0, 0, 0, 1); sub.lurk.push(q); });
@@ -5415,7 +5478,7 @@ function updateSuburb(dt, t) {
     if ((q.re -= dt) <= 0) { q.re = .3; q.next = nextCell(cr, cc, gr, gc, outBad); }
     const same = q.state === 'chase' && cr === pr && cc === pc, tx = same ? player.x : q.next[1] * CELL + CELL / 2, tz = same ? player.z : q.next[0] * CELL + CELL / 2, mx = tx - p0.x, mz = tz - p0.z, md = Math.hypot(mx, mz), sp = q.state === 'chase' ? 4.6 : 2.1;
     if (md > .02) { p0.x += mx / md * Math.min(md, sp * dt); p0.z += mz / md * Math.min(md, sp * dt); let dy = Math.atan2(mx, mz) - q.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); q.yaw += dy * Math.min(1, dt * 5); }
-    q.m.rotation.y = q.yaw; const ph = (q.ph += dt * sp * 1.5); q.legs.forEach(({ lg, kn }, i) => { const s0 = Math.sin(ph + i * Math.PI); lg.rotation.x = s0 * .5; kn.rotation.x = Math.max(0, -Math.cos(ph + i * Math.PI)) * .65; }); q.arms.forEach(({ ar }, i) => { ar.rotation.x = Math.sin(ph + i * Math.PI + Math.PI) * .3 - (q.state === 'chase' ? .7 : 0); });
+    q.m.rotation.y = q.yaw; const ph = (q.ph += dt * sp * 1.5); q.legs.forEach(({ lg, kn }, i) => { const s0 = Math.sin(ph + i * Math.PI); lg.rotation.x = s0 * .5; kn.rotation.x = Math.max(0, -Math.cos(ph + i * Math.PI)) * .65; }); q.arms.forEach(({ ar }, i) => { ar.rotation.x = Math.sin(ph + i * Math.PI + Math.PI) * .3 - (q.state === 'chase' ? .7 : 0); }); if (q.hd) { q.hd.rotation.z = q.state === 'chase' ? Math.sin(t * 9 + q.ph) * .05 : Math.sin(t * .6 + q.ph) * .22; q.hd.rotation.y = q.state === 'chase' ? 0 : Math.sin(t * .37 + q.ph * 2) * .5; q.hd.rotation.x = q.state === 'chase' ? -.1 : .12; }
     if (q.state === 'chase' && d < 1.3) { grabDeath({ mob: q.m, y: 3.3, grip: { c: 0x2a2b31, e: 0x0a0a0d }, dist: 1.25, lift: 1.5, far: 3, title: 'It caught you in the street', text: 'Long thin fingers close around your shoulders and lift you right off the road. Its two little eyes come very close. You should have gone inside.' }); return; }
   }
   // the things in the houses sleep until you make noise near them, and never leave their own house
@@ -5481,12 +5544,14 @@ function tick() {
     if (keys['arrowdown'] && !viewLock) look.pitch = Math.max(-1.1, look.pitch - 1.5 * dt);
     if (keys['arrowleft']) player.yaw += 2.2 * dt;
     if (keys['arrowright']) player.yaw -= 2.2 * dt;
-    const mv = frozen ? 0 : (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0), st = frozen ? 0 : (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
+    if (L === L9 && !frozen) { if (keys['c'] && !runSlideC && keys['w'] && runSlideT <= 0) { runSlideT = .95; burst(700, 2, .15, .5, 'bandpass'); burst(120, 1, .2, .6, 'lowpass'); } runSlideC = !!keys['c']; } else runSlideT = 0;
+    if (runSlideT > 0) runSlideT -= dt;
+    const mv = frozen ? 0 : runSlideT > 0 ? 1 : (keys['w'] ? 1 : 0) - (keys['s'] ? 1 : 0), st = frozen ? 0 : (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
     // hold C to crouch anywhere: slow and quiet. Under something low you stay down until you are out.
     { const low0 = L.low || (() => false), inLow = [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([ox, oz]) => low0(Math.floor((player.z + oz * player.r) / CELL), Math.floor((player.x + ox * player.r) / CELL)));
-      crouching = (!frozen && (!!keys['c'] || inLow)) || hotel.mouse.kneel > 0;
+      crouching = (!frozen && (!!keys['c'] || inLow || runSlideT > 0)) || hotel.mouse.kneel > 0;
       const nearLow = [[0, 0], [.8, 0], [-.8, 0], [0, .8], [0, -.8]].some(([ox, oz]) => low0(Math.floor((player.z + oz) / CELL), Math.floor((player.x + ox) / CELL)));
-      camH += ((crouching ? (nearLow ? .6 : .92) : 1.6) - camH) * Math.min(1, dt * 7); }
+      camH += ((runSlideT > 0 ? .5 : crouching ? (nearLow ? .6 : .92) : 1.6) - camH) * Math.min(1, dt * (runSlideT > 0 ? 14 : 7)); }
     const sprint = keys['shift'] && mv > 0 && stamina > .02 && drawing <= 0 && !crouching;
     if (drawing > 0 && (drawing -= dt) <= 0) { setArmed(true); say('You finally get your ' + WEAPONS[weapon].name + ' out.', 2); }
     stamina = Math.max(0, Math.min(1, stamina + (sprint ? -dt / 4 : dt / 6)));   // 4 s of sprint, 6 s to refill
@@ -5494,7 +5559,7 @@ function tick() {
     if (L !== L15 && !fin.on && (sanClock += dt * (gear.photo ? (sprint ? 1 / 2 : 1 / 3) : (sprint ? 1 : 1 / 2))) >= 1) { sanClock -= 1; setSanity(sanity - 1); }   // 1 every 2 s, 1 every s sprinting; with the Partypooper photo, 1 every 3 s, 1 every 2 s sprinting
     if (sanity <= 0 && !fin.on) ending('You lost your mind', 'The hum got louder and louder until it was the only thing left.');
     // where you want to go, and how fast; in deep water you push against it, so you speed up and slow down slowly
-    const sp = (mv || st) ? (sprint ? 5.5 : 3) * (crouching ? .47 : 1) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) / Math.hypot(mv, st) : 0;
+    const sp = (mv || st) ? (runSlideT > 0 ? 4.4 + runSlideT * 3.6 : (sprint ? 5.5 : 3) * (L === L9 ? 1.25 : 1)) * (crouching && runSlideT <= 0 ? .47 : 1) * (drawing > 0 ? .4 : 1) * (inWater() ? (L.allWet ? .75 : .65) : 1) * (L === L2 && lizard.state === 'grab' ? .4 : 1) / Math.hypot(mv, st) : 0;
     const tvx = (-Math.sin(player.yaw) * mv + Math.cos(player.yaw) * st) * sp, tvz = (-Math.cos(player.yaw) * mv - Math.sin(player.yaw) * st) * sp;
     const grip = inWater() ? (L.allWet ? 3 : 5) : 14;
     player.vx += (tvx - player.vx) * Math.min(1, dt * grip); player.vz += (tvz - player.vz) * Math.min(1, dt * grip);
