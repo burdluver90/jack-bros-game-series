@@ -50,6 +50,21 @@ h1{margin:0}
 a.game{display:inline-block;padding:.7em 1.6em;border-radius:999px;border:2px solid #5b8cff;background:#17233f;color:#fff;font-weight:bold;text-decoration:none;font-size:1.05rem}
 a.game:hover,a.game:focus-visible{background:#5b8cff}
 small{opacity:.6}
+/* Jack-Bros cards: simple backgrounds that show each game's theme */
+a.jcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:.3rem;width:100%;max-width:560px;min-height:150px;padding:1.2rem 1.3rem;border-radius:12px;overflow:hidden;color:#fff;text-decoration:none;text-align:left;border:2px solid transparent;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+a.jcard b{position:relative;z-index:1;font-size:1.3rem;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+a.jcard>span:not([aria-hidden]){position:relative;z-index:1;font-size:.95rem;opacity:.92;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+a.jcard:hover,a.jcard:focus-visible{border-color:#fff;transform:translateY(-2px)}
+/* Part 2: a grocery store aisle with a checkered floor and a milk carton */
+.milk{background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(10,30,60,.75)),repeating-linear-gradient(90deg,#d9e6f2 0 14px,#c6d6e6 14px 16px),linear-gradient(#7fb2e0,#7fb2e0);background-size:auto,100% 58%,100% 100%;background-repeat:no-repeat;background-position:0 0,0 0,0 0}
+.milk::before{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:conic-gradient(#f4f4f4 25%,#2f5f9a 0 50%,#f4f4f4 0 75%,#2f5f9a 0) 0 0/28px 28px;opacity:.55}
+.milk::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(8,22,45,.88) 85%)}
+.milk .carton{z-index:1;position:absolute;right:1.4rem;top:1rem;width:46px;height:78px;background:linear-gradient(#fff 0 30%,#3a7bd5 30% 52%,#fff 52%);clip-path:polygon(0 18%,50% 0,100% 18%,100% 100%,0 100%);box-shadow:0 0 0 2px #fff;transform:rotate(8deg)}
+/* Part 3: an office at night, a green work screen, and a little UFO */
+.grown{background:radial-gradient(ellipse 30% 26% at 26% 38%,rgba(90,255,140,.35),transparent 70%),linear-gradient(90deg,transparent 14%,#0d2a17 14% 38%,transparent 38%) 0 22%/100% 34% no-repeat,repeating-linear-gradient(180deg,rgba(90,255,140,.08) 0 2px,transparent 2px 5px),linear-gradient(180deg,#0b1020,#1a1430 70%,#0a0a12)}
+.grown .ufo{position:absolute;right:1.6rem;top:1.1rem;width:70px;height:20px;border-radius:50%;background:#9aa4b8;box-shadow:0 0 14px rgba(140,255,170,.6)}
+.grown .ufo::before{content:"";position:absolute;left:22px;top:-11px;width:26px;height:16px;border-radius:50% 50% 0 0;background:rgba(150,255,190,.75)}
+.grown .ufo::after{content:"";position:absolute;left:18px;top:18px;width:34px;height:70px;background:linear-gradient(rgba(140,255,170,.45),transparent);clip-path:polygon(25% 0,75% 0,100% 100%,0 100%)}
 </style></head><body>
 
 <section class="series">
@@ -82,8 +97,8 @@ small{opacity:.6}
 
 <section class="jb">
 <h1>Jack-Bros Games</h1>
-<a class="game" href="finding-milk-part-2/">Part 2: Finding Milk</a>
-<a class="game" href="part-3-grown-up/">Part 3: Grown Up</a>
+<a class="jcard milk" href="finding-milk-part-2/"><span class="carton" aria-hidden="true"></span><b>Part 2: Finding Milk</b><span>A trip to the store for milk goes very wrong.</span></a>
+<a class="jcard grown" href="part-3-grown-up/"><span class="ufo" aria-hidden="true"></span><b>Part 3: Grown Up</b><span>Memories, nightmares, a strange new job, and something in the files.</span></a>
 <small>E-10 rated</small>
 </section>
 </body></html>
