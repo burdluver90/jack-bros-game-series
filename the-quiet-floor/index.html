@@ -67,6 +67,8 @@ canvas { cursor: crosshair; }
   <button class="btn" id="go3" style="display:none;background:#8d8778">Night 3</button>
   <button class="btn" id="go4" style="display:none;background:#8d8778">Night 4</button>
   <button class="btn" id="go5" style="display:none;background:#8d8778">Night 5</button>
+  <button class="btn" id="go6" style="display:none;background:#8d8778">Night 6</button>
+  <button class="btn" id="go7" style="display:none;background:#8d8778">Night 7</button>
   <p style="font-size:13px;color:#777">Rated M &middot; best with headphones</p>
 </div>
 <div id="end" class="screen">
@@ -82,7 +84,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const $ = id => document.getElementById(id);
-const NIGHT = new URLSearchParams(location.search).get('scene') === 'pepper' ? 7 : (({ '2': 2, '3': 3, '4': 4, '5': 5 })[new URLSearchParams(location.search).get('night')] || 1);
+const SCENE = new URLSearchParams(location.search).get('scene') === 'pepper';   // ?scene=pepper jumps straight to the ending
+const NIGHT = SCENE ? 7 : (({ '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7 })[new URLSearchParams(location.search).get('night')] || 1);
 let unlocked = 1; try { unlocked = Number(localStorage.getItem('qf_unlocked')) || 1; } catch (e) {}
 // graphics: 'standard' or 'super' (shadows, glow, denser fur, sharper textures)
 let GFX = 'standard'; try { GFX = localStorage.getItem('qf_gfx') === 'super' ? 'super' : 'standard'; } catch (e) {} const SUPER = GFX === 'super';
@@ -95,7 +98,7 @@ const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, .05, 80
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const DBG = new URLSearchParams(location.search).has('dbg');
-const H = 2.7;   // ceiling height
+const H = 3.2;   // ceiling height (was 2.7)
 
 // ---------- sound: everything is made here, nothing to download ----------
 let AC = null; const ac = () => AC || (AC = new (window.AudioContext || window.webkitAudioContext)());
@@ -116,7 +119,7 @@ const sfx = {
 let hum = null; function setHum(on) { const a = ac(); if (on && !hum) { const o = a.createOscillator(), g = a.createGain(); o.type = 'sawtooth'; o.frequency.value = 48; const f = a.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 160; g.gain.value = .05; o.connect(f).connect(g).connect(a.destination); o.start(); hum = { o, g }; } else if (!on && hum) { hum.o.stop(); hum = null; } }
 
 // ---------- textures, drawn in code ----------
-function ctex(w, h, draw, rx = 1, ry = 1) { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); draw(x, w, h); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = SUPER ? 16 : 8; return t; }
+function ctex(w, h, draw, rx = 1, ry = 1) { const S = SUPER ? 2 : 1, c = document.createElement('canvas'); c.width = w * S; c.height = h * S; const x = c.getContext('2d'); x.scale(S, S); draw(x, w, h); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = SUPER ? 16 : 8; return t; }
 const speck = (x, w, h, n, a) => { for (let i = 0; i < n; i++) { x.fillStyle = Math.random() < .5 ? `rgba(0,0,0,${a})` : `rgba(255,255,255,${a * .7})`; x.fillRect(Math.random() * w, Math.random() * h, 2, 2); } };
 const T = {
   wood: ctex(512, 512, (x, w, h) => { for (let i = 0; i < 8; i++) { const v = 88 + Math.random() * 34; x.fillStyle = `rgb(${v + 42},${v + 4},${v - 38})`; x.fillRect(i * 64, 0, 64, h); for (let k = 0; k < 26; k++) { x.strokeStyle = `rgba(${50 + Math.random() * 30},${25 + Math.random() * 15},8,${.12 + Math.random() * .14})`; x.lineWidth = .6 + Math.random(); x.beginPath(); const ox = i * 64 + Math.random() * 64; x.moveTo(ox, 0); for (let yy = 0; yy <= h; yy += 16) x.lineTo(ox + Math.sin(yy * .02 + k) * 3, yy); x.stroke(); } if (Math.random() < .5) { x.fillStyle = 'rgba(50,25,8,.4)'; x.beginPath(); x.ellipse(i * 64 + 20 + Math.random() * 24, Math.random() * h, 4, 9, 0, 0, 6.3); x.fill(); } x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(i * 64, 0, 2, h); const cut = (i * 173) % h; x.fillRect(i * 64, cut, 64, 2); } speck(x, w, h, 1500, .04); }, 1, 1),
@@ -271,7 +274,7 @@ const F13 = floors[13], b13 = buildFloor(F13), g13 = F13.g;
   // --- hall and entry ---
   put(geoBox(.45, .6, .1), mat.metal, 1.06, 1.4, 8.5, Math.PI / 2); put(geoBox(.02, .5, .35), mat.dark, 1.12, 1.4, 8.5);
   // light switches, flush on the wall: [x, wall face z, which way the wall faces]
-  [[3.5, 7, 1], [12, 9, -1], [7, 10, 1]].forEach(([x, z, d]) => { put(geoBox(.08, .12, .012), mat.trim, x, 1.2, z + d * .006); put(geoBox(.018, .034, .014), mat.white, x, 1.2, z + d * .019); });
+  [[3.5, 7, 1], [12, 9, -1], [8.4, 10, 1]].forEach(([x, z, d]) => { put(geoBox(.08, .12, .012), mat.trim, x, 1.2, z + d * .006); put(geoBox(.018, .034, .014), mat.white, x, 1.2, z + d * .019); });
   for (let i = 0; i < 4; i++) put(new THREE.CylinderGeometry(.02, .02, .12, 8).rotateX(Math.PI / 2), mat.brass, 3.6 + i * .3, 1.7, 18.95); put(geoBox(.5, .9, .12), mat.fabric, 3.9, 1.25, 18.9); put(geoBox(.45, .8, .1), mat.blue, 4.5, 1.3, 18.9);
   put(geoBox(1.2, .35, .35), mat.oak, 8.6, .18, 18.75); [[8.2, 0x2a2a2a], [8.55, 0x7a3a2a], [8.95, 0xc8c0b0]].forEach(([x, c]) => put(geoBox(.12, .1, .28), M({ color: c }), x, .41, 18.75)); put(new THREE.CylinderGeometry(.14, .1, .06, 16), mat.porcelain, 9.4, .92, 18.8);
   put(new THREE.CylinderGeometry(.1, .1, .6, 12), mat.blue, 10.3, .3, 18.7); put(geoBox(.6, 1.5, .03), mat.mirror, 11, 1.3, 18.97); put(geoBox(.68, 1.58, .02), mat.walnut, 11, 1.3, 18.98);
@@ -299,19 +302,105 @@ const F13 = floors[13], b13 = buildFloor(F13), g13 = F13.g;
   photo(9.5, 1.55, 10.03, 0, .6, .45, family); photo(3, 1.7, 10.03, 0, .4, .5, (x0) => { x0.fillStyle = '#d8c8a8'; x0.fillRect(0, 0, 160, 120); x0.fillStyle = '#4a2f1e'; x0.beginPath(); x0.ellipse(80, 70, 40, 28, 0, 0, 6.3); x0.fill(); x0.beginPath(); x0.arc(80, 40, 22, 0, 6.3); x0.fill(); x0.fillStyle = '#f2efe8'; x0.beginPath(); x0.ellipse(80, 22, 10, 6, 0, 0, 6.3); x0.fill(); x0.fillStyle = '#333'; x0.font = '12px Arial'; x0.fillText('PEPPER', 58, 112); });
   // --- Theo\'s room ---
   put(geoBox(2.6, .32, 1.6), mat.oak, 19, .22, 3.2); put(geoBox(.08, 1.0, 1.6), mat.oak, 20.3, .55, 3.2); put(geoBox(.06, .6, 1.6), mat.oak, 17.7, .35, 3.2); put(geoBox(2.4, .18, 1.5), mat.sheet, 19, .47, 3.2);
-  const blanket = add(g, geoBox(1.6, .22, 1.5), M({ map: ctex(128, 128, (x0) => { x0.fillStyle = '#3a5f8a'; x0.fillRect(0, 0, 128, 128); x0.fillStyle = '#e3c04a'; for (let i = 0; i < 6; i++) { x0.beginPath(); const sx = 16 + (i % 3) * 44, sy = 30 + Math.floor(i / 3) * 60; for (let k = 0; k < 10; k++) { const a = k / 10 * 6.28 - 1.57, rr = k % 2 ? 5 : 12; x0.lineTo(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr); } x0.fill(); } }), roughness: 1 }), 18.6, .62, 3.2); put(geoBox(.5, .14, .9), mat.sheet, 19.9, .63, 3.2);
-  const theoHead = add(g, new THREE.SphereGeometry(.13, 18, 14), M({ color: 0xe0b896 }), 19.8, .78, 3.25); { const lash = M({ color: 0x2a1a10 }), lip = M({ color: 0xb06a5a }), blush = M({ color: 0xe8a088, transparent: true, opacity: .55 }); [-1, 1].forEach(sd => { add(g, new THREE.TorusGeometry(.022, .005, 6, 12, Math.PI).rotateX(-Math.PI / 2).rotateY(Math.PI / 2), lash, 19.83, .9, 3.25 + sd * .048); add(g, geoBox(.012, .008, .05), M({ color: 0x5a3a20 }), 19.875, .897, 3.25 + sd * .05); add(g, new THREE.SphereGeometry(.026, 10, 8).scale(1, .3, 1), blush, 19.775, .893, 3.25 + sd * .07); }); add(g, new THREE.SphereGeometry(.018, 10, 8), M({ color: 0xd8a888 }), 19.78, .912, 3.25); add(g, new THREE.TorusGeometry(.02, .006, 6, 12, Math.PI).rotateX(-Math.PI / 2).rotateY(-Math.PI / 2), lip, 19.735, .893, 3.25); } add(g, new THREE.SphereGeometry(.137, 18, 14, 0, 6.3, 0, 1.7), M({ color: 0x5a3a20 }), 19.84, .8, 3.25); add(g, new THREE.SphereGeometry(.03, 8, 6), M({ color: 0xe0b896 }), 19.8, .76, 3.38); F13.theo = [blanket, theoHead];
+  // Theo asleep: a slim six-year-old lying on his back with a sleep mask on, one arm out on top,
+  // and a blanket that is dropped onto him with a little cloth simulation so it drapes like real fabric
+  const theoG = new THREE.Group(); g.add(theoG);
+  { const skin = SUPER ? new THREE.MeshPhysicalMaterial({ color: 0xedc3a2, roughness: .55, sheen: .35, sheenColor: new THREE.Color(0xffb8a0), sheenRoughness: .6 }) : M({ color: 0xedc3a2, roughness: .6 });
+    const pj = M({ color: 0x8fb3d9, roughness: 1 }), maskM = M({ color: 0x27305c, roughness: 1 }), hairM = M({ color: 0x4a2f1a, roughness: .85 });
+    const CZ = 3.22, TOP = .565;
+    // --- the body under the blanket (thin, child-sized), as capsules the cloth falls onto ---
+    const caps = [];   // [ax, ay, az, bx, by, bz, r]
+    const cap = (a, b, r) => caps.push([...a, ...b, r]);
+    // an 11-year-old, about 1.45 m: top of the head near the headboard, feet near the foot of the bed
+    [-1, 1].forEach(sd => { cap([19.4, TOP + .068, CZ + sd * .055], [19.66, TOP + .07, CZ + sd * .07], .066);   // chest and shoulders
+      cap([19.2, TOP + .06, CZ + sd * .05], [19.4, TOP + .062, CZ + sd * .05], .06);   // hips
+      cap([18.86, TOP + .05, CZ + sd * .065], [19.2, TOP + .055, CZ + sd * .055], .05);   // thighs
+      cap([18.52, TOP + .04, CZ + sd * .07], [18.86, TOP + .045, CZ + sd * .067], .038);   // shins
+      cap([18.5, TOP + .045, CZ + sd * .075], [18.49, TOP + .15, CZ + sd * .08], .035); });   // feet, toes up
+    cap([19.64, TOP + .06, CZ - .15], [19.4, TOP + .05, CZ - .17], .034); cap([19.4, TOP + .05, CZ - .17], [19.26, TOP + .105, CZ - .06], .03);   // left arm, hand resting on his tummy
+    cap([19.64, TOP + .06, CZ + .15], [19.55, TOP + .06, CZ + .18], .034);   // right shoulder (the arm comes out over the blanket)
+    caps.forEach(c => { const rr = c[6] + .02; c.bb = [Math.min(c[0], c[3]) - rr, Math.max(c[0], c[3]) + rr, Math.max(c[1], c[4]) + rr, Math.min(c[2], c[5]) - rr, Math.max(c[2], c[5]) + rr]; });   // quick bounding boxes
+    const capPush = (p) => { if (p[1] > .8 || p[0] < 18.4) return; for (const c of caps) { const B0 = c.bb; if (p[0] < B0[0] || p[0] > B0[1] || p[1] > B0[2] || p[2] < B0[3] || p[2] > B0[4]) continue; const ax = c[0], ay = c[1], az = c[2], bx = c[3] - ax, by = c[4] - ay, bz = c[5] - az, ll = bx * bx + by * by + bz * bz; let t0 = ((p[0] - ax) * bx + (p[1] - ay) * by + (p[2] - az) * bz) / ll; t0 = Math.max(0, Math.min(1, t0));
+        const qx = p[0] - (ax + bx * t0), qy = p[1] - (ay + by * t0), qz = p[2] - (az + bz * t0), d = Math.hypot(qx, qy, qz), rr = c[6] + .012; if (d < rr && d > 1e-6) { p[0] += qx / d * (rr - d); p[1] += qy / d * (rr - d); p[2] += qz / d * (rr - d); p.hit = 1; } } };
+    // --- the blanket: a grid of points that falls, stretches and settles (verlet cloth) ---
+    const X0 = 17.84, X1 = 19.64, Z0 = CZ - 1.0, Z1 = CZ + 1.0, sp = SUPER ? .03 : .045, NX = Math.round((X1 - X0) / sp) + 1, NZ = Math.round((Z1 - Z0) / sp) + 1, N = NX * NZ;
+    const P0 = new Float32Array(N * 3), P1 = new Float32Array(N * 3), simT0 = performance.now();
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NZ; j++) { const k = (i * NZ + j) * 3, x = X0 + (X1 - X0) * i / (NX - 1), z = Z0 + (Z1 - Z0) * j / (NZ - 1); P0[k] = P1[k] = x; P0[k + 1] = P1[k + 1] = .95; P0[k + 2] = P1[k + 2] = z; }
+    const cons = []; const link = (a, b, s0) => { const dx = P0[a * 3] - P0[b * 3], dz = P0[a * 3 + 2] - P0[b * 3 + 2]; cons.push(a, b, Math.hypot(dx, dz), s0); };
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NZ; j++) { const a = i * NZ + j; if (i + 1 < NX) link(a, a + NZ, 1); if (j + 1 < NZ) link(a, a + 1, 1); if (i + 1 < NX && j + 1 < NZ) { link(a, a + NZ + 1, .7); link(a + 1, a + NZ, .7); } if (i + 2 < NX) link(a, a + 2 * NZ, .12); if (j + 2 < NZ) link(a, a + 2, .12); }
+    const bedBox = [17.78, 20.22, 2.44, 4.0, .575];   // mattress + frame: x0, x1, z0, z1, top
+    const p = [0, 0, 0];
+    for (let step = 0; step < (SUPER ? 190 : 140); step++) {
+      for (let n = 0; n < N; n++) { const k = n * 3; for (let a = 0; a < 3; a++) { const v = (P0[k + a] - P1[k + a]) * .985; P1[k + a] = P0[k + a]; P0[k + a] += v; } P0[k + 1] -= .0011; }
+      for (let it = 0; it < 3; it++) {
+        for (let c = 0; c < cons.length; c += 4) { const a = cons[c] * 3, b = cons[c + 1] * 3, rest = cons[c + 2], st = cons[c + 3], dx = P0[b] - P0[a], dy = P0[b + 1] - P0[a + 1], dz = P0[b + 2] - P0[a + 2], d = Math.hypot(dx, dy, dz) || 1e-6, f = (d - rest) / d * .5 * st;
+          if (st < .5 && d < rest) continue;   // bending links only resist stretching, so the cloth can fold
+          P0[a] += dx * f; P0[a + 1] += dy * f; P0[a + 2] += dz * f; P0[b] -= dx * f; P0[b + 1] -= dy * f; P0[b + 2] -= dz * f; }
+        for (let n = 0; n < N; n++) { const k = n * 3; p[0] = P0[k]; p[1] = P0[k + 1]; p[2] = P0[k + 2]; p.hit = 0; capPush(p);
+          const [bx0, bx1, bz0, bz1, bt] = bedBox; if (p[0] > bx0 && p[0] < bx1 && p[2] > bz0 && p[2] < bz1 && p[1] < bt + .006) { const dTop = bt + .006 - p[1], dS = Math.min(p[2] - bz0, bz1 - p[2]); if (dTop < dS + .02) p[1] = bt + .006; else p[2] = p[2] - bz0 < bz1 - p[2] ? bz0 - .004 : bz1 + .004; p.hit = 1; }
+          if (p[1] < .01) { p[1] = .01; p.hit = 1; }
+          if (p.hit) { P1[k] += (p[0] - P1[k]) * .55; P1[k + 2] += (p[2] - P1[k + 2]) * .55; }   // friction where it touches
+          P0[k] = p[0]; P0[k + 1] = p[1]; P0[k + 2] = p[2]; } } }
+    const clothYdbg = (x, dz = 0) => { const i = Math.round((x - X0) / (X1 - X0) * (NX - 1)), j = Math.round((CZ + dz - Z0) / (Z1 - Z0) * (NZ - 1)); return +P0[(i * NZ + j) * 3 + 1].toFixed(3); };
+    if (DBG) console.log('blanket settled in', Math.round(performance.now() - simT0), 'ms,', N, 'points; height over chest', clothYdbg(19.5), 'knees', clothYdbg(18.9), 'feet', clothYdbg(18.5), 'beside', clothYdbg(18.9, .45));
+    const cg = new THREE.BufferGeometry(), idx = [], uv = new Float32Array(N * 2);
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NZ; j++) { const n = i * NZ + j; uv[n * 2] = i / (NX - 1) * 1.6; uv[n * 2 + 1] = j / (NZ - 1) * 2.6; if (i + 1 < NX && j + 1 < NZ) idx.push(n, n + 1, n + NZ, n + 1, n + NZ + 1, n + NZ); }
+    cg.setAttribute('position', new THREE.BufferAttribute(P0, 3)); cg.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); cg.setIndex(idx); cg.computeVertexNormals();
+    const starM = M({ map: ctex(128, 128, (x0) => { x0.fillStyle = '#3a5f8a'; x0.fillRect(0, 0, 128, 128); x0.fillStyle = '#e3c04a'; for (let i = 0; i < 6; i++) { x0.beginPath(); const sx = 16 + (i % 3) * 44, sy = 30 + Math.floor(i / 3) * 60; for (let k = 0; k < 10; k++) { const a = k / 10 * 6.28 - 1.57, rr = k % 2 ? 5 : 12; x0.lineTo(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr); } x0.fill(); } }), roughness: 1, side: THREE.DoubleSide }); starM.map.repeat.set(1, 1); starM.side = THREE.DoubleSide; starM.map.wrapS = starM.map.wrapT = THREE.RepeatWrapping;
+    const blanketMesh = new THREE.Mesh(cg, starM); blanketMesh.castShadow = blanketMesh.receiveShadow = true; theoG.add(blanketMesh);
+    const clothY = (x, z) => { const i = Math.max(0, Math.min(NX - 1, Math.round((x - X0) / (X1 - X0) * (NX - 1)))), j = Math.max(0, Math.min(NZ - 1, Math.round((z - Z0) / (Z1 - Z0) * (NZ - 1)))); return P0[(i * NZ + j) * 3 + 1]; };
+    // the sheet turned down over the top edge of the blanket
+    const fold = []; for (let j = 0; j < NZ; j += 2) { const k = ((NX - 1) * NZ + j) * 3; fold.push(V(P0[k] - .015, P0[k + 1] + .018, P0[k + 2])); }
+    theoG.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(fold), 80, .022, 10), mat.sheet));
+    // --- head: lying face up, top of his head toward the headboard (+x) ---
+    const hd = new THREE.Group(); hd.position.set(19.81, .772, CZ); hd.rotation.x = -.18; theoG.add(hd);
+    const R = [.11, .094, .077];   // half-sizes: top-to-chin, back-to-face, ear-to-ear
+    const ell = (seg, fn) => { const ge = new THREE.SphereGeometry(1, seg, Math.round(seg * .7)), pa = ge.attributes.position; for (let k = 0; k < pa.count; k++) { const v = fn(pa.getX(k), pa.getY(k), pa.getZ(k)); pa.setXYZ(k, v[0], v[1], v[2]); } ge.computeVertexNormals(); return ge; };
+    // skull and face: a soft egg shape, a little narrower at the chin, with gentle cheeks
+    add(hd, ell(40, (x, y, z) => { const chin = x < 0 ? 1 - .18 * x * x : 1, cheek = 1 + .06 * Math.max(0, y) * Math.max(0, -x) * 2; return [x * R[0], y * R[1] * (x < -.4 ? .92 : 1), z * R[2] * chin * cheek]; }), skin, 0, 0, 0);
+    // hair: everywhere except the face, with a little mess
+    add(hd, ell(40, (x, y, z) => { const face = !(x > .55 || (x > .08 && y < .12) || (y < -.35 && x > -.3)), msg = 1.028 + .006 * Math.sin(x * 23 + z * 17) * Math.sin(y * 19); const s0 = face ? .9 : msg; return [x * R[0] * s0 + .006, y * R[1] * s0 - .004, z * R[2] * s0]; }), hairM, 0, 0, 0);
+    // ears
+    [-1, 1].forEach(sd => { add(hd, new THREE.SphereGeometry(1, 16, 12).scale(.024, .016, .008), skin, -.005, -.005, sd * (R[2] + .002)); });
+    // nose, mouth, cheeks
+    add(hd, new THREE.SphereGeometry(1, 14, 10).scale(.018, .014, .012), skin, -.018, R[1] + .004, 0);
+    add(hd, new THREE.TorusGeometry(.016, .0045, 6, 14, Math.PI * .8).rotateX(-Math.PI / 2).rotateY(-Math.PI / 2).rotateX(Math.PI * .1), M({ color: 0xc07a68, roughness: .5 }), -.058, R[1] - .012, 0);
+    [-1, 1].forEach(sd => add(hd, new THREE.SphereGeometry(1, 10, 8).scale(.02, .004, .02), M({ color: 0xf0a090, transparent: true, opacity: .45 }), -.03, R[1] - .012, sd * .042));
+    // the sleep mask: a padded front over his eyes and an elastic strap all the way round
+    const belt = (x0, x1, grow, phi0, phiL) => { const pts = []; for (let k = 0; k <= 8; k++) { const x = x0 + (x1 - x0) * k / 8, r = Math.sqrt(Math.max(.02, 1 - (x / R[0]) ** 2)); pts.push(new THREE.Vector2(r, x)); }
+      const ge = new THREE.LatheGeometry(pts, 40, phi0, phiL).rotateZ(-Math.PI / 2); ge.scale(1, R[1] * grow, R[2] * grow); return ge; };
+    add(hd, belt(.012, .06, 1.1, Math.PI * .5 - 1.15, 2.3), maskM, 0, 0, 0);
+    add(hd, belt(.026, .044, 1.075, 0, Math.PI * 2), maskM, 0, 0, 0);
+    [-1, 1].forEach(sd => add(hd, new THREE.SphereGeometry(.006, 6, 6), M({ color: 0xe3c04a, emissive: 0x332200 }), .036, R[1] * 1.08, sd * .03));
+    // neck, just visible above the folded sheet
+    add(theoG, new THREE.CylinderGeometry(.04, .046, .07, 16).rotateZ(Math.PI / 2), skin, 19.675, .7, CZ);   // a short neck
+    add(theoG, new THREE.SphereGeometry(1, 24, 14).scale(.06, .055, .17), pj, 19.625, .66, CZ);   // pajama collar and shoulders, joining the neck to his body under the blanket
+    // --- the right arm, out on top of the blanket, with a whole hand ---
+    const sh = V(19.6, clothY(19.6, CZ + .18) + .022, CZ + .18), el = V(19.38, clothY(19.38, CZ + .3) + .032, CZ + .3), wr = V(19.18, clothY(19.18, CZ + .2) + .03, CZ + .2);
+    const limb = (a, b, r0, r1, m0) => { const d = b.clone().sub(a), L0 = d.length(), ge = new THREE.CylinderGeometry(r1, r0, L0, 14, 1); ge.translate(0, L0 / 2, 0); const o = new THREE.Mesh(ge, m0); o.position.copy(a); o.quaternion.setFromUnitVectors(V(0, 1, 0), d.normalize()); theoG.add(o); const j0 = new THREE.Mesh(new THREE.SphereGeometry(r0, 14, 10), m0); j0.position.copy(a); theoG.add(j0); return o; };
+    limb(sh, el, .034, .03, pj); limb(el, wr.clone().lerp(el, .22), .03, .026, pj);   // pajama sleeve
+    limb(wr.clone().lerp(el, .25), wr, .019, .017, skin);   // wrist
+    // the hand: a palm and five fingers, relaxed and slightly curled
+    const hand = new THREE.Group(); hand.position.copy(wr); const dir = wr.clone().sub(el).setY(0).normalize(); hand.rotation.y = Math.atan2(dir.x, dir.z) - Math.PI / 2; theoG.add(hand);
+    hand.scale.setScalar(1.18); add(hand, new THREE.SphereGeometry(1, 16, 12).scale(.04, .012, .03), skin, .035, 0, 0);
+    [[-.018, .062, .009], [-.006, .07, .0095], [.006, .066, .009], [.017, .056, .008]].forEach(([oz, len, rr]) => { const f0 = new THREE.Group(); f0.position.set(.068, 0, oz); hand.add(f0); let par = f0, l0 = len / 3;
+      for (let s0 = 0; s0 < 3; s0++) { const seg = new THREE.Group(); seg.position.x = s0 ? l0 : 0; seg.rotation.z = -.28; par.add(seg); add(seg, new THREE.CapsuleGeometry(rr * (1 - s0 * .12), l0 * .8, 4, 8).rotateZ(Math.PI / 2), skin, l0 / 2, 0, 0); par = seg; } });
+    const th = new THREE.Group(); th.position.set(.025, -.002, -.03); th.rotation.y = .7; hand.add(th); let tp = th;
+    for (let s0 = 0; s0 < 2; s0++) { const seg = new THREE.Group(); seg.position.x = s0 ? .022 : 0; seg.rotation.z = -.2; tp.add(seg); add(seg, new THREE.CapsuleGeometry(.0095, .018, 4, 8).rotateZ(Math.PI / 2), skin, .011, 0, 0); tp = seg; }
+    theoG.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); }
+  put(geoBox(.5, .14, .9), mat.sheet, 19.9, .63, 3.2); F13.theo = [theoG];
+
   put(new THREE.SphereGeometry(.12, 14, 10), M({ color: 0x8a5a2a, roughness: 1 }), 19.55, .74, 2.75); put(new THREE.SphereGeometry(.08, 12, 8), M({ color: 0x8a5a2a, roughness: 1 }), 19.55, .9, 2.75); [-1, 1].forEach(sd => put(new THREE.SphereGeometry(.035, 8, 6), M({ color: 0x8a5a2a }), 19.55, .97, 2.75 + sd * .06));
   put(geoBox(1.6, .9, .5), mat.oak, 12.6, .45, 1.3); [.3, .6].forEach(y => put(geoBox(1.5, .02, .02), mat.walnut, 12.6, y, 1.56)); [11.86, 13.34].forEach(x => put(geoBox(.03, .62, .03), mat.walnut, x, .31, 1.56)); put(geoBox(.12, .1, .12), mat.white, 12.3, .96, 1.3); add(g, new THREE.SphereGeometry(.03, 8, 6), mat.glowR, 12.3, .99, 1.37); put(new THREE.CylinderGeometry(.02, .02, .12, 6), mat.white, 12.3, 1.06, 1.3);
   const toyLift = add(g, geoBox(.25, .4, .25), mat.steel, 14, .2, 5.5); put(geoBox(.2, .02, .01), mat.glowY, 14, .36, 5.63); put(geoBox(.6, .02, .6), M({ color: 0xe3c04a }), 14, .02, 5.5);
   put(geoBox(.8, .5, .5), mat.red, 12.5, .25, 5.4); [[12.2, .58, 0x3a8ad0], [12.5, .55, 0xe0c040], [12.8, .6, 0x3ab060]].forEach(([x, y, c]) => put(geoBox(.12, .12, .12), M({ color: c }), x, y, 5.4, Math.random()));
   put(new THREE.CylinderGeometry(1.0, 1.0, .015, 32), M({ color: 0xd8b84a, roughness: 1 }), 15.5, .01, 4);
   photo(14.5, 1.8, 1.03, 0, .5, .7, (x0) => { x0.fillStyle = '#101838'; x0.fillRect(0, 0, 160, 120); x0.fillStyle = '#fff'; for (let i = 0; i < 30; i++) x0.fillRect(Math.random() * 160, Math.random() * 120, 1.5, 1.5); x0.fillStyle = '#c33'; x0.beginPath(); x0.moveTo(80, 15); x0.lineTo(95, 70); x0.lineTo(65, 70); x0.fill(); x0.fillStyle = '#ddd'; x0.fillRect(68, 40, 24, 40); x0.fillStyle = '#f80'; x0.beginPath(); x0.moveTo(70, 80); x0.lineTo(80, 108); x0.lineTo(90, 80); x0.fill(); });
-  add(g, new THREE.SphereGeometry(.06, 10, 8), M({ color: 0x88ccff, emissive: 0x4488cc }), 11.3, .3, 5.7);
+  add(g, new THREE.SphereGeometry(.06, 10, 8), M({ color: 0x88ccff, emissive: 0x4488cc }), 11.3, .3, 5.93);
   for (let i = 0; i < 40; i++) put(new THREE.CircleGeometry(.025 + Math.random() * .02, 5), mat.glowStar, 11.5 + Math.random() * 9, H - .005, 1.3 + Math.random() * 5.4, 0, Math.PI / 2);
   put(geoBox(.35, 1.6, 1.0), mat.oak, 11.2, .8, 4.2); for (let s0 = 0; s0 < 3; s0++) { let bz = 3.75; while (bz < 4.65) { const bw = .05 + Math.random() * .05, bh = .2 + Math.random() * .1; put(geoBox(.2, bh, bw), books[Math.floor(Math.random() * books.length)], 11.32, .2 + s0 * .5 + bh / 2, bz + bw / 2); bz += bw + .01; } }
   // --- bathroom ---
-  put(geoBox(1.6, .6, .85), mat.porcelain, 19.6, .3, 10.9); put(geoBox(1.4, .05, .65), M({ color: 0x8aa0b0, roughness: .1 }), 19.6, .58, 10.9); put(new THREE.CylinderGeometry(.015, .015, 1.7, 8).rotateZ(Math.PI / 2), mat.chrome, 19.6, 2.1, 11.32); put(geoBox(1.5, 1.3, .02), M({ color: 0xc8d8e0, transparent: true, opacity: .75, roughness: .9 }), 19.4, 1.45, 11.32); put(new THREE.CylinderGeometry(.012, .012, 1.7, 8).rotateZ(Math.PI / 2), mat.chrome, 19.4, 2.11, 11.32); put(new THREE.CylinderGeometry(.03, .03, .2, 8), mat.chrome, 20.3, 1.9, 10.6);
+  put(geoBox(1.6, .6, .85), mat.porcelain, 19.6, .3, 10.9); put(geoBox(1.4, .05, .65), M({ color: 0x8aa0b0, roughness: .1 }), 19.6, .58, 10.9); put(new THREE.CylinderGeometry(.015, .015, 1.7, 8).rotateZ(Math.PI / 2), mat.chrome, 19.6, 2.1, 11.32); put(geoBox(1.5, 1.3, .02), M({ color: 0xc8d8e0, transparent: true, opacity: .75, roughness: .9 }), 19.4, 1.45, 11.32); put(new THREE.CylinderGeometry(.012, .012, 2.2, 8).rotateZ(Math.PI / 2), mat.chrome, 19.9, 2.11, 11.32); put(new THREE.CylinderGeometry(.008, .008, H - 2.11, 6), mat.chrome, 18.82, (H + 2.11) / 2, 11.32);   // rail runs to the wall, with a rod up to the ceiling put(new THREE.CylinderGeometry(.012, .012, .5, 8).rotateZ(Math.PI / 2), mat.chrome, 20.73, 1.98, 10.6); put(new THREE.CylinderGeometry(.06, .03, .06, 12), mat.chrome, 20.5, 1.94, 10.6);   // shower arm from the wall, and the head
   put(new THREE.CylinderGeometry(.2, .16, .4, 16), mat.porcelain, 20.4, .2, 13.35); put(geoBox(.42, .38, .18), mat.porcelain, 20.4, .6, 13.8); put(geoBox(.44, .04, .5), mat.porcelain, 20.4, .42, 13.4); put(new THREE.CylinderGeometry(.06, .06, .11, 12).rotateZ(Math.PI / 2), mat.porcelain, 20.9, .7, 12.8);
   put(geoBox(.7, .8, .45), mat.white, 15.3, .4, 10.4); put(geoBox(.6, .12, .42), mat.porcelain, 15.3, .86, 10.4); put(new THREE.CylinderGeometry(.015, .015, .2, 8), mat.chrome, 15.3, 1.0, 10.25); put(geoBox(.6, .7, .03), mat.mirror, 15.3, 1.55, 10.04); put(geoBox(.66, .76, .02), mat.trim, 15.3, 1.55, 10.03);
   put(new THREE.CylinderGeometry(.012, .012, .7, 8).rotateZ(Math.PI / 2), mat.chrome, 17, 1.2, 10.05); put(geoBox(.5, .6, .03), mat.blue, 17, .95, 10.07); put(geoBox(.8, .015, .5), mat.blue, 18.2, .01, 12.5);
@@ -394,7 +483,7 @@ const F1 = floors[1], b1 = buildFloor(F1), g1 = F1.g;
   put(geoBox(3, 1.4, .3), mat.walnut, 6.5, 1.6, 8.2); for (let i = 0; i < 8; i++) for (let j = 0; j < 4; j++) { put(geoBox(.3, .26, .02), mat.dark, 5.25 + i * .36, 1.15 + j * .3, 8.36); if (Math.random() < .6) put(new THREE.TorusGeometry(.025, .006, 6, 10), mat.brass, 5.25 + i * .36, 1.12 + j * .3, 8.38); }
   F1.hale = personModel(false); F1.hale.position.set(6.5, 0, 9.3); g.add(F1.hale); F1.haleFake = personModel(true); F1.haleFake.position.set(6.5, 0, 9.3); F1.haleFake.visible = false; g.add(F1.haleFake);
   // seats, plants, mailboxes, paintings
-  const seat = (x, z, w0, ry) => { put(geoBox(w0, .4, .85).rotateY(ry), mat.red, x, .3, z); put(geoBox(w0, .6, .2).translate(0, 0, .32).rotateY(ry), mat.red, x, .65, z); };
+  const seat = (x, z, w0, ry) => { put(geoBox(w0, .4, .85).rotateY(ry), mat.red, x, .3, z); put(geoBox(w0 - .12, .1, .7).rotateY(ry), mat.walnut, x, .05, z); put(geoBox(w0, .6, .2).translate(0, 0, .32).rotateY(ry), mat.red, x, .65, z); };
   seat(25.5, 18.5, 3, Math.PI); seat(25.5, 12.5, 3, 0); put(geoBox(1.2, .05, .7), mat.marble, 25.5, .45, 15.5); [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => put(new THREE.CylinderGeometry(.03, .03, .44, 8), mat.brass, 25.5 + a * .5, .22, 15.5 + b * .28));
   [[2, 9], [34, 9], [2, 19.5], [13.5, 9], [23.5, 9]].forEach(([x, z]) => { put(new THREE.CylinderGeometry(.3, .24, .6, 16), mat.brass, x, .3, z); for (let i = 0; i < 12; i++) { const a = i / 12 * 6.3, l = .8 + Math.random() * .5; put(new THREE.ConeGeometry(.09, l, 6), mat.leaf, x + Math.cos(a) * .12, .6 + l / 2, z + Math.sin(a) * .12, 0, Math.cos(a) * .4, -Math.sin(a) * .4); } });
   for (let i = 0; i < 6; i++) for (let j = 0; j < 5; j++) { put(geoBox(.04, .28, .3), mat.brass, 34.9, .9 + j * .32, 10.6 + i * .34); put(new THREE.CylinderGeometry(.01, .01, .02, 6).rotateZ(Math.PI / 2), mat.dark, 34.87, .9 + j * .32, 10.6 + i * .34); }
@@ -598,14 +687,16 @@ const RULES2 = ['Theo is asleep again. Check on him before you go out.', 'Pepper
 const RULES3 = ['Theo has a fever tonight. Give him some water, then check his temperature.', 'His medicine is in our storage locker in the basement (B). Locker 13C. The code is 4-1-7.', 'The basement lights are on a timer. If they go out, stand completely still until they come back on.', 'If Pepper will not get out of the elevator, do not get out either. Press B again.', 'There is a phone in the basement. It is not connected to anything. Do not answer it.', 'The baby monitor only hears Theo\'s room.', 'There is only one elevator in this building.'];
 const RULES4 = ['Theo had an accident tonight. Strip his bed and take the sheets down to the laundry machines in the basement (B).', 'Once the washer is running, wait for it. Do not leave the basement until it is done.', 'The basement lights are still on their timer.', 'If the dryer is already running when you get there, do not open it. We do not own a dryer.', 'If the elevator stops on 11 on the way back up, look at the floor until the doors close.', 'Make Theo\'s bed with the clean sheets before you sit down.', 'There is only one elevator in this building.'];
 const RULES5 = ['Mr. Jack left his spare keys with Mrs. Okafor in 11C. Please go down and get them. Take Pepper.', 'Knock on 11C three times. She will slide the keys under the door. Never go inside, even if she asks.', 'Floor 11 has four doors. If you ever count five, do not open the fifth.', 'If the hall lights on 11 start to flicker, turn your flashlight off (F) and do not move until they stop.', 'Theo cannot open his bedroom door by himself. If the monitor says he is somewhere else, he is not.', 'Feed Pepper when you get back. He will have earned it.', 'There is only one elevator in this building.'];
-const RULES = NIGHT === 5 ? RULES5 : NIGHT === 4 ? RULES4 : NIGHT === 3 ? RULES3 : NIGHT === 2 ? RULES2 : RULES1;
+const RULES6 = ['We will be very late tonight. We will NOT come home early. If we come home before midnight, it is not us.', 'Theo needs his inhaler. Mr. Hale left it at the front desk in the lobby (L).', 'The fountain in the lobby is running again. Do not look into it.', 'On the way back, stop on 9 and check the security cameras. Make sure nothing followed you.', 'Lock the front door and put the chain on. If someone knocks with our voices, do not answer.', 'If the elevator opens on a floor you did not press, do not get out.', 'There is only one elevator in this building.'];
+const RULES7 = ['This list is in your handwriting. Follow it anyway.', 'Nobody is coming home tonight. Do not open the door for anyone, no matter whose voice it is.', 'Close the curtains. It watches the windows.', 'The power will go out. The breaker is in 9D. Go, and come straight back.', 'On 9, Theo is not in 9B. Theo is never in 9B.', 'If the elevator opens on a floor you did not press, do not get out.', 'When it comes, stay with Theo. Let Pepper do what he was made to do.'];
+const RULES = NIGHT === 7 ? RULES7 : NIGHT === 6 ? RULES6 : NIGHT === 5 ? RULES5 : NIGHT === 4 ? RULES4 : NIGHT === 3 ? RULES3 : NIGHT === 2 ? RULES2 : RULES1;
 let fakeRule = null;
-function openPaper() { overlay = 'paper'; document.exitPointerLock?.(); $('sheet').innerHTML = '<h2>Rules for tonight &mdash; please read!</h2>' + (NIGHT === 5 ? 'One small errand tonight, and then you can rest.' : NIGHT === 4 ? 'Sorry about tonight. It is not a nice job.' : NIGHT === 3 ? 'Theo is not well tonight. Please, please follow these exactly.' : NIGHT === 2 ? 'Thank you for coming back! A few things are different tonight.' : 'Thank you so much for watching Theo.') + '<br>' + RULES.map((r0, i) => (i + 1) + '. ' + r0).join('<br>') + (fakeRule ? '<span class="fake">8. ' + fakeRule + '</span>' : '') + '<br><br>P.S. Pepper will protect Theo at all costs, even if it costs him his life. Pepper is very smart. He will always understand your intentions.<br><br>&mdash; Mr. &amp; Mrs. Jack<div class="close">Press R to put the list back</div>'; $('paper').style.display = 'flex'; sfx.click(); }
+function openPaper() { overlay = 'paper'; document.exitPointerLock?.(); $('sheet').innerHTML = '<h2>Rules for tonight &mdash; please read!</h2>' + (NIGHT === 7 ? 'You do not remember writing this.' : NIGHT === 6 ? 'Please read every word tonight. Please.' : NIGHT === 5 ? 'One small errand tonight, and then you can rest.' : NIGHT === 4 ? 'Sorry about tonight. It is not a nice job.' : NIGHT === 3 ? 'Theo is not well tonight. Please, please follow these exactly.' : NIGHT === 2 ? 'Thank you for coming back! A few things are different tonight.' : 'Thank you so much for watching Theo.') + '<br>' + RULES.map((r0, i) => (i + 1) + '. ' + r0).join('<br>') + (fakeRule ? '<span class="fake">8. ' + fakeRule + '</span>' : '') + '<br><br>P.S. Pepper will protect Theo at all costs, even if it costs him his life. Pepper is very smart. He will always understand your intentions.<br><br>&mdash; Mr. &amp; Mrs. Jack<div class="close">Press R to put the list back</div>'; $('paper').style.display = 'flex'; sfx.click(); }
 function closePaper() { overlay = null; $('paper').style.display = 'none'; lockMouse(); night.onRead && night.onRead(); }
 let monT = 0; function monitor(text, stat = false) { $('monl').innerHTML = text; $('mon').classList.toggle('static', stat); if (stat) sfx.staticBurst(); monT = 7; }
 
 // ---------- the elevator panel ----------
-function openPanel() { overlay = 'panel'; document.exitPointerLock?.(); const box = $('panelBox'); box.querySelectorAll('.fb').forEach(b => b.remove()); [13, 11, 9, 'L', 'B'].forEach(f => { const b = document.createElement('button'); b.className = 'fb' + (f === lift.floor || (f === 'L' && lift.floor === 1) || (f === 'B' && lift.floor === -1) ? ' lit' : ''); b.textContent = f; const ok = f === 13 || (NIGHT === 1 && f === 9) || (NIGHT === 2 && f === 'L') || (NIGHT === 3 && f === 'B') || (NIGHT === 4 && f === 'B') || (NIGHT === 5 && f === 11); b.disabled = !ok; b.title = ok ? '' : 'It does not light up.'; b.onclick = () => { closePanel(); press(f === 'L' ? 1 : f === 'B' ? -1 : f); }; box.appendChild(b); }); $('panelUI').style.display = 'flex'; sfx.click(); }
+function openPanel() { overlay = 'panel'; document.exitPointerLock?.(); const box = $('panelBox'); box.querySelectorAll('.fb').forEach(b => b.remove()); [13, 11, 9, 'L', 'B'].forEach(f => { const b = document.createElement('button'); b.className = 'fb' + (f === lift.floor || (f === 'L' && lift.floor === 1) || (f === 'B' && lift.floor === -1) ? ' lit' : ''); b.textContent = f; const ok = f === 13 || (NIGHT === 1 && f === 9) || (NIGHT === 2 && f === 'L') || (NIGHT === 3 && f === 'B') || (NIGHT === 4 && f === 'B') || (NIGHT === 5 && f === 11) || (NIGHT === 6 && (f === 'L' || f === 9)) || (NIGHT === 7 && f === 9); b.disabled = !ok; b.title = ok ? '' : 'It does not light up.'; b.onclick = () => { closePanel(); press(f === 'L' ? 1 : f === 'B' ? -1 : f); }; box.appendChild(b); }); $('panelUI').style.display = 'flex'; sfx.click(); }
 function closePanel() { overlay = null; $('panelUI').style.display = 'none'; lockMouse(); }
 $('panelUI').addEventListener('click', e => { if (e.target.id === 'panelUI') closePanel(); });
 function press(f) { if (f === -1 && lift.floor === -1 && n3.fakeB) { n3.fakeB = false; lift.target = -1; lift.from2 = -1; lift.want = 0; lift.riding = true; lift.t = 0; lift.stopAt = null; lift.again = true; sfx.click(); return; } if (f === lift.floor) { say('You are already on ' + flName(f) + '.', 2); return; } lift.target = f; lift.want = 0; lift.riding = true; lift.t = 0; lift.stopAt = (lift.floor === 9 && f === 13) || (NIGHT === 4 && nx.s === 6 && f === 13 && !nx.stopped11) ? 11 : null; if (lift.stopAt && NIGHT === 4) nx.stopped11 = true; lift.stopped = false; sfx.click(); }
@@ -692,7 +783,7 @@ const N45 = {
       { obj: 'Lock the front door, then sit on the sofa and wait for the Jacks.', ...SOFA, label: 'Sit and wait', go: () => sitWin(N45[4].win) } ],
     tick: () => { dryer.position.x = 19.2 + Math.sin(performance.now() * .05) * .006; dryLamp.visible = Math.floor(performance.now() / 500) % 2 === 0; } },
   5: { intro: 'Night 5. Mr. Jack hands you a note on his way out. <b>There is a new list on the fridge.</b>', start: 'Night 5. A small errand: Mr. Jack\'s spare keys, from a neighbour on floor 11. Floor 11 has four doors. <b>Something in this building copies anything that helps you.</b> Tonight it copies voices.',
-    win: () => { try { localStorage.setItem('qf_unlocked', '6'); } catch (e) {} say('<b>The phone rings.</b> "Mr. Jack here. Did Mrs. Okafor give you the keys?" A pause. <b>"...Mrs. Okafor moved out in March."</b>', 7); setTimeout(() => { endScreen('NIGHT 5 SURVIVED', 'The spare keys', 'You knocked three times and you did not go in. You did not open the fifth door. You stood in the dark on 11 and did not move.<br><br>Theo never left his room.<br><br><b>Night 6 is coming soon.</b>', 'Play Night 5 again'); }, 7500); },
+    win: () => { try { localStorage.setItem('qf_unlocked', '6'); } catch (e) {} say('<b>The phone rings.</b> "Mr. Jack here. Did Mrs. Okafor give you the keys?" A pause. <b>"...Mrs. Okafor moved out in March."</b>', 7); setTimeout(() => { endScreen('NIGHT 5 SURVIVED', 'The spare keys', 'You knocked three times and you did not go in. You did not open the fifth door. You stood in the dark on 11 and did not move.<br><br>Theo never left his room.<br><br>The Jacks will need you again tomorrow night.', 'Start Night 6'); $('again').onclick = () => { location.search = '?night=6'; }; }, 7500); },
     steps: [
       { obj: 'Read the list on the fridge.' },
       { obj: 'Check on Theo.', ...BED, label: 'Check on Theo', clock: 20 * 60 + 20, go: () => say('Asleep, holding the toy elevator. Its little dial is set to <b>11</b>.', 4) },
@@ -713,7 +804,47 @@ const N45 = {
         tick: () => { if (P.fl === 13 && P.z < 6 && P.x < 10 && nx.t > 1.5) jumpscare('That was not Theo', 'Rule 5: Theo cannot open his bedroom door by himself. If the monitor says he is somewhere else, he is not.'); },
         go: () => say('Theo is asleep in his bed, the door shut behind you. From the kitchen, <b>someone laughs in his voice</b>, then stops.', 5) },
       { obj: 'Feed Pepper. He earned it.', ...BOWL, label: 'Feed Pepper', go: () => { sfx.click(); pep.state = 'eat'; setTimeout(() => { pep.state = 'follow'; }, 4000); say('He eats, then sits by the kitchen doorway, <b>facing the dark</b>, and stays there.', 4); } },
-      { obj: 'Lock the front door, then sit on the sofa and wait for the Jacks.', ...SOFA, label: 'Sit and wait', go: () => sitWin(N45[5].win) } ] } };
+      { obj: 'Lock the front door, then sit on the sofa and wait for the Jacks.', ...SOFA, label: 'Sit and wait', go: () => sitWin(N45[5].win) } ] },
+  7: { intro: 'Night 7. The Jacks did not ask you to come tonight. You came anyway. The door was unlocked. <b>There is a list on the fridge.</b>', start: 'Night 7. The last night. The building is empty. The list on the fridge is in your handwriting. <b>Something in this building copies anything that helps you.</b> Tonight it stops copying.',
+    win: () => {},
+    steps: [
+      { obj: 'Read the list on the fridge.' },
+      { obj: 'Check on Theo.', ...BED, label: 'Check on Theo', clock: 20 * 60 + 30, go: () => say('Theo is awake for once, whispering. <b>"Pepper has been sitting outside my door all night. He won\'t eat. He keeps looking at me like he\'s sorry."</b>', 6) },
+      { obj: 'Close the living room curtains.', fl: 13, x: 9, z: 14.6, r: 1.8, label: 'Close the curtains', go: () => { sfx.click(); say('Every window in every building across the street is dark. <b>In one of them, something tall is standing very still, facing you.</b>', 5); } },
+      { obj: 'Lock the front door and put the chain on.', fl: 13, x: 6.5, z: 18.7, r: 1.4, label: 'Put the chain on', go: () => { if (!front.locked || front.open) { say('Shut and lock it first.', 2); return false; } sfx.click(); setTimeout(() => sfx.click(), 250); say('The chain slides into place. Pepper lies down across the doorway.', 3.5); } },
+      { obj: 'Stay inside.', clock: 22 * 60 + 40, enter: () => { setTimeout(() => { powerOff(); sfx.thud(); say('<b>Click.</b> Every light in the apartment goes out. Theo starts to cry.', 4); setTimeout(() => { objective('The power is out. Go down to floor 9 and turn it back on.'); nx.def.steps[4].obj = 'The power is out. Go down to floor 9 and turn it back on.'; nx.out = true; }, 2500); }, 4000); },
+        tick: () => { if (nx.out && P.fl === 9 && !lift.riding) { nextX(); } } },
+      { obj: 'Turn the power back on in 9D.', fl: 9, x: 8, z: 26.3, r: 1.4, label: 'Flip the main breaker', enter: () => { say('Floor 9. Dark, except for the exit signs.', 3); setTimeout(() => { say('From behind 9B, Theo\'s voice, sobbing: <b>"Please come get me. It\'s dark in here."</b>', 5); fakeObj('Theo is in 9B. Open the door.', 9); sfx.growl(); }, 3500); },
+        go: () => { powerOn(); sfx.thud(); say('<b>CLUNK.</b> The building hums back to life. <b>Somewhere above you, a door opens.</b>', 4.5); } },
+      { obj: 'Go straight back up to 13.', reach: 13, clock: 23 * 60 + 20, go: () => say('The hallway on 13. Your front door is open. <b>You locked it.</b> Pepper is standing in the doorway, waiting for you.', 5) },
+      { obj: 'Lock the front door again.', tick: () => { if (front.locked && !front.open && P.z < 19) { sfx.click(); say('Locked. Pepper walks ahead of you to Theo\'s room and stands at the end of his bed.', 4); nextX(); } } },
+      { obj: 'Stay with Theo.', ...BED, label: 'Sit with Theo', go: () => { if (nx.w !== undefined) return false; nx.w = 0; say('You sit on the floor next to Theo\'s bed. He holds your hand. Pepper does not lie down.', 4.5); return false; },
+        tick: dt => { if (nx.w === undefined) return; nx.w += dt;
+          if (nx.w > 5 && !nx.k1) { nx.k1 = true; sfx.knock(); setTimeout(() => sfx.knock(), 450); setTimeout(() => sfx.knock(), 900); say('Three knocks on the front door. Then your own voice, from the hallway: <b>"It\'s me. Let me in. I forgot my keys."</b>', 6); fakeObj('Open the door. It is you.', 9); }
+          if (nx.w > 15 && !nx.k2) { nx.k2 = true; sfx.thud(); shakeT = .6; say('Something hits the door. The chain holds. <b>Something hits it again.</b>', 4); }
+          if (nx.w > 21 && !nx.k3) { nx.k3 = true; sfx.growl(); say('Pepper looks at you for a long moment. <b>Then he walks out of Theo\'s room, toward the living room, as if he has decided something.</b>', 6); }
+          if (nx.w > 28 && !nx.k4) { nx.k4 = true; say('You follow him.', 2.5); setTimeout(() => fadeTo(() => startPepperScene()), 1500); } } } ] },
+  6: { intro: 'Night 6. The Jacks leave in a hurry. Mrs. Jack hugs you at the door, which she has never done. <b>There is a new list on the fridge.</b>', start: 'Night 6. Theo needs his inhaler from the lobby, the fountain is running again, and the Jacks have promised not to come home early. <b>Something in this building copies anything that helps you.</b> Tonight it copies the Jacks.',
+    win: () => { try { localStorage.setItem('qf_unlocked', '7'); } catch (e) {} say('<b>The phone rings.</b> "It\'s Mrs. Jack. We\'re downstairs, we\'re coming up now." A long pause. <b>"Why is the chain on? ...Who was at the door?"</b>', 8); setTimeout(() => { endScreen('NIGHT 6 SURVIVED', 'Not before midnight', 'You did not look into the fountain. You checked the cameras. When the Jacks knocked early, you did not answer.<br><br>Pepper never moved from the front door.<br><br>One night left.', 'Start Night 7'); $('again').onclick = () => { location.search = '?night=7'; }; }, 8500); },
+    steps: [
+      { obj: 'Read the list on the fridge.' },
+      { obj: 'Check on Theo.', ...BED, label: 'Check on Theo', clock: 20 * 60 + 20, go: () => { say('Theo is wheezing in his sleep, a thin whistle on every breath. <b>His inhaler is not on his nightstand.</b>', 4.5); } },
+      { obj: 'Get Theo\'s inhaler from the front desk in the lobby (L).', reach: 1, clock: 20 * 60 + 45, go: () => { sfx.growl(); say('The lobby. The fountain is running, loud in the empty room. Under the splashing, <b>something is saying your name.</b> Mr. Hale is not at the desk.', 5.5); } },
+      { obj: 'Take the inhaler from behind the front desk.', fl: 1, x: 4.4, z: 9.3, r: 1.7, label: 'Take the inhaler', go: () => { sfx.click(); say('A little blue inhaler with THEO written on it in marker. Next to it, a note in Mr. Hale\'s handwriting: <b>"I SAW YOU COME IN AT 8. YOU NEVER CAME IN AT 8."</b>', 6); } },
+      { obj: 'Go up to floor 9 and check the security cameras.', reach: 9, go: () => { say('Floor 9. Cold lights. The door to 9D is open, the way you left it.', 3.5); } },
+      { obj: 'Check the security cameras in 9D.', fl: 9, x: 11.1, z: 25.2, r: 1.6, label: 'Check the cameras', go: () => { const cam = things.find(o => o !== stepThing && o.fl === 9 && o.x === 11.1); if (cam) cam.go(); nx.camsOpen = true; return false; },
+        tick: () => { if (nx.camsOpen && !cams.on && nx.t > 2) { nx.camsOpen = false; say('On the camera for floor 13, outside the Jacks\' door: <b>Mr. and Mrs. Jack, standing perfectly still, facing the door.</b> They are not due back for hours.', 6); sfx.staticBurst(); nextX(); } } },
+      { obj: 'Go back up to 13. Quickly.', reach: 13, clock: 22 * 60 + 50, go: () => say('The hallway on 13 is empty. Whatever was standing at the door is gone. <b>The door is shut, the way you left it.</b>', 4.5) },
+      { obj: 'Go inside. Lock the front door and put the chain on.', fl: 13, x: 6.5, z: 18.7, r: 1.4, label: 'Put the chain on', go: () => { if (!front.locked || front.open) { say('Shut and lock it first.', 2); return false; } sfx.click(); setTimeout(() => sfx.click(), 250); say('The chain slides into place. It feels very thin.', 3); } },
+      { obj: 'Give Theo his inhaler.', ...BED, label: 'Give Theo his inhaler', go: () => { say('Two puffs. The whistle in his chest fades. Pepper gets up, walks to the front door, <b>and lies down across it.</b>', 5); pep.state = 'stay'; setTimeout(() => { pep.x = 6.5; pep.z = 18.4; pep.yaw = 0; }, 400); } },
+      { obj: 'Stay with Theo.', clock: 23 * 60 + 5, enter: () => { setTimeout(() => { sfx.knock(); setTimeout(() => sfx.knock(), 450); setTimeout(() => sfx.knock(), 900); say('Three knocks at the front door. Then keys in the lock. <b>The chain catches.</b>', 4.5); }, 2500);
+          setTimeout(() => { say('Mrs. Jack\'s voice through the gap: <b>"Sweetheart? It\'s us. We came home early. Take the chain off."</b>', 6); fakeObj('Open the door. The Jacks are home.', 10); sfx.growl(); }, 7500);
+          setTimeout(() => { monitor('"Mommy?"', true); say('Pepper is on his feet in front of the door, every hair standing up, <b>silent.</b>', 4); }, 14000); },
+        tick: dt => { if (nx.t > 20 && !nx.stay) { nx.stay = true; nextX(); } } },
+      { obj: 'Sit with Theo until it stops.', ...BED, label: 'Sit with Theo', go: () => { if (nx.wait !== undefined) return false; say('You sit on the floor by his bed in the dark. The knocking goes on. Then Mr. Jack\'s voice, very close to the door, <b>says your name the way you say it.</b>', 6); nx.wait = 16; return false; },
+        tick: dt => { if (nx.wait === undefined) return; if ((nx.wait -= dt) <= 0 && !nx.won) { nx.won = true; say('It stops. Nothing walks away. It just stops.', 3.5); setTimeout(() => fadeTo(() => { clockMin = 23 * 60 + 59; N45[6].win(); }), 3000); } if (nx.wait < 12 && nx.wait > 11.9) sfx.knock(); if (nx.wait < 7 && nx.wait > 6.9) sfx.knock(); } } ],
+    tick: dt => { if ((nx.s === 3 || nx.s === 4) && P.fl === 1) { const fx = -Math.sin(P.yaw), fz = -Math.cos(P.yaw), ax = 18.5 - P.x, az = 15.5 - P.z, d = Math.hypot(ax, az); const looking = d < 11 && (ax * fx + az * fz) / d > .9 && P.pitch < .2;
+        nx.lookT = Math.max(0, (nx.lookT || 0) + (looking ? dt : -dt)); if (nx.lookT > .5 && !nx.lookSaid) { nx.lookSaid = true; say('In the water, <b>a face that is almost yours</b> smiles up at you.', 2.5); } if (nx.lookT > 1.6) jumpscare('You looked into the fountain', 'Rule 3: the fountain in the lobby is running again. Do not look into it. It was copying your face, and it was almost finished.'); } } } };
 const door5Thing = { get n() { return NIGHT === 5 && nx.door5 ? 5 : -1; }, fl: 11, x: 8.5, z: 20.5, r: 1.4, label: () => 'Open 11E', go: () => jumpscare('You opened the fifth door', 'Rule 3: floor 11 has four doors. If you ever count five, do not open the fifth.') };
 const dryerThing = { n: 4, fl: -1, x: 19.2, z: 22.1, r: 1.2, label: () => 'Open the dryer', go: () => jumpscare('You opened the dryer', 'Rule 4: the Jacks do not own a dryer. If it is running when you get there, do not open it. It was folded up inside, waiting.') };
 function nxtick(dt, t) { nx.t += dt; const st = curX(); if (!st) return; if (nx.fakeT > 0 && (nx.fakeT -= dt) <= 0) objective(st.obj);
@@ -726,7 +857,7 @@ const things = [
   { n: 1, fl: 13, x: 8.6, z: 5.3, r: 1.4, label: () => night.step === 2 ? 'Feed Pepper' : 'Pepper\'s food', go: () => { if (night.step === 2) { F13.kib.visible = true; pep.fed = true; pep.state = 'eat'; pep.eatT = 3; say('You fill the bowl. Pepper, all fifty kilos of pitbull, wags his whole body. Look at him: <b>a white spot right on top of his head.</b> That is how you know it is Pepper.', 5); clockMin = 20 * 60 + 50; setStep(3); } else say('A big bag of dog food.', 2); } },
   { fl: 13, x: 6.5, z: 19.5, r: 1.5, label: () => front.open ? 'Close the door' : front.locked ? 'Unlock and open the door' : 'Lock the door', go: () => {
       if (front.open) { if (Math.floor(P.z) === 19) return; front.open = false; sfx.thud(); return; }
-      if (front.locked) { if (NIGHT >= 4 ? !(nx.s >= 2 && nx.s <= 7) : NIGHT === 1 ? night.step < 5 : NIGHT === 2 ? !(n2.s >= 3 && n2.s <= 7) : !(n3.s >= 3 && n3.s <= 5)) { say('You promised to keep it locked.', 2); return; } front.locked = false; front.open = true; sfx.click(); return; }
+      if (front.locked) { if ((NIGHT === 6 && nx.s >= 9) || (NIGHT === 7 && nx.s >= 8)) { jumpscare('You opened the door', 'Rule 1: the Jacks will not come home early. If they come home before midnight, it is not them. It had their faces, and their voices, and their keys.'); return; } if (NIGHT === 7 ? !(nx.s >= 4 && nx.s <= 7) : NIGHT >= 4 ? !(nx.s >= 2 && nx.s <= 7) : NIGHT === 1 ? night.step < 5 : NIGHT === 2 ? !(n2.s >= 3 && n2.s <= 7) : !(n3.s >= 3 && n3.s <= 5)) { say('You promised to keep it locked.', 2); return; } front.locked = false; front.open = true; sfx.click(); return; }
       front.locked = true; sfx.click(); if (night.step === 8) say('Locked.', 1.5); } },
   { n: 1, fl: 13, x: 5.5, z: 14.7, r: 1.6, label: () => night.step === 4 ? 'Sit and wait' : 'Sofa', go: () => { if (night.step !== 4) return; fadeTo(() => { clockMin = 23 * 60; P.x = 5.5; P.z = 14.4; P.yaw = 0; powerOff(); setStep(5); fakeRule = 'If the power goes out, Theo will be waiting for you in 9E.'; monitor('<i>...static...</i> <b>"I\'m on floor nine... come and get me..."</b>', true); say('You must have dozed off. <b>11:00 PM.</b> The power is out. The baby monitor crackles in your pocket with Theo\'s voice. Press <b>F</b> for your flashlight.', 6); sfx.staticBurst(); }); } },
   { n: 1, fl: 13, x: 1.6, z: 8.5, r: 1.3, label: () => 'Open the fuse box', go: () => { if (night.step === 5) { say('Every switch is off, and the main is missing. A sticker: <b>MAIN BREAKER &mdash; FLOOR 9, ROOM 9D (MAINTENANCE).</b>', 5); setStep(6); } else say('The fuse box.', 2); } },
@@ -831,7 +962,7 @@ function win3() { n3.won = true; frozen = true; document.exitPointerLock?.(); sf
 
 // ---------- Night 7: the end ----------
 // Pepper tells you what he is, becomes it, kills the Copycat, and goes back to Theo
-const n7 = { t: 0, phase: 0, said: {}, cam: null, look: null, scratch: 0, music: 0 };
+const n7 = { on: false, t: 0, phase: 0, said: {}, cam: null, look: null, scratch: 0, music: 0 };
 const scratchCv = document.createElement('canvas'); scratchCv.width = 1024; scratchCv.height = 560; const scratchTex = new THREE.CanvasTexture(scratchCv); scratchTex.colorSpace = THREE.SRGBColorSpace;
 const scratchPlane = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.31), new THREE.MeshStandardMaterial({ map: scratchTex, transparent: true, roughness: .8, depthWrite: false })); scratchPlane.rotation.x = -Math.PI / 2; scratchPlane.position.set(5.5, .03, 11.8); scratchPlane.visible = false; g13.add(scratchPlane);
 const SCRATCH = ['I AM A LAB DOG', 'MADE INTELLIGENT', 'I CAN TURN INTO', 'SOMETHING LARGE', 'AND STRONG'], SCR_TOTAL = SCRATCH.join('').length;
@@ -965,7 +1096,7 @@ function n7tick(dt, t) { n7.t += dt; if (pep.g.position.x !== pep.x || pep.g.pos
     const breath = Math.max(0, 1 - Math.max(0, b - 18) / 6.5); pep.body.scale.y = 1 + Math.sin(t * (1.2 + breath)) * .02 * breath; if (b > 24.5) pep.lids.forEach(l => { l.scale.y = 1.05; l.position.y = .002; });
     n7.write = b > 15 && b < 24.5 ? Math.max(.15, 1 - (b - 15) / 11) : 0; n7.lookU = b > 11 && b < 15 ? 1 : 0; n7.paw = b > 14.5 ? 1 : 0;
     if (b > 14.5) cineCam(17.4, 1.9, 6.3, 18.85, .35, 4.3, Math.min(1, dt * 1.2));
-    if (b > 31 && !n7.done) { n7.done = true; $('fade').style.transition = 'opacity 3s'; $('fade').style.opacity = 1; setTimeout(() => endScreen('NIGHT 7', 'Good boy, Pepper', 'He was a lab dog, made intelligent. He could have been anything. He chose to be Theo\'s dog, right to the end.<br><br>Theo kept the tag. <b>PEPPER</b>, in gold, shaped like a bone.<br><br>Years later, somewhere with yellow walls that hum, something tall and kind will unfold beside him, and Theo will think: <i>this is like my old dog, Pepper.</i>', 'Watch again'), 3200); } }
+    if (b > 31 && !n7.done) { n7.done = true; $('fade').style.transition = 'opacity 3s'; $('fade').style.opacity = 1; setTimeout(() => { endScreen('NIGHT 7', 'Good boy, Pepper', 'He was a lab dog, made intelligent. He could have been anything. He chose to be Theo\'s dog, right to the end.<br><br>Theo kept the tag. <b>PEPPER</b>, in gold, shaped like a bone.<br><br>Years later, somewhere with yellow walls that hum, something tall and kind will unfold beside him, and Theo will think: <i>this is like my old dog, Pepper.</i>', SCENE ? 'Watch again' : 'Back to the start'); if (!SCENE) { try { localStorage.setItem('qf_unlocked', '8'); } catch (e) {} $('again').onclick = () => { location.search = ''; }; } }, 3200); } }
   // quiet, sad music once he lies down
   if (n7.music) { n7.mt = (n7.mt || 0) - dt; if (n7.mt <= 0) { const notes = [261.6, 329.6, 392, 349.2, 293.7, 261.6, 220, 246.9]; n7.mi = (n7.mi || 0) + 1; n7.mt = 1.6; if (!n7.done || n7.mi % 8) sadNote(notes[n7.mi % notes.length], 0, 2.4); } }
   if (n7.phase < 2 || n7.bedT < 28) poseDogN7(t, dt);
@@ -984,6 +1115,8 @@ function poseDogN7(t, dt) { const keep = [pep.legs[0].hip.rotation.x, pep.legs[0
   if (n7.phase === 2) { pep.body.scale.y = by; pep.tail.forEach((s0, i) => s0.rotation.z = tl[i]); pep.sitK = 0; }
 }
 
+// the ending: Pepper's message, the fight, and his last walk to Theo
+function startPepperScene() { n7.on = true; frozen = true; $('hud').style.display = 'none'; $('mon').style.display = 'none'; clockMin = 23 * 60 + 52; powerOn(); torch.on = false; showFloor(13); pep.fl = 13; pep.g.visible = true; pep.fed = true; pep.state = 'scene'; pep.x = 4.5; pep.z = 15.8; pep.yaw = 0; front.locked = true; front.open = false; P.x = 5.5; P.z = 15; drawScratch(0); drawProtect(0); }
 // ---------- dying ----------
 let scare = null;
 function jumpscare(title, text) { if (dead) return; dead = true; frozen = true; document.exitPointerLock?.(); scare = { t: 0, title, text }; cc.g.visible = true; sfx.scream(); }
@@ -1023,8 +1156,9 @@ function poseDog(d, t, dt, wag = 1, lookX = null, lookZ = null) {
 
 // ---------- the game loop ----------
 const clock = new THREE.Clock(); let stepT = 0;
-function tick() {
-  requestAnimationFrame(tick); const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+function tick() { requestAnimationFrame(tick); frame(); }
+function frame() {
+  const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   edgeTurn(dt);
   if (playing && !frozen && !overlay) {
     if (keys['arrowleft']) P.yaw += 2 * dt; if (keys['arrowright']) P.yaw -= 2 * dt;
@@ -1034,7 +1168,7 @@ function tick() {
     for (const d0 of [pep, fake]) { if (!d0.g.visible || d0.fl !== P.fl) continue; const fx1 = Math.sin(d0.yaw), fz1 = Math.cos(d0.yaw); let bx0 = d0.x, bz0 = d0.z; const along = (P.x - d0.x) * fx1 + (P.z - d0.z) * fz1, cl = Math.max(-.55, Math.min(.55, along)); bx0 += fx1 * cl; bz0 += fz1 * cl; const ddx = P.x - bx0, ddz = P.z - bz0, dd = Math.hypot(ddx, ddz), need = .5; if (dd < need && dd > .001) { const nx = bx0 + ddx / dd * need, nz = bz0 + ddz / dd * need; if (!blocked(nx, P.z)) P.x = nx; if (!blocked(P.x, nz)) P.z = nz; } }   // Pepper is solid: you walk around him, not through him
     if ((mv || st) && (stepT -= dt * (run ? 1.6 : 1)) <= 0) { stepT = .45; sfx.step(); }
   }
-  camera.position.set(P.x, 1.6 + (scare ? 0 : Math.sin(stepT * 14) * .01), P.z); if (shakeT > 0) { shakeT -= dt; camera.position.x += (Math.random() - .5) * .04; camera.position.y += (Math.random() - .5) * .04; } camera.rotation.set(P.pitch, P.yaw, 0, 'YXZ'); if (NIGHT === 7 && n7.cam) { camera.position.copy(n7.cam); if (shake > 0) camera.position.addScaledVector(V(Math.random() - .5, Math.random() - .5, 0), shake * .25); camera.lookAt(n7.look); }
+  camera.position.set(P.x, 1.6 + (scare ? 0 : Math.sin(stepT * 14) * .01), P.z); if (shakeT > 0) { shakeT -= dt; camera.position.x += (Math.random() - .5) * .04; camera.position.y += (Math.random() - .5) * .04; } camera.rotation.set(P.pitch, P.yaw, 0, 'YXZ'); if (n7.on && n7.cam) { camera.position.copy(n7.cam); if (shake > 0) camera.position.addScaledVector(V(Math.random() - .5, Math.random() - .5, 0), shake * .25); camera.lookAt(n7.look); }
   torch.l.intensity = torch.on ? 22 : 0;
   // doors
   front.ang += ((front.open ? -1.7 : 0) - front.ang) * Math.min(1, dt * 5); F13.fd.rotation.y = front.ang; F13.latch.position.x = front.locked ? .74 : .8;
@@ -1054,18 +1188,18 @@ function tick() {
   // Pepper
   if (playing) {
     if (pep.fl !== P.fl && !lift.riding) { pep.g.visible = false; } else pep.g.visible = true;
-    if (NIGHT !== 7) pep.speed = 0;
-    if (NIGHT === 7) {}
+    if (!n7.on) pep.speed = 0;
+    if (n7.on) {}
     else if (pep.state === 'eat') { pep.x += (8.3 - pep.x) * Math.min(1, dt * 3); pep.z += (5.4 - pep.z) * Math.min(1, dt * 3); pep.yaw = 0; if ((pep.eatT -= dt) <= 0) { pep.state = 'follow'; F13.kib.visible = false; sfx.bark(); } }
     else if (pep.state === 'follow' && pep.fl === P.fl && !pep.guard) walkDog(pep, P.x, P.z, 2.6, dt, n2.bond ? 1.2 : n2.leash ? 1.4 : 1.9);
     else if (pep.state === 'run9') { if (!walkDog(pep, 8.5, 22.2, 3.4, dt, .2)) { pep.yaw = Math.PI; if ((pep.barkT -= dt) <= 0) { pep.barkT = 1.6; sfx.bark(); } } }
-    if (NIGHT !== 7) poseDog(pep, t, dt, pep.state === 'sit' ? .4 : 1, P.x, P.z);
+    if (!n7.on) poseDog(pep, t, dt, pep.state === 'sit' ? .4 : 1, P.x, P.z);
   }
   // the night\'s events
   if (playing && !dead && NIGHT === 2) n2tick(dt, t);
   if (playing && !dead && NIGHT === 3) n3tick(dt, t);
-  if (playing && !dead && (NIGHT === 4 || NIGHT === 5)) nxtick(dt, t);
-  if (playing && !dead && NIGHT === 7) n7tick(dt, t);
+  if (playing && !dead && (NIGHT >= 4 && NIGHT <= 7 && !SCENE && !n7.on)) nxtick(dt, t);
+  if (playing && !dead && n7.on) n7tick(dt, t);
   if (playing && !dead && NIGHT === 1) { night.t += dt;
     if (night.step >= 5 && !night.won) { clockMin += dt / 6; if (clockMin >= 24 * 60) { if (P.fl === 13 && P.z < 19 && lit.power && front.locked) win(); else if (P.fl !== 13 || P.z >= 19) jumpscare('Midnight', 'You were still out there when the clock hit twelve. The rules said not to take the elevator after midnight. Something in the building took that very seriously.'); else jumpscare('Midnight', front.locked ? 'The power never came back on. In the dark, everything in the apartment had a copy.' : 'The front door was not locked at midnight. It came in with a smile.'); } }
     if (night.step === 3 && front.locked && !front.open) { clockMin = 21 * 60; setStep(4); say('Locked. The chain rattles. It is 9 o\'clock.', 3); }
@@ -1094,7 +1228,7 @@ function tick() {
     const tm = Math.floor(clockMin); $('ccA').innerHTML = (Math.floor(t * 2) % 2 ? '<span style="color:#f55">●</span> REC' : '&nbsp;&nbsp;&nbsp;REC') + '<br>CAM ' + (cams.i + 1) + ' / ' + CAMS.length + '<br>' + c0.name; $('ccB').innerHTML = 'BUILDING SECURITY<br>' + String(Math.floor(tm / 60) % 24).padStart(2, '0') + ':' + String(tm % 60).padStart(2, '0') + ':' + String(Math.floor(t * 7) % 60).padStart(2, '0');
     if (c0.cc && !cams.seen) { cams.seen = {}; } if (c0.cc && !cams.seen[c0.name]) { cams.seen[c0.name] = 1; if (c0.name === '9E') say('There is someone sitting in the chair in 9E, facing the door. Too tall. Too thin. <b>Smiling at nothing.</b>', 5); if (c0.name.startsWith('13C')) say('<b>Something is crouched beside Theo\'s bed</b>, copying the way he sleeps. You were just there.', 5); if (c0.name.startsWith('11')) say('Floor 11. It is just standing in the hallway. Waiting for the elevator.', 4); } }
   // in person you only ever catch it for a moment
-  if (!cams.on && !scare && NIGHT !== 7) { let show = null;
+  if (!cams.on && !scare && !n7.on) { let show = null;
     if (P.fl === 9 && night.zDone && !night.glimpsed) { const gx = 6, gz = 21.6, ax = gx - P.x, az = gz - P.z, dl = Math.hypot(ax, az), fx0 = -Math.sin(P.yaw), fz0 = -Math.cos(P.yaw); if (dl > 7 && (ax * fx0 + az * fz0) / dl > .93 && torch.on) { night.glimpseT = (night.glimpseT || 0) + dt; show = { x: gx, z: gz, yaw: Math.atan2(P.x - gx, P.z - gz) }; if (night.glimpseT > .45) { night.glimpsed = true; sfx.staticBurst(); say('For half a second there was something at the end of the hall. Then there wasn\'t.', 3); } } }
     if (P.fl === 11 && lift.stopped && lift.hold > 0) show = { x: 5, z: 21.5, yaw: Math.PI / 2 };
     if (NIGHT === 3 && show3cc) show = show3cc;
@@ -1109,22 +1243,27 @@ function tick() {
   if (playing) { showClock(); const hr = (clockMin / 60) % 12, mn = clockMin % 60; F13.hands[0].rotation.x = -hr / 12 * Math.PI * 2; F13.hands[1].rotation.x = -mn / 60 * Math.PI * 2; }
   if (P.fl === 9) F9.lights.forEach((o, i) => { o.l.intensity = o.base * (Math.sin(t * 17 + i * 3) > -.7 || Math.sin(t * 5 + i) > .5 ? 1 : .1); });
   act = playing && !overlay && !dead && !frozen ? nearest() : null; if (act) { $('hint').textContent = 'R  ' + act.label(); $('hint').style.display = 'block'; } else $('hint').style.display = 'none';
-  if (composer) composer.render(); else renderer.render(scene, camera);
+  if (composer) { if (composer.grain) composer.grain.uniforms.t.value = t % 10;
+    if (composer.beams) composer.beams.forEach(([c, o]) => { c.material.opacity = .03 * Math.min(1, o.l.intensity / (o.base || 1)); });
+    if (composer.dust) { const d0 = composer.dust, pa = d0.geometry.attributes.position, cx = camera.position.x, cy = camera.position.y, cz = camera.position.z; for (let i = 0; i < pa.count; i++) { let x = pa.getX(i) + Math.sin(t * .3 + i) * .0006, y = pa.getY(i) - .0004, z = pa.getZ(i) + Math.cos(t * .27 + i * 1.3) * .0006; if (x - cx > 4) x -= 8; if (cx - x > 4) x += 8; if (z - cz > 4) z -= 8; if (cz - z > 4) z += 8; if (y < .05) y = H - .1; if (y > H) y = .1; pa.setXYZ(i, x, y, z); } pa.needsUpdate = true; if (!d0.init) { d0.init = 1; for (let i = 0; i < pa.count; i++) pa.setXYZ(i, cx + pa.getX(i), .1 + Math.random() * (H - .2), cz + pa.getZ(i)); } }
+    composer.render(); } else renderer.render(scene, camera);
 }
 
 function win() { night.won = true; frozen = true; document.exitPointerLock?.(); sfx.ring(); say('<b>The phone rings.</b> "Hi, it\'s Mrs. Jack. So sorry, we\'re going to be very late. Is Pepper being good?" A pause. <b>"Why is there knocking on our door?"</b>', 7); try { localStorage.setItem('qf_unlocked', '2'); } catch (e) {} setTimeout(() => { endScreen('NIGHT 1 SURVIVED', 'Midnight', 'You followed the rules. Theo slept through it all. Pepper never left your side.<br><br>The Jacks will need you again tomorrow night. The list will be different.', 'Start Night 2'); $('again').onclick = () => { location.search = '?night=2'; }; }, 7500); }
 
-if (NIGHT === 4 || NIGHT === 5) { $('go').textContent = 'Start Night ' + NIGHT; document.querySelector('#start p').innerHTML = N45[NIGHT].start; }
-else if (NIGHT === 7) { $('go').textContent = 'Watch: Pepper'; document.querySelector('#start p').innerHTML = 'Scene preview. <b>Pepper has something to tell you.</b>'; }
+if (NIGHT >= 4 && NIGHT <= 7 && !SCENE && !n7.on) { $('go').textContent = 'Start Night ' + NIGHT; document.querySelector('#start p').innerHTML = N45[NIGHT].start; }
+else if (SCENE) { $('go').textContent = 'Watch: Pepper'; document.querySelector('#start p').innerHTML = 'Scene preview. <b>Pepper has something to tell you.</b>'; }
 else if (NIGHT === 3) { $('go').textContent = 'Start Night 3'; document.querySelector('#start p').innerHTML = 'Night 3. Theo has a fever, his medicine is locked in the basement, and the basement has rules of its own. <b>Something in this building copies anything that helps you.</b> Tonight it copies you.'; }
 else if (NIGHT === 2) { $('go').textContent = 'Start Night 2'; document.querySelector('#start p').innerHTML = 'Night 2. The Jacks asked you back. Theo is asleep, Pepper needs his walk, and there is a new list on the fridge. <b>Something in this building copies anything that helps you.</b> Last night it got close.'; }
 else if (unlocked >= 2) { $('go2').style.display = 'inline-block'; $('go2').onclick = () => { location.search = '?night=2'; }; }
 if (NIGHT === 1 && unlocked >= 4) { $('go4').style.display = 'inline-block'; $('go4').onclick = () => { location.search = '?night=4'; }; }
+if (NIGHT === 1 && unlocked >= 7) { $('go7').style.display = 'inline-block'; $('go7').onclick = () => { location.search = '?night=7'; }; }
+if (NIGHT === 1 && unlocked >= 6) { $('go6').style.display = 'inline-block'; $('go6').onclick = () => { location.search = '?night=6'; }; }
 if (NIGHT === 1 && unlocked >= 5) { $('go5').style.display = 'inline-block'; $('go5').onclick = () => { location.search = '?night=5'; }; }
 if (NIGHT === 1 && unlocked >= 3) { $('go3').style.display = 'inline-block'; $('go3').onclick = () => { location.search = '?night=3'; }; }
 $('go').onclick = () => { ac().resume(); $('start').style.display = 'none'; $('hud').style.display = 'block'; $('mon').style.display = 'block'; playing = true; showFloor(13); lockMouse();
-  if (NIGHT === 7) { frozen = true; $('hud').style.display = 'none'; $('mon').style.display = 'none'; clockMin = 23 * 60 + 52; pep.fed = true; pep.state = 'scene'; pep.x = 4.5; pep.z = 15.8; pep.yaw = 0; front.locked = true; P.x = 5.5; P.z = 15; drawScratch(0); drawProtect(0); return; }
-  if (NIGHT === 4 || NIGHT === 5) { nx.def = N45[NIGHT]; setStepX(0); pep.fed = true; front.locked = true; say(nx.def.intro, 6); night.onRead = () => { if (nx.s === 0) { clockMin = 20 * 60 + 10; setStepX(1); } }; return; }
+  if (NIGHT === 7 && SCENE) { startPepperScene(); return; }
+  if (NIGHT >= 4 && NIGHT <= 7 && !SCENE && !n7.on) { nx.def = N45[NIGHT]; setStepX(0); pep.fed = true; front.locked = true; say(nx.def.intro, 6); night.onRead = () => { if (nx.s === 0) { clockMin = 20 * 60 + 10; setStepX(1); } }; return; }
   if (NIGHT === 3) { setStep3(0); pep.fed = true; front.locked = true; say('Night 3. Mrs. Jack looked worried when she left. <b>Theo is sick.</b> There is a new list on the fridge.', 6); night.onRead = () => { n3.read = true; if (n3.s === 0) { clockMin = 20 * 60 + 10; setStep3(1); say('The handwriting is shaky tonight.', 3); } }; return; }
   if (NIGHT === 2) { setStep2(0); pep.fed = true; front.locked = true; say('Night 2. The Jacks have gone out again. Pepper is lying by his bowl, watching the door. <b>There is a new list on the fridge.</b>', 6); night.onRead = () => { if (n2.s === 0) { clockMin = 20 * 60 + 10; setStep2(1); say('The rules are different tonight. <b>Read them carefully.</b> Press <b>Q</b> any time to call Pepper.', 4); } if (n2.s >= 7 && fakeRule && !n2.sawFake) { n2.sawFake = true; say('There is an <b>8th rule</b> now. It is not in Mrs. Jack\'s handwriting.', 4); } }; return; }
   setStep(0);
@@ -1133,15 +1272,38 @@ $('go').onclick = () => { ac().resume(); $('start').style.display = 'none'; $('h
 };
 // Super graphics: real shadows from the flashlight and the main lamps, and a soft glow on bright lights
 let composer = null;
-if (SUPER) { torch.l.castShadow = true; torch.l.shadow.mapSize.set(1024, 1024); torch.l.shadow.bias = -.0005;
-  FLOORS.forEach(n => { const F = floors[n]; F.g.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = !o.material.transparent; } }); (F.lights || []).sort((a, b) => b.base - a.base).slice(0, n === 13 ? 3 : 2).forEach(o => { o.l.castShadow = true; o.l.shadow.mapSize.set(512, 512); o.l.shadow.bias = -.002; o.l.shadow.camera.near = .2; }); });
+if (SUPER) { torch.l.castShadow = true; torch.l.shadow.mapSize.set(2048, 2048); torch.l.shadow.bias = -.0004; torch.l.shadow.radius = 3;
+  const shadowy = g0 => g0.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = !o.material.transparent; } });
+  FLOORS.forEach(n => { const F = floors[n]; shadowy(F.g); (F.lights || []).sort((a, b) => b.base - a.base).slice(0, n === 13 ? 4 : 3).forEach(o => { o.l.castShadow = true; o.l.shadow.mapSize.set(1024, 1024); o.l.shadow.bias = -.002; o.l.shadow.radius = 4; o.l.shadow.camera.near = .2; }); });
+  shadowy(hall7); hallL.forEach(([L]) => { L.castShadow = true; L.shadow.mapSize.set(1024, 1024); L.shadow.bias = -.002; });
   [pep.g, fake.g, cc.g].forEach(g0 => g0.traverse(o => { if (o.isMesh && !o.material.transparent) o.castShadow = true; }));
-  try { const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }] = await Promise.all(['postprocessing/EffectComposer.js', 'postprocessing/RenderPass.js', 'postprocessing/UnrealBloomPass.js', 'postprocessing/OutputPass.js'].map(f => import('three/addons/' + f)));
-    composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera)); composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .32, .45, .86)); composer.addPass(new OutputPass());
-    addEventListener('resize', () => composer.setSize(innerWidth, innerHeight)); } catch (e) { composer = null; } }
+  try { const mods = await Promise.all(['postprocessing/EffectComposer.js', 'postprocessing/RenderPass.js', 'postprocessing/UnrealBloomPass.js', 'postprocessing/OutputPass.js', 'postprocessing/ShaderPass.js', 'environments/RoomEnvironment.js'].map(f => import('three/addons/' + f)));
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { RoomEnvironment }] = mods;
+    // soft reflections: chrome, brass, glass, marble and wet floors pick up the room around them
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;
+    scene.traverse(o => { if (o.isMesh) [].concat(o.material).forEach(m => { if (m && m.isMeshStandardMaterial && m.userData.env === undefined) { m.userData.env = 1; m.envMapIntensity = m.metalness > .4 ? .9 : m.roughness < .3 ? .35 : .07; m.needsUpdate = true; } }); });
+    // smooth edges (multisampling) through the effects chain
+    const rt = new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio(), { samples: 4, type: THREE.HalfFloatType });
+    composer = new EffectComposer(renderer, rt); composer.addPass(new RenderPass(scene, camera));
+    try { const { GTAOPass } = await import('three/addons/postprocessing/GTAOPass.js'); const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.updateGtaoMaterial({ radius: .5, distanceExponent: 1.6, thickness: 1.2, scale: 1.4, samples: 16 }); ao.blendIntensity = 1; composer.addPass(ao); } catch (e) {}   // soft shadows in corners and under things
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .34, .5, .84));
+    composer.addPass(new OutputPass());
+    // film grain and a dark vignette, like an old camera
+    const grain = new ShaderPass({ uniforms: { tDiffuse: { value: null }, t: { value: 0 } }, vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform sampler2D tDiffuse; uniform float t; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + t) * 43758.5453); } void main(){ vec4 c = texture2D(tDiffuse, vUv); float d = distance(vUv, vec2(.5)); float L = dot(c.rgb, vec3(.299, .587, .114)); c.rgb = mix(c.rgb, c.rgb * vec3(.86, .95, 1.12), (1.0 - smoothstep(.0, .35, L)) * .6); c.rgb = mix(c.rgb, c.rgb * vec3(1.08, 1.0, .9), smoothstep(.45, 1.0, L) * .5); c.rgb = clamp((c.rgb - .5) * 1.12 + .5, 0.0, 1.0); c.rgb *= smoothstep(.85, .32, d) * .55 + .45; c.rgb += (h(vUv * 917.0) - .5) * .035; gl_FragColor = c; }' });
+    composer.addPass(grain); composer.grain = grain;
+    // shinier floors that catch the lamps
+    [['wood', .38, .35], ['tile', .18, .45], ['marble', .08, .7], ['carpet', .9, .05]].forEach(([k, ro, en]) => { if (mat[k]) { mat[k].roughness = ro; mat[k].envMapIntensity = en; } });
+    // a soft beam of light under every ceiling lamp
+    const beamM = new THREE.MeshBasicMaterial({ color: 0xffe2b0, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.FrontSide });
+    composer.beams = []; FLOORS.forEach(n => (floors[n].lights || []).forEach(o => { if (!o.fx || o.l.position.y < H - 1.2) return; const hgt = o.l.position.y - .05, cone = new THREE.Mesh(new THREE.CylinderGeometry(.12, 1.05, hgt, 24, 1, true), beamM.clone()); cone.position.set(o.l.position.x, hgt / 2, o.l.position.z); cone.material.color.copy(o.l.color); floors[n].g.add(cone); composer.beams.push([cone, o]); }));
+    // dust drifting in the air around you
+    const DN = 900, dp = new Float32Array(DN * 3); for (let i = 0; i < DN * 3; i++) dp[i] = (Math.random() - .5) * 8; const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: 0xfff0d8, size: .006, transparent: true, opacity: .35, blending: THREE.AdditiveBlending, depthWrite: false })); dust.frustumCulled = false; scene.add(dust); composer.dust = dust;
+    addEventListener('resize', () => composer.setSize(innerWidth, innerHeight)); } catch (e) { console.warn(e); composer = null; } }
 $('gfx').textContent = 'Graphics: ' + (SUPER ? 'Super' : 'Standard'); $('gfx').onclick = () => { try { localStorage.setItem('qf_gfx', SUPER ? 'standard' : 'super'); } catch (e) {} location.reload(); };
 showFloor(13); tick();
-window.__qf = { nx, setStepX, n7, n3, setStep3, n2, NIGHT, setStep2, callPepper, P, pep, fake, night, lift, front, floors, lit, setStep, powerOff, powerOn, press, showFloor, things, get clock() { return clockMin; }, set clock(v) { clockMin = v; } };   // for testing
+window.__qf = { door5, cc, posCC, torch, frame, nx, setStepX, n7, n3, setStep3, n2, NIGHT, setStep2, callPepper, P, pep, fake, night, lift, front, floors, lit, setStep, powerOff, powerOn, press, showFloor, things, get clock() { return clockMin; }, set clock(v) { clockMin = v; } };   // for testing
 </script>
 </body>
 </html>
