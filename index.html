@@ -34,6 +34,21 @@ h1{margin:0}
 .quiet .play{background:#d9b48a;color:#140c06}
 .quiet .play:hover,.quiet .play:focus-visible{background:#f0d2ac}
 .quiet .num{position:absolute;top:1rem;right:1.2rem;font:bold 1.4rem "Courier New",monospace;color:#ff3b2a;text-shadow:0 0 12px #ff2a10;opacity:.85}
+/* The Lab Terror: a cold lab corridor under a red alarm light, with a tall floor number */
+.terror{background:
+  radial-gradient(ellipse 70% 35% at 50% 0%,rgba(255,45,30,.38),transparent 70%),
+  linear-gradient(180deg,transparent 0 62%,rgba(200,225,240,.07) 62% 64%,transparent 64%),
+  linear-gradient(90deg,transparent 40%,rgba(210,232,245,.1) 40% 60%,transparent 60%),
+  repeating-linear-gradient(90deg,#0d1317 0 46px,#10181d 46px 92px);
+  border-color:#5a2a26;box-shadow:0 0 60px rgba(255,50,40,.16)}
+.terror::before{background:radial-gradient(ellipse at 50% 55%,transparent 25%,rgba(0,0,0,.8) 78%)}
+.terror .tag{color:#ff5a48;text-shadow:0 0 10px rgba(255,60,40,.7)}
+.terror h2{color:#e9f1f5;letter-spacing:.08em}
+.terror .sub{color:#9fc3d6}
+.terror .blurb{color:#d3dde2}
+.terror .play{background:#dfe8ec;color:#0c1216}
+.terror .play:hover,.terror .play:focus-visible{background:#ffffff}
+.terror .num{position:absolute;top:1rem;right:1.2rem;font:bold 1.4rem "Courier New",monospace;color:#ffb347;text-shadow:0 0 12px #ff8a00;opacity:.9}
 /* 3.1: yellow wallpaper and buzzing lights */
 .back{background:repeating-linear-gradient(90deg,#3a3213 0 34px,#332c10 34px 68px);border:2px solid #d9c465;box-shadow:0 0 50px rgba(217,196,101,.28)}
 .back::before{background:radial-gradient(ellipse at 50% -10%,rgba(255,245,190,.42),rgba(0,0,0,.35) 62%,rgba(0,0,0,.75))}
@@ -71,9 +86,19 @@ a.jcard:hover,a.jcard:focus-visible{border-color:#fff;transform:translateY(-2px)
 <h1 class="bsg-title">THE BLACK SCREEN GAMES</h1>
 <p class="bsg-sub">HORROR</p>
 
+<div class="card terror">
+<span class="num">5</span>
+<p class="tag">NEW</p>
+<h2>THE LAB TERROR</h2>
+<p class="sub">Levels 1–3 out now</p>
+<p class="blurb">Theo is 22 now, and he works at the lab in Bear City where Pepper was made. Then the Dark Lab breaks open. Trap the creatures and send them back, one floor at a time.</p>
+<a class="play" href="the-lab-terror/">Play now</a>
+<p class="rating">RATED M</p>
+</div>
+
 <div class="card quiet">
 <span class="num">13</span>
-<p class="tag">NEW</p>
+<p class="tag">ALL 7 NIGHTS</p>
 <h2>THE QUIET FLOOR</h2>
 <p class="sub">All 7 nights out now</p>
 <p class="blurb">You are babysitting Theo for the Jacks. There is a list of rules on the fridge, and Pepper the dog will help you. Something in this building copies anything that helps you.</p>
