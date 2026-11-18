@@ -488,8 +488,8 @@ function send() {
 function win() {
   if (won) return; won = true;
   fadeTo(() => endScreen('LEVEL 3 COMPLETE · FLOOR 3', 'Too fast to outrun',
-    'The Wolfbear is back on floor 8. The stairs to floor 2 click open.<br><br>Floor 2 is the animal hospital. Something else from floor 8 is down there, and it leaves copies of itself everywhere.<br><br>Level 4 is coming soon.',
-    'Play again', () => location.href = location.pathname));
+    'The Wolfbear is back on floor 8. The stairs to floor 2 click open.<br><br>Floor 2 is the animal hospital. Something else from floor 8 is down there, and it leaves copies of itself everywhere.',
+    'Play Level 4', () => location.href = 'floor2.html'));
 }
 function endScreen(pre, h, p, btn, fn) {
   playing = false; $('endPre').textContent = pre; $('endH').textContent = h; $('endP').innerHTML = p; $('again').textContent = btn; $('again').onclick = fn;
