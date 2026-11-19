@@ -53,6 +53,7 @@
   <p>Theo is 22 now. He still keeps Pepper's old collar. The tag on the back says <b>HALVERN INSTITUTE · P-7</b>.</p>
   <p>So he became a scientist there. That was six months ago, and now he is the <b>head assistant</b> of the Light Lab on floor 3. But today Dr. Wren asked him to cover a shift on <b>floor 5, the Gray Zone</b>, where Pepper was born. Halvern is ten floors tall, in the middle of <b>Bear City</b>. The higher you go, the more dangerous the things they make. </p>
   <div class="keys"><b>W A S D</b> move &nbsp; <b>Mouse</b> look &nbsp; <b>Shift</b> run &nbsp; <b>C</b> crouch &nbsp; <b>F</b> flashlight &nbsp; <b>E</b> use / read</div>
+  <button class="btn sec" id="gfx">Graphics: Standard</button>
   <button class="btn" id="go">Start Level 1</button>
   <button class="btn sec" id="restart" style="display:none">Start the level over</button>
   <p style="font-size:13px;color:#777">Rated M &middot; best with headphones</p>
@@ -64,7 +65,7 @@
   <button class="btn" id="again"></button>
 </div>
 
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -84,6 +85,8 @@ renderer.toneMappingExposure = 1.1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
+let ULTRA = false; try { ULTRA = localStorage.getItem('lt_gfx') === 'ultra'; } catch (e) {}
+let composer = null;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020304);
 scene.fog = new THREE.FogExp2(0x030405, 0.04);
@@ -407,14 +410,15 @@ function buildStilt() {
   const furA = ctex(256, 256, (c, w, h) => { c.fillStyle = '#000'; c.fillRect(0, 0, w, h); for (let i = 0; i < 16000; i++) { const v = Math.floor(R() * 255); c.fillStyle = `rgb(${v},${v},${v})`; c.fillRect(R() * w, R() * h, 1.6, 1.6); } });
   furA.repeat.set(5, 5);
   const fur = M({ map: furTex, roughness: 1 });
-  const shellMats = [1, 2, 3, 4, 5, 6].map(i => M({ color: 0xd9d6cf, roughness: 1, alphaMap: furA, alphaTest: .12 + i * .13 }));
+  const NS = ULTRA ? 12 : 6, shellMats = Array.from({ length: NS }, (_, k) => M({ color: 0xd9d6cf, roughness: 1, alphaMap: furA, alphaTest: .12 + (k + 1) * .78 / NS }));
   const fluffy = [];
   const furry = (geo, x, y, z, sx, sy, sz, parent, layers = 4, step = .045) => {
+    if (ULTRA) { layers *= 2; step /= 2; }
     const m = mesh(geo, fur, x, y, z, parent); m.scale.set(sx, sy, sz);
-    for (let i = 1; i <= layers; i++) { const s = new THREE.Mesh(geo, shellMats[i - 1]); s.position.set(x, y, z); s.scale.set(sx, sy, sz).multiplyScalar(1 + step * i); parent.add(s); fluffy.push(s); }
+    for (let i = 1; i <= layers; i++) { const s = new THREE.Mesh(geo, shellMats[Math.min(NS - 1, i - 1)]); s.position.set(x, y, z); s.scale.set(sx, sy, sz).multiplyScalar(1 + step * i); parent.add(s); fluffy.push(s); }
     return m;
   };
-  const sph = new THREE.SphereGeometry(1, 28, 20);
+  const sph = ULTRA ? new THREE.SphereGeometry(1, 56, 40) : new THREE.SphereGeometry(1, 28, 20);
   const earIn = M({ color: 0xead8d6, roughness: .8 }), claw = M({ color: 0x17120f, roughness: .35 }), tooth = M({ color: 0xfbf8ef, roughness: .3 });
   const mouthM = M({ color: 0x2a1616, roughness: .9 }), scarM = M({ color: 0xb9b2aa, roughness: .9 }), noseM = M({ color: 0xd9c2c2, roughness: .6 });
   const torso = new THREE.Group(); g.add(torso);
@@ -585,9 +589,11 @@ function updObj() {
   if (!F.breach) {
     if (!F.loggedIn) t = 'Start your shift: log in at the front desk.';
     else if (!F.walked) t = 'Walk through the Gray Zone and check on the creations.';
+    else if ((F.bowls || 0) < 3) t = 'Fill the water bowls in dens G-51, G-54 and G-57 (' + (F.bowls || 0) + '/3).';
     else if (!F.recOpen) t = F.hasCard ? 'Open the records room with Dr. Wren\'s keycard.' : F.recTried ? 'Dr. Wren\'s keycard should be in her office, by the elevators.' : 'The records room is at the end of the lab. Pepper\'s file might be in there.';
     else t = 'Find Pepper\'s file.';
   } else if (!F.binderRead) t = 'Find the safety breach procedure in Dr. Wren\'s office.';
+  else if (!F.fuel) t = 'The generator needs fuel. There is a fuel can stored in the empty den, G-58.';
   else if (!F.genOn) t = 'Start the backup generator at the end of the lab.';
   else if (!F.trapped) t = F.callOn ? 'When it is all the way inside the pod, pull the DOOR lever.' : 'Press CALL on the capture pod.';
   else if (!F.sent) t = 'Press SEND to put it back on floor 6.';
@@ -709,12 +715,22 @@ thing(5, 1.3, 11.6, 'Elevator', () => say(F.breach ? 'Dead. The elevators shut d
 thing(11, 1.3, 11.6, 'Elevator', () => say(F.breach ? 'Dead. The elevators shut down when the alarm started.' : 'Your shift just started. You aren\'t going home yet.', 3.5));
 thing(-1.9, .8, 1.0, 'Take Dr. Wren\'s keycard', () => { F.hasCard = true; card.visible = false; sfx.click(); say('Dr. Wren\'s keycard. She must have left it here this morning when she went down to floor 1.', 4); updObj(); }, () => !F.hasCard);
 thing(-.78, .98, 5.73, 'Read the red binder', () => paper(PAPERS.binder, () => { if (!F.binderRead) { F.binderRead = true; if (F.breach) bestCP = Math.max(bestCP, 2); updObj(); } }));
-thing(9.86, 1.3, -27, () => F.hasCard ? 'Use Dr. Wren\'s keycard' : 'Records', () => { if (F.hasCard) openRec(); else { sfx.deny(); F.recTried = true; say('Locked. Only Dr. Wren\'s keycard opens the records room.', 3.5); updObj(); } }, () => !F.recOpen);
+thing(9.86, 1.3, -27, () => F.hasCard ? 'Use Dr. Wren\'s keycard' : 'Records', () => { if ((F.bowls || 0) < 3) { say('Finish your rounds first. The water bowls in G-51, G-54 and G-57.', 3.5); updObj(); return; } if (F.hasCard) openRec(); else { sfx.deny(); F.recTried = true; say('Locked. Only Dr. Wren\'s keycard opens the records room.', 3.5); updObj(); } }, () => !F.recOpen);
+// extra rounds: water bowls before the breach, and fuel for the generator after it
+const waterM = M({ color: 0x3a7bd5, roughness: .1, metalness: .2, transparent: true, opacity: .8 });
+for (const [n, bx, bz] of [[51, 3.7, -2.0], [54, 12.3, -8.0], [57, 3.7, -20.0]]) {
+  const w = mesh(new THREE.CylinderGeometry(.12, .12, .01, 16), waterM, bx, .068, bz); w.visible = false;
+  thing(bx, .15, bz, 'Fill the water bowl in G-' + n, () => { F['b' + n] = true; F.bowls = (F.bowls || 0) + 1; w.visible = true; sfx.click(); say(F.bowls < 3 ? 'Fresh water. Something under the blanket shifts, then settles.' : 'All three bowls are full. Rounds done.', 3); updObj(); }, () => !F['b' + n] && !F.breach, 2.2);
+}
+const fuelCan = new THREE.Group(); fuelCan.position.set(13.6, 0, -21.6); scene.add(fuelCan);
+mesh(new THREE.BoxGeometry(.32, .4, .18), MAT.red, 0, .2, 0, fuelCan); mesh(new THREE.CylinderGeometry(.03, .03, .1, 8), MAT.dark, .1, .44, 0, fuelCan);
+thing(13.6, .3, -21.6, 'Take the fuel can', () => { F.fuel = true; fuelCan.visible = false; sfx.click(); say('A full can of fuel. It sloshes loudly when you move.', 3); updObj(); }, () => F.breach && !F.fuel, 2.2);
 thing(13.2, .8, -28.4, 'Read the file marked P-7', () => paper(PAPERS.pepper, pepperDone), () => F.recOpen);
 thing(6.1, 1.55, -27, 'Read the whiteboard', () => say('Gray Zone rules: watch every creation for a whole year. If it is gentle every day, it moves down to the Light Lab. And in the corner: "Thanks for covering Theo!!"', 5));
 let pullCD = 0;
 thing(14.5, .95, -32, () => F.breach ? 'Pull the start cord' : 'Backup generator', () => {
   if (!F.breach) { say('The backup generator. It\'s off, because the main power is fine.', 3.5); return; }
+  if (!F.fuel) { sfx.deny(); say('You pull the cord. Nothing. The fuel gauge says EMPTY.', 3); return; }
   if (pullCD > 0) return; pullCD = .9; F.pulls++; sfx.pull(); makeNoise(14.5, -32, 13);
   anim(.4, k => genHandle.position.x = 14.52 - Math.sin(k * Math.PI) * .35);
   if (F.pulls >= 3) later(.5, genStart); else say(F.pulls === 1 ? 'It coughs, then stops.' : 'Almost...', 2);
@@ -921,7 +937,7 @@ function frame(dt) {
   const bob = Math.sin(P.bob) * (P.run ? .045 : .025);
   camera.position.set(P.x, P.eye + bob, P.z);
   camera.rotation.set(P.pitch, P.yaw, 0, 'YXZ');
-  renderer.render(scene, camera);
+  present(T);
 }
 let last = performance.now();
 function tick(now) { requestAnimationFrame(tick); const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt); }
@@ -933,11 +949,11 @@ function applyCP(n) {
   F.loggedIn = F.walked = F.hasCard = F.recTried = true; card.visible = false;
   F.labOpen = true; labDoor.userData.s.on = false; labDoor.position.x = 9.75; labLed.material.emissive.set(0x33ff66);
   F.recOpen = true; recDoor.userData.s.on = false; recDoor.position.z = -28.75; recLed.material.emissive.set(0x33ff66);
-  F.pepperRead = true;
+  F.pepperRead = true; F.bowls = 3; F.b51 = F.b54 = F.b57 = true;
   if (n === 1) { P.x = 13; P.z = -27.4; P.yaw = Math.PI / 2; later(1.5, breach); return; }
   F.breach = true; powerCut(); F.binderRead = true;
   if (n === 2) { P.x = -1.5; P.z = 4.6; P.yaw = -Math.PI / 2; stiltAt(8, -18); return; }
-  F.pulls = 3; genStart(); P.x = 13.6; P.z = -31.8; P.yaw = Math.PI / 2; stiltAt(8, -6);
+  F.fuel = true; fuelCan.visible = false; F.pulls = 3; genStart(); P.x = 13.6; P.z = -31.8; P.yaw = Math.PI / 2; stiltAt(8, -6);
 }
 if (CP) { $('go').textContent = 'Continue'; $('restart').style.display = 'inline-block'; }
 $('restart').onclick = () => location.href = location.pathname;
@@ -946,6 +962,56 @@ $('go').onclick = () => {
   playing = true; applyCP(CP); updObj(); lockMouse();
   if (!CP) say('Halvern Institute, Bear City. 9:00 AM. You are head assistant on floor 3, but today you are covering a shift in the <b>Gray Zone, floor 5</b>.', 5);
 };
+// ---------- ULTRA graphics ----------
+try { $('gfx').textContent = 'Graphics: ' + (ULTRA ? 'Ultra' : 'Standard'); $('gfx').onclick = () => { try { localStorage.setItem('lt_gfx', ULTRA ? 'standard' : 'ultra'); } catch (e) {} location.reload(); }; } catch (e) {}
+if (ULTRA) (async () => {
+  try {
+    // nicer monsters: soft fur shine, glossy scales, brighter eyes
+    const upgradeMonster = root => root.traverse(o => {
+      if (!o.isMesh) return; const m = o.material;
+      if (!m || !m.isMeshStandardMaterial || m.isMeshPhysicalMaterial || m.alphaMap || m.transparent) return;
+      const p = new THREE.MeshPhysicalMaterial({ map: m.map, color: m.color.clone(), roughness: m.roughness, metalness: m.metalness, emissive: m.emissive.clone(), emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity * 1.8, side: m.side });
+      if (m.roughness >= .7) { p.sheen = 1; p.sheenRoughness = .5; p.sheenColor = new THREE.Color(0xffffff).lerp(m.color, .35); }
+      else { p.clearcoat = .65; p.clearcoatRoughness = .22; }
+      o.material = p;
+    });
+    for (const n of ['ST', 'DG', 'WB', 'SH', 'CC', 'SALT']) { try { const o = eval(n); if (o && o.g) upgradeMonster(o.g); } catch (e) {} }
+    try { skinMeshes.forEach(k => upgradeMonster(k.g)); } catch (e) {}
+    torch.shadow.mapSize.set(2048, 2048); torch.shadow.radius = 3; torch.shadow.bias = -.0004; torch.shadow.map = null;
+    [...lamps].sort((a, b) => b.base - a.base).slice(0, 4).forEach(o => { o.L.castShadow = true; o.L.shadow.mapSize.set(1024, 1024); o.L.shadow.bias = -.002; o.L.shadow.radius = 4; o.L.shadow.camera.near = .2; });
+    scene.traverse(o => { if (o.isMesh) { o.receiveShadow = true; if (!o.material.transparent && !o.material.alphaMap) o.castShadow = true; } });
+    const mods = await Promise.all(['postprocessing/EffectComposer.js', 'postprocessing/RenderPass.js', 'postprocessing/UnrealBloomPass.js', 'postprocessing/OutputPass.js', 'postprocessing/ShaderPass.js', 'environments/RoomEnvironment.js'].map(f => import('three/addons/' + f)));
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { RoomEnvironment }] = mods;
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;
+    scene.traverse(o => { if (o.isMesh) [].concat(o.material).forEach(m => { if (m && m.isMeshStandardMaterial && m.userData.env === undefined) { m.userData.env = 1; m.envMapIntensity = m.metalness > .4 ? .8 : m.roughness < .4 ? .3 : .05; if (m.roughness > .25 && m.roughness < .5) m.roughness -= .08; m.needsUpdate = true; } }); });
+    const rt = new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio(), { samples: 4, type: THREE.HalfFloatType });
+    const c = new EffectComposer(renderer, rt); c.addPass(new RenderPass(scene, camera));
+    try { const { GTAOPass } = await import('three/addons/postprocessing/GTAOPass.js'); const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.updateGtaoMaterial({ radius: .5, distanceExponent: 1.6, thickness: 1.2, scale: 1.4, samples: 16 }); ao.blendIntensity = 1; c.addPass(ao); } catch (e) {}
+    c.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .45, .55, .8));
+    c.addPass(new OutputPass());
+    const grain = new ShaderPass({ uniforms: { tDiffuse: { value: null }, t: { value: 0 } }, vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform sampler2D tDiffuse; uniform float t; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + t) * 43758.5453); } void main(){ vec2 o = (vUv - .5) * .0025; vec4 c = vec4(texture2D(tDiffuse, vUv + o).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - o).b, 1.0); float d = distance(vUv, vec2(.5)); float L = dot(c.rgb, vec3(.299, .587, .114)); c.rgb = mix(c.rgb, c.rgb * vec3(.84, .95, 1.14), (1.0 - smoothstep(.0, .35, L)) * .6); c.rgb = clamp((c.rgb - .5) * 1.14 + .5, 0.0, 1.0); c.rgb *= smoothstep(.85, .3, d) * .6 + .4; c.rgb += (h(vUv * 917.0) - .5) * .04; gl_FragColor = c; }' });
+    c.addPass(grain); c.grain = grain;
+    // a soft beam of light under every ceiling lamp
+    const beamM = new THREE.MeshBasicMaterial({ color: 0xffe2b0, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, depthWrite: false });
+    c.beams = lamps.map(o => { const hgt = o.L.position.y - .05, cone = new THREE.Mesh(new THREE.CylinderGeometry(.12, 1.1, hgt, 24, 1, true), beamM.clone()); cone.position.set(o.L.position.x, hgt / 2, o.L.position.z); cone.material.color.copy(o.L.color); scene.add(cone); return [cone, o]; });
+    // dust in the air around you
+    const DN = 1000, dp = new Float32Array(DN * 3); for (let i = 0; i < DN * 3; i++) dp[i] = (Math.random() - .5) * 8;
+    const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: 0xfff0d8, size: .007, transparent: true, opacity: .35, blending: THREE.AdditiveBlending, depthWrite: false })); dust.frustumCulled = false; scene.add(dust); c.dust = dust;
+    addEventListener('resize', () => c.setSize(innerWidth, innerHeight));
+    composer = c;
+  } catch (e) { console.warn(e); composer = null; }
+})();
+function present(t) {
+  if (!composer) { renderer.render(scene, camera); return; }
+  composer.grain.uniforms.t.value = t % 10;
+  composer.beams.forEach(([cone, o]) => { cone.material.opacity = .035 * Math.min(1, o.L.intensity / (o.base || 1)); });
+  const pa = composer.dust.geometry.attributes.position, cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
+  for (let i = 0; i < pa.count; i++) { let x = pa.getX(i), y = pa.getY(i) + .0015, z = pa.getZ(i); if (x - cx > 4) x -= 8; if (x - cx < -4) x += 8; if (y - cy > 2) y -= 4; if (y - cy < -2) y += 4; if (z - cz > 4) z -= 8; if (z - cz < -4) z += 8; pa.setXYZ(i, x, y, z); }
+  pa.needsUpdate = true;
+  composer.render();
+}
 window.__tg = { P, S, F, frame, keys, ST, things, solids, route, regionOf, get cur() { return cur; }, use: useThing, close: closePaper, breach, setCP: applyCP, scene, camera };
 </script>
 </body>

@@ -53,6 +53,7 @@
   <p>Theo gets down to <b>floor 2, the animal hospital</b>. The stairs to floor 1 are on lockdown again.</p>
   <p>Something from <b>floor 8</b> is here. It has been shedding its skin all over the hospital, and every skin looks exactly like it.</p>
   <div class="keys"><b>W A S D</b> move &nbsp; <b>Mouse</b> look &nbsp; <b>Shift</b> run &nbsp; <b>C</b> crouch &nbsp; <b>F</b> flashlight &nbsp; <b>E</b> use / read</div>
+  <button class="btn sec" id="gfx">Graphics: Standard</button>
   <button class="btn" id="go">Start Level 4</button>
   <button class="btn sec" id="restart" style="display:none">Start the level over</button>
   <p style="font-size:13px;color:#777">Rated M &middot; best with headphones</p>
@@ -64,7 +65,7 @@
   <button class="btn" id="again"></button>
 </div>
 
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -84,6 +85,8 @@ renderer.toneMappingExposure = 1.1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
+let ULTRA = false; try { ULTRA = localStorage.getItem('lt_gfx') === 'ultra'; } catch (e) {}
+let composer = null;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020304);
 scene.fog = new THREE.FogExp2(0x030405, 0.04);
@@ -467,7 +470,10 @@ function updObj() {
   let t;
   if (!F.hasKey) t = F.panelSeen ? 'Find out what is loose. Try the vet office.' : 'Get to the stairs down to floor 1, at the far end of the hall.';
   else if (!F.fileRead) t = 'Read the red file on the vet\'s desk.';
-  else if (!F.bulbIn) t = F.carry ? 'Put the heat bulb in the lamp in Large Animal Recovery.' : 'Get a HEAT BULB from the storage room.';
+  else if (!F.cabKey) t = 'The heat bulbs are in a locked cabinet. The cabinet key was left in the surgery room.';
+  else if (!F.carry && !F.bulbIn) t = 'Get a HEAT BULB from the storage room.';
+  else if (!F.lampPower) t = 'The recovery room lamp has no power. Flip the LAMP breaker in the X-ray room.';
+  else if (!F.bulbIn) t = 'Put the heat bulb in the lamp in Large Animal Recovery.';
   else if (!F.recShut) t = 'Get out of the room. When it is curled up under the lamp, press DOOR.';
   else if (!F.sent) t = 'Press SEND to lift it back up to floor 8.';
   else t = 'Floor 2 is clear. Use the lockdown key on the stairs down.';
@@ -500,8 +506,8 @@ function send() {
 function win() {
   if (won) return; won = true;
   fadeTo(() => endScreen('LEVEL 4 COMPLETE · FLOOR 2', 'Count the skins',
-    'The Shedder is back on floor 8. It left a lot of skins behind.<br><br>One more floor: <b>floor 1</b>, the main lobby, and the way out into Bear City. Dr. Wren is down there. At least, someone who looks like her.<br><br>Level 5 is coming soon.',
-    'Play again', () => location.href = location.pathname));
+    'The Shedder is back on floor 8. It left a lot of skins behind.<br><br>One more floor: <b>floor 1</b>, the main lobby, and the way out into Bear City. Dr. Wren is down there. At least, someone who looks like her.',
+    'Play Level 5: The Final Level', () => location.href = 'floor1.html'));
 }
 function endScreen(pre, h, p, btn, fn) {
   playing = false; $('endPre').textContent = pre; $('endH').textContent = h; $('endP').innerHTML = p; $('again').textContent = btn; $('again').onclick = fn;
@@ -526,8 +532,15 @@ thing(28, 1.3, .2, 'Stairs down', () => say('Locked. The panel next to it has a 
 thing(2, 1.3, .2, 'Stairs up', () => say('Back up there? No.', 2.5));
 thing(23.4, .8, 9.7, 'Take the lockdown key', () => { F.hasKey = true; keyM.visible = false; sfx.click(); say('A lockdown key. It only works once the floor is clear.', 4); updObj(); }, () => !F.hasKey);
 thing(24.6, .8, 9.8, 'Read the red file', () => paper(PAPERS.file, () => { if (!F.fileRead) { F.fileRead = true; bestCP = Math.max(bestCP, 1); updObj(); } }));
-thing(18, .3, 9.6, 'Take a HEAT BULB', () => { F.carry = true; sack.visible = false; heldSack.visible = true; sfx.click(); updObj(); }, () => !F.carry && !F.bulbIn);
-thing(21, 1.4, 21.8, 'Put in the heat bulb and switch it on', () => { F.carry = false; F.bulbIn = true; heldSack.visible = false; bulb.visible = true; bulbM.emissiveIntensity = 2.5; heatL.intensity = 6; sfx.click(); sfx.beep(); bestCP = Math.max(bestCP, 2); updObj(); say('The lamp buzzes and glows orange. The straw underneath starts to warm up.', 4); }, () => F.carry, 3.2);
+// extra steps: the cabinet key and the lamp breaker
+const ckey = mesh(new THREE.BoxGeometry(.14, .01, .05), M({ color: 0xd9b021, metalness: .8, roughness: .3 }), 5.8, .975, 20.4);
+thing(5.8, 1.0, 20.4, 'Take the cabinet key', () => { F.cabKey = true; ckey.visible = false; sfx.click(); say('A key on a tag: SUPPLY CABINET.', 3); updObj(); }, () => F.fileRead && !F.cabKey, 2.2);
+const brk = box(15.82, 22.4, 15.9, 23.2, 1.0, 1.8, MAT.dark, false);
+const brkLed = mesh(new THREE.BoxGeometry(.02, .06, .06), M({ color: 0x220000, emissive: 0xff3020, emissiveIntensity: 1.5 }), 15.8, 1.65, 22.8);
+sign(.7, .14, textDraw([['LAMP POWER', 'bold 48px Arial', '#111']], { bg: '#d9b021' }), 15.8, 1.95, 22.8, -Math.PI / 2, 0, 300);
+thing(15.8, 1.4, 22.8, 'Flip the LAMP breaker', () => { F.lampPower = true; brkLed.material.emissive.set(0x33ff66); sfx.clunk(); say('CLUNK. The lamp in the recovery room clicks, ready for a bulb.', 3.5); updObj(); }, () => F.fileRead && !F.lampPower, 2.2);
+thing(18, .3, 9.6, 'Take a HEAT BULB', () => { if (!F.cabKey) { sfx.deny(); say('The supply cabinet is locked.', 2.5); updObj(); return; } F.carry = true; sack.visible = false; heldSack.visible = true; sfx.click(); updObj(); }, () => !F.carry && !F.bulbIn);
+thing(21, 1.4, 21.8, 'Put in the heat bulb and switch it on', () => { if (!F.lampPower) { sfx.deny(); say('The lamp is dead. Flip the LAMP breaker in the X-ray room first.', 3.5); updObj(); return; } F.carry = false; F.bulbIn = true; heldSack.visible = false; bulb.visible = true; bulbM.emissiveIntensity = 2.5; heatL.intensity = 6; sfx.click(); sfx.beep(); bestCP = Math.max(bestCP, 2); updObj(); say('The lamp buzzes and glows orange. The straw underneath starts to warm up.', 4); }, () => F.carry, 3.2);
 thing(25.25, 1.3, 15.75, 'Press DOOR', () => { if (!F.bulbIn) { sfx.deny(); say('Not yet. There is nothing in there to lure it.', 3); return; } shutRec(); }, () => !F.recShut && !F.trapped);
 thing(25.65, 1.3, 15.75, 'Press SEND', send, () => F.trapped && !F.sent);
 thing(12, 1.0, 6.2, 'Baby animals', () => say('Four babies, fast asleep in their incubators. They haven\'t noticed anything.', 3.5));
@@ -661,7 +674,7 @@ function updateShedder(dt) {
           }
         }
         S.stuckT += dt;
-        if (S.stuckT > 1.0) { if (S.path.length && Math.hypot(S.x - S.lx, S.z - S.lz) < .3) { const [px, pz] = S.path[0], a = Math.atan2(px - S.x, pz - S.z) + (S.side = -(S.side || 1)) * Math.PI / 2; S.path.unshift([S.x + Math.sin(a) * 1.3, S.z + Math.cos(a) * 1.3]); S.repath = 1.2; } S.stuckT = 0; S.lx = S.x; S.lz = S.z; }
+        if (S.stuckT > 1.0) { if (S.path.length && Math.hypot(S.x - S.lx, S.z - S.lz) < .3) { S.fails = (S.fails || 0) + 1; if (S.fails % 3 === 0) S.side = -(S.side || 1); const [px, pz] = S.path[0], a = Math.atan2(px - S.x, pz - S.z) + (S.side || 1) * Math.PI / 2; S.path.unshift([S.x + Math.sin(a) * 2.4, S.z + Math.cos(a) * 2.4]); S.repath = 1.2; } S.stuckT = 0; S.lx = S.x; S.lz = S.z; }
       }
       if (d < 1.7 && !dead && S.state !== 'bask') catchPlayer();
       // it only moves while you aren't looking
@@ -707,7 +720,7 @@ function frame(dt) {
   const bob = Math.sin(P.bob) * (P.run ? .045 : .025);
   camera.position.set(P.x, P.eye + bob, P.z);
   camera.rotation.set(P.pitch, P.yaw, 0, 'YXZ');
-  renderer.render(scene, camera);
+  present(T);
 }
 let last = performance.now();
 function tick(now) { requestAnimationFrame(tick); const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt); }
@@ -723,6 +736,7 @@ function applyCP(n) {
   if (n < 1) return;
   F.panelSeen = F.hasKey = F.fileRead = true; keyM.visible = false;
   if (n === 1) { P.x = 24; P.z = 8.5; P.yaw = 0; S.x = 8.5; S.z = 21.8; S.path = []; return; }
+  F.cabKey = F.lampPower = true; ckey.visible = false; brkLed.material.emissive.set(0x33ff66);
   F.bulbIn = true; sack.visible = false; bulb.visible = true; bulbM.emissiveIntensity = 2.5; heatL.intensity = 6;
   if (n === 2) { P.x = 27.5; P.z = 14; P.yaw = Math.PI / 2; S.x = 5; S.z = 8; S.path = []; return; }
   F.trapped = F.recShut = F.sent = true; F.unlockReady = true; S.on = false; SH.g.visible = false; lockLed.material.emissive.set(0xffb020); P.x = 26; P.z = 2; P.yaw = 0;
@@ -734,6 +748,56 @@ $('go').onclick = () => {
   playing = true; applyCP(CP); updObj(); lockMouse();
   if (!CP) say('Floor 2, the animal hospital. Something is lying in the hall up ahead. It isn\'t moving.', 5);
 };
+// ---------- ULTRA graphics ----------
+try { $('gfx').textContent = 'Graphics: ' + (ULTRA ? 'Ultra' : 'Standard'); $('gfx').onclick = () => { try { localStorage.setItem('lt_gfx', ULTRA ? 'standard' : 'ultra'); } catch (e) {} location.reload(); }; } catch (e) {}
+if (ULTRA) (async () => {
+  try {
+    // nicer monsters: soft fur shine, glossy scales, brighter eyes
+    const upgradeMonster = root => root.traverse(o => {
+      if (!o.isMesh) return; const m = o.material;
+      if (!m || !m.isMeshStandardMaterial || m.isMeshPhysicalMaterial || m.alphaMap || m.transparent) return;
+      const p = new THREE.MeshPhysicalMaterial({ map: m.map, color: m.color.clone(), roughness: m.roughness, metalness: m.metalness, emissive: m.emissive.clone(), emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity * 1.8, side: m.side });
+      if (m.roughness >= .7) { p.sheen = 1; p.sheenRoughness = .5; p.sheenColor = new THREE.Color(0xffffff).lerp(m.color, .35); }
+      else { p.clearcoat = .65; p.clearcoatRoughness = .22; }
+      o.material = p;
+    });
+    for (const n of ['ST', 'DG', 'WB', 'SH', 'CC', 'SALT']) { try { const o = eval(n); if (o && o.g) upgradeMonster(o.g); } catch (e) {} }
+    try { skinMeshes.forEach(k => upgradeMonster(k.g)); } catch (e) {}
+    torch.shadow.mapSize.set(2048, 2048); torch.shadow.radius = 3; torch.shadow.bias = -.0004; torch.shadow.map = null;
+    [...lamps].sort((a, b) => b.base - a.base).slice(0, 4).forEach(o => { o.L.castShadow = true; o.L.shadow.mapSize.set(1024, 1024); o.L.shadow.bias = -.002; o.L.shadow.radius = 4; o.L.shadow.camera.near = .2; });
+    scene.traverse(o => { if (o.isMesh) { o.receiveShadow = true; if (!o.material.transparent && !o.material.alphaMap) o.castShadow = true; } });
+    const mods = await Promise.all(['postprocessing/EffectComposer.js', 'postprocessing/RenderPass.js', 'postprocessing/UnrealBloomPass.js', 'postprocessing/OutputPass.js', 'postprocessing/ShaderPass.js', 'environments/RoomEnvironment.js'].map(f => import('three/addons/' + f)));
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { RoomEnvironment }] = mods;
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;
+    scene.traverse(o => { if (o.isMesh) [].concat(o.material).forEach(m => { if (m && m.isMeshStandardMaterial && m.userData.env === undefined) { m.userData.env = 1; m.envMapIntensity = m.metalness > .4 ? .8 : m.roughness < .4 ? .3 : .05; if (m.roughness > .25 && m.roughness < .5) m.roughness -= .08; m.needsUpdate = true; } }); });
+    const rt = new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio(), { samples: 4, type: THREE.HalfFloatType });
+    const c = new EffectComposer(renderer, rt); c.addPass(new RenderPass(scene, camera));
+    try { const { GTAOPass } = await import('three/addons/postprocessing/GTAOPass.js'); const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.updateGtaoMaterial({ radius: .5, distanceExponent: 1.6, thickness: 1.2, scale: 1.4, samples: 16 }); ao.blendIntensity = 1; c.addPass(ao); } catch (e) {}
+    c.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .45, .55, .8));
+    c.addPass(new OutputPass());
+    const grain = new ShaderPass({ uniforms: { tDiffuse: { value: null }, t: { value: 0 } }, vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform sampler2D tDiffuse; uniform float t; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + t) * 43758.5453); } void main(){ vec2 o = (vUv - .5) * .0025; vec4 c = vec4(texture2D(tDiffuse, vUv + o).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - o).b, 1.0); float d = distance(vUv, vec2(.5)); float L = dot(c.rgb, vec3(.299, .587, .114)); c.rgb = mix(c.rgb, c.rgb * vec3(.84, .95, 1.14), (1.0 - smoothstep(.0, .35, L)) * .6); c.rgb = clamp((c.rgb - .5) * 1.14 + .5, 0.0, 1.0); c.rgb *= smoothstep(.85, .3, d) * .6 + .4; c.rgb += (h(vUv * 917.0) - .5) * .04; gl_FragColor = c; }' });
+    c.addPass(grain); c.grain = grain;
+    // a soft beam of light under every ceiling lamp
+    const beamM = new THREE.MeshBasicMaterial({ color: 0xffe2b0, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, depthWrite: false });
+    c.beams = lamps.map(o => { const hgt = o.L.position.y - .05, cone = new THREE.Mesh(new THREE.CylinderGeometry(.12, 1.1, hgt, 24, 1, true), beamM.clone()); cone.position.set(o.L.position.x, hgt / 2, o.L.position.z); cone.material.color.copy(o.L.color); scene.add(cone); return [cone, o]; });
+    // dust in the air around you
+    const DN = 1000, dp = new Float32Array(DN * 3); for (let i = 0; i < DN * 3; i++) dp[i] = (Math.random() - .5) * 8;
+    const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: 0xfff0d8, size: .007, transparent: true, opacity: .35, blending: THREE.AdditiveBlending, depthWrite: false })); dust.frustumCulled = false; scene.add(dust); c.dust = dust;
+    addEventListener('resize', () => c.setSize(innerWidth, innerHeight));
+    composer = c;
+  } catch (e) { console.warn(e); composer = null; }
+})();
+function present(t) {
+  if (!composer) { renderer.render(scene, camera); return; }
+  composer.grain.uniforms.t.value = t % 10;
+  composer.beams.forEach(([cone, o]) => { cone.material.opacity = .035 * Math.min(1, o.L.intensity / (o.base || 1)); });
+  const pa = composer.dust.geometry.attributes.position, cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
+  for (let i = 0; i < pa.count; i++) { let x = pa.getX(i), y = pa.getY(i) + .0015, z = pa.getZ(i); if (x - cx > 4) x -= 8; if (x - cx < -4) x += 8; if (y - cy > 2) y -= 4; if (y - cy < -2) y += 4; if (z - cz > 4) z -= 8; if (z - cz < -4) z += 8; pa.setXYZ(i, x, y, z); }
+  pa.needsUpdate = true;
+  composer.render();
+}
 window.__tg = { P, S, F, SH, frame, keys, things, solids, route, regionOf, los, seenByPlayer, get cur() { return cur; }, use: useThing, close: closePaper, setCP: applyCP, scene, camera };
 </script>
 </body>

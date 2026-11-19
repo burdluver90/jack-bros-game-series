@@ -53,6 +53,7 @@
   <p>The Stilt is back on floor 6, but the alarm is still going. Theo takes the stairs down to <b>floor 4, the learning floor</b>, where the Light Lab animals learn to read.</p>
   <p>The stairs to floor 3 are on lockdown. And the floor tiles are moving.</p>
   <div class="keys"><b>W A S D</b> move &nbsp; <b>Mouse</b> look &nbsp; <b>Shift</b> run &nbsp; <b>C</b> crouch &nbsp; <b>F</b> flashlight &nbsp; <b>E</b> use / read</div>
+  <button class="btn sec" id="gfx">Graphics: Standard</button>
   <button class="btn" id="go">Start Level 2</button>
   <button class="btn sec" id="restart" style="display:none">Start the level over</button>
   <p style="font-size:13px;color:#777">Rated M &middot; best with headphones</p>
@@ -64,7 +65,7 @@
   <button class="btn" id="again"></button>
 </div>
 
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -84,6 +85,8 @@ renderer.toneMappingExposure = 1.1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
+let ULTRA = false; try { ULTRA = localStorage.getItem('lt_gfx') === 'ultra'; } catch (e) {}
+let composer = null;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020304);
 scene.fog = new THREE.FogExp2(0x030405, 0.04);
@@ -386,7 +389,10 @@ function say(html, s = 4.5) { const m = $('msg'); m.innerHTML = html; m.style.di
 function updObj() {
   let t;
   if (!F.fileRead) t = F.panelSeen ? 'Find out what is loose on floor 4. Check the teacher\'s office.' : 'Get to the stairs down to floor 3, at the far end of the hall.';
-  else if (!F.placed) t = F.carry ? 'Put the THUMPER through the feed hatch of the capture cage.' : 'Get the THUMPER from the music room.';
+  else if (!F.batt) t = 'The file says the THUMPER\'s batteries are dead. Get new ones from the puzzle room.';
+  else if (!F.carry && !F.placed) t = 'Get the THUMPER from the music room.';
+  else if (!F.hatchKey) t = 'The cage\'s feed hatch is locked. The hatch key is in the storage room.';
+  else if (!F.placed) t = 'Put the THUMPER through the feed hatch of the capture cage.';
   else if (!F.trapped) t = 'Stay still. When it comes up inside the cage, pull the FLOOR lever.';
   else if (!F.sent) t = 'Press SEND to put it back on floor 6.';
   else t = 'Floor 4 is clear. Take the stairs down to floor 3.';
@@ -397,7 +403,7 @@ function closePaper() { if (!overlay) return; $('paper').style.display = 'none';
 $('paper').onclick = closePaper;
 function fadeTo(fn, hold = 700) { $('fade').style.opacity = 1; setTimeout(() => { fn(); setTimeout(() => $('fade').style.opacity = 0, hold); }, 750); }
 const PAPERS = {
-  file: `<h2>SUBJECT D-6.4 · "THE DIGGER"</h2>Made on: <b>FLOOR 6 · DARK LAB</b><br>Animal: mole + owl. About 6 ft tall when it comes up.<br><br>Eyes: <b>blind</b>. It lives <b>under the floor</b> and swims through it like water.<br>It feels everything that moves on top. Its head can turn all the way around.<br><br>It cannot dig through <b>steel</b>.<br>It loves anything that thumps. In training we used the <b>THUMPER</b> from the music room.<br><br>If it gets loose: put the THUMPER in the capture cage's dirt pit and switch it on. When it comes up to grab it, pull the FLOOR lever. Steel plates close under it.<br><br><span class="hand">It doesn't want to hurt anyone. It just can't help it. — Ms. Holloway</span>`,
+  file: `<h2>SUBJECT D-6.4 · "THE DIGGER"</h2>Made on: <b>FLOOR 6 · DARK LAB</b><br>Animal: mole + owl. About 6 ft tall when it comes up.<br><br>Eyes: <b>blind</b>. It lives <b>under the floor</b> and swims through it like water.<br>It feels everything that moves on top. Its head can turn all the way around.<br><br>It cannot dig through <b>steel</b>.<br>It loves anything that thumps. In training we used the <b>THUMPER</b> from the music room. (Its batteries are dead again. Spares are in the puzzle room.)<br><br>If it gets loose: put the THUMPER in the capture cage's dirt pit and switch it on. When it comes up to grab it, pull the FLOOR lever. Steel plates close under it.<br><br><span class="hand">It doesn't want to hurt anyone. It just can't help it. — Ms. Holloway</span>`,
 };
 const anims = [];
 function anim(dur, fn, done) { anims.push({ t: 0, dur, fn, done }); }
@@ -441,8 +447,14 @@ thing(29, 1.3, .2, 'Lockdown panel', () => { sfx.deny(); F.panelSeen = true; say
 thing(28, 1.3, .2, () => F.clear ? 'Go down to floor 3' : 'Stairs down', () => { if (F.clear) { sfx.door(); win(); } else say('Locked. The panel next to it has a red light.', 3); });
 thing(2, 1.3, .2, 'Stairs up', () => say('The Gray Zone is up there. You are not going back.', 3));
 thing(26.4, .8, 8.8, 'Read the red file', () => paper(PAPERS.file, () => { if (!F.fileRead) { F.fileRead = true; bestCP = Math.max(bestCP, 1); updObj(); } }));
+// extra steps: batteries and the hatch key
+const battG = new THREE.Group(); battG.position.set(21.2, .46, 7.5); scene.add(battG);
+for (let i = 0; i < 4; i++) { mesh(new THREE.CylinderGeometry(.018, .018, .07, 10), M({ color: 0x2a2a2a, roughness: .4 }), i * .045, .035, 0, battG); mesh(new THREE.CylinderGeometry(.019, .019, .02, 10), M({ color: 0xd9b021, metalness: .6, roughness: .3 }), i * .045, .07, 0, battG); }
+thing(21.25, .5, 7.5, 'Take the batteries', () => { F.batt = true; battG.visible = false; sfx.click(); say('Four fat batteries. Enough to make it thump all night.', 3); updObj(); }, () => F.fileRead && !F.batt, 2.2);
+const hkey = mesh(new THREE.BoxGeometry(.14, .01, .05), M({ color: 0xd9b021, metalness: .8, roughness: .3 }), 23.2, 1.21, 21.2);
+thing(23.2, 1.25, 21.2, 'Take the hatch key', () => { F.hatchKey = true; hkey.visible = false; sfx.click(); say('A small brass key on a tag: CAGE HATCH.', 3); updObj(); }, () => F.fileRead && !F.hatchKey, 2.2);
 thing(4.5, .85, 19.5, 'Pick up the THUMPER', () => { F.carry = true; thumper.visible = false; heldThumper.visible = true; sfx.click(); updObj(); }, () => !F.carry && !F.placed);
-thing(14.5, 1.0, 17.2, 'Put the THUMPER in and switch it on', () => { F.carry = false; F.placed = true; F.thumpOn = true; heldThumper.visible = false; pitThumper.visible = true; sfx.beep(); bestCP = Math.max(bestCP, 2); updObj(); say('THUMP. THUMP. THUMP. The floor starts to tremble.', 4); }, () => F.carry);
+thing(14.5, 1.0, 17.2, 'Put the THUMPER in and switch it on', () => { if (!F.hatchKey) { sfx.deny(); say('The feed hatch is locked.', 2.5); updObj(); return; } if (!F.batt) { sfx.deny(); say('You flip the switch. Nothing. The batteries are dead.', 3); updObj(); return; } F.carry = false; F.placed = true; F.thumpOn = true; heldThumper.visible = false; pitThumper.visible = true; sfx.beep(); bestCP = Math.max(bestCP, 2); updObj(); say('THUMP. THUMP. THUMP. The floor starts to tremble.', 4); }, () => F.carry);
 thing(19.3, 1.4, 16.3, 'Pull the FLOOR lever', () => { if (!plateOpen) return; pullLever(); }, () => F.placed && !F.trapped);
 thing(19.85, 1.3, 16.3, 'Press SEND', send, () => F.trapped && !F.sent);
 thing(4, 1.7, 11.85, 'Chalkboard', () => say('"C is for CLEVER (that\'s you!)" Someone drew a little owl next to it.', 3.5));
@@ -611,7 +623,7 @@ function frame(dt) {
   const bob = Math.sin(P.bob) * (P.run ? .045 : .025);
   camera.position.set(P.x, P.eye + bob, P.z);
   camera.rotation.set(P.pitch, P.yaw, 0, 'YXZ');
-  renderer.render(scene, camera);
+  present(T);
 }
 let last = performance.now();
 function tick(now) { requestAnimationFrame(tick); const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt); }
@@ -626,6 +638,7 @@ function applyCP(n) {
   if (n < 1) return;
   F.panelSeen = F.fileRead = true;
   if (n === 1) { P.x = 27; P.z = 7.5; P.yaw = 0; D.x = 5; D.z = 19; return; }
+  F.batt = F.hatchKey = true; battG.visible = false; hkey.visible = false;
   F.placed = F.thumpOn = true; thumper.visible = false; pitThumper.visible = true;
   if (n === 2) { P.x = 19.6; P.z = 17.0; P.yaw = 0; D.x = 3; D.z = 2; return; }
   F.trapped = F.sent = F.clear = true; D.on = false; DG.g.visible = false; moundG.visible = false; cage.position.y = 4; lockLed.material.emissive.set(0x33ff66); P.x = 26; P.z = 2; P.yaw = 0;
@@ -637,6 +650,56 @@ $('go').onclick = () => {
   playing = true; applyCP(CP); updObj(); lockMouse();
   if (!CP) say('Floor 4, the learning floor. Little desks, a library... and somewhere, the floor is moving.', 5);
 };
+// ---------- ULTRA graphics ----------
+try { $('gfx').textContent = 'Graphics: ' + (ULTRA ? 'Ultra' : 'Standard'); $('gfx').onclick = () => { try { localStorage.setItem('lt_gfx', ULTRA ? 'standard' : 'ultra'); } catch (e) {} location.reload(); }; } catch (e) {}
+if (ULTRA) (async () => {
+  try {
+    // nicer monsters: soft fur shine, glossy scales, brighter eyes
+    const upgradeMonster = root => root.traverse(o => {
+      if (!o.isMesh) return; const m = o.material;
+      if (!m || !m.isMeshStandardMaterial || m.isMeshPhysicalMaterial || m.alphaMap || m.transparent) return;
+      const p = new THREE.MeshPhysicalMaterial({ map: m.map, color: m.color.clone(), roughness: m.roughness, metalness: m.metalness, emissive: m.emissive.clone(), emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity * 1.8, side: m.side });
+      if (m.roughness >= .7) { p.sheen = 1; p.sheenRoughness = .5; p.sheenColor = new THREE.Color(0xffffff).lerp(m.color, .35); }
+      else { p.clearcoat = .65; p.clearcoatRoughness = .22; }
+      o.material = p;
+    });
+    for (const n of ['ST', 'DG', 'WB', 'SH', 'CC', 'SALT']) { try { const o = eval(n); if (o && o.g) upgradeMonster(o.g); } catch (e) {} }
+    try { skinMeshes.forEach(k => upgradeMonster(k.g)); } catch (e) {}
+    torch.shadow.mapSize.set(2048, 2048); torch.shadow.radius = 3; torch.shadow.bias = -.0004; torch.shadow.map = null;
+    [...lamps].sort((a, b) => b.base - a.base).slice(0, 4).forEach(o => { o.L.castShadow = true; o.L.shadow.mapSize.set(1024, 1024); o.L.shadow.bias = -.002; o.L.shadow.radius = 4; o.L.shadow.camera.near = .2; });
+    scene.traverse(o => { if (o.isMesh) { o.receiveShadow = true; if (!o.material.transparent && !o.material.alphaMap) o.castShadow = true; } });
+    const mods = await Promise.all(['postprocessing/EffectComposer.js', 'postprocessing/RenderPass.js', 'postprocessing/UnrealBloomPass.js', 'postprocessing/OutputPass.js', 'postprocessing/ShaderPass.js', 'environments/RoomEnvironment.js'].map(f => import('three/addons/' + f)));
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { RoomEnvironment }] = mods;
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;
+    scene.traverse(o => { if (o.isMesh) [].concat(o.material).forEach(m => { if (m && m.isMeshStandardMaterial && m.userData.env === undefined) { m.userData.env = 1; m.envMapIntensity = m.metalness > .4 ? .8 : m.roughness < .4 ? .3 : .05; if (m.roughness > .25 && m.roughness < .5) m.roughness -= .08; m.needsUpdate = true; } }); });
+    const rt = new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio(), { samples: 4, type: THREE.HalfFloatType });
+    const c = new EffectComposer(renderer, rt); c.addPass(new RenderPass(scene, camera));
+    try { const { GTAOPass } = await import('three/addons/postprocessing/GTAOPass.js'); const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.updateGtaoMaterial({ radius: .5, distanceExponent: 1.6, thickness: 1.2, scale: 1.4, samples: 16 }); ao.blendIntensity = 1; c.addPass(ao); } catch (e) {}
+    c.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .45, .55, .8));
+    c.addPass(new OutputPass());
+    const grain = new ShaderPass({ uniforms: { tDiffuse: { value: null }, t: { value: 0 } }, vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform sampler2D tDiffuse; uniform float t; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + t) * 43758.5453); } void main(){ vec2 o = (vUv - .5) * .0025; vec4 c = vec4(texture2D(tDiffuse, vUv + o).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - o).b, 1.0); float d = distance(vUv, vec2(.5)); float L = dot(c.rgb, vec3(.299, .587, .114)); c.rgb = mix(c.rgb, c.rgb * vec3(.84, .95, 1.14), (1.0 - smoothstep(.0, .35, L)) * .6); c.rgb = clamp((c.rgb - .5) * 1.14 + .5, 0.0, 1.0); c.rgb *= smoothstep(.85, .3, d) * .6 + .4; c.rgb += (h(vUv * 917.0) - .5) * .04; gl_FragColor = c; }' });
+    c.addPass(grain); c.grain = grain;
+    // a soft beam of light under every ceiling lamp
+    const beamM = new THREE.MeshBasicMaterial({ color: 0xffe2b0, transparent: true, opacity: .03, blending: THREE.AdditiveBlending, depthWrite: false });
+    c.beams = lamps.map(o => { const hgt = o.L.position.y - .05, cone = new THREE.Mesh(new THREE.CylinderGeometry(.12, 1.1, hgt, 24, 1, true), beamM.clone()); cone.position.set(o.L.position.x, hgt / 2, o.L.position.z); cone.material.color.copy(o.L.color); scene.add(cone); return [cone, o]; });
+    // dust in the air around you
+    const DN = 1000, dp = new Float32Array(DN * 3); for (let i = 0; i < DN * 3; i++) dp[i] = (Math.random() - .5) * 8;
+    const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: 0xfff0d8, size: .007, transparent: true, opacity: .35, blending: THREE.AdditiveBlending, depthWrite: false })); dust.frustumCulled = false; scene.add(dust); c.dust = dust;
+    addEventListener('resize', () => c.setSize(innerWidth, innerHeight));
+    composer = c;
+  } catch (e) { console.warn(e); composer = null; }
+})();
+function present(t) {
+  if (!composer) { renderer.render(scene, camera); return; }
+  composer.grain.uniforms.t.value = t % 10;
+  composer.beams.forEach(([cone, o]) => { cone.material.opacity = .035 * Math.min(1, o.L.intensity / (o.base || 1)); });
+  const pa = composer.dust.geometry.attributes.position, cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
+  for (let i = 0; i < pa.count; i++) { let x = pa.getX(i), y = pa.getY(i) + .0015, z = pa.getZ(i); if (x - cx > 4) x -= 8; if (x - cx < -4) x += 8; if (y - cy > 2) y -= 4; if (y - cy < -2) y += 4; if (z - cz > 4) z -= 8; if (z - cz < -4) z += 8; pa.setXYZ(i, x, y, z); }
+  pa.needsUpdate = true;
+  composer.render();
+}
 window.__tg = { P, D, F, frame, keys, things, solids, get cur() { return cur; }, use: useThing, close: closePaper, setCP: applyCP, scene, camera };
 </script>
 </body>
